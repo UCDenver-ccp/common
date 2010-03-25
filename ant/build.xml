@@ -1,0 +1,369 @@
+<project name="ccp-common" default="build" basedir="..">
+
+	<property name="project.name" value="${ant.project.name}" />
+	<property name="jar.name" value="${project.name}.jar" />
+
+	<!-- Project Directories -->
+	<property name="source.dir" value="src" />
+	<property name="test.source.dir" value="test" />
+	<property name="build.dir" value="build" />
+	<property name="docs.dir" value="doc" />
+	<property name="classes.dir" value="${build.dir}/classes" />
+	<property name="distribution.dir" value="${build.dir}/distribution" />
+	<property name="lib.dir" value="lib" />
+	<property name="lib-test.dir" value="lib-test" />
+
+	<!-- Test Directories -->
+	<property name="test.dir" value="${build.dir}/test" />
+	<property name="test.data.dir" value="${test.dir}/data" />
+	<property name="test.reports.dir" value="${test.dir}/reports" />
+
+	<property name="unit.test.data.dir" value="${test.data.dir}/unit" />
+	<property name="unit.test.reports.dir" value="${test.reports.dir}/unit" />
+
+	<property name="fn.test.data.dir" value="${test.data.dir}/fn" />
+	<property name="fn.test.reports.dir" value="${test.reports.dir}/fn" />
+
+	<property name="cobertura.data.dir" value="${test.data.dir}/coverage" />
+	<property name="cobertura.reports.dir" value="${test.reports.dir}/coverage" />
+	<property name="cobertura.instrumented.dir" value="${test.dir}/instrumented" />
+	<property name="cobertura.datafile" value="${cobertura.instrumented.dir}/cobertura.ser" />
+
+	<property name="findbugs.reports.dir" value="${test.reports.dir}/findbugs" />
+	
+	<property name="checkstyle.reports.dir" value="${test.reports.dir}/checkstyle" />
+	
+	<property name="pmd.reports.dir" value="${test.reports.dir}/pmd" />
+	
+	<property name="simian.reports.dir" value="${test.reports.dir}/simian" />
+
+	<!-- The compile classpath contains jars necessary for compile- and run-time. -->
+	<path id="compile.classpath">
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<!-- Properties and task for conducting source code analysis -->
+	<property name="cobertura.dir" value="lib-test/cobertura" />
+	<property name="findbugs.home" value="lib-test/findbugs" />
+	<property name="findbugs.jar" value="${findbugs.home}/lib/findbugs.jar" />
+	<property name="findbugs.jar" value="${findbugs.home}/lib/findbugs-ant.jar" />
+
+	<!-- The compile-test classpath contains jars used only for testing and source code analysis -->
+	<path id="compile.test.classpath">
+		<fileset dir="${lib-test.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${cobertura.dir}">
+			<include name="cobertura.jar" />
+			<include name="lib/**/*.jar" />
+		</fileset>
+		<pathelement path="${findbugs.jar}" />
+		<pathelement path="${findbugs-ant.jar}" />
+	</path>
+
+	<!-- Task definition required for FindBugs. Note, this must appear after the compile.test.classpath initialization to avoid a Warning message -->
+	<taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask">
+		<classpath refid="compile.test.classpath" />
+	</taskdef>
+	
+	<!-- Task definition required for CheckStyle -->
+	<taskdef resource="checkstyletask.properties">
+		<classpath refid="compile.test.classpath" />
+	</taskdef>
+
+	<!-- Task definition required for PMD -->
+	<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask">
+		<classpath refid="compile.test.classpath" />
+	</taskdef>
+	
+	<!-- Task definition required for Simian -->
+	<taskdef resource="simiantask.properties">
+		<classpath refid="compile.test.classpath" />
+	</taskdef>
+			
+	<!-- The path used for typical unit and functional testing. Typical = non-instrumented for computing code coverage -->
+	<path id="junit.classpath">
+		<path refid="compile.classpath" />
+		<path refid="compile.test.classpath" />
+		<pathelement location="${classes.dir}" />
+	</path>
+	
+	<!-- The classpath used for running tests while computing code coverage -->
+	<path id="test.coverage.classpath">
+		<!-- note: your instrumented classes must come first -->
+		<pathelement location="${cobertura.instrumented.dir}" />
+		<pathelement location="${classes.dir}" />
+		<path refid="compile.classpath" />
+		<path refid="compile.test.classpath" />
+	</path>
+	
+	<!-- Build and run unit tests only (no functional tests) -->
+	<target name="build" depends="clean,compile,test.unit,package-project" description="Builds the project, runs all unit tests and packages into a jar file if the tests are successful." />
+
+	<!-- Build and run code analyses -->
+	<target name="build.code.analysis" depends="clean,compile,test.coverage,package-project,findbugs,pmd,simian" description="Builds the project and runs all source code analyses." />
+
+	<!-- Deletes compiled and generated code -->
+	<target name="clean" description="Deletes compiled and generated code">
+		<delete dir="${build.dir}" />
+	</target>
+
+	<!-- Compiles the Java code -->
+	<target name="compile" description="Compiles the Java code">
+		<echo message="BASE DIRECTORY = ${basedir}" />
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${classes.dir}" />
+
+		<javac srcdir="${source.dir}" destdir="${classes.dir}" debug="on" deprecation="off">
+			<classpath refid="compile.classpath" />
+		</javac>
+
+		<javac srcdir="${test.source.dir}" destdir="${classes.dir}" debug="on" deprecation="off">
+			<classpath refid="compile.classpath" />
+			<classpath refid="compile.test.classpath" />
+		</javac>
+
+		<copy todir="${classes.dir}">
+			<fileset dir="${source.dir}">
+				<include name="**/*.properties" />
+				<include name="**/*.xml" />
+			</fileset>
+		</copy>
+	</target>
+
+	<!-- Packages the project into a JAR file -->
+	<target name="package-project" depends="compile" description="Packages the files into a JAR file">
+		<mkdir dir="${distribution.dir}" />
+		<echo message="Packaging the project..." />
+		<jar destFile="${distribution.dir}/${jar.name}">
+			<fileset dir="${classes.dir}">
+				<include name="**/*.*" />
+				<exclude name="**/*Test.*" />
+				<exclude name="**/*TestFn.*" />
+			</fileset>
+		</jar>
+	</target>
+
+	<!-- Builds the Javadocs -->
+	<target name="create-javadoc">
+		<javadoc packagenames="edu.uchsc.ccp.*" sourcepath="${source.dir}" destdir="${docs.dir}/api" windowtitle="Center for Computational Pharmacology Biomedical Discovery Accelerator API" linksource="true">
+			<classpath>
+				<path refid="compile.classpath" />
+				<pathelement location="${classes.dir}" />
+			</classpath>
+			<link href="http://java.sun.com/j2se/1.5.0/docs/api/" />
+			<doctitle>
+				<![CDATA[<h1>Center for Computational Pharmacology Hanalyzer API</h1>]]>
+			</doctitle>
+	</javadoc>
+	</target>
+	
+	<!-- FindBugs Target -->
+	<target name="findbugs" depends="package-project">
+		<echo message="Running FindBugs..." />
+		<mkdir dir="${findbugs.reports.dir}" />
+		<findbugs home="${findbugs.home}" output="html" outputFile="${findbugs.reports.dir}/fb-index.html" jvmargs="-Xmx1024m">
+			<auxClasspath>
+				<path refid="compile.classpath" />
+			</auxClasspath>
+			<sourcePath path="${source.dir}" />
+			<class location="${distribution.dir}/${jar.name}" />
+		</findbugs>
+	</target>
+	
+	<!-- CheckStyle Target -->
+	<target name="checkstyle" description="Generates a report of code convention violations.">
+		<mkdir dir="${checkstyle.reports.dir}" />
+		<checkstyle config="${basedir}/config/test/checkstyle/ccp_checkstyle.xml" failureProperty="checkstyle.failure" failOnViolation="false">
+			<formatter type="xml" tofile="${checkstyle.reports.dir}/checkstyle_report.xml" />
+			<fileset dir="${source.dir}" includes="**/*.java" />
+			<fileset dir="${test.dir}" includes="**/*.java" />
+		</checkstyle>
+	</target>
+	
+	
+	<!-- PMD Target -->
+	<target name="pmd">
+		<mkdir dir="${pmd.reports.dir}" />
+		<pmd shortFilenames="true" rulesetfiles="${basedir}/config/test/pmd/ccp-pmd-rules.xml">
+			<formatter type="xml" toFile="${pmd.reports.dir}/pmd.xml"/>
+			<fileset dir="${source.dir}" includes="**/*.java" />
+			<fileset dir="${test.dir}" includes="**/*.java" />
+		</pmd>
+	</target>
+	
+	<!-- Simian Target -->
+	<target name="simian">
+		<mkdir dir="${simian.reports.dir}" />
+		<simian threshold="6" language="java">
+			<formatter type="xml" toFile="${simian.reports.dir}/simian-log.xml"/>
+			<fileset dir="${source.dir}" includes="**/*.java" />
+		</simian>
+	</target>
+	
+	<!-- Creates the directory structure for storing test and source code analysis results -->
+	<target name="create.test.output.directories">
+		<mkdir dir="${test.dir}" />
+		<mkdir dir="${test.data.dir}" />
+		<mkdir dir="${test.reports.dir}" />
+	</target>
+	
+	<!-- Creates the directory structure for storing unit test results -->
+	<target name="create.unit.test.output.directories">
+		<mkdir dir="${unit.test.data.dir}" />
+		<mkdir dir="${unit.test.reports.dir}" />
+	</target>
+	
+	<!-- Creates the directory structure for storing functional test results -->
+	<target name="create.fn.test.output.directories">
+		<mkdir dir="${fn.test.data.dir}" />
+		<mkdir dir="${fn.test.reports.dir}" />
+	</target>
+	
+	<!-- Generates the unit test reports in HTML -->
+	<target name="generate.unit.test.report" if="unit.test.reports.dir.exists">
+			<antcall target="generate.junit.report">
+				<param name="data.dir" value="${unit.test.data.dir}" />
+				<param name="reports.dir" value="${unit.test.reports.dir}" />
+			</antcall>
+	</target>
+	
+	<!-- Generates the functional test reports in HTML -->
+	<target name="generate.fn.test.report" if="fn.test.reports.dir.exists">
+			<antcall target="generate.junit.report">
+				<param name="data.dir" value="${fn.test.data.dir}" />
+				<param name="reports.dir" value="${fn.test.reports.dir}" />
+			</antcall>
+	</target>
+	
+	<!-- Generates JUnit reports. Requires input parameters for ${data.dir} and ${reports.dir} -->
+	<target name="generate.junit.report">
+		<junitreport todir="${data.dir}">
+			<fileset dir="${data.dir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${reports.dir}" />
+		</junitreport>
+	</target>
+	
+	
+	
+	<!-- Runs JUnit. Requires input parameters for ${includes.unit.regex}, ${includes.fn.regex}, and ${classpath.id}. 
+	     If the unit.regex or fn.regex are not included, then those particular tests are not run. -->
+	<target name="run.junit">
+		<junit fork="yes" printsummary="false" errorProperty="test.failed" failureProperty="test.failed" dir="${basedir}" maxmemory="1024m">
+			<sysproperty key="net.sourceforge.cobertura.datafile" file="${cobertura.datafile}" />
+			<classpath>
+				<path refid="${classpath.id}" />
+			</classpath>
+			<formatter type="brief" usefile="false" />
+			<formatter type="xml" />
+			<batchtest todir="${unit.test.data.dir}">
+				<fileset dir="${classes.dir}" includes="${includes.unit.regex}" />
+			</batchtest>
+			<batchtest todir="${fn.test.data.dir}">
+				<fileset dir="${classes.dir}" includes="${includes.fn.regex}" />
+			</batchtest>
+		</junit>
+		<available file="${unit.test.reports.dir}" type="dir" property="unit.test.reports.dir.exists"/>
+		<antcall target="generate.unit.test.report"  />
+		<available file="${fn.test.reports.dir}" type="dir" property="fn.test.reports.dir.exists"/>
+		<antcall target="generate.fn.test.report" />
+		<fail message="***** Test(s) failed. Check reports for details." if="test.failed" />
+	</target>
+	
+	<!-- Runs the unit tests -->
+	<target name="run.unit.tests">
+		<antcall target="run.junit">
+			<param name="includes.unit.regex" value="**/*Test.class" />
+			<param name="classpath.id" value="junit.classpath" />
+		</antcall>
+	</target>
+	
+	<!-- Runs the functional tests -->
+	<target name="run.fn.tests">
+		<antcall target="run.junit">
+			<param name="includes.fn.regex" value="**/*TestFn.class" />
+			<param name="classpath.id" value="junit.classpath" />
+		</antcall>
+	</target>
+	
+	<!-- Run the unit tests -->
+	<target name="test.unit" depends="compile" description="Runs unit tests">
+		<antcall target="create.test.output.directories" />
+		<antcall target="create.unit.test.output.directories" />
+		<antcall target="run.unit.tests" />
+		<!--<antcall target="generate.unit.test.report" />
+		<fail message="***** Unit test(s) failed. Check reports for details." if="test.failed" />-->
+	</target>
+	
+	<!-- Run the functional tests -->
+	<target name="test.fn" depends="compile" description="Runs functional tests">
+		<antcall target="create.test.output.directories" />
+		<antcall target="create.fn.test.output.directories" />
+		<antcall target="run.fn.tests" />
+		<!--<antcall target="generate.fn.test.report" />
+		<fail message="***** Functional Test(s) failed. Check reports for details." if="test.failed" />-->
+	</target>
+	
+	<!-- Creates the output directories used by Cobertura -->
+	<target name="create.cobertura.output.directories">
+		<mkdir dir="${cobertura.data.dir}" />
+		<mkdir dir="${cobertura.reports.dir}" />
+	</target>
+	
+	<!-- Defines the classes to be analyzed by Cobertura -->
+	<target name="set.instrumented.classes.for.cobertura">
+		<cobertura-instrument datafile="${cobertura.datafile}" todir="${cobertura.instrumented.dir}">
+			<ignore regex="org.apache.log4j.*" />
+			<fileset dir="${classes.dir}">
+				<include name="**/*.class" />
+				<exclude name="**/*Test.class" />
+				<exclude name="**/*TestFn.class" />
+			</fileset>
+		</cobertura-instrument>
+	</target>
+	
+	<!-- Generates the Cobertura output (both HTML and XML) -->
+	<target name="generate.cobertura.reports">
+		<!-- cobertura html reports -->
+		<cobertura-report datafile="${cobertura.datafile}" destdir="${cobertura.reports.dir}" maxmemory="1024m">
+			<fileset dir="${source.dir}">
+				<include name="**/*.java" />
+			</fileset>
+		</cobertura-report>
+	
+		<!-- cobertura xml reports -->
+		<cobertura-report datafile="${cobertura.datafile}" srcdir="${source.dir}" destdir="${cobertura.data.dir}" format="xml" maxmemory="1024m"/>
+	</target>
+	
+	<!-- Runs all tests using the classpath that includes the files instrumented by Cobertura -->
+	<target name="run.coverage.all.tests">
+		<antcall target="run.junit">
+			<param name="includes.unit.regex" value="**/*Test.class" />
+			<param name="includes.fn.regex" value="**/*TestFn.class" />
+			<param name="classpath.id" value="test.coverage.classpath" />
+		</antcall>
+	</target>
+	
+	<!-- Computes test code coverage -->
+	<target name="test.coverage" depends="compile" description="Computes test code coverate using Cobertura">
+		<antcall target="create.test.output.directories" />
+		<antcall target="create.unit.test.output.directories" />
+		<antcall target="create.fn.test.output.directories" />
+		<antcall target="create.cobertura.output.directories" />
+	
+		<taskdef classpathref="compile.test.classpath" resource="tasks.properties" />
+		<delete dir="${cobertura.instrumented.dir}" />
+		<antcall target="set.instrumented.classes.for.cobertura" />
+		<antcall target="run.coverage.all.tests" />
+	
+		<antcall target="generate.unit.test.report" />
+		<antcall target="generate.fn.test.report" />
+		<antcall target="generate.cobertura.reports" />
+		<fail message="***** Tests failed. Check reports for details." if="test.failed" />
+	</target>
+
+</project>
