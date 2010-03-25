@@ -13,4 +13,9 @@ public class StringBufferUtil {
 	public static StringBuffer prepend(StringBuffer sb, String s) {
 		return sb.insert(0, s);
 	}
+	
+	
+	public static void appendLine(StringBuffer sb, String line) {
+		sb.append(line + StringConstants.NEW_LINE);
+	}
 }
