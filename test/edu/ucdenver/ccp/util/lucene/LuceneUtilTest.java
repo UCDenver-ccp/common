@@ -149,6 +149,12 @@ public class LuceneUtilTest {
 			return builder.buildEmployeeDocument(employeeIter.next());
 		}
 
+		@Override
+		public void close() {
+			throw new UnsupportedOperationException("Close() is not supported/needed for this DocumentFeeder class.");
+
+		}
+
 	}
 
 	private class Employee {
