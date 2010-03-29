@@ -1,5 +1,6 @@
 package edu.ucdenver.ccp.util.collections;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -47,4 +48,13 @@ public class CollectionsUtilTest {
 				.createList());
 		assertNull(String.format("Should return null for null input."), CollectionsUtil.createList((Object[]) null));
 	}
+
+	@Test
+	public void testParseInts() throws Exception {
+		List<String> toParseList = CollectionsUtil.createList("5", "6", "789", "1", "-4", "0");
+		List<Integer> expectedIntList = CollectionsUtil.createList(5, 6, 789, 1, -4, 0);
+		assertEquals(String.format("The list of Strings should have been converted into a list of Integers."),
+				expectedIntList, CollectionsUtil.parseInts(toParseList));
+	}
+
 }
