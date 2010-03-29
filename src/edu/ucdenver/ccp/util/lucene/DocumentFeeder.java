@@ -17,5 +17,7 @@ public abstract class DocumentFeeder implements Iterator<Document> {
 		throw new UnsupportedOperationException(
 				"Remove() is not supported by the DocumentFeeder Iterator implementation.");
 	}
+	
+	public abstract void close();
 
 }
