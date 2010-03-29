@@ -136,7 +136,7 @@ public class LuceneSearch {
 	 * @throws CorruptIndexException
 	 * 
 	 */
-	public String printIndexStatistics() throws CorruptIndexException, IOException {
+	public String getIndexStatistics() throws CorruptIndexException, IOException {
 		StringBuffer sb = new StringBuffer();
 		StringBufferUtil.appendLine(sb, "---------------- INDEX STATISTICS ---------------");
 		StringBufferUtil.appendLine(sb, String.format("Location: %s", indexDirectory.toString()));
@@ -169,7 +169,7 @@ public class LuceneSearch {
 			int topN = Integer.parseInt(args[4]);
 
 			LuceneSearch search = new LuceneSearch(indexDirectory, defaultSearchField);
-			System.out.println(search.printIndexStatistics());
+			System.out.println(search.getIndexStatistics());
 
 			List<String> values = search.search(queryString, fieldToReturn, topN);
 			System.out.println(String.format("Returning %d search hits...", search.getHitCount()));
