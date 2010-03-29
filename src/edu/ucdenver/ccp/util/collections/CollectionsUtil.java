@@ -42,7 +42,7 @@ public class CollectionsUtil {
 	 * @param intsAsStrings
 	 * @return
 	 */
-	public static List<Integer> parseInt(List<String> intsAsStrings) {
+	public static List<Integer> parseInts(List<String> intsAsStrings) {
 		List<Integer> intsAsIntegers = new ArrayList<Integer>();
 		for (String intAsString : intsAsStrings) {
 			intsAsIntegers.add(Integer.parseInt(intAsString));
