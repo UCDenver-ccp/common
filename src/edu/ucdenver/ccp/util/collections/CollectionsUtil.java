@@ -1,5 +1,6 @@
 package edu.ucdenver.ccp.util.collections;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -33,6 +34,20 @@ public class CollectionsUtil {
 			return null;
 		}
 		return new HashSet<T>(Arrays.asList(setEntries));
+	}
+
+	/**
+	 * Converts a list of Strings to a list of Integers. Assumes the Strings are all integers.
+	 * 
+	 * @param intsAsStrings
+	 * @return
+	 */
+	public static List<Integer> parseInt(List<String> intsAsStrings) {
+		List<Integer> intsAsIntegers = new ArrayList<Integer>();
+		for (String intAsString : intsAsStrings) {
+			intsAsIntegers.add(Integer.parseInt(intAsString));
+		}
+		return intsAsIntegers;
 	}
 
 }
