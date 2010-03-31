@@ -242,9 +242,9 @@ public class LuceneUtil {
 	 * @throws IOException
 	 */
 	private void closeIndex(LuceneUtil.DirectoryType directoryType, boolean optimize) throws IOException {
-		logger.debug("Closing index.");
+		logger.info("Closing index.");
 		if (optimize) {
-			logger.debug("Optimizing...");
+			logger.info("Optimizing...");
 			writer.optimize();
 		}
 		if (directoryType.useRamDirectory()) {
