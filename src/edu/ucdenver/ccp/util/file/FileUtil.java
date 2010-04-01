@@ -1,6 +1,7 @@
 package edu.ucdenver.ccp.util.file;
 
 import java.io.File;
+import java.io.FilenameFilter;
 
 public class FileUtil {
 
@@ -25,5 +26,19 @@ public class FileUtil {
 		}
 		return errorMessage;
 	}
-	
+
+	/**
+	 * Creates a file name filter that accepts files based on the fileSuffix input parameter
+	 * 
+	 * @return
+	 */
+	public static FilenameFilter createFilenameSuffixFilter(final String fileSuffix) {
+		FilenameFilter filter = new FilenameFilter() {
+			public boolean accept(File dir, String name) {
+				return name.endsWith(fileSuffix);
+			}
+		};
+		return filter;
+	}
+
 }
