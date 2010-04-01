@@ -21,7 +21,7 @@ import java.util.Properties;
  * @author Bill Baumgartner
  * @author Philip Ogren
  */
-public class PropertiesConnection {
+public class ConnectionPropertiesUtil {
 	public static final String DRIVER_NAME = "DRIVER_NAME";
 	public static final String URL_PREFIX = "URL_PREFIX";
 	public static final String HOST = "HOST";
