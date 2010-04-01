@@ -120,6 +120,10 @@ public class FileArchiveUtil {
 		return hasCaseInsensitiveSuffix(file, z_suffix);
 	}
 
+	private static boolean isTarFile(File file) {
+		return hasCaseInsensitiveSuffix(file, tar_suffix) || hasCaseInsensitiveSuffix(file, tgz_suffix);
+	}
+
 	/**
 	 * Untars a file into the specified output directory TODO: Use CheckSums?
 	 * 
@@ -129,9 +133,13 @@ public class FileArchiveUtil {
 	 * @throws IllegalArgumentException
 	 * @throws IOException
 	 */
-	public static void untar(File tarFile, File outputDirectory) throws FileNotFoundException,
+	public static void unpackTarFile(File tarFile, File outputDirectory) throws FileNotFoundException,
 			IllegalArgumentException, IOException {
 		FileUtil.validateDirectory(outputDirectory);
+		if (!isTarFile(tarFile)) {
+			throw new IllegalArgumentException(String.format("Cannot unpack. Input file is not a tarball: %s", tarFile
+					.getAbsolutePath()));
+		}
 		TarInputStream tis = null;
 		try {
 			tis = new TarInputStream(getInputStream(tarFile));
@@ -168,15 +176,15 @@ public class FileArchiveUtil {
 	 * Copies the current TarEntry to the specified output file
 	 * 
 	 * @param tis
-	 * @param outputDirectory
+	 * @param outputFile
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	private static void copyTarEntryToFile(TarInputStream tis, File outputDirectory) throws FileNotFoundException,
+	private static void copyTarEntryToFile(TarInputStream tis, File outputFile) throws FileNotFoundException,
 			IOException {
 		FileOutputStream fos = null;
 		try {
-			fos = new FileOutputStream(outputDirectory);
+			fos = new FileOutputStream(outputFile);
 			tis.copyEntryContents(fos);
 		} finally {
 			IOUtils.closeQuietly(fos);
@@ -259,7 +267,7 @@ public class FileArchiveUtil {
 		if (zipEntry.isDirectory()) {
 			FileUtil.mkdir(outputPathFile);
 		} else {
-			copyZipEntryToFile(zis, zipEntry, outputPathFile);
+			copyZipEntryToFile(zis, outputPathFile);
 		}
 	}
 
@@ -272,9 +280,8 @@ public class FileArchiveUtil {
 	 * @param outputDirectory
 	 * @throws IOException
 	 */
-	private static void copyZipEntryToFile(ZipInputStream zis, ZipEntry zipEntry, File outputDirectory)
+	private static void copyZipEntryToFile(ZipInputStream zis, File unzippedFile)
 			throws IOException {
-		File unzippedFile = new File(outputDirectory.getAbsolutePath() + File.separator + zipEntry.getName());
 		FileUtil.copy(zis, unzippedFile);
 	}
 
