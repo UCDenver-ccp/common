@@ -54,7 +54,7 @@ public class GenerifsBasicFileParser implements Iterator<GeneRIF> {
 	 * @param generifsBasicFile
 	 * @throws FileNotFoundException
 	 */
-	private GenerifsBasicFileParser(File generifsBasicFile) throws FileNotFoundException {
+	private GenerifsBasicFileParser(File generifsBasicFile) throws IOException {
 		fileLinesIterator = FileLoaderUtil.getLineIterator(generifsBasicFile, COMMENT_INDICATOR);
 	}
 
@@ -66,7 +66,7 @@ public class GenerifsBasicFileParser implements Iterator<GeneRIF> {
 	 * @return an Iterator of GeneRIF objects - one for each line of the file
 	 */
 
-	public static Iterator<GeneRIF> parse(File generifsBasicFile) throws FileNotFoundException {
+	public static Iterator<GeneRIF> parse(File generifsBasicFile) throws IOException {
 		return new GenerifsBasicFileParser(generifsBasicFile);
 	}
 
