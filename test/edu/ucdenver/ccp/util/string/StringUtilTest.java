@@ -4,10 +4,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-
 public class StringUtilTest {
 
-	
 	@Test
 	public void testIsInteger_validPositiveInput() throws Exception {
 		assertTrue(StringUtil.isInteger("1"));
@@ -15,7 +13,7 @@ public class StringUtilTest {
 		assertTrue(StringUtil.isInteger("1234567890"));
 		assertTrue(StringUtil.isInteger("9876543211"));
 	}
-	
+
 	@Test
 	public void testIsInteger_validNegativeInput() throws Exception {
 		assertTrue(StringUtil.isInteger("-1"));
@@ -23,7 +21,7 @@ public class StringUtilTest {
 		assertTrue(StringUtil.isInteger("-1234567890"));
 		assertTrue(StringUtil.isInteger("-9876543211"));
 	}
-	
+
 	@Test
 	public void testIsInteger_invalidInput() throws Exception {
 		assertFalse(StringUtil.isInteger("01"));
@@ -33,5 +31,33 @@ public class StringUtilTest {
 		assertFalse(StringUtil.isInteger("-000005"));
 		assertFalse(StringUtil.isInteger(""));
 		assertFalse(StringUtil.isInteger(null));
+	}
+
+	@Test
+	public void testRemoveSuffix_ValidInput() throws Exception {
+		assertEquals("Suffix should be stripped.", "myFile.txt", StringUtil.removeSuffix("myFile.txt.gz", ".gz"));
+		assertEquals("Suffix should be stripped.", "myFile", StringUtil.removeSuffix("myFile.txt.gz.abc.123.xyz-654",
+				".txt.gz.abc.123.xyz-654"));
+	}
+
+	@Test
+	public void testRemoveSuffix_EmptyInput() throws Exception {
+		assertEquals("Suffix should be stripped.", "myFile.txt", StringUtil.removeSuffix("myFile.txt", ""));
+		assertEquals("Suffix should be stripped.", "", StringUtil.removeSuffix("", ""));
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testRemoveSuffix_NullInputString() throws Exception {
+		StringUtil.removeSuffix(null, ".gz");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testRemoveSuffix_NullSuffix() throws Exception {
+		StringUtil.removeSuffix("File.txt", null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testRemoveSuffix_InputStringDoesNotHaveSuffix() throws Exception {
+		StringUtil.removeSuffix("File.txt.zip", ".gz");
 	}
 }
