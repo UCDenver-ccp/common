@@ -2,11 +2,9 @@ package edu.ucdenver.ccp.util.file;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -23,7 +21,6 @@ import edu.ucdenver.ccp.util.string.StringConstants;
 public class FileLoaderUtilTest {
 
 	private static final String COMMENT_INDICATOR = StringConstants.TWO_FORWARD_SLASHES;
-	private static final String LINE_ITERATOR_BUFFERED_READER_FIELD_NAME = "val$br";
 
 	@Rule
 	public TemporaryFolder folder = new TemporaryFolder();
