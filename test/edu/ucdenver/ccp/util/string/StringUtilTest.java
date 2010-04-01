@@ -60,4 +60,10 @@ public class StringUtilTest {
 	public void testRemoveSuffix_InputStringDoesNotHaveSuffix() throws Exception {
 		StringUtil.removeSuffix("File.txt.zip", ".gz");
 	}
+
+	@Test
+	public void testReplaceSuffix_ValidInput() throws Exception {
+		assertEquals("Suffix should be replaced with .tar", "myTarball.tar", StringUtil.replaceSuffix("myTarball.tgz",
+				".tgz", ".tar"));
+	}
 }

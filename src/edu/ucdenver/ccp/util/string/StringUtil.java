@@ -36,4 +36,16 @@ public class StringUtil {
 				suffix));
 	}
 
+	/**
+	 * Replaces one suffix with another on the input String
+	 * 
+	 * @param inputStr
+	 * @param suffix
+	 * @param replacementSuffix
+	 * @return
+	 */
+	public static String replaceSuffix(String inputStr, String suffix, String replacementSuffix) {
+		return removeSuffix(inputStr, suffix) + replacementSuffix;
+	}
+
 }
