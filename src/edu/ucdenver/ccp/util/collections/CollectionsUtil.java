@@ -37,6 +37,17 @@ public class CollectionsUtil {
 	}
 
 	/**
+	 * Converts an array<T> into a Set<T>
+	 * 
+	 * @param <T>
+	 * @param array
+	 * @return
+	 */
+	public static <T> Set<T> array2Set(T[] array) {
+		return new HashSet<T>(Arrays.asList(array));
+	}
+
+	/**
 	 * Converts a list of Strings to a list of Integers. Assumes the Strings are all integers.
 	 * 
 	 * @param intsAsStrings

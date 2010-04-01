@@ -57,4 +57,17 @@ public class CollectionsUtilTest {
 				expectedIntList, CollectionsUtil.parseInts(toParseList));
 	}
 
+	@Test
+	public void testArray2Set() throws Exception {
+		Set<String> expectedSet = new HashSet<String>();
+		expectedSet.add("1");
+		expectedSet.add("2");
+		expectedSet.add("3");
+
+		assertEquals(String.format("Simple conversion from array to set."), expectedSet, CollectionsUtil
+				.array2Set(new String[] { "1", "2", "3" }));
+		assertEquals(String.format("Lossy conversion from array to set."), expectedSet, CollectionsUtil
+				.array2Set(new String[] { "1", "2", "3", "3", "3", "2" }));
+	}
+
 }
