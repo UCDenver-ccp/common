@@ -1,19 +1,20 @@
 package edu.ucdenver.ccp.util.file;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import edu.ucdenver.ccp.util.exception.FileProcessingException;
-import edu.ucdenver.ccp.util.exception.runtime.MultipleFailuresException;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.LineIterator;
 
 public class FileLoaderUtil {
+
+	private static final String FILE_ENCODING_PROPERTY = "file.encoding";
+	private static final String DEFAULT_ENCODING = System.getProperty(FILE_ENCODING_PROPERTY);
 
 	/**
 	 * Returns a List<String> containing the contents of the requested column in the input file,
@@ -25,10 +26,10 @@ public class FileLoaderUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public static List<String> loadColumnFromDelimitedFile(File inputFile, String delimiter, int columnIndex,
-			String commentIndicator) throws IOException {
+	public static List<String> loadColumnFromDelimitedFile(File inputFile, String encoding, String delimiter,
+			int columnIndex, String commentIndicator) throws IOException {
 		List<String> outputColumn = new ArrayList<String>();
-		for (Iterator<String> lineIter = getLineIterator(inputFile, commentIndicator); lineIter.hasNext();) {
+		for (Iterator<String> lineIter = getLineIterator(inputFile, encoding, commentIndicator); lineIter.hasNext();) {
 			String line = lineIter.next();
 			if (delimiter == null) {
 				outputColumn.add(line);
@@ -45,6 +46,11 @@ public class FileLoaderUtil {
 		return outputColumn;
 	}
 
+	public static List<String> loadColumnFromDelimitedFile(File inputFile, String delimiter, int columnIndex,
+			String commentIndicator) throws IOException {
+		return loadColumnFromDelimitedFile(inputFile, DEFAULT_ENCODING, delimiter, columnIndex, commentIndicator);
+	}
+
 	/**
 	 * Returns a List<String> containing the lines loaded from the input File
 	 * 
@@ -53,8 +59,9 @@ public class FileLoaderUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public static List<String> loadLinesFromFile(File inputFile, String commentIndicator) throws IOException {
-		return loadColumnFromDelimitedFile(inputFile, null, 0, commentIndicator);
+	public static List<String> loadLinesFromFile(File inputFile, String encoding, String commentIndicator)
+			throws IOException {
+		return loadColumnFromDelimitedFile(inputFile, encoding, null, 0, commentIndicator);
 	}
 
 	/**
@@ -63,8 +70,12 @@ public class FileLoaderUtil {
 	 * @return
 	 * @throws IOException
 	 */
+	public static List<String> loadLinesFromFile(File inputFile, String encoding) throws IOException {
+		return loadColumnFromDelimitedFile(inputFile, encoding, null, 0, null);
+	}
+
 	public static List<String> loadLinesFromFile(File inputFile) throws IOException {
-		return loadColumnFromDelimitedFile(inputFile, null, 0, null);
+		return loadColumnFromDelimitedFile(inputFile, DEFAULT_ENCODING, null, 0, null);
 	}
 
 	/**
@@ -86,11 +97,12 @@ public class FileLoaderUtil {
 	 * 
 	 * @param inputFile
 	 * @return
-	 * @throws FileNotFoundException
+	 * @throws IOException
 	 */
-	public static Iterator<String> getLineIterator(final File inputFile, final String commentIndicator)
-			throws FileNotFoundException {
-		final BufferedReader br = new BufferedReader(new FileReader(inputFile));
+	public static Iterator<String> getLineIterator(final File inputFile, String encoding, final String commentIndicator)
+			throws IOException {
+		final LineIterator lineIterator = IOUtils.lineIterator(new FileInputStream(inputFile), encoding);
+
 		return new Iterator<String>() {
 			private String nextLine = null;
 			private int lineCount = 0;
@@ -98,21 +110,16 @@ public class FileLoaderUtil {
 			@Override
 			public boolean hasNext() {
 				if (nextLine == null) {
-					try {
-						String line = br.readLine();
+					if (lineIterator.hasNext()) {
+						String line = lineIterator.nextLine();
 						lineCount++;
-						if (line == null) {
-							cleanup(br, null);
-							return false;
-						}
 						if (isCommentLine(line, commentIndicator)) {
 							return hasNext();
 						}
 						nextLine = line;
 						return true;
-					} catch (IOException e) {
-						cleanup(br, new FileProcessingException(lineCount, e));
 					}
+					return false;
 				}
 				return true;
 			}
@@ -147,32 +154,12 @@ public class FileLoaderUtil {
 				}
 				return line.trim().startsWith(commentIndicator);
 			}
-
-			/**
-			 * Closes the reader while keeping track of a potential previously thrown exception
-			 * 
-			 * @param br
-			 * @param previouslyThrownException
-			 */
-			private void cleanup(BufferedReader br, FileProcessingException previouslyThrownException) {
-				String errorMessage = String.format("Error while iterating over file: %s", inputFile.getAbsolutePath());
-				if (br != null) {
-					try {
-						br.close();
-					} catch (IOException e) {
-						if (previouslyThrownException != null) {
-							throw new MultipleFailuresException(errorMessage, e, previouslyThrownException);
-						} else {
-							throw new RuntimeException(errorMessage, e);
-						}
-					}
-				}
-				if (previouslyThrownException != null) {
-					throw new RuntimeException(errorMessage, previouslyThrownException);
-				}
-			}
-
 		};
+	}
+
+	public static Iterator<String> getLineIterator(final File inputFile, final String commentIndicator)
+			throws IOException {
+		return getLineIterator(inputFile, DEFAULT_ENCODING, commentIndicator);
 	}
 
 }

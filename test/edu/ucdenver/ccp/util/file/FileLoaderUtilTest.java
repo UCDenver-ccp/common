@@ -222,16 +222,6 @@ public class FileLoaderUtilTest {
 		FileLoaderUtil.loadColumnFromDelimitedFile(fiveColumnFileWithCommentOnLineFour, RegExPatterns.TAB, -1, null);
 	}
 
-	@Test(expected = RuntimeException.class)
-	public void testCleanup_reader_closed_after_initialization() throws Exception {
-		Iterator<String> lineIter = FileLoaderUtil.getLineIterator(oneColumnFile, null);
-		Field brField = lineIter.getClass().getDeclaredField(LINE_ITERATOR_BUFFERED_READER_FIELD_NAME);
-		brField.setAccessible(true);
-		BufferedReader br = (BufferedReader) brField.get(lineIter);
-		br.close();
-		lineIter.hasNext();
-	}
-
 	@Test(expected = UnsupportedOperationException.class)
 	public void testRemoveThrowsException() throws Exception {
 		Iterator<String> lineIter = FileLoaderUtil.getLineIterator(oneColumnFile, null);
