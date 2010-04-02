@@ -70,17 +70,18 @@ public class FileUtil {
 	 * @return
 	 */
 	public static boolean deleteDirectory(File directory) {
+		boolean success = true;
 		if (directory.exists()) {
 			File[] files = directory.listFiles();
 			for (File f : files) {
 				if (f.isDirectory()) {
 					deleteDirectory(f);
 				} else {
-					f.delete();
+					success = success & f.delete();
 				}
 			}
 		}
-		return directory.delete();
+		return success & directory.delete();
 	}
 
 	/**
