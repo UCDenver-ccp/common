@@ -19,6 +19,7 @@ package edu.ucdenver.ccp.parser.ncbi.gene;
  * 
  */
 
+import java.util.Arrays;
 import java.util.Date;
 
 public class GeneRIF {
@@ -38,8 +39,8 @@ public class GeneRIF {
 	public GeneRIF(int taxID, int entrezID, int[] pmids, Date timeStamp, String text) {
 		this.taxID = taxID;
 		this.entrezID = entrezID;
-		this.pmids = pmids;
-		this.timeStamp = timeStamp;
+		this.pmids = Arrays.copyOf(pmids, pmids.length);
+		this.timeStamp = (Date) timeStamp.clone();
 		this.text = text;
 	}
 
@@ -60,11 +61,11 @@ public class GeneRIF {
 	}
 
 	public int[] getPMIDs() {
-		return pmids;
+		return Arrays.copyOf(pmids, pmids.length);
 	}
 
 	public Date getTimeStamp() {
-		return this.timeStamp;
+		return (Date) timeStamp.clone();
 	}
 
 	public String getText() {
