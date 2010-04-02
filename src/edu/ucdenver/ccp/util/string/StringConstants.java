@@ -6,6 +6,7 @@ public class StringConstants {
 	public static final String POUND = "#";
 	public static final String SPACE = " ";
 	public static final String TWO_FORWARD_SLASHES = "//";
+	public static final String COMMA = ",";
 
 	private StringConstants() {
 		// this class should not be instantiated
