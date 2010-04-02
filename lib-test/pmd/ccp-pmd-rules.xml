@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<ruleset name="CCP ruleset"
+    xmlns="http://pmd.sf.net/ruleset/1.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd"
+    xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
+  <description>
+  The Center for Computational Pharmacology PMD rule set.
+  </description>
+  <rule ref="rulesets/basic.xml"/>
+  <rule ref="rulesets/braces.xml"/>
+  <rule ref="rulesets/codesize.xml">
+    <exclude name="TooManyMethods"/>
+  </rule>
+  <rule ref="rulesets/clone.xml"/>
+  <rule ref="rulesets/coupling.xml/LooseCoupling"/>
+  <rule ref="rulesets/design.xml"/>
+  <rule ref="rulesets/imports.xml"/>
+  <rule ref="rulesets/junit.xml" />
+  <rule ref="rulesets/logging-java.xml"/>
+  <rule ref="rulesets/migrating.xml">
+  	<include name="JUnit4TestShouldUseBeforeAnnotation"/>
+	<include name="JUnit4TestShouldUseAfterAnnotation"/>
+	<include name="JUnit4TestShouldUseTestAnnotation"/>
+	<include name="JUnit4SuitesShouldUseSuiteAnnotation"/>
+	<include name="JUnitUseExpected"/>
+  </rule>
+  <rule ref="rulesets/naming.xml">
+  	<exclude name="LongVariable"/>
+	<exclude name="AbstractNaming"/>
+  </rule>
+  <rule ref="rulesets/optimizations.xml"/>
+  <rule ref="rulesets/strictexception.xml"/>
+  <rule ref="rulesets/strings.xml"/>
+  <rule ref="rulesets/sunsecure.xml"/>
+  <rule ref="rulesets/unusedcode.xml"/>
+</ruleset>
+
+
