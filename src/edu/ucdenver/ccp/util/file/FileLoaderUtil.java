@@ -16,6 +16,24 @@ public class FileLoaderUtil {
 	private static final String FILE_ENCODING_PROPERTY = "file.encoding";
 	private static final String DEFAULT_ENCODING = System.getProperty(FILE_ENCODING_PROPERTY);
 
+	private FileLoaderUtil() {
+		// do not instantiate
+	}
+
+	/**
+	 * Returns a List<String[]> containing the column values for the input file. One String[] per
+	 * line of the file. If you want the entire line, set the delimiter to be null. If there is a
+	 * delimiter specified, you must specify at least one column index to return.
+	 * 
+	 * @param inputFile
+	 * @param delimiter
+	 * @param commentIndicator
+	 * @param columnIndexes
+	 * @return
+	 * @throws IOException
+	 * @throws ArrayIndexOutOfBoundsException
+	 * @throws IllegalArgumentException
+	 */
 	public static List<String[]> loadColumnsFromDelimitedFile(File inputFile, String delimiter,
 			String commentIndicator, int... columnIndexes) throws IOException, ArrayIndexOutOfBoundsException,
 			IllegalArgumentException {
