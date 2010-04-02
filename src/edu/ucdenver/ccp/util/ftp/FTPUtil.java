@@ -53,7 +53,7 @@ public class FTPUtil {
 			throws IOException {
 		if (!FTPReply.isPositiveCompletion(ftpClient.getReplyCode())) {
 			closeFtpClient(ftpClient);
-			throw new IOException(String.format("FTP server (%) refused connection for user:%s password:%s", ftpServer,
+			throw new IOException(String.format("FTP server (%s) refused connection for user:%s password:%s", ftpServer,
 					ftpUsername, ftpPassword));
 		}
 	}
