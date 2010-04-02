@@ -1,6 +1,9 @@
 package edu.ucdenver.ccp.parser.ncbi.gene;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,20 +42,20 @@ public class GenerifsBasicFileParserTest {
 		generifsBasicFile = folder.newFile("generifs_basic");
 		PrintStream ps = new PrintStream(generifsBasicFile);
 		ps.println("#Tax ID\tGene ID\tPubMed ID (PMID) list\tlast update timestamp\tGeneRIF text");
-		ps
-				.println("34\t4126706\t16689796\t2010-01-21 00:00\tData demonstrate that MrpC binds to at least eight sites in the upstream region of its promoter, and suggest a mechanism by which MrpC and FruA are regulated during the M. xanthus life cycle [MrpC]");
-		ps
-				.println("9606\t7040\t12858451,1234567\t2008-03-13 08:51\tObservational study of gene-disease association. (HuGE Navigator)");
+		ps.println("34\t4126706\t16689796\t2010-01-21 00:00\tData demonstrate that MrpC binds to "
+				+ "at least eight sites in the upstream region of its promoter, and suggest a mechanism "
+				+ "by which MrpC and FruA are regulated during the M. xanthus life cycle [MrpC]");
+		ps.println("9606\t7040\t12858451,1234567\t2008-03-13 08:51\tObservational study of gene-disease "
+				+ "association. (HuGE Navigator)");
 		ps.close();
 	}
 
 	private GeneRIF getExpectedGeneRif1() throws ParseException {
-		return new GeneRIF(
-				34,
-				4126706,
-				new int[] { 16689796 },
-				GenerifsBasicFileParser.getGeneRifDateFormat().parse("2010-01-21 00:00"),
-				"Data demonstrate that MrpC binds to at least eight sites in the upstream region of its promoter, and suggest a mechanism by which MrpC and FruA are regulated during the M. xanthus life cycle [MrpC]");
+		return new GeneRIF(34, 4126706, new int[] { 16689796 }, GenerifsBasicFileParser.getGeneRifDateFormat().parse(
+				"2010-01-21 00:00"),
+				"Data demonstrate that MrpC binds to at least eight sites in the upstream region of its "
+						+ "promoter, and suggest a mechanism by which MrpC and FruA are regulated during the M. "
+						+ "xanthus life cycle [MrpC]");
 	}
 
 	private GeneRIF getExpectedGeneRif2() throws ParseException {
