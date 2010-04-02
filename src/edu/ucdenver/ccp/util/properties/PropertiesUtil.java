@@ -21,6 +21,7 @@ package edu.ucdenver.ccp.util.properties;
 import java.io.*;
 import java.util.Properties;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
 public abstract class PropertiesUtil {
@@ -45,13 +46,17 @@ public abstract class PropertiesUtil {
 	 */
 	public static Properties loadProperties(File file) {
 		Properties properties = new Properties();
+		InputStream fis = null;
 		try {
-			properties.load(new FileInputStream(file));
+			fis = new FileInputStream(file);
+			properties.load(fis);
 		} catch (IOException ex) {
 			String path = file == null ? null : file.getAbsolutePath();
 			String message = "Problem loading properties file: " + path;
 			logger.error(message, ex);
 			throw new RuntimeException(message, ex);
+		} finally {
+			IOUtils.closeQuietly(fis);
 		}
 		return properties;
 	}
