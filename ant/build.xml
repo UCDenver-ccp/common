@@ -89,6 +89,10 @@
 			</fileset>
 		</jar>
 	</target>
+	
+	<target name="cleanup-postbuild">
+		<delete file="${lib-test.dir}/${test-resources.jar.name}" />
+	</target>
 
 
 	<!-- The compile-test classpath contains jars used only for testing and source code analysis -->
@@ -121,10 +125,10 @@
 	</path>
 
 	<!-- Build and run unit tests only (no functional tests) -->
-	<target name="build" depends="init,clean,compile,test.unit,package-project" description="Builds the project, runs all unit tests and packages into a jar file if the tests are successful." />
+	<target name="build" depends="init,clean,compile,test.unit,package-project,cleanup-postbuild" description="Builds the project, runs all unit tests and packages into a jar file if the tests are successful." />
 
 	<!-- Build and run code analyses -->
-	<target name="build.code.analysis" depends="init,clean,compile,test.coverage,package-project,findbugs,pmd,simian" description="Builds the project and runs all source code analyses." />
+	<target name="build.code.analysis" depends="init,clean,compile,test.coverage,package-project,findbugs,pmd,simian,cleanup-postbuild" description="Builds the project and runs all source code analyses." />
 
 	<!-- Deletes compiled and generated code -->
 	<target name="clean" description="Deletes compiled and generated code">
