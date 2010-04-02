@@ -51,12 +51,12 @@ public class GenerifsBasicFileParserTest {
 				34,
 				4126706,
 				new int[] { 16689796 },
-				GenerifsBasicFileParser.DATE_FORMAT.parse("2010-01-21 00:00"),
+				GenerifsBasicFileParser.getGeneRifDateFormat().parse("2010-01-21 00:00"),
 				"Data demonstrate that MrpC binds to at least eight sites in the upstream region of its promoter, and suggest a mechanism by which MrpC and FruA are regulated during the M. xanthus life cycle [MrpC]");
 	}
 
 	private GeneRIF getExpectedGeneRif2() throws ParseException {
-		return new GeneRIF(9606, 7040, new int[] { 12858451, 1234567 }, GenerifsBasicFileParser.DATE_FORMAT
+		return new GeneRIF(9606, 7040, new int[] { 12858451, 1234567 }, GenerifsBasicFileParser.getGeneRifDateFormat()
 				.parse("2008-03-13 08:51"), "Observational study of gene-disease association. (HuGE Navigator)");
 	}
 
@@ -79,20 +79,19 @@ public class GenerifsBasicFileParserTest {
 		assertEquals("Ids must be equal.", expectedGeneRif.getID(), observedGeneRif.getID());
 		assertEquals("Default ID should be -1.", -1, expectedGeneRif.getID());
 	}
-	
-	@Test(expected=IllegalArgumentException.class)
+
+	@Test(expected = IllegalArgumentException.class)
 	public void testParseWhenInvalidDateExists() throws Exception {
 		Iterator<GeneRIF> generifIter = GenerifsBasicFileParser.parse(generifsBasicFileWithInvalidDateFormat);
 		assertTrue(generifIter.hasNext());
 		GeneRIF g = generifIter.next();
 		System.out.println(g.getTimeStamp());
 	}
-	
-	@Test(expected=UnsupportedOperationException.class)
+
+	@Test(expected = UnsupportedOperationException.class)
 	public void testUnsupportedOperationExceptionWhenCallingRemove() throws Exception {
 		Iterator<GeneRIF> generifIter = GenerifsBasicFileParser.parse(generifsBasicFileWithInvalidDateFormat);
 		generifIter.remove();
 	}
-	
 
 }
