@@ -44,7 +44,7 @@ import edu.ucdenver.ccp.util.string.StringConstants;
  */
 public class GenerifsBasicFileParser implements Iterator<GeneRIF> {
 
-	public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	public static final String DATE_FORMAT_STRING = "yyyy-MM-dd HH:mm";
 	private final String COMMENT_INDICATOR = StringConstants.POUND;
 	private final Iterator<String> fileLinesIterator;
 
@@ -91,6 +91,16 @@ public class GenerifsBasicFileParser implements Iterator<GeneRIF> {
 	}
 
 	/**
+	 * Returns a DateFormat for use with the generifs_basic file. Note: There is no public static
+	 * DateFormat field in this class because DateFormat is not thread safe.
+	 * 
+	 * @return
+	 */
+	public static DateFormat getGeneRifDateFormat() {
+		return new SimpleDateFormat(DATE_FORMAT_STRING);
+	}
+
+	/**
 	 * Utility method for creating a GeneRIF object from the generifs_basic storage line format.
 	 * 
 	 * @param line
@@ -107,7 +117,7 @@ public class GenerifsBasicFileParser implements Iterator<GeneRIF> {
 			pmids[i] = Integer.parseInt(pmidStrings[i]);
 		}
 
-		Date timeStamp = DATE_FORMAT.parse(tokens[3]);
+		Date timeStamp = getGeneRifDateFormat().parse(tokens[3]);
 		String text = tokens[4];
 
 		return new GeneRIF(taxID, geneID, pmids, timeStamp, text);
