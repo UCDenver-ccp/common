@@ -45,7 +45,7 @@ import edu.ucdenver.ccp.util.string.StringConstants;
 public class GenerifsBasicFileParser implements Iterator<GeneRIF> {
 
 	public static final String DATE_FORMAT_STRING = "yyyy-MM-dd HH:mm";
-	private final String COMMENT_INDICATOR = StringConstants.POUND;
+	private static final String COMMENT_INDICATOR = StringConstants.POUND;
 	private final Iterator<String> fileLinesIterator;
 
 	/**
