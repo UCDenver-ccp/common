@@ -22,31 +22,21 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Iterator;
 
-import edu.ucdenver.ccp.util.file.FileLoaderUtil;
+import edu.ucdenver.ccp.parser.LineFileParser;
 import edu.ucdenver.ccp.util.string.StringConstants;
 
 /**
- * Created: September, 2004<br>
- * Description: This file is used to parse the generifs_basic file downloadable from Entrez Gene at <br>
- * ftp://ftp.ncbi.nlm.nih.gov/gene/GeneRIF/generifs_basic.gz<br>
- * To use this class, simply call the parse method passing in the name of the local copy of the
- * generifs_basic. The returned Iterator will provide GeneRIF objects - one for each line of the
- * file. <br>
- *<br>
- * Changes:<br>
- * March, 2010: Modified to use the FileUtil.getLineIterator() method
+ * A parser for processing the generifs_basic file available via FTP from the Entrez Gene FTP site:
+ * ftp://ftp.ncbi.nlm.nih.gov/gene/GeneRIF/generifs_basic.gz
  * 
- * @author Philip V. Ogren
  * @author Bill Baumgartner
  * 
  */
-public class GenerifsBasicFileParser implements Iterator<GeneRIF> {
+public class GenerifsBasicFileParser extends LineFileParser<GeneRIF> {
 
 	public static final String DATE_FORMAT_STRING = "yyyy-MM-dd HH:mm";
 	private static final String COMMENT_INDICATOR = StringConstants.POUND;
-	private final Iterator<String> fileLinesIterator;
 
 	/**
 	 * The constructor is private to force the user to use the parse method.
@@ -54,40 +44,17 @@ public class GenerifsBasicFileParser implements Iterator<GeneRIF> {
 	 * @param generifsBasicFile
 	 * @throws FileNotFoundException
 	 */
-	private GenerifsBasicFileParser(File generifsBasicFile) throws IOException {
-		fileLinesIterator = FileLoaderUtil.getLineIterator(generifsBasicFile, COMMENT_INDICATOR);
-	}
-
-	/**
-	 * @param fileName
-	 *            The local file name of the entrez generif file download:
-	 *            ftp://ftp.ncbi.nlm.nih.gov/gene/GeneRIF/generifs_basic.gz
-	 * @throws IOException
-	 * @return an Iterator of GeneRIF objects - one for each line of the file
-	 */
-
-	public static Iterator<GeneRIF> parse(File generifsBasicFile) throws IOException {
-		return new GenerifsBasicFileParser(generifsBasicFile);
+	public GenerifsBasicFileParser(File generifsBasicFile) throws IOException {
+		super(generifsBasicFile, COMMENT_INDICATOR);
 	}
 
 	@Override
-	public boolean hasNext() {
-		return fileLinesIterator.hasNext();
-	}
-
-	@Override
-	public GeneRIF next() {
-		String line = fileLinesIterator.next();
+	protected GeneRIF parseFileDataFromLine(String line) {
 		try {
 			return extractFromGenerifsBasicFileLine(line);
 		} catch (ParseException e) {
-			throw new IllegalArgumentException(String.format("Unable to parse date for generif: %s", line));
+			throw new RuntimeException(String.format("Error occurred while parsing GeneRIF from line %s", line), e);
 		}
-	}
-
-	@Override
-	public void remove() {
-		throw new UnsupportedOperationException("The remove() method is not supported for this Iterator.");
 	}
 
 	/**

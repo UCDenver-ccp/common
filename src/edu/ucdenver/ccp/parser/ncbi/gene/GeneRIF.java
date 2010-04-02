@@ -1,28 +1,19 @@
-/**
- *  Authors:  Philip V. Ogren
- *  Created: September, 2004
- *  Description:  This class represents a single generif.  It is based on code 
- *   previously called MedlineGrif and then later on a version that was in the
- *   GeneRIF Annotator source code.  
- *  Todo: having a public constructor seems weird.  For public consumers, these
- *  GeneRIFs should be 1) retrieved from a database and 2) immutable.
- *  Changes:
- *
- */
-
 package edu.ucdenver.ccp.parser.ncbi.gene;
-
-/**
- * Represents a GeneRIF object. A single GeneRIF object corresponds to a single line in the generifs_basic file downloadable from Entrez gene at:
- * ftp://ftp.ncbi.nlm.nih.gov/gene/GeneRIF/generifs_basic.gz
- * 
- * 
- */
 
 import java.util.Arrays;
 import java.util.Date;
 
-public class GeneRIF {
+import edu.ucdenver.ccp.parser.LineFileData;
+
+/**
+ * Represents a GeneRIF object. A single GeneRIF object corresponds to a single line in the
+ * generifs_basic file downloadable from Entrez gene at:
+ * ftp://ftp.ncbi.nlm.nih.gov/gene/GeneRIF/generifs_basic.gz
+ * 
+ * @author Philip V. Ogren
+ * @author Bill Baumgartner
+ */
+public class GeneRIF implements LineFileData {
 
 	private int id = -1;
 

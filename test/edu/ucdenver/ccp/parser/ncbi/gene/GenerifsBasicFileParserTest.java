@@ -17,9 +17,10 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import edu.ucdenver.ccp.util.collections.CollectionsUtil;
+import edu.ucdenver.ccp.util.test.DefaultTestCase;
 import edu.ucdenver.ccp.util.test.TestUtil;
 
-public class GenerifsBasicFileParserTest {
+public class GenerifsBasicFileParserTest extends DefaultTestCase {
 
 	@Rule
 	public TemporaryFolder folder = new TemporaryFolder();
@@ -66,7 +67,7 @@ public class GenerifsBasicFileParserTest {
 
 	@Test
 	public void testParse() throws Exception {
-		Iterator<GeneRIF> generifIter = GenerifsBasicFileParser.parse(generifsBasicFile);
+		Iterator<GeneRIF> generifIter = new GenerifsBasicFileParser(generifsBasicFile);
 		assertTrue(String.format("Should be 1st of two GeneRIFS."), generifIter.hasNext());
 		checkGeneRif(getExpectedGeneRif1(), generifIter.next());
 		assertTrue(String.format("Should be 2nd of two GeneRIFS."), generifIter.hasNext());
@@ -84,9 +85,9 @@ public class GenerifsBasicFileParserTest {
 		assertEquals("Default ID should be -1.", -1, expectedGeneRif.getID());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = RuntimeException.class)
 	public void testParseWhenInvalidDateExists() throws Exception {
-		Iterator<GeneRIF> generifIter = GenerifsBasicFileParser.parse(generifsBasicFileWithInvalidDateFormat);
+		Iterator<GeneRIF> generifIter = new GenerifsBasicFileParser(generifsBasicFileWithInvalidDateFormat);
 		assertTrue(generifIter.hasNext());
 		GeneRIF g = generifIter.next();
 		System.out.println(g.getTimeStamp());
@@ -94,7 +95,7 @@ public class GenerifsBasicFileParserTest {
 
 	@Test(expected = UnsupportedOperationException.class)
 	public void testUnsupportedOperationExceptionWhenCallingRemove() throws Exception {
-		Iterator<GeneRIF> generifIter = GenerifsBasicFileParser.parse(generifsBasicFileWithInvalidDateFormat);
+		Iterator<GeneRIF> generifIter = new GenerifsBasicFileParser(generifsBasicFileWithInvalidDateFormat);
 		generifIter.remove();
 	}
 
