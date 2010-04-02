@@ -85,9 +85,9 @@ public class FileLoaderUtil {
 	 * @return
 	 * @throws ArrayIndexOutOfBoundsException
 	 */
-	private static String[] getColumnsFromLine(String line, String delimiter, int... columnIndexes)
+	public static String[] getColumnsFromLine(String line, String delimiter, int... columnIndexes)
 			throws ArrayIndexOutOfBoundsException {
-		if (delimiter == null) {
+		if (delimiter == null || columnIndexes == null || columnIndexes.length == 0) {
 			return new String[] { line };
 		} else {
 			String[] outputColumns = new String[columnIndexes.length];
@@ -255,6 +255,10 @@ public class FileLoaderUtil {
 	public static Iterator<String> getLineIterator(final File inputFile, final String commentIndicator)
 			throws IOException {
 		return getLineIterator(inputFile, DEFAULT_ENCODING, commentIndicator);
+	}
+
+	public static Iterator<String> getLineIterator(final File inputFile) throws IOException {
+		return getLineIterator(inputFile, DEFAULT_ENCODING, null);
 	}
 
 }
