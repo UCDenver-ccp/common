@@ -7,14 +7,17 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.text.ParseException;
 import java.util.Iterator;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+
+import edu.ucdenver.ccp.util.collections.CollectionsUtil;
+import edu.ucdenver.ccp.util.test.TestUtil;
 
 public class GenerifsBasicFileParserTest {
 
@@ -31,23 +34,21 @@ public class GenerifsBasicFileParserTest {
 	}
 
 	private void populateSampleGenerifsBasicFileWithInvalidDateFormat() throws IOException {
-		generifsBasicFileWithInvalidDateFormat = folder.newFile("generifs_basic_with_invalid_date");
-		PrintStream ps = new PrintStream(generifsBasicFileWithInvalidDateFormat);
-		ps.println("#Tax ID\tGene ID\tPubMed ID (PMID) list\tlast update timestamp\tGeneRIF text");
-		ps.println("9606\t7040\t12858451,1234567\t03-13-2008 \tObservational study of gene-disease.");
-		ps.close();
+		List<String> lines = CollectionsUtil.createList(
+				"#Tax ID\tGene ID\tPubMed ID (PMID) list\tlast update timestamp\tGeneRIF text",
+				"9606\t7040\t12858451,1234567\t03-13-2008 \tObservational study of gene-disease.");
+		generifsBasicFileWithInvalidDateFormat = TestUtil.populateTestFile(folder, "gb_with_invalid_date", lines);
 	}
 
 	private void populateSampleGenerifsBasicFile() throws IOException {
-		generifsBasicFile = folder.newFile("generifs_basic");
-		PrintStream ps = new PrintStream(generifsBasicFile);
-		ps.println("#Tax ID\tGene ID\tPubMed ID (PMID) list\tlast update timestamp\tGeneRIF text");
-		ps.println("34\t4126706\t16689796\t2010-01-21 00:00\tData demonstrate that MrpC binds to "
-				+ "at least eight sites in the upstream region of its promoter, and suggest a mechanism "
-				+ "by which MrpC and FruA are regulated during the M. xanthus life cycle [MrpC]");
-		ps.println("9606\t7040\t12858451,1234567\t2008-03-13 08:51\tObservational study of gene-disease "
-				+ "association. (HuGE Navigator)");
-		ps.close();
+		List<String> lines = CollectionsUtil.createList(
+				"#Tax ID\tGene ID\tPubMed ID (PMID) list\tlast update timestamp\tGeneRIF text",
+				"34\t4126706\t16689796\t2010-01-21 00:00\tData demonstrate that MrpC binds to "
+						+ "at least eight sites in the upstream region of its promoter, and suggest a mechanism "
+						+ "by which MrpC and FruA are regulated during the M. xanthus life cycle [MrpC]",
+				"9606\t7040\t12858451,1234567\t2008-03-13 08:51\tObservational study of gene-disease "
+						+ "association. (HuGE Navigator)");
+		generifsBasicFile = TestUtil.populateTestFile(folder, "generifs_basic", lines);
 	}
 
 	private GeneRIF getExpectedGeneRif1() throws ParseException {
