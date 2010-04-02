@@ -1,6 +1,5 @@
 package edu.ucdenver.ccp.util.lucene;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
@@ -17,8 +16,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-
-import com.sun.corba.se.spi.legacy.connection.GetEndPointInfoAgainException;
 
 import edu.ucdenver.ccp.util.collections.CollectionsUtil;
 
@@ -130,7 +127,7 @@ public class LuceneUtilTest {
 		validateEmployeeIndex(sampleEmployeeIndexDirectory, expectedEmployeeList);
 	}
 
-	private class EmployeeDocumentFeeder extends DocumentFeeder {
+	private static class EmployeeDocumentFeeder extends DocumentFeeder {
 
 		private final Iterator<Employee> employeeIter;
 		private final EmployeeDocumentBuilder builder = new EmployeeDocumentBuilder();
@@ -157,7 +154,7 @@ public class LuceneUtilTest {
 
 	}
 
-	private class Employee {
+	private static class Employee {
 		private final int uniqueID;
 		private final String name;
 		private final String department;
@@ -183,7 +180,7 @@ public class LuceneUtilTest {
 
 	}
 
-	private class EmployeeDocumentBuilder {
+	private static class EmployeeDocumentBuilder {
 		static final String ID_FIELD = "id";
 		static final String NAME_FIELD = "name";
 		static final String DEPARTMENT_FIELD = "department";
