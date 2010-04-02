@@ -22,9 +22,6 @@ import edu.ucdenver.ccp.util.test.TestUtil;
 
 public class GenerifsBasicFileParserTest extends DefaultTestCase {
 
-	@Rule
-	public TemporaryFolder folder = new TemporaryFolder();
-
 	private File generifsBasicFile;
 	private File generifsBasicFileWithInvalidDateFormat;
 
