@@ -12,9 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 
 import edu.ucdenver.ccp.util.collections.CollectionsUtil;
 import edu.ucdenver.ccp.util.test.DefaultTestCase;
