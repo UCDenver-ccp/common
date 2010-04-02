@@ -3,6 +3,7 @@ package edu.ucdenver.ccp.util.exception.runtime;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("serial")
 public class MultipleFailuresException extends RuntimeException {
 
 	private final String message;

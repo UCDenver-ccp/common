@@ -2,6 +2,7 @@ package edu.ucdenver.ccp.util.exception;
 
 import java.io.IOException;
 
+@SuppressWarnings("serial")
 public class FileProcessingException extends IOException {
 
 	private final int errorLineNumber;
