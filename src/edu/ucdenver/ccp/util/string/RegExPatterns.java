@@ -24,6 +24,11 @@ public class RegExPatterns {
 	 */
 	public static final String TAB = "\\t";
 
+	/**
+	 * For matching a method name, e.g. getText() or getId()
+	 */
+	public static final String GETTER_METHOD_NAME_PATTERN = "^get[A-Z]";
+
 	private RegExPatterns() {
 		// this class should not be instantiated
 	}
