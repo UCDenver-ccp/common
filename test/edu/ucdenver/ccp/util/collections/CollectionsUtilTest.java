@@ -69,5 +69,11 @@ public class CollectionsUtilTest {
 		assertEquals(String.format("Lossy conversion from array to set."), expectedSet, CollectionsUtil
 				.array2Set(new String[] { "1", "2", "3", "3", "3", "2" }));
 	}
+	
+	@Test
+	public void testCreateZeroBasedSequence() throws Exception {
+		int[] expected = new int[] {0,1,2,3,4,5,6,7};
+		assertArrayEquals("Should have 8 sequential members.", expected, CollectionsUtil.createZeroBasedSequence(8));
+	}
 
 }
