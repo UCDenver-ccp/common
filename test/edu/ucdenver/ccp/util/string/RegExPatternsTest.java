@@ -71,6 +71,7 @@ public class RegExPatternsTest {
 		assertTrue(matchesPartialInput("getText", GETTER_METHOD_NAME_PATTERN));
 		assertTrue(matchesPartialInput("getID", GETTER_METHOD_NAME_PATTERN));
 		assertFalse(matchesPartialInput("getter", GETTER_METHOD_NAME_PATTERN));
+		assertFalse(matchesPartialInput("abcText", GETTER_METHOD_NAME_PATTERN));
 	}
 
 	private boolean matchesPartialInput(String text, String pattern) {
