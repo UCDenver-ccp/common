@@ -11,6 +11,8 @@ import java.util.NoSuchElementException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.LineIterator;
 
+import edu.ucdenver.ccp.util.collections.CollectionsUtil;
+
 public class FileLoaderUtil {
 
 	private static final String FILE_ENCODING_PROPERTY = "file.encoding";
@@ -43,7 +45,9 @@ public class FileLoaderUtil {
 	/**
 	 * Returns a List<String[]> containing the column values for the input file. One String[] per
 	 * line of the file. If you want the entire line, set the delimiter to be null. If there is a
-	 * delimiter specified, you must specify at least one column index to return.
+	 * delimiter specified, you must specify at least one column index to return. TODO: track the
+	 * number of columns that are returned. If there is a line with a different number of columns
+	 * than expected, throw an exception.
 	 * 
 	 * @param inputFile
 	 * @param encoding
@@ -87,11 +91,14 @@ public class FileLoaderUtil {
 	 */
 	public static String[] getColumnsFromLine(String line, String delimiter, int... columnIndexes)
 			throws ArrayIndexOutOfBoundsException {
-		if (delimiter == null || columnIndexes == null || columnIndexes.length == 0) {
+		if (delimiter == null) {
 			return new String[] { line };
 		} else {
-			String[] outputColumns = new String[columnIndexes.length];
 			String[] lineTokens = line.split(delimiter);
+			if (columnIndexes == null || columnIndexes.length == 0) {
+				columnIndexes = CollectionsUtil.createZeroBasedSequence(lineTokens.length);
+			}
+			String[] outputColumns = new String[columnIndexes.length];
 			int outputIndex = 0;
 			for (int columnIndex : columnIndexes) {
 				ensureColumnIndexIsValid(columnIndex, line, lineTokens);
@@ -100,7 +107,7 @@ public class FileLoaderUtil {
 			return outputColumns;
 		}
 	}
-
+	
 	/**
 	 * Returns a List<String> containing the contents of the requested column in the input file,
 	 * assuming the file contains columns delimited by the delimiter String.
