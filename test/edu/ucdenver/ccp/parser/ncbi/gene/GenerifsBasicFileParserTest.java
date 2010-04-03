@@ -70,14 +70,8 @@ public class GenerifsBasicFileParserTest extends DefaultTestCase {
 		assertFalse(generifIter.hasNext());
 	}
 
-	private void checkGeneRif(GeneRIF expectedGeneRif, GeneRIF observedGeneRif) {
-		assertEquals("Taxonomy IDs must be equal.", expectedGeneRif.getTaxID(), observedGeneRif.getTaxID());
-		assertEquals("Entrez Gene IDs must be equal.", expectedGeneRif.getEntrezID(), observedGeneRif.getEntrezID());
-		assertArrayEquals("PubMed IDs must be equal.", expectedGeneRif.getPMIDs(), observedGeneRif.getPMIDs());
-		assertEquals("Dates must be equal.", expectedGeneRif.getTimeStamp(), observedGeneRif.getTimeStamp());
-		assertEquals("Texts must be equal.", expectedGeneRif.getText(), observedGeneRif.getText());
-		assertEquals("Ids must be equal.", expectedGeneRif.getID(), observedGeneRif.getID());
-		assertEquals("Default ID should be -1.", -1, expectedGeneRif.getID());
+	private void checkGeneRif(GeneRIF expectedGeneRif, GeneRIF observedGeneRif) throws Exception {
+		TestUtil.conductBeanComparison(expectedGeneRif, observedGeneRif);
 	}
 
 	@Test(expected = RuntimeException.class)
