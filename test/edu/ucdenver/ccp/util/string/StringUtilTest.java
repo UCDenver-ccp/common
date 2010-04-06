@@ -1,5 +1,6 @@
 package edu.ucdenver.ccp.util.string;
 
+import static edu.ucdenver.ccp.util.string.RegExPatterns.getNDigitsPattern;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
@@ -65,5 +66,16 @@ public class StringUtilTest {
 	public void testReplaceSuffix_ValidInput() throws Exception {
 		assertEquals("Suffix should be replaced with .tar", "myTarball.tar", StringUtil.replaceSuffix("myTarball.tgz",
 				".tgz", ".tar"));
+	}
+
+	@Test
+	public void testStartsWithRegex() throws Exception {
+		assertTrue(StringUtil.startsWithRegex("2010-04-06", RegExPatterns.getNDigitsPattern(4)));
+		assertTrue(StringUtil.startsWithRegex("2010-04-06", RegExPatterns.getNDigitsPattern(3)));
+		assertTrue(StringUtil.startsWithRegex("2010-04-06", RegExPatterns.getNDigitsPattern(2)));
+		assertTrue(StringUtil.startsWithRegex("2010-04-06", RegExPatterns.getNDigitsPattern(1)));
+		assertTrue(StringUtil.startsWithRegex("2010-04-06", "^" + RegExPatterns.getNDigitsPattern(4)));
+		
+		assertFalse(StringUtil.startsWithRegex("2010-04-06", RegExPatterns.getNDigitsPattern(5)));
 	}
 }

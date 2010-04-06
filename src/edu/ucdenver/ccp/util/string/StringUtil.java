@@ -3,6 +3,8 @@ package edu.ucdenver.ccp.util.string;
 import static edu.ucdenver.ccp.util.string.RegExPatterns.HAS_NUMBERS_ONLY_OPT_NEG;
 import static edu.ucdenver.ccp.util.string.RegExPatterns.HAS_NUMBERS_ONLY_OPT_NEG_ZERO_START;
 
+import java.util.regex.Pattern;
+
 public class StringUtil {
 
 	/**
@@ -46,6 +48,22 @@ public class StringUtil {
 	 */
 	public static String replaceSuffix(String inputStr, String suffix, String replacementSuffix) {
 		return removeSuffix(inputStr, suffix) + replacementSuffix;
+	}
+
+	/**
+	 * Returns true if the beginning of the inputStr matches the regular expression, false
+	 * otherwise.
+	 * 
+	 * @param inputStr
+	 * @param regexStr
+	 * @return
+	 */
+	public static boolean startsWithRegex(String inputStr, String regexStr) {
+		if (!regexStr.startsWith("^")) {
+			regexStr = "^" + regexStr;
+		}
+		Pattern p = Pattern.compile(regexStr);
+		return p.matcher(inputStr).find();
 	}
 
 }
