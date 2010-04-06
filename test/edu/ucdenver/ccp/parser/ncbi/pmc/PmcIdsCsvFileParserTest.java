@@ -1,5 +1,6 @@
 package edu.ucdenver.ccp.parser.ncbi.pmc;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -18,10 +19,14 @@ import edu.ucdenver.ccp.util.test.TestUtil;
 public class PmcIdsCsvFileParserTest extends DefaultTestCase {
 
 	private File pmcIdsCsvFile;
+	private File pmcIdsCsvFile_WithInvalidHeader;
+	private File pmcIdsCsvFile_WithInvalidRow;
 
 	@Before
 	public void setUp() throws Exception {
 		populateSamplePmcIdsCsvFile();
+		populateSamplePmcIdsCsvFile_WithInvalidHeader();
+		populateSamplePmcIdsCsvFile_WithInvalidRow();
 	}
 
 	private void populateSamplePmcIdsCsvFile() throws IOException {
@@ -30,6 +35,29 @@ public class PmcIdsCsvFileParserTest extends DefaultTestCase {
 				"Breast Cancer Res,1465-5411,1465-542X,2000,3,1,55,,PMC13900,11250746,,live",
 				"Breast Cancer Res,1465-5411,1465-542X,2000,3,1,61,,PMC13901,11250747,,live");
 		pmcIdsCsvFile = TestUtil.populateTestFile(folder, "PMC-ids.csv", lines);
+	}
+
+	/**
+	 * The header is not as expected
+	 * 
+	 * @throws IOException
+	 */
+	private void populateSamplePmcIdsCsvFile_WithInvalidHeader() throws IOException {
+		List<String> lines = CollectionsUtil
+				.createList("#Journal Title,ISSN,eISSN,Year,Volume,Issue,Page,DOI,PMCID,PMID,Manuscript Id,Release Date");
+		pmcIdsCsvFile_WithInvalidHeader = TestUtil.populateTestFile(folder, "PMC-ids.csv.invalid_header", lines);
+	}
+
+	/**
+	 * Record 1 is missing a column
+	 * 
+	 * @throws IOException
+	 */
+	private void populateSamplePmcIdsCsvFile_WithInvalidRow() throws IOException {
+		List<String> lines = CollectionsUtil.createList(
+				"Journal Title,ISSN,eISSN,Year,Volume,Issue,Page,DOI,PMCID,PMID,Manuscript Id,Release Date",
+				"Breast Cancer Res,1465-5411,1465-542X,2000,3,1,55,,PMC13900,11250746,live");
+		pmcIdsCsvFile_WithInvalidRow = TestUtil.populateTestFile(folder, "PMC-ids.csv.invalid_row", lines);
 	}
 
 	private PmcIdsCsvFileData getExpectedRecord1() {
@@ -54,6 +82,17 @@ public class PmcIdsCsvFileParserTest extends DefaultTestCase {
 
 	private void checkPmcIdsCsvFileData(PmcIdsCsvFileData expected, PmcIdsCsvFileData observed) throws Exception {
 		TestUtil.conductBeanComparison(expected, observed);
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void testParse_WithInvalidHeader() throws Exception {
+		new PmcIdsCsvFileParser(pmcIdsCsvFile_WithInvalidHeader);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testParse_WithInvalidRow() throws Exception {
+		Iterator<PmcIdsCsvFileData> pmdIdsIter = new PmcIdsCsvFileParser(pmcIdsCsvFile_WithInvalidRow);
+		pmdIdsIter.hasNext();
 	}
 
 }

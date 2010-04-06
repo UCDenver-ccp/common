@@ -18,10 +18,14 @@ import edu.ucdenver.ccp.util.test.TestUtil;
 public class PmcFileListTxtFileParserTest extends DefaultTestCase {
 
 	private File pmcFileListTxtFile;
+	private File pmcFileListTxtFile_WithInvalidHeader;
+	private File pmcFileListTxtFile_WithInvalidRow;
 
 	@Before
 	public void setUp() throws Exception {
 		populateSamplePmcFileListTxtFile();
+		populateSamplePmcFileListTxtFile_InvalidHeader();
+		populateSamplePmcFileListTxtFile_InvalidRow();
 	}
 
 	private void populateSamplePmcFileListTxtFile() throws IOException {
@@ -31,6 +35,29 @@ public class PmcFileListTxtFileParserTest extends DefaultTestCase {
 						"d1/c3/Nucleic_Acids_Res-10-12-320743.tar.gz\tNucleic Acids Res. 1982 Jun 25; 10(12):3681-3691\tPMC320743",
 						"15/9d/Bioinorg_Chem_Appl-1-2-2267055.tar.gz\tBioinorg Chem Appl. 2003; 1(2):123-139\tPMC2267055");
 		pmcFileListTxtFile = TestUtil.populateTestFile(folder, "file_list.txt", lines);
+	}
+
+	/**
+	 * The header is not as expected
+	 * 
+	 * @throws IOException
+	 */
+	private void populateSamplePmcFileListTxtFile_InvalidHeader() throws IOException {
+		List<String> lines = CollectionsUtil.createList("This is an invalid header.");
+		pmcFileListTxtFile_WithInvalidHeader = TestUtil.populateTestFile(folder, "file_list.txt.invalid_header", lines);
+	}
+
+	/**
+	 * One row contains an extra column
+	 * 
+	 * @throws IOException
+	 */
+	private void populateSamplePmcFileListTxtFile_InvalidRow() throws IOException {
+		List<String> lines = CollectionsUtil
+				.createList(
+						"2010-04-01 21:40:15",
+						"d1/c3/Nucleic_Acids_Res-10-12-320743.tar.gz\tNucleic Acids Res. 1982 Jun 25; 10(12):3681-3691\tPMC320743\textra column");
+		pmcFileListTxtFile_WithInvalidRow = TestUtil.populateTestFile(folder, "file_list.txt_invalid_row", lines);
 	}
 
 	private PmcFileListTxtFileData getExpectedRecord1() {
@@ -56,6 +83,18 @@ public class PmcFileListTxtFileParserTest extends DefaultTestCase {
 	private void checkPmcFileListTxtFileData(PmcFileListTxtFileData expected, PmcFileListTxtFileData observed)
 			throws Exception {
 		TestUtil.conductBeanComparison(expected, observed);
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void testParse_WithInvalidHeader() throws Exception {
+		new PmcFileListTxtFileParser(pmcFileListTxtFile_WithInvalidHeader);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testParse_WithInvalidRow() throws Exception {
+		Iterator<PmcFileListTxtFileData> pmcFileListTxtIter = new PmcFileListTxtFileParser(
+				pmcFileListTxtFile_WithInvalidRow);
+		pmcFileListTxtIter.hasNext();
 	}
 
 }
