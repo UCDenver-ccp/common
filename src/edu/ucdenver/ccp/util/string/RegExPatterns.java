@@ -32,4 +32,15 @@ public class RegExPatterns {
 	private RegExPatterns() {
 		// this class should not be instantiated
 	}
+
+	/**
+	 * Returns a pattern for matching n consecutive digits
+	 * 
+	 * @param n
+	 * @return
+	 */
+	public static final String getNDigitsPattern(int n) {
+		return String.format("\\d{%d}", n);
+	}
+
 }

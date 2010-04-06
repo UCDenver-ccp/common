@@ -4,6 +4,7 @@ import static edu.ucdenver.ccp.util.string.RegExPatterns.GETTER_METHOD_NAME_PATT
 import static edu.ucdenver.ccp.util.string.RegExPatterns.HAS_NUMBERS_ONLY;
 import static edu.ucdenver.ccp.util.string.RegExPatterns.HAS_NUMBERS_ONLY_OPT_NEG;
 import static edu.ucdenver.ccp.util.string.RegExPatterns.HAS_NUMBERS_ONLY_OPT_NEG_ZERO_START;
+import static edu.ucdenver.ccp.util.string.RegExPatterns.getNDigitsPattern;
 import static org.junit.Assert.*;
 
 import java.util.regex.Pattern;
@@ -77,6 +78,20 @@ public class RegExPatternsTest {
 	private boolean matchesPartialInput(String text, String pattern) {
 		Pattern p = Pattern.compile(pattern);
 		return p.matcher(text).find();
+	}
+
+	@Test
+	public void testgetNDigitsPattern() throws Exception {
+		assertTrue(matchesEntireInput("2010", getNDigitsPattern(4)));
+		assertFalse(matchesEntireInput("2010", getNDigitsPattern(0)));
+		assertFalse(matchesEntireInput("2010", getNDigitsPattern(3)));
+		assertFalse(matchesEntireInput("2010", getNDigitsPattern(5)));
+
+		assertTrue(matchesPartialInput("abc def 546 fjg", getNDigitsPattern(3)));
+		assertTrue(matchesPartialInput("abc def 546 fjg", getNDigitsPattern(2)));
+		assertTrue(matchesPartialInput("abc def 546 fjg", getNDigitsPattern(1)));
+		assertTrue(matchesPartialInput("abc def 546 fjg", getNDigitsPattern(0)));
+		assertFalse(matchesPartialInput("abc def 546 fjg", getNDigitsPattern(4)));
 	}
 
 }
