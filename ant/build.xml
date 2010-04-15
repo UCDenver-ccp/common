@@ -1,7 +1,6 @@
 <project name="ccp-common" default="build" basedir="..">
 
 	<property name="project.name" value="${ant.project.name}" />
-	<property name="jar.name" value="${project.name}.jar" />
 	<property name="test-resources.jar.name" value="${project.name}-test-resources.jar" />
 	<property name="code-analysis.dir" value=".code-analysis" />
 
@@ -21,14 +20,18 @@
 	<property name="svnjavahl.jar" value="${ant.external.lib.dir}/svnjavahl.jar" />
 	<property name="svnant.jar" value="${ant.external.lib.dir}/svnant-1.3.0.jar" />
 	<property name="svnClientAdapter.jar" value="${ant.external.lib.dir}/svnClientAdapter.jar" />
-
+	<property name="svnkit.jar" value="${ant.external.lib.dir}/svnkit.jar" />
+	
+	<!-- Import SVN user information - NOTE: PLEASE DO NOT REDISTRIBUTE THE build.properties FILE -->
+	<property file="ant/build.properties"/>
+	
 	<path id="svn.classpath">
 		<pathelement location="${svnjavahl.jar}" />
 		<pathelement location="${svnant.jar}" />
 		<pathelement location="${svnClientAdapter.jar}" />
+		<pathelement location="${svnkit.jar}" />
 	</path>
 	<typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="svn.classpath" />
-
 
 	<target name="init">
 		<antcall target="package-test-resources" />
@@ -62,7 +65,6 @@
 
 	<target name="cleanup-postbuild">
 		<delete file="${lib-test.dir}/${test-resources.jar.name}" />
-		<antcall target="clean.code.analysis.tools.dir" />
 	</target>
 
 	<!-- Build and run unit tests only (no functional tests) -->
@@ -103,7 +105,10 @@
 	<target name="package-project" depends="compile" description="Packages the files into a JAR file">
 		<mkdir dir="${distribution.dir}" />
 		<echo message="Packaging the project..." />
-		<jar destFile="${distribution.dir}/${jar.name}">
+		<svn username="${svn.build.user}" password="${svn.build.passwd}" svnkit="true">
+			<wcversion path="${basedir}"/>
+		</svn>
+		<jar destFile="${distribution.dir}/${project.name}-${committed.max-with-flags}.jar">
 			<fileset dir="${classes.dir}">
 				<include name="**/*.*" />
 				<exclude name="**/*Test.*" />
@@ -130,10 +135,20 @@
 	<delete dir="${code-analysis.dir}" />
 </target>
 
-<target name="import.code.analysis.tools">
+	<condition property="needs.code.analysis.tools">
+		<not>
+			<available type="dir" file="${code-analysis.dir}"/>
+		</not>
+	</condition>
+	
+	<target name="test">
+		<echo message="hasdir: ${needs.code.analysis.tools}"/>
+	</target>
+		
+<target name="import.code.analysis.tools" if="needs.code.analysis.tools">
 	<delete dir="${code-analysis.dir}" />
 	<mkdir dir="${code-analysis.dir}" />
-	<svn username="codeqa" password="analyZe">
+	<svn username="${svn.build.user}" password="${svn.build.passwd}" svnkit="true">
 		<checkout url="http://compbio.ucdenver.edu/svn/ccp/codeqa/trunk" revision="HEAD" destPath="${code-analysis.dir}" />
 	</svn>
 </target>
