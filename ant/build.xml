@@ -16,22 +16,22 @@
 	<property name="lib.dir" value="lib" />
 	<property name="lib-test.dir" value="lib-test" />
 
-	<!-- SVN Ant libraries - required for code analysis -->
-	<property name="svnjavahl.jar" value="${ant.external.lib.dir}/svnjavahl.jar" />
-	<property name="svnant.jar" value="${ant.external.lib.dir}/svnant-1.3.0.jar" />
-	<property name="svnClientAdapter.jar" value="${ant.external.lib.dir}/svnClientAdapter.jar" />
-	<property name="svnkit.jar" value="${ant.external.lib.dir}/svnkit.jar" />
-
 	<!-- Import SVN user information - NOTE: PLEASE DO NOT REDISTRIBUTE THE build.properties FILE -->
 	<property file="ant/build.properties" />
 
 	<path id="svn.classpath">
-		<pathelement location="${svnjavahl.jar}" />
-		<pathelement location="${svnant.jar}" />
-		<pathelement location="${svnClientAdapter.jar}" />
-		<pathelement location="${svnkit.jar}" />
+		<fileset dir="${ant.external.lib.dir}">
+			<include name="**/svn*.jar" />
+		</fileset>
 	</path>
 	<typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="svn.classpath" />
+
+	<path id="ant.contrib.classpath">
+		<fileset dir="${ant.external.lib.dir}">
+			<include name="**/ant-contrib*.jar" />
+		</fileset>
+	</path>
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties" classpathref="ant.contrib.classpath" />
 
 	<target name="init">
 		<antcall target="package-test-resources" />
@@ -108,7 +108,9 @@
 		<svn username="${svn.build.user}" password="${svn.build.passwd}" svnkit="true">
 			<wcversion path="${basedir}" />
 		</svn>
-		<jar destFile="${distribution.dir}/${project.name}-${committed.max-with-flags}.jar">
+		<propertyregex property="branch.name" input="${repository.path}" regexp="/([^/]+)$" select="\1" />
+		<echo message="${repository.path}" />
+		<jar destFile="${distribution.dir}/${project.name}-${branch.name}-${committed.max-with-flags}.jar">
 			<fileset dir="${classes.dir}">
 				<include name="**/*.*" />
 				<exclude name="**/*Test.*" />
@@ -129,10 +131,6 @@
 				<![CDATA[<h1>Center for Computational Pharmacology API</h1>]]>
 			</doctitle>
 	</javadoc>
-</target>
-
-<target name="clean.code.analysis.tools.dir">
-	<delete dir="${code-analysis.dir}" />
 </target>
 
 <!-- Sets the needs.code.analysis.tools property of the code-analysis directory is not present -->
