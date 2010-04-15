@@ -21,10 +21,10 @@
 	<property name="svnant.jar" value="${ant.external.lib.dir}/svnant-1.3.0.jar" />
 	<property name="svnClientAdapter.jar" value="${ant.external.lib.dir}/svnClientAdapter.jar" />
 	<property name="svnkit.jar" value="${ant.external.lib.dir}/svnkit.jar" />
-	
+
 	<!-- Import SVN user information - NOTE: PLEASE DO NOT REDISTRIBUTE THE build.properties FILE -->
-	<property file="ant/build.properties"/>
-	
+	<property file="ant/build.properties" />
+
 	<path id="svn.classpath">
 		<pathelement location="${svnjavahl.jar}" />
 		<pathelement location="${svnant.jar}" />
@@ -106,7 +106,7 @@
 		<mkdir dir="${distribution.dir}" />
 		<echo message="Packaging the project..." />
 		<svn username="${svn.build.user}" password="${svn.build.passwd}" svnkit="true">
-			<wcversion path="${basedir}"/>
+			<wcversion path="${basedir}" />
 		</svn>
 		<jar destFile="${distribution.dir}/${project.name}-${committed.max-with-flags}.jar">
 			<fileset dir="${classes.dir}">
@@ -135,16 +135,14 @@
 	<delete dir="${code-analysis.dir}" />
 </target>
 
-	<condition property="needs.code.analysis.tools">
-		<not>
-			<available type="dir" file="${code-analysis.dir}"/>
-		</not>
-	</condition>
-	
-	<target name="test">
-		<echo message="hasdir: ${needs.code.analysis.tools}"/>
-	</target>
-		
+<!-- Sets the needs.code.analysis.tools property of the code-analysis directory is not present -->
+<condition property="needs.code.analysis.tools">
+	<not>
+		<available type="dir" file="${code-analysis.dir}" />
+	</not>
+</condition>
+
+<!-- Imports tools for running tests and code analyses from the codeqa project -->
 <target name="import.code.analysis.tools" if="needs.code.analysis.tools">
 	<delete dir="${code-analysis.dir}" />
 	<mkdir dir="${code-analysis.dir}" />
