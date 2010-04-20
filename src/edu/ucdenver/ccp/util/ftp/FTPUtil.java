@@ -18,17 +18,16 @@ import org.apache.log4j.Logger;
 
 public class FTPUtil {
 	private static final Logger logger = Logger.getLogger(FTPUtil.class);
-	
+
 	public static enum FILE_TYPE {
-		ASCII (FTPClient.ASCII_FILE_TYPE), 
-		BINARY (FTPClient.BINARY_FILE_TYPE);
+		ASCII(FTPClient.ASCII_FILE_TYPE), BINARY(FTPClient.BINARY_FILE_TYPE);
 		private final int type;
-		
+
 		public int type() {
 			return type;
 		}
-		
-		private FILE_TYPE (int type) {
+
+		private FILE_TYPE(int type) {
 			this.type = type;
 		}
 	};
@@ -67,8 +66,8 @@ public class FTPUtil {
 			throws IOException {
 		if (!FTPReply.isPositiveCompletion(ftpClient.getReplyCode())) {
 			closeFtpClient(ftpClient);
-			throw new IOException(String.format("FTP server (%s) refused connection for user:%s password:%s", ftpServer,
-					ftpUsername, ftpPassword));
+			throw new IOException(String.format("FTP server (%s) refused connection for user:%s password:%s",
+					ftpServer, ftpUsername, ftpPassword));
 		}
 	}
 
@@ -97,8 +96,8 @@ public class FTPUtil {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public static void downloadFile(FTPClient ftpClient, String ftpFileName, FTPUtil.FILE_TYPE ftpFileType, File localStorageDirectory)
-			throws FileNotFoundException, IOException {
+	public static void downloadFile(FTPClient ftpClient, String ftpFileName, FTPUtil.FILE_TYPE ftpFileType,
+			File localStorageDirectory) throws FileNotFoundException, IOException {
 		OutputStream localOutputStream = null;
 		try {
 			localOutputStream = new FileOutputStream(localStorageDirectory.getAbsolutePath() + File.separator
@@ -165,8 +164,8 @@ public class FTPUtil {
 	 * @param localStorageDirectory
 	 * @throws IOException
 	 */
-	public static void downloadAllFiles(FTPClient ftpClient, String fileSuffix, FTPUtil.FILE_TYPE fileType, File localStorageDirectory)
-			throws IOException {
+	public static void downloadAllFiles(FTPClient ftpClient, String fileSuffix, FTPUtil.FILE_TYPE fileType,
+			File localStorageDirectory) throws IOException {
 		downloadAllFiles(ftpClient, new HashSet<String>(), fileSuffix, fileType, localStorageDirectory);
 	}
 
@@ -194,7 +193,9 @@ public class FTPUtil {
 	}
 
 	/**
-	 * Downloads all files that are on the FTP server that are not already stored locally in the specified localStorageDirectory.
+	 * Downloads all files that are on the FTP server that are not already stored locally in the
+	 * specified localStorageDirectory.
+	 * 
 	 * @param ftpClient
 	 * @param fileNamesToLeaveOnServer
 	 * @param fileSuffix
@@ -202,13 +203,12 @@ public class FTPUtil {
 	 * @param localStorageDirectory
 	 * @throws IOException
 	 */
-	public static void downloadMissingFiles(FTPClient ftpClient, String fileSuffix,	FTPUtil.FILE_TYPE fileType, File localStorageDirectory) 
-	throws IOException {
+	public static void downloadMissingFiles(FTPClient ftpClient, String fileSuffix, FTPUtil.FILE_TYPE fileType,
+			File localStorageDirectory) throws IOException {
 		Set<String> locallyStoredFileNames = new HashSet<String>(Arrays.asList(localStorageDirectory.list()));
 		downloadAllFiles(ftpClient, locallyStoredFileNames, fileSuffix, fileType, localStorageDirectory);
 	}
-	
-	
+
 	/**
 	 * Returns the list of files available for download in the current FTP directory. If fileSuffix
 	 * is null, all files are returned. Otherwise files that have the specified suffix are returned.
