@@ -16,6 +16,8 @@ import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 import org.apache.log4j.Logger;
 
+import edu.ucdenver.ccp.util.file.FileUtil;
+
 public class FTPUtil {
 	private static final Logger logger = Logger.getLogger(FTPUtil.class);
 
@@ -44,8 +46,58 @@ public class FTPUtil {
 	 */
 	public static FTPClient initializeFtpClient(String ftpServer, String ftpUsername, String ftpPassword)
 			throws SocketException, IOException {
+		FTPClient ftpClient = connect(ftpServer, -1);
+		return login(ftpServer, ftpUsername, ftpPassword, ftpClient);
+	}
+
+	/**
+	 * Initializes a FTPClient to a specific port
+	 * 
+	 * @param ftpServer
+	 * @param port
+	 * @param ftpUsername
+	 * @param ftpPassword
+	 * @return
+	 * @throws SocketException
+	 * @throws IOException
+	 */
+	public static FTPClient initializeFtpClient(String ftpServer, int port, String ftpUsername, String ftpPassword)
+			throws SocketException, IOException {
+		FTPClient ftpClient = connect(ftpServer, port);
+		return login(ftpServer, ftpUsername, ftpPassword, ftpClient);
+	}
+
+	/**
+	 * Makes the FTP connection using the specified port. If port < 0, then the default port is
+	 * used.
+	 * 
+	 * @param ftpServer
+	 * @param port
+	 * @return
+	 * @throws SocketException
+	 * @throws IOException
+	 */
+	private static FTPClient connect(String ftpServer, int port) throws SocketException, IOException {
 		FTPClient ftpClient = new FTPClient();
-		ftpClient.connect(ftpServer);
+		if (port > 0)
+			ftpClient.connect(ftpServer, port);
+		else
+			ftpClient.connect(ftpServer);
+		return ftpClient;
+	}
+
+	/**
+	 * Logs into the specified ftp server using the given username and password pairing.
+	 * 
+	 * @param ftpServer
+	 * @param ftpUsername
+	 * @param ftpPassword
+	 * @param ftpClient
+	 * @return
+	 * @throws IOException
+	 */
+	private static FTPClient login(String ftpServer, String ftpUsername, String ftpPassword, FTPClient ftpClient)
+			throws IOException {
 		ftpClient.login(ftpUsername, ftpPassword);
 		checkFtpConnection(ftpClient, ftpServer, ftpUsername, ftpPassword);
 		logger.info(String.format("Connected to FTP ServeR: %s.", ftpServer));
@@ -207,6 +259,26 @@ public class FTPUtil {
 			File localStorageDirectory) throws IOException {
 		Set<String> locallyStoredFileNames = new HashSet<String>(Arrays.asList(localStorageDirectory.list()));
 		downloadAllFiles(ftpClient, locallyStoredFileNames, fileSuffix, fileType, localStorageDirectory);
+	}
+
+	/**
+	 * Downloads any file that is not already present in the specified local directory from the
+	 * specified FTP server
+	 * 
+	 * @param localStorageDirectory
+	 * @param fileSuffix
+	 * @param fileType
+	 * @param ftpServer
+	 * @param ftpUsername
+	 * @param ftpPassword
+	 * @throws SocketException
+	 * @throws IOException
+	 */
+	public static void syncLocalDirectoryWithFtpDirectory(FTPClient ftpClient, File localStorageDirectory,
+			String fileSuffix, FILE_TYPE fileType) throws SocketException, IOException {
+		FileUtil.validateDirectory(localStorageDirectory);
+		FTPUtil.downloadMissingFiles(ftpClient, fileSuffix, fileType, localStorageDirectory);
+		FTPUtil.closeFtpClient(ftpClient);
 	}
 
 	/**
