@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="lib/ant-1.8.0.jar"/>
 	<classpathentry kind="lib" path="lib/junit-4.8.1.jar"/>
 	<classpathentry kind="lib" path="lib/lucene-core-3.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/MockFtpServer-2.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
