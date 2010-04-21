@@ -42,6 +42,7 @@ public class FTPUtilTest extends DefaultTestCase {
 		FTPClient ftpClient = FTPUtil.initializeFtpClient(FTP_HOST, FTP_PORT, FtpTestUtil.USER_NAME,
 				FtpTestUtil.PASSWORD);
 		FTPUtil.syncLocalDirectoryWithFtpDirectory(ftpClient, localDirectory, null, FILE_TYPE.ASCII);
+		FTPUtil.closeFtpClient(ftpClient);
 		assertEquals(String.format("Should be 6 files in the local directory after syncing directories."), 6,
 				localDirectory.list().length);
 		Set<String> localFileNames = CollectionsUtil.array2Set(localDirectory.list());
@@ -55,6 +56,7 @@ public class FTPUtilTest extends DefaultTestCase {
 		FTPClient ftpClient = FTPUtil.initializeFtpClient(FTP_HOST, FTP_PORT, FtpTestUtil.USER_NAME,
 				FtpTestUtil.PASSWORD);
 		FTPUtil.syncLocalDirectoryWithFtpDirectory(ftpClient, localDirectory, ".txt", FILE_TYPE.ASCII);
+		FTPUtil.closeFtpClient(ftpClient);
 		assertEquals(String.format("Should be 5 files in the local directory after syncing directories."), 5,
 				localDirectory.list().length);
 		Set<String> localFileNames = CollectionsUtil.array2Set(localDirectory.list());

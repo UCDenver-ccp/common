@@ -278,7 +278,6 @@ public class FTPUtil {
 			String fileSuffix, FILE_TYPE fileType) throws SocketException, IOException {
 		FileUtil.validateDirectory(localStorageDirectory);
 		FTPUtil.downloadMissingFiles(ftpClient, fileSuffix, fileType, localStorageDirectory);
-		FTPUtil.closeFtpClient(ftpClient);
 	}
 
 	/**
