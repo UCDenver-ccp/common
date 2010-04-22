@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -44,6 +45,18 @@ public class FileUtilTest {
 		assertNotNull(errorMessage);
 		assertTrue(String.format("Error message should indicate that the input directory does not exist."),
 				errorMessage.startsWith("Directory does not exist"));
+	}
+
+	@Test
+	public void testValidateValidFile() throws Exception {
+		File newFile = folder.newFile("newfile");
+		assertNull("No error message should be returned", FileUtil.isFileValid(newFile));
+	}
+
+	@Test(expected = FileNotFoundException.class)
+	public void testValidateInvalidFile() throws Exception {
+		File newFolder = folder.newFolder("newfolder");
+		FileUtil.validateFile(newFolder);
 	}
 
 }

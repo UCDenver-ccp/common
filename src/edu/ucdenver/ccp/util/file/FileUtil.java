@@ -49,6 +49,38 @@ public class FileUtil {
 	}
 
 	/**
+	 * Simple utility method that checks whether the input file exists (and is a file). Returns an
+	 * error message if the file does not exist or is not a file (i.e. it's a directory instead).
+	 * Returns null if the directory exists as expected.
+	 * 
+	 * @param directory
+	 * @return
+	 */
+	public static String isFileValid(File file) {
+		String errorMessage = null;
+		if (!file.exists()) {
+			errorMessage = String.format("File does not exist: %s", file.getAbsolutePath());
+		} else if (!file.isFile()) {
+			errorMessage = String.format("Input file is not a file: %s", file.getAbsolutePath());
+		}
+		return errorMessage;
+	}
+
+	/**
+	 * Checks to see if the file exists, and if it is truly a file. Throws a FileNotFoundException
+	 * if the input is not a true/existing file.
+	 * 
+	 * @param file
+	 * @throws FileNotFoundException
+	 */
+	public static void validateFile(File file) throws FileNotFoundException {
+		String message = FileUtil.isFileValid(file);
+		if (message != null) {
+			throw new FileNotFoundException(message);
+		}
+	}
+
+	/**
 	 * Creates the specified directory. Throws an IllegalStateException if the directory cannot be
 	 * created.
 	 * 
