@@ -14,7 +14,7 @@ public class MockFtpServer {
 	public static String HOME_DIRECTORY = "/";
 
 	FakeFtpServer server;
-	private UnixFakeFileSystem fs;
+	protected UnixFakeFileSystem fs;
 
 	public MockFtpServer() {
 		server = new FakeFtpServer();
