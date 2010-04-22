@@ -47,4 +47,22 @@ public class PmcFileListTxtFileData implements LineFileData {
 		return pmcAccession;
 	}
 
+	/**
+	 * Returns the directory path to the file represented by this data record.
+	 * 
+	 * @return
+	 */
+	public String getFtpDirectory() {
+		return ftpFilePath.substring(0, ftpFilePath.lastIndexOf('/'));
+	}
+
+	/**
+	 * Returns the file name for the file represented by this data record.
+	 * 
+	 * @return
+	 */
+	public String getFtpFileName() {
+		return ftpFilePath.substring(ftpFilePath.lastIndexOf('/') + 1);
+	}
+
 }

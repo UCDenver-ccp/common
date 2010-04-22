@@ -1,5 +1,6 @@
 package edu.ucdenver.ccp.parser.ncbi.pmc;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -78,6 +79,16 @@ public class PmcFileListTxtFileParserTest extends DefaultTestCase {
 		assertTrue(String.format("Should be 2nd of two pmc id records."), pmcFileListTxtIter.hasNext());
 		checkPmcFileListTxtFileData(getExpectedRecord2(), pmcFileListTxtIter.next());
 		assertFalse(pmcFileListTxtIter.hasNext());
+	}
+
+	@Test
+	public void testDataRecordGetFilePathAndFileNameMethods() throws Exception {
+		Iterator<PmcFileListTxtFileData> pmcFileListTxtIter = new PmcFileListTxtFileParser(pmcFileListTxtFile);
+		PmcFileListTxtFileData dataRecord = pmcFileListTxtIter.next();
+		assertEquals(String.format("Should return just the directory path to the file (not the file name)."), "d1/c3",
+				dataRecord.getFtpDirectory());
+		assertEquals(String.format("Should return just the name of the file (not the directory path)."),
+				"Nucleic_Acids_Res-10-12-320743.tar.gz", dataRecord.getFtpFileName());
 	}
 
 	private void checkPmcFileListTxtFileData(PmcFileListTxtFileData expected, PmcFileListTxtFileData observed)
