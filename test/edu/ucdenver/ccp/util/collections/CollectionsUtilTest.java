@@ -1,12 +1,14 @@
 package edu.ucdenver.ccp.util.collections;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.Test;
@@ -69,11 +71,21 @@ public class CollectionsUtilTest {
 		assertEquals(String.format("Lossy conversion from array to set."), expectedSet, CollectionsUtil
 				.array2Set(new String[] { "1", "2", "3", "3", "3", "2" }));
 	}
-	
+
 	@Test
 	public void testCreateZeroBasedSequence() throws Exception {
-		int[] expected = new int[] {0,1,2,3,4,5,6,7};
+		int[] expected = new int[] { 0, 1, 2, 3, 4, 5, 6, 7 };
 		assertArrayEquals("Should have 8 sequential members.", expected, CollectionsUtil.createZeroBasedSequence(8));
+	}
+
+	@Test
+	public void testCreateMap() throws Exception {
+		Map<String, String> map = CollectionsUtil.createMap("key1", "value1", "key2", "value2", "key3", "value3");
+		Map<String, String> expectedMap = new HashMap<String, String>();
+		expectedMap.put("key1", "value1");
+		expectedMap.put("key2", "value2");
+		expectedMap.put("key3", "value3");
+		assertEquals(String.format("Maps should be identical."), expectedMap, map);
 	}
 
 }

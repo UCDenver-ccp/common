@@ -2,8 +2,10 @@ package edu.ucdenver.ccp.util.collections;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class CollectionsUtil {
@@ -45,6 +47,23 @@ public class CollectionsUtil {
 	 */
 	public static <T> Set<T> array2Set(T[] array) {
 		return new HashSet<T>(Arrays.asList(array));
+	}
+
+	/**
+	 * Returns a mapping based on the input key/value pairings. Keys and Values must be the same
+	 * type, and there must be an even number of input parameters, i.e. there must be a value for
+	 * every key.
+	 * 
+	 * @param <T>
+	 * @param mapKeyValuePairs
+	 * @return
+	 */
+	public static <T> Map<T, T> createMap(T... mapKeyValuePairs) {
+		Map<T, T> map = new HashMap<T, T>();
+		for (int i = 0; i < mapKeyValuePairs.length; i += 2) {
+			map.put(mapKeyValuePairs[i], mapKeyValuePairs[i + 1]);
+		}
+		return map;
 	}
 
 	/**
