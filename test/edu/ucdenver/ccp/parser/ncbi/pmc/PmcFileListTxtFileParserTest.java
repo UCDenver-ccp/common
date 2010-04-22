@@ -1,6 +1,6 @@
 package edu.ucdenver.ccp.parser.ncbi.pmc;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -106,6 +107,15 @@ public class PmcFileListTxtFileParserTest extends DefaultTestCase {
 		Iterator<PmcFileListTxtFileData> pmcFileListTxtIter = new PmcFileListTxtFileParser(
 				pmcFileListTxtFile_WithInvalidRow);
 		pmcFileListTxtIter.hasNext();
+	}
+
+	@Test
+	public void testGetPmcID2FilenameMap() throws Exception {
+		Map<String, String> pmcid2FilenameMap = PmcFileListTxtFileParser.getPmcId2FilenameMap(pmcFileListTxtFile);
+		Map<String, String> expectedPmcid2FilenameMap = CollectionsUtil.createMap("PMC320743",
+				"Nucleic_Acids_Res-10-12-320743.tar.gz", "PMC2267055", "Bioinorg_Chem_Appl-1-2-2267055.tar.gz");
+		assertEquals(String.format("Should contain two mappings from pmcid to filename."), expectedPmcid2FilenameMap,
+				pmcid2FilenameMap);
 	}
 
 }

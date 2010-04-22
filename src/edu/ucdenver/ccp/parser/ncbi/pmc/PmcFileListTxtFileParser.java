@@ -2,11 +2,12 @@ package edu.ucdenver.ccp.parser.ncbi.pmc;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import edu.ucdenver.ccp.parser.LineFileParser;
 import edu.ucdenver.ccp.util.file.FileLoaderUtil;
 import edu.ucdenver.ccp.util.string.RegExPatterns;
-import edu.ucdenver.ccp.util.string.StringConstants;
 import edu.ucdenver.ccp.util.string.StringUtil;
 
 /**
@@ -83,4 +84,20 @@ public class PmcFileListTxtFileParser extends LineFileParser<PmcFileListTxtFileD
 		return new PmcFileListTxtFileData(pmcFtpPath, citation, pmcid);
 	}
 
+	/**
+	 * Returns a mapping from pmcID to the name of the file, e.g.
+	 * Nucleic_Acids_Res-10-12-320743.tar.gz
+	 * 
+	 * @param pmcFileListTxtFile
+	 * @return
+	 * @throws IOException
+	 */
+	public static Map<String, String> getPmcId2FilenameMap(File pmcFileListTxtFile) throws IOException {
+		Map<String, String> pmcId2FilenameMap = new HashMap<String, String>();
+		for (PmcFileListTxtFileParser parser = new PmcFileListTxtFileParser(pmcFileListTxtFile); parser.hasNext();) {
+			PmcFileListTxtFileData dataRecord = parser.next();
+			pmcId2FilenameMap.put(dataRecord.getPmcAccession(), dataRecord.getFtpFileName());
+		}
+		return pmcId2FilenameMap;
+	}
 }
