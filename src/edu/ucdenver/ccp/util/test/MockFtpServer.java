@@ -8,7 +8,7 @@ import org.mockftpserver.fake.filesystem.*;
  * 
  * @author malenkiy
  */
-public class FtpTestUtil {
+public class MockFtpServer {
 	public static String USER_NAME = "anonymous";
 	public static String PASSWORD = "password";
 	public static String HOME_DIRECTORY = "/";
@@ -16,12 +16,12 @@ public class FtpTestUtil {
 	FakeFtpServer server;
 	private UnixFakeFileSystem fs;
 
-	public FtpTestUtil() {
+	public MockFtpServer() {
 		server = new FakeFtpServer();
 		init();
 	}
 
-	public FtpTestUtil(int port) {
+	public MockFtpServer(int port) {
 		server = new FakeFtpServer();
 		server.setServerControlPort(port);
 		init();

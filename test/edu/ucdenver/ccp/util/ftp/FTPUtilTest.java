@@ -15,18 +15,18 @@ import org.junit.Test;
 import edu.ucdenver.ccp.util.collections.CollectionsUtil;
 import edu.ucdenver.ccp.util.ftp.FTPUtil.FILE_TYPE;
 import edu.ucdenver.ccp.util.test.DefaultTestCase;
-import edu.ucdenver.ccp.util.test.FtpTestUtil;
+import edu.ucdenver.ccp.util.test.MockFtpServer;
 
 public class FTPUtilTest extends DefaultTestCase {
 
 	private static final String FTP_HOST = "localhost";
 	private static final int FTP_PORT = 9981;
-	private FtpTestUtil ftu;
+	private MockFtpServer ftu;
 	private File localDirectory;
 
 	@Before
 	public void setUp() throws IOException {
-		ftu = new FtpTestUtil(FTP_PORT);
+		ftu = new MockFtpServer(FTP_PORT);
 		localDirectory = populateLocalDirectory();
 		populateFtpDirectory();
 		ftu.startServer();
@@ -39,8 +39,8 @@ public class FTPUtilTest extends DefaultTestCase {
 
 	@Test
 	public void testSyncDirectoryWithFtpDirectory() throws Exception {
-		FTPClient ftpClient = FTPUtil.initializeFtpClient(FTP_HOST, FTP_PORT, FtpTestUtil.USER_NAME,
-				FtpTestUtil.PASSWORD);
+		FTPClient ftpClient = FTPUtil.initializeFtpClient(FTP_HOST, FTP_PORT, MockFtpServer.USER_NAME,
+				MockFtpServer.PASSWORD);
 		FTPUtil.syncLocalDirectoryWithFtpDirectory(ftpClient, localDirectory, null, FILE_TYPE.ASCII);
 		FTPUtil.closeFtpClient(ftpClient);
 		assertEquals(String.format("Should be 6 files in the local directory after syncing directories."), 6,
@@ -53,8 +53,8 @@ public class FTPUtilTest extends DefaultTestCase {
 
 	@Test
 	public void testSyncDirectoryWithFtpDirectoryWithFileSuffix() throws Exception {
-		FTPClient ftpClient = FTPUtil.initializeFtpClient(FTP_HOST, FTP_PORT, FtpTestUtil.USER_NAME,
-				FtpTestUtil.PASSWORD);
+		FTPClient ftpClient = FTPUtil.initializeFtpClient(FTP_HOST, FTP_PORT, MockFtpServer.USER_NAME,
+				MockFtpServer.PASSWORD);
 		FTPUtil.syncLocalDirectoryWithFtpDirectory(ftpClient, localDirectory, ".txt", FILE_TYPE.ASCII);
 		FTPUtil.closeFtpClient(ftpClient);
 		assertEquals(String.format("Should be 5 files in the local directory after syncing directories."), 5,
