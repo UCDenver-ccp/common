@@ -1,15 +1,20 @@
 package edu.ucdenver.ccp.util.file;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintStream;
+import java.util.List;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+
+import edu.ucdenver.ccp.util.collections.CollectionsUtil;
 
 public class FileUtilTest {
 
@@ -58,5 +63,5 @@ public class FileUtilTest {
 		File newFolder = folder.newFolder("newfolder");
 		FileUtil.validateFile(newFolder);
 	}
-
+	
 }

@@ -2,11 +2,13 @@ package edu.ucdenver.ccp.util.file;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import org.apache.commons.io.IOUtils;
 
@@ -155,12 +157,35 @@ public class FileUtil {
 	 * @throws IOException
 	 */
 	public static void copy(InputStream is, File file) throws IOException {
-		BufferedOutputStream outStream = null;
+		BufferedOutputStream outStream = new BufferedOutputStream(new FileOutputStream(file));
+		copy(is, outStream);
+	}
+
+	/**
+	 * Copies a file to the specified output stream
+	 * 
+	 * @param file
+	 * @param os
+	 * @throws IOException
+	 */
+	public static void copy(File file, OutputStream os) throws IOException {
+		FileInputStream fis = new FileInputStream(file);
+		copy(fis, os);
+		fis.close();
+	}
+
+	/**
+	 * Copies the specified InputStream to the specified OutputStream
+	 * 
+	 * @param is
+	 * @param os
+	 * @throws IOException
+	 */
+	private static void copy(InputStream is, OutputStream os) throws IOException {
 		try {
-			outStream = new BufferedOutputStream(new FileOutputStream(file));
-			IOUtils.copyLarge(is, outStream);
+			IOUtils.copyLarge(is, os);
 		} finally {
-			IOUtils.closeQuietly(outStream);
+			IOUtils.closeQuietly(os);
 		}
 	}
 
@@ -178,4 +203,18 @@ public class FileUtil {
 		return filter;
 	}
 
+	/**
+	 * This method modified from:
+	 * http://www.java-tips.org/java-se-tips/java.io/reading-a-file-into-a-byte-array.html
+	 * 
+	 * @param file
+	 * @return
+	 * @throws IOException
+	 */
+	public static byte[] toByteArray(File file) throws IOException {
+		FileInputStream fis = new FileInputStream(file);
+		byte[] bytes = IOUtils.toByteArray(fis);
+		fis.close();
+		return bytes;
+	}
 }
