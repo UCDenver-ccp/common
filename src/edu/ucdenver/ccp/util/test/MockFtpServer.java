@@ -52,6 +52,7 @@ public class MockFtpServer {
 	}
 
 	public void addFile(String path, File contents) throws IOException {
+		FileUtil.validateFile(contents);
 		FileEntry fileEntry = new FileEntry(path);
 		fileEntry.setContents(FileUtil.toByteArray(contents));
 		fs.add(fileEntry);
