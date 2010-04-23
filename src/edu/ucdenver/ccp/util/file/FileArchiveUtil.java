@@ -19,7 +19,6 @@
 package edu.ucdenver.ccp.util.file;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -29,6 +28,7 @@ import java.io.InputStream;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -280,9 +280,20 @@ public class FileArchiveUtil {
 	 * @param outputDirectory
 	 * @throws IOException
 	 */
-	private static void copyZipEntryToFile(ZipInputStream zis, File unzippedFile)
-			throws IOException {
+	private static void copyZipEntryToFile(ZipInputStream zis, File unzippedFile) throws IOException {
 		FileUtil.copy(zis, unzippedFile);
+	}
+
+	/**
+	 * GZIPs the input file and places the output file as specified by the zippedFile parameter
+	 * 
+	 * @param inputFile
+	 * @param zippedFile
+	 * @throws IOException
+	 */
+	public static void gzipFile(File inputFile, File zippedFile) throws IOException {
+		GZIPOutputStream gzipStream = new GZIPOutputStream(new FileOutputStream(zippedFile));
+		FileUtil.copy(inputFile, gzipStream);
 	}
 
 }

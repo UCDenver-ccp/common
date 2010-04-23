@@ -81,8 +81,8 @@ public class FileArchiveUtilTest {
 		FileArchiveUtil.unzip(zipFile, outputDirectory);
 		validateUnpackedDirectoryStructure(outputDirectory);
 	}
-	
-	@Test(expected=IllegalArgumentException.class)
+
+	@Test(expected = IllegalArgumentException.class)
 	public void TestUntarNonTarFile() throws Exception {
 		File zipFile = copyResourceToFile(SAMPLE_ZIP_FILE_NAME);
 		File outputDirectory = folder.newFolder("unzippedFile");
@@ -123,5 +123,22 @@ public class FileArchiveUtilTest {
 		File file = folder.newFile(resourceName);
 		FileUtil.copy(FileArchiveUtilTest.class.getResourceAsStream(resourceName), file);
 		return file;
+	}
+
+	@Test
+	public void testGzipFile() throws Exception {
+		File testFile = folder.newFile("test.txt");
+		File zippedTestFile = folder.newFile("test.txt.gz");
+		File unzippedFolder = folder.newFolder("unzipped");
+		List<String> expectedLines = CollectionsUtil.createList("line1", "line2", "line3");
+		FileWriterUtil.printLines(expectedLines, testFile);
+		FileArchiveUtil.gzipFile(testFile, zippedTestFile);
+		FileArchiveUtil.unzip(zippedTestFile, unzippedFolder);
+		File unzippedTestFile = new File(unzippedFolder.getAbsolutePath() + File.separator + "test.txt");
+		assertTrue(String.format("Unzipped file must exist"), unzippedTestFile.exists());
+		List<String> lines = FileLoaderUtil.loadLinesFromFile(unzippedTestFile);
+		assertEquals(String
+				.format("Lines in unzipped file should match lines put into original file prior to gzipping."),
+				expectedLines, lines);
 	}
 }
