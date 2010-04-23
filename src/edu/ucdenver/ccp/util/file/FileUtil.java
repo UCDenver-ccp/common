@@ -226,8 +226,8 @@ public class FileUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public static void copyResourceToFile(String resourceName, File file) throws IOException {
-		FileUtil.copy(FileUtil.class.getResourceAsStream(resourceName), file);
+	public static void copyResourceToFile(Class<?> cls, String resourceName, File file) throws IOException {
+		FileUtil.copy(cls.getResourceAsStream(resourceName), file);
 	}
 
 	/**
@@ -236,8 +236,8 @@ public class FileUtil {
 	 * @param resourceName
 	 * @return
 	 */
-	public static InputStream getResourceStream(String resourceName) {
-		return FileUtil.class.getResourceAsStream(resourceName);
+	public static InputStream getResourceStream(Class<?> cls, String resourceName) {
+		return cls.getResourceAsStream(resourceName);
 	}
 
 }

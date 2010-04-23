@@ -120,7 +120,7 @@ public class FileArchiveUtilTest {
 	 */
 	private File copyResourceToFile(String resourceName) throws Exception {
 		File file = folder.newFile(resourceName);
-		FileUtil.copyResourceToFile(resourceName, file);
+		FileUtil.copyResourceToFile(FileArchiveUtil.class, resourceName, file);
 		return file;
 	}
 
