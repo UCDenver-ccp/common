@@ -2,7 +2,9 @@ package edu.ucdenver.ccp.util.test;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
+import org.apache.commons.io.IOUtils;
 import org.mockftpserver.fake.FakeFtpServer;
 import org.mockftpserver.fake.UserAccount;
 import org.mockftpserver.fake.filesystem.FileEntry;
@@ -55,6 +57,12 @@ public class MockFtpServer {
 		FileUtil.validateFile(contents);
 		FileEntry fileEntry = new FileEntry(path);
 		fileEntry.setContents(FileUtil.toByteArray(contents));
+		fs.add(fileEntry);
+	}
+	
+	public void addFile(String path, InputStream is) throws IOException {
+		FileEntry fileEntry = new FileEntry(path);
+		fileEntry.setContents(IOUtils.toByteArray(is));
 		fs.add(fileEntry);
 	}
 	
