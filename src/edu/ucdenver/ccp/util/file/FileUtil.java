@@ -217,4 +217,27 @@ public class FileUtil {
 		fis.close();
 		return bytes;
 	}
+
+	/**
+	 * Copies a resource (file on the classpath) to the specified directory
+	 * 
+	 * @param resourceName
+	 * @param directory
+	 * @return
+	 * @throws IOException
+	 */
+	public static void copyResourceToFile(String resourceName, File file) throws IOException {
+		FileUtil.copy(FileUtil.class.getResourceAsStream(resourceName), file);
+	}
+
+	/**
+	 * Returns an InputStream for the specified resource (file on the classpath)
+	 * 
+	 * @param resourceName
+	 * @return
+	 */
+	public static InputStream getResourceStream(String resourceName) {
+		return FileUtil.class.getResourceAsStream(resourceName);
+	}
+
 }
