@@ -34,6 +34,8 @@
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties" classpathref="ant.contrib.classpath" />
 
 	<target name="init">
+		<property name="svncp" refid="svn.classpath"/>
+		<echo message="SVN CLASSPATH: ${svncp}"/>
 		<antcall target="package-test-resources" />
 	</target>
 
