@@ -1,6 +1,5 @@
 package edu.ucdenver.ccp.util.file;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -121,7 +120,7 @@ public class FileArchiveUtilTest {
 	 */
 	private File copyResourceToFile(String resourceName) throws Exception {
 		File file = folder.newFile(resourceName);
-		FileUtil.copy(FileArchiveUtilTest.class.getResourceAsStream(resourceName), file);
+		FileUtil.copyResourceToFile(resourceName, file);
 		return file;
 	}
 
