@@ -1,7 +1,14 @@
 package edu.ucdenver.ccp.util.test;
 
-import org.mockftpserver.fake.*;
-import org.mockftpserver.fake.filesystem.*;
+import java.io.File;
+import java.io.IOException;
+
+import org.mockftpserver.fake.FakeFtpServer;
+import org.mockftpserver.fake.UserAccount;
+import org.mockftpserver.fake.filesystem.FileEntry;
+import org.mockftpserver.fake.filesystem.UnixFakeFileSystem;
+
+import edu.ucdenver.ccp.util.file.FileUtil;
 
 /**
  * Helper class that launches mock ftp server for use with unit tests.
@@ -44,6 +51,13 @@ public class MockFtpServer {
 		fs.add(fileEntry);
 	}
 
+	public void addFile(String path, File contents) throws IOException {
+		FileEntry fileEntry = new FileEntry(path);
+		fileEntry.setContents(FileUtil.toByteArray(contents));
+		fs.add(fileEntry);
+	}
+	
+	
 	public void startServer() {
 		server.start();
 	}
