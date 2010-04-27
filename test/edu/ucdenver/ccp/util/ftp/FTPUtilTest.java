@@ -1,5 +1,6 @@
 package edu.ucdenver.ccp.util.ftp;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -80,4 +81,12 @@ public class FTPUtilTest extends DefaultTestCase {
 				localDirectory.list().length);
 		return localDirectory;
 	}
+
+@Test
+public void testPause() throws Exception {
+	long before = System.currentTimeMillis();
+	FTPUtil.pause(4);
+	long after = System.currentTimeMillis();
+	assertTrue(String.format("At least 4000 ms should have elapsed (%d)",after-before), 4000 <= (after-before));
+}
 }
