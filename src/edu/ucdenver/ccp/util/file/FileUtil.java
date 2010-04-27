@@ -173,6 +173,22 @@ public class FileUtil {
 		copy(fis, os);
 		fis.close();
 	}
+	
+	/**
+	 * Copies the contents of one file to another
+	 * @param fromFile
+	 * @param toFile
+	 * @throws IOException
+	 */
+	public static void copy(File fromFile, File toFile) throws IOException {
+		validateFile(fromFile);
+		FileInputStream fis = new FileInputStream(fromFile);
+		FileOutputStream fos = new FileOutputStream(toFile);
+		copy(fis, fos);
+		fis.close();
+		fos.close();
+		validateFile(toFile);
+	}
 
 	/**
 	 * Copies the specified InputStream to the specified OutputStream
@@ -240,4 +256,19 @@ public class FileUtil {
 		return cls.getResourceAsStream(resourceName);
 	}
 
+	/**
+	 * Returns a reference to a File that is specified by the input file name, and 
+	 * located in the input directory. The file is not created, only the reference.
+	 * @param directory
+	 * @param fileName
+	 * @return
+	 */
+	public static File appendPathElementsToDirectory(File directory, String... pathElements) {
+		String path = directory.getPath();
+		for (String pathElement : pathElements) {
+			path+= (File.separator + pathElement);
+		}
+		return new File(path);
+	}
+	
 }
