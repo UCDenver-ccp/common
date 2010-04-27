@@ -204,8 +204,8 @@ public class FTPUtil {
 	 * @throws IOException
 	 */
 	public static void navigateToFtpDirectory(FTPClient ftpClient, String directoryOnFtpServer) throws IOException {
+		logger.info(String.format("Changing to new directory on server: %s", directoryOnFtpServer));
 		ftpClient.changeWorkingDirectory(directoryOnFtpServer);
-		logger.info(String.format("Changed to new directory: %s", directoryOnFtpServer));
 	}
 
 	/**
@@ -298,4 +298,17 @@ public class FTPUtil {
 		}
 	}
 
+	/**
+	 * Pauses the current thread for n seconds depending on the input. This can be useful if a web resource limits how often you can retrieve files.
+	 * @param seconds
+	 */
+	public static void pause(int seconds) {
+		try {
+			Thread.sleep(seconds*1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 }
