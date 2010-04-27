@@ -64,4 +64,11 @@ public class FileUtilTest {
 		FileUtil.validateFile(newFolder);
 	}
 	
+	@Test
+	public void testAppendPathElementToDirectory() throws Exception {
+		String directoryName = String.format("%sthis%sis%sa%sdirectory", File.separator, File.separator, File.separator, File.separator);
+		File directory = new File(directoryName);
+		String fileName = "this.is.a.file.name";
+		assertEquals(String.format("Resulting file should be directory/fileName."),new File(directoryName + File.separator + fileName), FileUtil.appendPathElementsToDirectory(directory, fileName));
+	}
 }
