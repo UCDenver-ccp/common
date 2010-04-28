@@ -18,6 +18,7 @@
 	<target name="import-build-scripts">
 		<delete dir="${build.scripts.dir}" />
 		<mkdir dir="${build.scripts.dir}" />
+		<echo message="Checking out build scripts into ${build.scripts.dir}" />
 		<svn username="${svn.build.user}" password="${svn.build.passwd}" svnkit="true">
 			<checkout url="http://compbio.ucdenver.edu/svn/ccp/build/${build.branch.name}" revision="HEAD" destPath="${build.scripts.dir}" />
 		</svn>
