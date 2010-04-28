@@ -5,6 +5,7 @@
 	<property name="ant.dir" value="ant" />
 	<property name="ant.external.lib.dir" value="${ant.dir}/lib" />
 	<property name="build.scripts.dir" value="${ant.dir}/.build-scripts" />
+	<property file="${ant.dir}/build.properties-DO_NOT_REDISTRIBUTE"/>
 
 	<path id="svn.classpath">
 		<fileset dir="${ant.external.lib.dir}">
