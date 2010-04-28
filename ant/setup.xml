@@ -1,6 +1,6 @@
 <project name="build-script-setup" default="import-build-scripts" basedir="..">
 
-	<property name="build.branch.name" value="trunk" />
+	<property name="build.branch.name" value="branches/RB-1.0" />
 
 	<property name="ant.dir" value="ant" />
 	<property name="ant.external.lib.dir" value="${ant.dir}/lib" />
