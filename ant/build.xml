@@ -1,11 +1,9 @@
 <project name="ccp-common" default="build" basedir="..">
 	<import file="setup.xml" />
 	<import file=".build-scripts/build-base.xml" />
-	
-	<!-- List internal project dependencies here (comma-delimited) -->
-	<property name="dependency.list" value="" />
-	<property name="codeqa.branch.name" value="trunk" />
-
 	<property name="project.name" value="${ant.project.name}" />
 
+
+	<!-- List internal project dependencies here (comma-delimited) -->
+	<property name="dependency.list" value="" />
 </project>
