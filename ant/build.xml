@@ -1,8 +1,14 @@
 <project name="ccp-common" default="build" basedir="..">
+	<import file=".build-scripts/build-codeqa-tasks.xml" />
+	<import file=".build-scripts/build-dependencies.xml" />
+
+	<!-- List internal project dependencies here (comma-delimited) -->
+	<property name="dependency.list" value="" />
 
 	<property name="project.name" value="${ant.project.name}" />
 	<property name="test-resources.jar.name" value="${project.name}-test-resources.jar" />
 	<property name="code-analysis.dir" value=".code-analysis" />
+	<property name="dependency.build.dir" value=".build" />
 
 	<!-- Project Directories -->
 	<property name="ant.dir" value="ant" />
@@ -17,7 +23,7 @@
 	<property name="lib-test.dir" value="lib-test" />
 
 	<!-- Import SVN user information - NOTE: PLEASE DO NOT REDISTRIBUTE THE build.properties FILE -->
-	<property file="ant/build.properties" />
+	<property file="ant/build.properties-DO_NOT_REDISTRIBUTE" />
 
 	<path id="svn.classpath">
 		<fileset dir="${ant.external.lib.dir}">
@@ -34,19 +40,22 @@
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties" classpathref="ant.contrib.classpath" />
 
 	<target name="init">
-		<property name="svncp" refid="svn.classpath"/>
-		<echo message="SVN CLASSPATH: ${svncp}"/>
 		<antcall target="package-test-resources" />
 	</target>
 
 	<!-- The compile classpath contains jars necessary for compile- and run-time. -->
+	<target name="set.compile.time.classpath">
 	<path id="compile.classpath">
 		<fileset dir="${lib.dir}">
 			<include name="**/*.jar" />
 		</fileset>
+		<fileset dir="${distribution.dir}">
+					<include name="**/*.jar" />
+				</fileset>
 	</path>
-
 	<property name="compile.classpath.property" refid="compile.classpath" />
+		</target>
+
 
 	<path id="compile.test.classpath">
 		<fileset dir="${lib-test.dir}">
@@ -70,10 +79,10 @@
 	</target>
 
 	<!-- Build and run unit tests only (no functional tests) -->
-	<target name="build" depends="init,clean,compile,test.unit,package-project,cleanup-postbuild" description="Builds the project, runs all unit tests and packages into a jar file if the tests are successful." />
+	<target name="build" depends="init,clean,build.dependencies,compile,run.unit.tests,package-project,cleanup-postbuild" description="Builds the project, runs all unit tests and packages into a jar file if the tests are successful." />
 
 	<!-- Build and run code analyses -->
-	<target name="build.code.analysis" depends="init,clean,compile,test.unit,package-project,complete.code.analysis,cleanup-postbuild" description="Builds the project and runs all source code analyses." />
+	<target name="build.code.analysis" depends="init,clean,build.dependencies,compile,run.unit.tests,package-project,complete.code.analysis,cleanup-postbuild" description="Builds the project and runs all source code analyses." />
 
 	<!-- Deletes compiled and generated code -->
 	<target name="clean" description="Deletes compiled and generated code">
@@ -81,7 +90,7 @@
 	</target>
 
 	<!-- Compiles the Java code -->
-	<target name="compile" description="Compiles the Java code">
+	<target name="compile" depends="set.compile.time.classpath" description="Compiles the Java code">
 		<echo message="BASE DIRECTORY = ${basedir}" />
 		<mkdir dir="${build.dir}" />
 		<mkdir dir="${classes.dir}" />
@@ -122,7 +131,7 @@
 	</target>
 
 	<!-- Builds the Javadocs -->
-	<target name="create-javadoc">
+	<target name="create-javadoc" depends="set.compile.time.classpath">
 		<javadoc packagenames="edu.uchsc.ccp.*" sourcepath="${source.dir}" destdir="${docs.dir}/api" windowtitle="Center for Computational Pharmacology Biomedical Discovery Accelerator API" linksource="true">
 			<classpath>
 				<path refid="compile.classpath" />
@@ -135,64 +144,7 @@
 	</javadoc>
 </target>
 
-<!-- Sets the needs.code.analysis.tools property of the code-analysis directory is not present -->
-<condition property="needs.code.analysis.tools">
-	<not>
-		<available type="dir" file="${code-analysis.dir}" />
-	</not>
-</condition>
 
-<!-- Imports tools for running tests and code analyses from the codeqa project -->
-<target name="import.code.analysis.tools" if="needs.code.analysis.tools">
-	<delete dir="${code-analysis.dir}" />
-	<mkdir dir="${code-analysis.dir}" />
-	<svn username="${svn.build.user}" password="${svn.build.passwd}" svnkit="true">
-		<checkout url="http://compbio.ucdenver.edu/svn/ccp/codeqa/trunk" revision="HEAD" destPath="${code-analysis.dir}" />
-	</svn>
-</target>
 
-<target name="test.unit" depends="init, package-project,import.code.analysis.tools">
-	<ant antfile="${code-analysis.dir}/ant/testing.xml" inheritall="true" inheritrefs="true" target="test.unit" />
-	<antcall target="cleanup-postbuild" />
-</target>
-
-<target name="test.fn" depends="init, package-project,import.code.analysis.tools">
-	<ant antfile="${code-analysis.dir}/ant/testing.xml" inheritall="true" inheritrefs="true" target="test.unit" />
-	<antcall target="cleanup-postbuild" />
-</target>
-
-<target name="coverage.analysis" depends="init, package-project,import.code.analysis.tools">
-	<ant antfile="${code-analysis.dir}/ant/testing.xml" inheritall="true" inheritrefs="true" target="run.coverage.analysis" />
-	<antcall target="cleanup-postbuild" />
-</target>
-
-<target name="run.findbugs" depends="init, package-project,import.code.analysis.tools">
-	<ant antfile="${code-analysis.dir}/ant/analyze.xml" inheritall="true" inheritrefs="true" target="run.findbugs.analysis" />
-	<antcall target="cleanup-postbuild" />
-</target>
-
-<target name="run.checkstyle" depends="init, package-project,import.code.analysis.tools">
-	<ant antfile="${code-analysis.dir}/ant/analyze.xml" inheritall="true" inheritrefs="true" target="run.checkstyle.analysis" />
-	<antcall target="cleanup-postbuild" />
-</target>
-
-<target name="run.pmd" depends="init, package-project,import.code.analysis.tools">
-	<ant antfile="${code-analysis.dir}/ant/analyze.xml" inheritall="true" inheritrefs="true" target="run.pmd.analysis" />
-	<antcall target="cleanup-postbuild" />
-</target>
-
-<target name="run.duplicate.code.finder" depends="init, package-project,import.code.analysis.tools">
-	<ant antfile="${code-analysis.dir}/ant/analyze.xml" inheritall="true" inheritrefs="true" target="run.duplicate.code.analysis" />
-	<antcall target="cleanup-postbuild" />
-</target>
-
-<target name="complete.code.analysis" depends="init, package-project,import.code.analysis.tools" description="Conducts an analysis of the code in this project as defined by the settings in the code-analysis project (available in SVN).">
-	<ant antfile="${code-analysis.dir}/ant/testing.xml" inheritall="true" inheritrefs="true" target="run.coverage.analysis" />
-	<ant antfile="${code-analysis.dir}/ant/analyze.xml" inheritall="true" inheritrefs="true" target="run.findbugs.analysis" />
-	<ant antfile="${code-analysis.dir}/ant/analyze.xml" inheritall="true" inheritrefs="true" target="run.pmd.analysis" />
-	<ant antfile="${code-analysis.dir}/ant/analyze.xml" inheritall="true" inheritrefs="true" target="run.duplicate.code.analysis" />
-	<ant antfile="${code-analysis.dir}/ant/analyze.xml" inheritall="true" inheritrefs="true" target="run.checkstyle.analysis" />
-	<antcall target="cleanup-postbuild" />
-</target>
 
 </project>

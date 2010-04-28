@@ -1,0 +1,21 @@
+<project name="build-dependencies" default="">
+	<target name="build.dependencies">
+		<mkdir dir="${distribution.dir}" />
+		<foreach list="${dependency.list}" target="build.dependency" param="dependency.name" delimiter="," inheritall="false" inheritrefs="false"/>
+	</target>
+
+	<target name="build.dependency">
+		<delete dir="${dependency.build.dir}" />
+		<mkdir dir="${dependency.build.dir}" />
+		<svn username="${svn.build.user}" password="${svn.build.passwd}" svnkit="true">
+			<checkout url="http://compbio.ucdenver.edu/svn/${dependency.name}" revision="HEAD" destPath="${dependency.build.dir}" />
+		</svn>
+		<ant antfile="${dependency.build.dir}/ant/build.xml" inheritall="false" inheritrefs="false" target="build" />
+		<copy todir="${distribution.dir}">
+			<fileset dir="${dependency.build.dir}/build/distribution">
+				<include name="**/*.jar" />
+			</fileset>
+		</copy>
+		<delete dir="${dependency.build.dir}" />
+	</target>
+</project>
