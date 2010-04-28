@@ -1,0 +1,7 @@
+# -----------------   DO NOT REDISTRIBUTE THIS FILE OUTSIDE OF THE LAB   -----------------   
+# The properties in this file are used by build.xml. This file contains a user and password 
+# for read-only access to our SVN repositories. Please DO NOT REDISTRIBUTE this file as it 
+# would give anyone read-only access to our SVN repositories.
+
+svn.build.user=build
+svn.build.passwd=read-only!
