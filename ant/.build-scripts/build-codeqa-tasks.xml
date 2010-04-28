@@ -11,7 +11,7 @@
 		<delete dir="${code-analysis.dir}" />
 		<mkdir dir="${code-analysis.dir}" />
 		<svn username="${svn.build.user}" password="${svn.build.passwd}" svnkit="true">
-			<checkout url="http://compbio.ucdenver.edu/svn/ccp/codeqa/trunk" revision="HEAD" destPath="${code-analysis.dir}" />
+			<checkout url="http://compbio.ucdenver.edu/svn/ccp/codeqa/${codeqa.branch.name}" revision="HEAD" destPath="${code-analysis.dir}" />
 		</svn>
 	</target>
 

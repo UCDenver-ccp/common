@@ -4,6 +4,7 @@
 
 	<!-- List internal project dependencies here (comma-delimited) -->
 	<property name="dependency.list" value="" />
+	<property name="codeqa.branch.name" value="trunk" />
 
 	<property name="project.name" value="${ant.project.name}" />
 	<property name="test-resources.jar.name" value="${project.name}-test-resources.jar" />
@@ -13,14 +14,14 @@
 	<!-- Project Directories -->
 	<property name="ant.dir" value="ant" />
 	<property name="ant.external.lib.dir" value="${ant.dir}/lib" />
-	<property name="source.dir" value="src" />
-	<property name="test.source.dir" value="test" />
+	<property name="source.dir" value="src/main/java" />
+	<property name="test.source.dir" value="src/test/java" />
 	<property name="build.dir" value="build" />
 	<property name="docs.dir" value="doc" />
 	<property name="classes.dir" value="${build.dir}/classes" />
 	<property name="distribution.dir" value="${build.dir}/distribution" />
-	<property name="lib.dir" value="lib" />
-	<property name="lib-test.dir" value="lib-test" />
+	<property name="main.resources.dir" value="src/main/resources" />
+	<property name="test.resources.dir" value="src/test/resources" />
 
 	<!-- Import SVN user information - NOTE: PLEASE DO NOT REDISTRIBUTE THE build.properties FILE -->
 	<property file="ant/build.properties-DO_NOT_REDISTRIBUTE" />
@@ -46,7 +47,7 @@
 	<!-- The compile classpath contains jars necessary for compile- and run-time. -->
 	<target name="set.compile.time.classpath">
 	<path id="compile.classpath">
-		<fileset dir="${lib.dir}">
+		<fileset dir="${main.resources.dir}">
 			<include name="**/*.jar" />
 		</fileset>
 		<fileset dir="${distribution.dir}">
@@ -58,7 +59,7 @@
 
 
 	<path id="compile.test.classpath">
-		<fileset dir="${lib-test.dir}">
+		<fileset dir="${test.resources.dir}">
 			<include name="**/*.jar" />
 		</fileset>
 	</path>
@@ -66,16 +67,17 @@
 	<!-- Packages the test resources into a JAR file -->
 	<target name="package-test-resources" description="Packages non-java files in the test.source directory. These files are required to run the unit tests, and thus must be on the classpath.">
 		<echo message="Packaging the test resources..." />
-		<jar destFile="${lib-test.dir}/${test-resources.jar.name}">
-			<fileset dir="${test.source.dir}">
+		<jar destFile="${test.resources.dir}/${test-resources.jar.name}">
+			<fileset dir="${test.resources.dir}">
 				<include name="**/*.*" />
 				<exclude name="**/*.java" />
+				<exclude name="**/${test-resources.jar.name}" />
 			</fileset>
 		</jar>
 	</target>
 
 	<target name="cleanup-postbuild">
-		<delete file="${lib-test.dir}/${test-resources.jar.name}" />
+		<delete file="${test.resources.dir}/${test-resources.jar.name}" />
 	</target>
 
 	<!-- Build and run unit tests only (no functional tests) -->
