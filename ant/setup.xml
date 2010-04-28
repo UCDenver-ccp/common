@@ -1,4 +1,4 @@
-<project name="build-script-setup" default="import-build-scripts" basedir="..">
+<project name="ccp-common-build-script-setup" default="import-build-scripts" basedir="..">
 
 	<property name="build.branch.name" value="branches/RB-1.0" />
 
