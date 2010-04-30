@@ -20,7 +20,8 @@ import edu.ucdenver.ccp.util.file.FileUtil;
 
 public class FTPUtil {
 	private static final Logger logger = Logger.getLogger(FTPUtil.class);
-
+	private static final int BUFFER_SIZE = 32768000;
+	
 	public static enum FILE_TYPE {
 		ASCII(FTPClient.ASCII_FILE_TYPE), BINARY(FTPClient.BINARY_FILE_TYPE);
 		private final int type;
@@ -177,7 +178,10 @@ public class FTPUtil {
 		logger.info(String.format("Downloading file: %s", ftpFileName));
 		ftpClient.setFileType(ftpFileType.type());
 		ftpClient.enterLocalPassiveMode();
-
+		ftpClient.setBufferSize(BUFFER_SIZE);
+		
+		logger.info(String.format("BUFFER SIZE: %d",ftpClient.getBufferSize()));
+		
 		if (!ftpClient.retrieveFile(ftpFileName, localOutputStream)) {
 			throw new IOException(String.format("Download failed for file: %s", ftpFileName));
 		}
