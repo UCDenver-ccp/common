@@ -197,7 +197,7 @@ public class FileUtil {
 	 * @param os
 	 * @throws IOException
 	 */
-	private static void copy(InputStream is, OutputStream os) throws IOException {
+	public static void copy(InputStream is, OutputStream os) throws IOException {
 		try {
 			IOUtils.copyLarge(is, os);
 		} finally {
