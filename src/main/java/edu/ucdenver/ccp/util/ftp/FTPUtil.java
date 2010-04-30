@@ -180,8 +180,6 @@ public class FTPUtil {
 		ftpClient.enterLocalPassiveMode();
 		ftpClient.setBufferSize(BUFFER_SIZE);
 		
-		logger.info(String.format("BUFFER SIZE: %d",ftpClient.getBufferSize()));
-		
 		if (!ftpClient.retrieveFile(ftpFileName, localOutputStream)) {
 			throw new IOException(String.format("Download failed for file: %s", ftpFileName));
 		}
