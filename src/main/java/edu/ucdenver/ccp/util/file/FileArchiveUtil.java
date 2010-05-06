@@ -25,6 +25,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.GZIPInputStream;
@@ -149,6 +150,22 @@ public class FileArchiveUtil {
 			}
 		} finally {
 			IOUtils.closeQuietly(tis);
+		}
+	}
+
+	/**
+	 * Untars the collection of files into the specified output directory
+	 * 
+	 * @param tarFiles
+	 * @param outputDirectory
+	 * @throws FileNotFoundException
+	 * @throws IllegalArgumentException
+	 * @throws IOException
+	 */
+	public static void unpackTarFiles(Collection<File> tarFiles, File outputDirectory) throws FileNotFoundException,
+			IllegalArgumentException, IOException {
+		for (File tarFile : tarFiles) {
+			unpackTarFile(tarFile, outputDirectory);
 		}
 	}
 
