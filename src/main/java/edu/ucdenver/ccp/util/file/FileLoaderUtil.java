@@ -3,6 +3,7 @@ package edu.ucdenver.ccp.util.file;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -107,7 +108,7 @@ public class FileLoaderUtil {
 			return outputColumns;
 		}
 	}
-	
+
 	/**
 	 * Returns a List<String> containing the contents of the requested column in the input file,
 	 * assuming the file contains columns delimited by the delimiter String.
@@ -203,7 +204,32 @@ public class FileLoaderUtil {
 	 */
 	public static Iterator<String> getLineIterator(final File inputFile, String encoding, final String commentIndicator)
 			throws IOException {
-		final LineIterator lineIterator = IOUtils.lineIterator(new FileInputStream(inputFile), encoding);
+		return getLineIterator(new FileInputStream(inputFile), encoding, commentIndicator);
+	}
+
+	/**
+	 * Returns an iterator over the lines in the InputStream. Assumes default character encoding.
+	 * 
+	 * @param inputStream
+	 * @param commentIndicator
+	 * @return
+	 * @throws IOException
+	 */
+	public static Iterator<String> getLineIterator(final InputStream inputStream, final String commentIndicator)
+			throws IOException {
+		return getLineIterator(inputStream, DEFAULT_ENCODING, commentIndicator);
+	}
+
+	/**
+	 * Returns an Iterator<String> over the lines of the input stream.
+	 * 
+	 * @param inputFile
+	 * @return
+	 * @throws IOException
+	 */
+	public static Iterator<String> getLineIterator(final InputStream inputStream, String encoding,
+			final String commentIndicator) throws IOException {
+		final LineIterator lineIterator = IOUtils.lineIterator(inputStream, encoding);
 
 		return new Iterator<String>() {
 			private String nextLine = null;
