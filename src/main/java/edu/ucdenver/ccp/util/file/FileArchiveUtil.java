@@ -208,15 +208,15 @@ public class FileArchiveUtil {
 		}
 	}
 
-	public static void unzip(File zippedFile, File outputDirectory) throws IOException {
+	public static File unzip(File zippedFile, File outputDirectory) throws IOException {
 		InputStream is = null;
 		try {
 			if (isZipFile(zippedFile)) {
 				is = getZipInputStream(zippedFile);
-				unzip((ZipInputStream) is, outputDirectory);
+				return unzip((ZipInputStream) is, outputDirectory);
 			} else if (isGzipFile(zippedFile)) {
 				is = getGzipInputStream(zippedFile);
-				unzip((GZIPInputStream) is, getUnzippedFileName(zippedFile.getName()), outputDirectory);
+				return unzip((GZIPInputStream) is, getUnzippedFileName(zippedFile.getName()), outputDirectory);
 			} else {
 				throw new IllegalArgumentException(String.format("Unable to unzip file: %s", zippedFile
 						.getAbsolutePath()));
@@ -248,10 +248,11 @@ public class FileArchiveUtil {
 		}
 	}
 
-	public static void unzip(GZIPInputStream gzipInputStream, String outputFileName, File outputDirectory)
+	public static File unzip(GZIPInputStream gzipInputStream, String outputFileName, File outputDirectory)
 			throws IOException {
 		File outputFile = new File(outputDirectory.getAbsolutePath() + File.separator + outputFileName);
 		FileUtil.copy(gzipInputStream, outputFile);
+		return outputFile;
 	}
 
 	/**
@@ -261,11 +262,18 @@ public class FileArchiveUtil {
 	 * @param outputDirectory
 	 * @throws IOException
 	 */
-	public static void unzip(ZipInputStream zis, File outputDirectory) throws IOException {
+	public static File unzip(ZipInputStream zis, File outputDirectory) throws IOException {
 		ZipEntry zipEntry = null;
+		boolean isFirst = true;
+		File outputFile = null;
 		while ((zipEntry = zis.getNextEntry()) != null) {
-			copyZipEntryToFileSystem(zis, zipEntry, outputDirectory);
+			File unzippedFile = copyZipEntryToFileSystem(zis, zipEntry, outputDirectory);
+			if (isFirst) {
+				outputFile = unzippedFile;
+				isFirst = false;
+			}
 		}
+		return outputFile;
 	}
 
 	/**
@@ -278,7 +286,7 @@ public class FileArchiveUtil {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	private static void copyZipEntryToFileSystem(ZipInputStream zis, ZipEntry zipEntry, File outputDirectory)
+	private static File copyZipEntryToFileSystem(ZipInputStream zis, ZipEntry zipEntry, File outputDirectory)
 			throws FileNotFoundException, IOException {
 		File outputPathFile = new File(outputDirectory.getAbsolutePath() + File.separator + zipEntry.getName());
 		if (zipEntry.isDirectory()) {
@@ -286,6 +294,7 @@ public class FileArchiveUtil {
 		} else {
 			copyZipEntryToFile(zis, outputPathFile);
 		}
+		return outputPathFile;
 	}
 
 	/**
