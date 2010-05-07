@@ -7,9 +7,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
+
+import org.apache.log4j.Logger;
 
 public class CollectionsUtil {
+	private static final Logger logger = Logger.getLogger(CollectionsUtil.class);
 
 	/**
 	 * Returns a List<T> containing the input arguments.
@@ -122,6 +124,9 @@ public class CollectionsUtil {
 	 */
 	public static <K, V> void addToOne2ManyMap(K key, V value, Map<K, Set<V>> one2ManyMap) {
 		if (one2ManyMap.containsKey(key)) {
+			if (one2ManyMap.get(key).contains(value)) {
+				logger.debug(String.format("Duplicate key/value pair detected: %s/%s",key, value));
+			} else 
 			one2ManyMap.get(key).add(value);
 		} else {
 			Set<V> newSet = new HashSet<V>();
