@@ -36,7 +36,7 @@ import edu.ucdenver.ccp.util.string.StringConstants;
 public class GenerifsBasicFileParser extends LineFileParser<GeneRIF> {
 
 	public static final String DATE_FORMAT_STRING = "yyyy-MM-dd HH:mm";
-	private static final String COMMENT_INDICATOR = StringConstants.POUND;
+	private static final String COMMENT_INDICATOR = StringConstants.POUND_SIGN;
 
 	/**
 	 * The constructor is private to force the user to use the parse method.
