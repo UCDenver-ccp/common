@@ -1,5 +1,6 @@
 package edu.ucdenver.ccp.util.collections;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -86,6 +87,21 @@ public class CollectionsUtilTest {
 		expectedMap.put("key2", "value2");
 		expectedMap.put("key3", "value3");
 		assertEquals(String.format("Maps should be identical."), expectedMap, map);
+	}
+
+	@Test
+	public void testAddToOne2ManyMap() throws Exception {
+		Map<Integer, Set<String>> expectedMap = new HashMap<Integer, Set<String>>();
+		expectedMap.put(1, CollectionsUtil.createSet("a", "b", "c"));
+		expectedMap.put(2, CollectionsUtil.createSet("d"));
+
+		Map<Integer, Set<String>> map = new HashMap<Integer, Set<String>>();
+		CollectionsUtil.addToOne2ManyMap(1, "a", map);
+		CollectionsUtil.addToOne2ManyMap(2, "d", map);
+		CollectionsUtil.addToOne2ManyMap(1, "b", map);
+		CollectionsUtil.addToOne2ManyMap(1, "c", map);
+
+		assertEquals(String.format("Maps should be equal."), expectedMap, map);
 	}
 
 }
