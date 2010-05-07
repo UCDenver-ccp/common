@@ -1,5 +1,7 @@
 package edu.ucdenver.ccp.util.test;
 
+import java.io.InputStream;
+
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -18,7 +20,18 @@ public class DefaultTestCase {
 		BasicConfigurator.configure();
 		Logger.getRootLogger().setLevel(Level.DEBUG);
 	}
-	
+
 	@Rule
 	public TemporaryFolder folder = new TemporaryFolder();
+
+	/**
+	 * Helper method for grabbing a file from the classpath and returning an InputStream
+	 * 
+	 * @param clazz
+	 * @param resourceName
+	 * @return
+	 */
+	protected InputStream getResourceFromClasspath(Class<?> clazz, String resourceName) {
+		return clazz.getResourceAsStream(resourceName);
+	}
 }
