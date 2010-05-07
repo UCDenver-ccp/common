@@ -87,7 +87,7 @@ public class EntrezGeneInfoFileParser extends LineFileParser<EntrezGeneInfoFileD
 	 * @return
 	 */
 	public static EntrezGeneInfoFileData parseGeneInfoFileLine(String line) {
-		if (!line.startsWith("#")) {
+		if (!line.startsWith(COMMENT_INDICATOR)) {
 			String[] toks = line.split("\\t");
 			if (toks.length != 15) {
 				logger.error("Unexpected number of tokens (" + toks.length + ") on line:"
