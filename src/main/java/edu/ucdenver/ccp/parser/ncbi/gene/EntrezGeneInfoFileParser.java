@@ -569,4 +569,52 @@ public class EntrezGeneInfoFileParser extends LineFileParser<EntrezGeneInfoFileD
 		return getEntrezGeneID2GeneSymbolMap(entrezGeneInfoFileStream, taxonID).keySet();
 	}
 
+	/**
+	 * Returns a mapping from EntrezGene ID to Taxonomy ID for the set of input EntrezGene IDs
+	 * 
+	 * @param entrezGeneInfoFileStream
+	 * @param entrezGeneIDs
+	 * @return
+	 * @throws IOException
+	 */
+	public static Map<Integer, Integer> getEntrezGeneID2TaxonomyIDMap(File entrezGeneInfoFile,
+			final Set<Integer> entrezGeneIDs) throws IOException {
+		FileInputStream fis = null;
+		try {
+			fis = new FileInputStream(entrezGeneInfoFile);
+			return getEntrezGeneID2TaxonomyIDMap(fis, entrezGeneIDs);
+		} finally {
+			fis.close();
+		}
+	}
+
+	/**
+	 * Returns a mapping from EntrezGene ID to Taxonomy ID for the set of input EntrezGene IDs
+	 * 
+	 * @param entrezGeneInfoFileStream
+	 * @param entrezGeneIDs
+	 * @return
+	 * @throws IOException
+	 */
+	public static Map<Integer, Integer> getEntrezGeneID2TaxonomyIDMap(InputStream entrezGeneInfoFileStream,
+			final Set<Integer> entrezGeneIDs) throws IOException {
+		Map<Integer, Integer> entrezGeneID2TaxonomyIDMap = new HashMap<Integer, Integer>();
+		Set<Integer> entrezGeneIDsToInclude = new HashSet<Integer>(entrezGeneIDs);
+		for (EntrezGeneInfoFileParser parser = new EntrezGeneInfoFileParser(entrezGeneInfoFileStream); !entrezGeneIDsToInclude
+				.isEmpty()
+				&& parser.hasNext();) {
+			EntrezGeneInfoFileData dataRecord = parser.next();
+			if (entrezGeneIDsToInclude.contains(dataRecord.getGeneID())) {
+				entrezGeneID2TaxonomyIDMap.put(dataRecord.getGeneID(), dataRecord.getTaxonID());
+				entrezGeneIDsToInclude.remove(dataRecord.getGeneID());
+			}
+		}
+		if (!entrezGeneIDsToInclude.isEmpty()) {
+			throw new RuntimeException(String.format(
+					"Unable to map all gene IDs to a taxonomy ID. Missing mappings for gene IDs: %s",
+					entrezGeneIDsToInclude.toString()));
+		}
+		return entrezGeneID2TaxonomyIDMap;
+	}
+
 }
