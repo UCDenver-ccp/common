@@ -9,13 +9,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.zip.GZIPInputStream;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 
 import edu.ucdenver.ccp.util.collections.CollectionsUtil;
+import edu.ucdenver.ccp.util.test.DefaultTestCase;
 
-public class FileArchiveUtilTest {
+public class FileArchiveUtilTest extends DefaultTestCase {
 
 	private final List<String> expectedLinesInFile = CollectionsUtil.createList("This is line 1.", "This is line 2.");
 	private final Set<String> expectedFileNamesOnFirstLevel = CollectionsUtil.createSet("file1.txt", "file2.txt",
@@ -31,13 +30,9 @@ public class FileArchiveUtilTest {
 	private final String SAMPLE_ZIPPED_TARBALL_FILE_NAME = "sampleTarball.tgz";
 	private final String SAMPLE_ZIP_FILE_NAME = "sampleZipFile.zip";
 
-	@Rule
-	public TemporaryFolder folder = new TemporaryFolder();
-
 	@Test
 	public void testUnzipGzFile() throws Exception {
-		GZIPInputStream gis = new GZIPInputStream(FileArchiveUtilTest.class
-				.getResourceAsStream(SAMPLE_GZIPPED_FILE_NAME));
+		GZIPInputStream gis = new GZIPInputStream(getResourceFromClasspath(this.getClass(), SAMPLE_GZIPPED_FILE_NAME));
 		File outputDirectory = folder.newFolder("unzippedGZFile");
 		File unzippedFile = new File(outputDirectory.getAbsolutePath() + File.separator + "sampleFile.txt");
 		FileArchiveUtil.unzip(gis, unzippedFile.getName(), outputDirectory);
