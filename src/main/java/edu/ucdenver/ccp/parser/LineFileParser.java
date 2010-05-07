@@ -2,6 +2,7 @@ package edu.ucdenver.ccp.parser;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -23,6 +24,16 @@ public abstract class LineFileParser<T extends LineFileData> implements Iterator
 
 	public LineFileParser(File inputFile) throws IOException {
 		this.lineIterator = FileLoaderUtil.getLineIterator(inputFile);
+		initialize();
+	}
+	
+	public LineFileParser(InputStream inputStream, String encoding, String commentIndicator) throws IOException {
+		this.lineIterator = FileLoaderUtil.getLineIterator(inputStream, encoding, commentIndicator);
+		initialize();
+	}
+	
+	public LineFileParser(InputStream inputStream, String commentIndicator) throws IOException {
+		this.lineIterator = FileLoaderUtil.getLineIterator(inputStream, commentIndicator);
 		initialize();
 	}
 
