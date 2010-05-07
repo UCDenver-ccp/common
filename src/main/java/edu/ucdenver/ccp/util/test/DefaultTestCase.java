@@ -5,6 +5,7 @@ import java.io.InputStream;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 
@@ -32,6 +33,8 @@ public class DefaultTestCase {
 	 * @return
 	 */
 	protected InputStream getResourceFromClasspath(Class<?> clazz, String resourceName) {
-		return clazz.getResourceAsStream(resourceName);
+		InputStream is =  clazz.getResourceAsStream(resourceName);
+		Assert.assertNotNull(is);
+		return is;
 	}
 }
