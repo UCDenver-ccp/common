@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 public class CollectionsUtil {
 
@@ -64,6 +65,22 @@ public class CollectionsUtil {
 			map.put(mapKeyValuePairs[i], mapKeyValuePairs[i + 1]);
 		}
 		return map;
+	}
+
+	/**
+	 * Combines all input maps and returns the aggregate map.
+	 * 
+	 * @param <K>
+	 * @param <V>
+	 * @param maps
+	 * @return
+	 */
+	public static <K, V> Map<K, V> combineMaps(Map<K, V>... maps) {
+		Map<K, V> combinedMap = new HashMap<K, V>();
+		for (Map<K, V> map : maps) {
+			combinedMap.putAll(map);
+		}
+		return combinedMap;
 	}
 
 	/**
