@@ -94,4 +94,23 @@ public class CollectionsUtil {
 		return sequence;
 	}
 
+	/**
+	 * Adds a key/value pair to a one2many map, where the many are stored in a set.
+	 * 
+	 * @param <K>
+	 * @param <V>
+	 * @param key
+	 * @param value
+	 * @param one2ManyMap
+	 */
+	public static <K, V> void addToOne2ManyMap(K key, V value, Map<K, Set<V>> one2ManyMap) {
+		if (one2ManyMap.containsKey(key)) {
+			one2ManyMap.get(key).add(value);
+		} else {
+			Set<V> newSet = new HashSet<V>();
+			newSet.add(value);
+			one2ManyMap.put(key, newSet);
+		}
+	}
+
 }
