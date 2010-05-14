@@ -30,12 +30,33 @@ public class StringUtil {
 	public static String removeSuffix(String inputStr, String suffix) throws IllegalArgumentException {
 		if (inputStr != null && suffix != null) {
 			if (inputStr.endsWith(suffix)) {
-				return inputStr.substring(0, inputStr.length() - suffix.length());
+				return removeNTrailingCharacters(inputStr, suffix.length());
 			}
 		}
 		throw new IllegalArgumentException(String.format(
 				"Invalid input. Cannot remove suffix. Input String \"%s\" does not end with suffix \"%s\"", inputStr,
 				suffix));
+	}
+
+	/**
+	 * Returns a String after removing n characters at the end of the input String
+	 * 
+	 * @param inputStr
+	 * @param n
+	 * @return
+	 */
+	public static String removeNTrailingCharacters(String inputStr, int n) {
+		return inputStr.substring(0, inputStr.length() - n);
+	}
+
+	/**
+	 * Returns a String after removing the final character of the input String
+	 * 
+	 * @param inputStr
+	 * @return
+	 */
+	public static String removeLastCharacter(String inputStr) {
+		return removeNTrailingCharacters(inputStr, 1);
 	}
 
 	/**
