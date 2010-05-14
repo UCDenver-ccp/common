@@ -1,11 +1,11 @@
 package edu.ucdenver.ccp.util.collections;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -96,12 +96,40 @@ public class CollectionsUtilTest {
 		expectedMap.put(2, CollectionsUtil.createSet("d"));
 
 		Map<Integer, Set<String>> map = new HashMap<Integer, Set<String>>();
-		CollectionsUtil.addToOne2ManyMap(1, "a", map);
-		CollectionsUtil.addToOne2ManyMap(2, "d", map);
-		CollectionsUtil.addToOne2ManyMap(1, "b", map);
-		CollectionsUtil.addToOne2ManyMap(1, "c", map);
+		CollectionsUtil.addToOne2ManyUniqueMap(1, "a", map);
+		CollectionsUtil.addToOne2ManyUniqueMap(2, "d", map);
+		CollectionsUtil.addToOne2ManyUniqueMap(1, "b", map);
+		CollectionsUtil.addToOne2ManyUniqueMap(1, "c", map);
 
 		assertEquals(String.format("Maps should be equal."), expectedMap, map);
+	}
+
+	@Test
+	public void testComputeCombinations() throws Exception {
+		Collection<String> list0 = CollectionsUtil.createList("A", "B");
+		Collection<String> list1 = CollectionsUtil.createList("1", "2", "3");
+		Collection<String> list2 = CollectionsUtil.createList("X");
+		Collection<String> list3 = CollectionsUtil.createList("7", "8");
+
+		List<List<String>> expectedTuples = new ArrayList<List<String>>();
+		expectedTuples.add(CollectionsUtil.createList("A", "1", "X", "7"));
+		expectedTuples.add(CollectionsUtil.createList("A", "1", "X", "8"));
+		expectedTuples.add(CollectionsUtil.createList("A", "2", "X", "7"));
+		expectedTuples.add(CollectionsUtil.createList("A", "2", "X", "8"));
+		expectedTuples.add(CollectionsUtil.createList("A", "3", "X", "7"));
+		expectedTuples.add(CollectionsUtil.createList("A", "3", "X", "8"));
+		expectedTuples.add(CollectionsUtil.createList("B", "1", "X", "7"));
+		expectedTuples.add(CollectionsUtil.createList("B", "1", "X", "8"));
+		expectedTuples.add(CollectionsUtil.createList("B", "2", "X", "7"));
+		expectedTuples.add(CollectionsUtil.createList("B", "2", "X", "8"));
+		expectedTuples.add(CollectionsUtil.createList("B", "3", "X", "7"));
+		expectedTuples.add(CollectionsUtil.createList("B", "3", "X", "8"));
+
+		List<List<String>> tuples = CollectionsUtil.createList(CollectionsUtil.computeCombinations(CollectionsUtil.createList(list0, list1, list2,
+				list3)));
+
+		assertEquals(String.format("Tuples should be as expected."), expectedTuples, tuples);
+
 	}
 
 }

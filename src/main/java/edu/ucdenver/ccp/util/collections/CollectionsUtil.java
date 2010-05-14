@@ -2,8 +2,10 @@ package edu.ucdenver.ccp.util.collections;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,6 +27,21 @@ public class CollectionsUtil {
 			return null;
 		}
 		return Arrays.asList(listEntries);
+	}
+
+	/**
+	 * Returns the contents of an iterator as a list
+	 * 
+	 * @param <T>
+	 * @param iter
+	 * @return
+	 */
+	public static <T> List<T> createList(Iterator<T> iter) {
+		List<T> list = new ArrayList<T>();
+		while (iter.hasNext()) {
+			list.add(iter.next());
+		}
+		return list;
 	}
 
 	/**
@@ -122,16 +139,77 @@ public class CollectionsUtil {
 	 * @param value
 	 * @param one2ManyMap
 	 */
-	public static <K, V> void addToOne2ManyMap(K key, V value, Map<K, Set<V>> one2ManyMap) {
+	public static <K, V> void addToOne2ManyUniqueMap(K key, V value, Map<K, Set<V>> one2ManyMap) {
 		if (one2ManyMap.containsKey(key)) {
 			if (one2ManyMap.get(key).contains(value)) {
-				logger.debug(String.format("Duplicate key/value pair detected: %s/%s",key, value));
-			} else 
-			one2ManyMap.get(key).add(value);
+				logger.debug(String.format("Duplicate key/value pair detected: %s/%s", key, value));
+			} else
+				one2ManyMap.get(key).add(value);
 		} else {
 			Set<V> newSet = new HashSet<V>();
 			newSet.add(value);
 			one2ManyMap.put(key, newSet);
+		}
+	}
+
+	public static <K, V> void addToOne2ManyMap(K key, V value, Map<K, Collection<V>> one2ManyMap) {
+		if (one2ManyMap.containsKey(key)) {
+			one2ManyMap.get(key).add(value);
+		} else {
+			Collection<V> newCollection = new ArrayList<V>();
+			newCollection.add(value);
+			one2ManyMap.put(key, newCollection);
+		}
+	}
+
+	/**
+	 * This method produces combinations by taking a single entry for each input list. For example,
+	 * if the input lists were: list0=[A,B], list1=[Q], list2=[Y,Z] <br>
+	 * The resulting output would be Lists of length 3 containing the following tuples:<br>
+	 * A Q Y<br>
+	 * A Q Z<br>
+	 * B Q Y<br>
+	 * B Q Z<br>
+	 * 
+	 * @param <T>
+	 * @param lists
+	 * @return
+	 */
+	public static <T> Iterator<List<T>> computeCombinations(List<Collection<T>> lists) {
+		if (lists.size() > 1) {
+			List<List<T>> tuples = new ArrayList<List<T>>();
+			for (T t : lists.get(0)) {
+				List<T> entries = new ArrayList<T>();
+				entries.add(t);
+				createTuple(tuples, entries, lists);
+			}
+			return tuples.iterator();
+		}
+		throw new RuntimeException("Cannot compute combinations with less than two lists.");
+	}
+
+	/**
+	 * This recursive method is used by the computeCombinations() method. It recursively adds tuples
+	 * to the input tuples list as they are formed.
+	 * 
+	 * @param <T>
+	 * @param tuples
+	 * @param entries
+	 * @param lists
+	 */
+	private static <T> void createTuple(List<List<T>> tuples, List<T> entries, List<Collection<T>> lists) {
+		if (entries.size() == lists.size() - 1) {
+			for (T t : lists.get(entries.size())) {
+				List<T> tuple = new ArrayList<T>(entries);
+				tuple.add(t);
+				tuples.add(tuple);
+			}
+		} else {
+			for (T t : lists.get(entries.size())) {
+				List<T> updatedEntries = new ArrayList<T>(entries);
+				updatedEntries.add(t);
+				createTuple(tuples, updatedEntries, lists);
+			}
 		}
 	}
 
