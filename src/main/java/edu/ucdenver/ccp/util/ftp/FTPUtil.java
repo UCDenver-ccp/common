@@ -23,8 +23,9 @@ import edu.ucdenver.ccp.util.file.FileUtil;
 public class FTPUtil {
 	private static final Logger logger = Logger.getLogger(FTPUtil.class);
 	private static final int BUFFER_SIZE = 32768000;
+	private static final String ANONYMOUS = "anonymous";
 
-	public static enum FILE_TYPE {
+	public static enum FileType {
 		ASCII(FTPClient.ASCII_FILE_TYPE), BINARY(FTPClient.BINARY_FILE_TYPE);
 		private final int type;
 
@@ -32,7 +33,7 @@ public class FTPUtil {
 			return type;
 		}
 
-		private FILE_TYPE(int type) {
+		private FileType(int type) {
 			this.type = type;
 		}
 	};
@@ -70,6 +71,12 @@ public class FTPUtil {
 		return login(ftpServer, ftpUsername, ftpPassword, ftpClient);
 	}
 
+	
+	public static FTPClient initializeFtpClient(String ftpServer) throws SocketException, IOException {
+		FTPClient ftpClient = connect(ftpServer, -1);
+		return login(ftpServer, ANONYMOUS, ANONYMOUS, ftpClient);
+	}
+	
 	/**
 	 * Makes the FTP connection using the specified port. If port < 0, then the default port is
 	 * used.
@@ -142,6 +149,15 @@ public class FTPUtil {
 		}
 	}
 
+	public static File downloadFile(String ftpServer, int port, String remotePath,String fileName, FileType fileType, File workDirectory, String username, String password) throws IOException {
+		FTPClient ftpClient = FTPUtil.initializeFtpClient(ftpServer, port, username, password);
+    	FTPUtil.navigateToFtpDirectory(ftpClient, remotePath);
+    	File downloadedFile = FTPUtil.downloadFile(ftpClient, fileName, fileType, workDirectory);
+    	FTPUtil.closeFtpClient(ftpClient);
+    	return downloadedFile;
+	}
+	
+	
 	/**
 	 * Downloads a file by name from the connected FTP server to the local storage directory.
 	 * 
@@ -151,7 +167,7 @@ public class FTPUtil {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public static File downloadFile(FTPClient ftpClient, String ftpFileName, FTPUtil.FILE_TYPE ftpFileType,
+	public static File downloadFile(FTPClient ftpClient, String ftpFileName, FTPUtil.FileType ftpFileType,
 			File localStorageDirectory) throws FileNotFoundException, IOException {
 		OutputStream localOutputStream = null;
 		File outputFile = FileUtil.appendPathElementsToDirectory(localStorageDirectory, ftpFileName);
@@ -175,7 +191,7 @@ public class FTPUtil {
 	 * @param localOutputStream
 	 * @throws IOException
 	 */
-	public static void downloadFile(FTPClient ftpClient, String ftpFileName, FTPUtil.FILE_TYPE ftpFileType,
+	public static void downloadFile(FTPClient ftpClient, String ftpFileName, FTPUtil.FileType ftpFileType,
 			OutputStream localOutputStream) throws IOException {
 		checkFtpClientConnection(ftpClient);
 		logger.info(String.format("Downloading file: %s", ftpFileName));
@@ -221,7 +237,7 @@ public class FTPUtil {
 	 * @param localStorageDirectory
 	 * @throws IOException
 	 */
-	public static void downloadAllFiles(FTPClient ftpClient, String fileSuffix, FTPUtil.FILE_TYPE fileType,
+	public static void downloadAllFiles(FTPClient ftpClient, String fileSuffix, FTPUtil.FileType fileType,
 			File localStorageDirectory) throws IOException {
 		downloadAllFiles(ftpClient, new HashSet<String>(), fileSuffix, fileType, localStorageDirectory);
 	}
@@ -239,7 +255,7 @@ public class FTPUtil {
 	 * @throws IOException
 	 */
 	public static Collection<File> downloadAllFiles(FTPClient ftpClient, Set<String> fileNamesToLeaveOnServer,
-			String fileSuffix, FTPUtil.FILE_TYPE fileType, File localStorageDirectory) throws IOException {
+			String fileSuffix, FTPUtil.FileType fileType, File localStorageDirectory) throws IOException {
 		checkFtpClientConnection(ftpClient);
 		Collection<File> downloadedFiles = new ArrayList<File>();
 		List<FTPFile> filesAvailableForDownload = getFilesAvailableForDownload(ftpClient, fileSuffix);
@@ -264,7 +280,7 @@ public class FTPUtil {
 	 * @throws IOException
 	 */
 	public static Collection<File> downloadMissingFiles(FTPClient ftpClient, String fileSuffix,
-			FTPUtil.FILE_TYPE fileType, File localStorageDirectory) throws IOException {
+			FTPUtil.FileType fileType, File localStorageDirectory) throws IOException {
 		Set<String> locallyStoredFileNames = new HashSet<String>(Arrays.asList(localStorageDirectory.list()));
 		return downloadAllFiles(ftpClient, locallyStoredFileNames, fileSuffix, fileType, localStorageDirectory);
 	}
@@ -283,7 +299,7 @@ public class FTPUtil {
 	 * @throws IOException
 	 */
 	public static Collection<File> syncLocalDirectoryWithFtpDirectory(FTPClient ftpClient, File localStorageDirectory,
-			String fileSuffix, FILE_TYPE fileType) throws SocketException, IOException {
+			String fileSuffix, FileType fileType) throws SocketException, IOException {
 		FileUtil.validateDirectory(localStorageDirectory);
 		return FTPUtil.downloadMissingFiles(ftpClient, fileSuffix, fileType, localStorageDirectory);
 	}
