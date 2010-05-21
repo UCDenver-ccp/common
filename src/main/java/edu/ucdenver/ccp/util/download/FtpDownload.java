@@ -12,11 +12,17 @@ import edu.ucdenver.ccp.util.ftp.FTPUtil.FileType;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface FtpDownload {
-    String server();
-    int port() default -1;
-    String path();
-    String filename();
-    FileType filetype();
-    String username() default "anonymous";
-    String password() default "anonymous";
+	String server();
+
+	int port() default -1;
+
+	String path();
+
+	String filename();
+
+	FileType filetype();
+
+	String username() default "anonymous";
+
+	String password() default "anonymous";
 }

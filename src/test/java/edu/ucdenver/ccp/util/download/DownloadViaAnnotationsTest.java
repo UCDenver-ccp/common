@@ -45,21 +45,18 @@ public class DownloadViaAnnotationsTest extends DefaultTestCase {
 		File workDirectory = folder.newFolder("workDir");
 		boolean clean = true;
 		MyFileProcessor fileProcessor = new MyFileProcessor(workDirectory, clean);
-		assertEquals("should be file5.txt", "file5.txt", fileProcessor
-				.getFileToProcess().getName());
+		assertEquals("should be file5.txt", "file5.txt", fileProcessor.getFileToProcess().getName());
 		assertTrue("file should exist locally", fileProcessor.getFileToProcess().exists());
 	}
 
 	private class MyFileProcessor {
 
-		@FtpDownload(server = FTP_HOST, port = FTP_PORT, path = "", filename = "file5.txt", 
-				filetype = FileType.ASCII)
+		@FtpDownload(server = FTP_HOST, port = FTP_PORT, path = "", filename = "file5.txt", filetype = FileType.ASCII)
 		private File fileToProcess;
 
-		public MyFileProcessor(File workDirectory, boolean clean)
-				throws SocketException, IOException, IllegalArgumentException,
-				IllegalAccessException {
-			DownloadUtil.download(this, workDirectory,MockFtpServer.USER_NAME, MockFtpServer.PASSWORD, clean);
+		public MyFileProcessor(File workDirectory, boolean clean) throws SocketException, IOException,
+				IllegalArgumentException, IllegalAccessException {
+			DownloadUtil.download(this, workDirectory, MockFtpServer.USER_NAME, MockFtpServer.PASSWORD, clean);
 		}
 
 		public File getFileToProcess() {

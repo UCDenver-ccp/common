@@ -11,8 +11,8 @@ import edu.ucdenver.ccp.util.ftp.FTPUtil;
 public class DownloadUtil {
 
 	/**
-	 * This method works in conjunction with the FtpDownload annotation to
-	 * automatically download via FTP a specified file.
+	 * This method works in conjunction with the FtpDownload annotation to automatically download
+	 * via FTP a specified file.
 	 * 
 	 * @param object
 	 * @param workDirectory
@@ -23,8 +23,7 @@ public class DownloadUtil {
 	 * @throws IllegalAccessException
 	 */
 	public static void download(Object object, File workDirectory, String userName, String password, boolean clean)
-			throws SocketException, IOException, IllegalArgumentException,
-			IllegalAccessException {
+			throws SocketException, IOException, IllegalArgumentException, IllegalAccessException {
 		for (Field field : object.getClass().getDeclaredFields()) {
 			if (field.isAnnotationPresent(FtpDownload.class)) {
 				FtpDownload ftpd = field.getAnnotation(FtpDownload.class);
@@ -32,12 +31,10 @@ public class DownloadUtil {
 					userName = ftpd.username();
 				if (password == null)
 					password = ftpd.password();
-				File downloadedFile = FileUtil.appendPathElementsToDirectory(
-						workDirectory, ftpd.filename());
+				File downloadedFile = FileUtil.appendPathElementsToDirectory(workDirectory, ftpd.filename());
 				if (!fileExists(downloadedFile, clean)) {
-					downloadedFile = FTPUtil.downloadFile(ftpd.server(), ftpd
-							.port(), ftpd.path(), ftpd.filename(), ftpd
-							.filetype(), workDirectory, userName, password);
+					downloadedFile = FTPUtil.downloadFile(ftpd.server(), ftpd.port(), ftpd.path(), ftpd.filename(),
+							ftpd.filetype(), workDirectory, userName, password);
 				}
 				field.setAccessible(true);
 				field.set(object, downloadedFile);
@@ -46,9 +43,8 @@ public class DownloadUtil {
 	}
 
 	/**
-	 * If clean is true, then this method always returns false (and the file is
-	 * deleted). If clean is false, then this method returns
-	 * downloadedFile.exists()
+	 * If clean is true, then this method always returns false (and the file is deleted). If clean
+	 * is false, then this method returns downloadedFile.exists()
 	 * 
 	 * @param downloadedFile
 	 * @param clean
