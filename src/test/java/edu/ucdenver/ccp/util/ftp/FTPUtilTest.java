@@ -14,7 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import edu.ucdenver.ccp.util.collections.CollectionsUtil;
-import edu.ucdenver.ccp.util.ftp.FTPUtil.FILE_TYPE;
+import edu.ucdenver.ccp.util.ftp.FTPUtil.FileType;
 import edu.ucdenver.ccp.util.test.DefaultTestCase;
 import edu.ucdenver.ccp.util.test.MockFtpServer;
 
@@ -42,7 +42,7 @@ public class FTPUtilTest extends DefaultTestCase {
 	public void testSyncDirectoryWithFtpDirectory() throws Exception {
 		FTPClient ftpClient = FTPUtil.initializeFtpClient(FTP_HOST, FTP_PORT, MockFtpServer.USER_NAME,
 				MockFtpServer.PASSWORD);
-		FTPUtil.syncLocalDirectoryWithFtpDirectory(ftpClient, localDirectory, null, FILE_TYPE.ASCII);
+		FTPUtil.syncLocalDirectoryWithFtpDirectory(ftpClient, localDirectory, null, FileType.ASCII);
 		FTPUtil.closeFtpClient(ftpClient);
 		assertEquals(String.format("Should be 6 files in the local directory after syncing directories."), 6,
 				localDirectory.list().length);
@@ -56,7 +56,7 @@ public class FTPUtilTest extends DefaultTestCase {
 	public void testSyncDirectoryWithFtpDirectoryWithFileSuffix() throws Exception {
 		FTPClient ftpClient = FTPUtil.initializeFtpClient(FTP_HOST, FTP_PORT, MockFtpServer.USER_NAME,
 				MockFtpServer.PASSWORD);
-		FTPUtil.syncLocalDirectoryWithFtpDirectory(ftpClient, localDirectory, ".txt", FILE_TYPE.ASCII);
+		FTPUtil.syncLocalDirectoryWithFtpDirectory(ftpClient, localDirectory, ".txt", FileType.ASCII);
 		FTPUtil.closeFtpClient(ftpClient);
 		assertEquals(String.format("Should be 5 files in the local directory after syncing directories."), 5,
 				localDirectory.list().length);
