@@ -18,9 +18,9 @@ import edu.ucdenver.ccp.util.file.FileUtil;
  * @author malenkiy
  */
 public class MockFtpServer {
-	public static String USER_NAME = "anonymous";
-	public static String PASSWORD = "password";
-	public static String HOME_DIRECTORY = "/";
+	public static final String USER_NAME = "anonymous";
+	public static final String PASSWORD = "password";
+	public static final String HOME_DIRECTORY = "/";
 
 	FakeFtpServer server;
 	protected UnixFakeFileSystem fs;
