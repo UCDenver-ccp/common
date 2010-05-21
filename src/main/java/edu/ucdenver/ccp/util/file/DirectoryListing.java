@@ -16,7 +16,7 @@ import org.apache.commons.io.filefilter.IOFileFilter;
 
 public class DirectoryListing {
 
-	static List<File> getFiles(String dirPath, String suffix, Boolean recurse){
+	public static List<File> getFiles(String dirPath, String suffix, Boolean recurse){
 	    /* Find all nxml files in the directory and place in List nxmlFiles */
 	    
 	    IOFileFilter dirFilter = FileFilterUtils.andFileFilter(
