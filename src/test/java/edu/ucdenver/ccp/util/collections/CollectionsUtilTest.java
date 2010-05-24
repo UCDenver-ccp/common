@@ -125,8 +125,10 @@ public class CollectionsUtilTest {
 		expectedTuples.add(CollectionsUtil.createList("B", "3", "X", "7"));
 		expectedTuples.add(CollectionsUtil.createList("B", "3", "X", "8"));
 
-		List<List<String>> tuples = CollectionsUtil.createList(CollectionsUtil.computeCombinations(CollectionsUtil.createList(list0, list1, list2,
-				list3)));
+		@SuppressWarnings("unchecked")
+		List<Collection<String>> collectionOfListsToCombine = CollectionsUtil.createList(list0, list1, list2, list3);
+		List<List<String>> tuples = CollectionsUtil.createList(CollectionsUtil
+				.computeCombinations(collectionOfListsToCombine));
 
 		assertEquals(String.format("Tuples should be as expected."), expectedTuples, tuples);
 
