@@ -6,12 +6,12 @@
 	<classpathentry kind="src" path="src/main/config"/>
 	<classpathentry kind="src" path="src/test/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="src/main/resources/ant-1.8.0.jar"/>
-	<classpathentry kind="lib" path="src/main/resources/commons-io-1.4.jar"/>
-	<classpathentry kind="lib" path="src/main/resources/commons-net-2.0.jar"/>
-	<classpathentry kind="lib" path="src/main/resources/junit-4.8.1.jar"/>
-	<classpathentry kind="lib" path="src/main/resources/log4j-1.2.12.jar"/>
+	<classpathentry exported="true" kind="lib" path="src/main/resources/ant-1.8.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="src/main/resources/commons-io-1.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="src/main/resources/commons-net-2.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="src/main/resources/junit-4.8.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="src/main/resources/log4j-1.2.12.jar"/>
 	<classpathentry kind="lib" path="src/main/resources/lucene-core-3.0.1.jar"/>
-	<classpathentry kind="lib" path="src/main/resources/MockFtpServer-2.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="src/main/resources/MockFtpServer-2.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
