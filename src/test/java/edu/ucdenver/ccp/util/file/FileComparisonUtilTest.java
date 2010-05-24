@@ -18,7 +18,6 @@ import edu.ucdenver.ccp.util.string.RegExPatterns;
 import edu.ucdenver.ccp.util.test.DefaultTestCase;
 
 public class FileComparisonUtilTest extends DefaultTestCase {
-	private static final String delimiter = "\t";
 	private static final String COLUMN_DELIMITER_REGEX = RegExPatterns.TAB;
 
 	private File baseFile;
