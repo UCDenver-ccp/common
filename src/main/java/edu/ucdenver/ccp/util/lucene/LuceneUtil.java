@@ -63,6 +63,10 @@ public class LuceneUtil {
 	private final FSDirectory indexDirectory;
 	private final Analyzer analyzer;
 	private final Version version;
+	public Version getVersion() {
+		return version;
+	}
+
 	private RAMDirectory ramDirectory = null;
 
 	private IndexWriter writer;
