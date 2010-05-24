@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
@@ -55,7 +54,6 @@ import edu.ucdenver.ccp.util.string.StringBufferUtil;
  * 
  */
 public class LuceneSearch {
-	private static final Logger logger = Logger.getLogger(LuceneSearch.class);
 
 	private final Directory indexDirectory;
 
