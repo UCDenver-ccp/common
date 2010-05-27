@@ -45,6 +45,19 @@ public class TestUtil {
 	public static File populateTestFile(TemporaryFolder folder, String fileName, List<String> lines)
 			throws FileNotFoundException, IOException {
 		File file = folder.newFile(fileName);
+		return populateTestFile(file, lines);
+	}
+
+	/**
+	 * Populates the input file with the specified lines
+	 * 
+	 * @param file
+	 * @param lines
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	public static File populateTestFile(File file, List<String> lines) throws FileNotFoundException, IOException {
 		PrintStream ps = new PrintStream(file);
 		for (String line : lines) {
 			ps.println(line);
