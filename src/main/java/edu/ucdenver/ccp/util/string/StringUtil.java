@@ -3,7 +3,15 @@ package edu.ucdenver.ccp.util.string;
 import static edu.ucdenver.ccp.util.string.RegExPatterns.HAS_NUMBERS_ONLY_OPT_NEG;
 import static edu.ucdenver.ccp.util.string.RegExPatterns.HAS_NUMBERS_ONLY_OPT_NEG_ZERO_START;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.regex.Pattern;
+
+import org.apache.commons.io.IOUtils;
 
 public class StringUtil {
 
@@ -85,6 +93,25 @@ public class StringUtil {
 		}
 		Pattern p = Pattern.compile(regexStr);
 		return p.matcher(inputStr).find();
+	}
+
+	/**
+	 * Converts the input InputStream to a String
+	 * 
+	 * @param is
+	 * @param encoding
+	 * @return
+	 * @throws IOException
+	 */
+	public static String convertStream(InputStream is, String encoding) throws IOException {
+		StringWriter sw = new StringWriter();
+		try {
+			IOUtils.copy(is, sw, encoding);
+		} finally {
+			IOUtils.closeQuietly(is);
+			IOUtils.closeQuietly(sw);
+		}
+		return sw.toString();
 	}
 
 }
