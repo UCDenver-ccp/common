@@ -9,10 +9,18 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.StringWriter;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 
 public class FileUtil {
+
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(FileUtil.class);
 
 	private FileUtil() {
 		// do not instantiate
@@ -173,9 +181,10 @@ public class FileUtil {
 		copy(fis, os);
 		fis.close();
 	}
-	
+
 	/**
 	 * Copies the contents of one file to another
+	 * 
 	 * @param fromFile
 	 * @param toFile
 	 * @throws IOException
@@ -188,6 +197,16 @@ public class FileUtil {
 		fis.close();
 		fos.close();
 		validateFile(toFile);
+	}
+
+	public static String copyToString(File fromFile, String encoding) throws IOException {
+		validateFile(fromFile);
+		FileInputStream fis = new FileInputStream(fromFile);
+		StringWriter sw = new StringWriter();
+		IOUtils.copy(fis, sw, encoding);
+		fis.close();
+		sw.close();
+		return sw.toString();
 	}
 
 	/**
@@ -210,10 +229,15 @@ public class FileUtil {
 	 * 
 	 * @return
 	 */
-	public static FilenameFilter createFilenameSuffixFilter(final String fileSuffix) {
+	public static FilenameFilter createFilenameSuffixFilter(final String... fileSuffixes) {
 		FilenameFilter filter = new FilenameFilter() {
 			public boolean accept(File dir, String name) {
-				return name.endsWith(fileSuffix);
+				for (String fileSuffix : fileSuffixes) {
+					if (name.endsWith(fileSuffix)) {
+						return true;
+					}
+				}
+				return false;
 			}
 		};
 		return filter;
@@ -257,8 +281,9 @@ public class FileUtil {
 	}
 
 	/**
-	 * Returns a reference to a File that is specified by the input file name, and 
-	 * located in the input directory. The file is not created, only the reference.
+	 * Returns a reference to a File that is specified by the input file name, and located in the
+	 * input directory. The file is not created, only the reference.
+	 * 
 	 * @param directory
 	 * @param fileName
 	 * @return
@@ -266,9 +291,102 @@ public class FileUtil {
 	public static File appendPathElementsToDirectory(File directory, String... pathElements) {
 		String path = directory.getPath();
 		for (String pathElement : pathElements) {
-			path+= (File.separator + pathElement);
+			path += (File.separator + pathElement);
 		}
 		return new File(path);
 	}
-	
+
+	/**
+	 * Returns an Iterator<File> over the files in the input directory
+	 * 
+	 * @param fileOrDirectory
+	 * @param recurse
+	 * @param fileSuffixes
+	 * @return
+	 * @throws IOException
+	 */
+	@SuppressWarnings("unchecked")
+	public static Iterator<File> getFileIterator(File fileOrDirectory, boolean recurse, String... fileSuffixes)
+			throws IOException {
+		if (FileUtil.isFileValid(fileOrDirectory) == null) {
+			return createSingleFileIterator(fileOrDirectory, fileSuffixes);
+		} else if (FileUtil.isDirectoryValid(fileOrDirectory) == null) {
+			fileSuffixes = removeLeadingPeriods(fileSuffixes);
+			return FileUtils.iterateFiles(fileOrDirectory, fileSuffixes, recurse);
+		} else
+			throw new IOException(String.format("Input is not a valid file or directory: %s", fileOrDirectory
+					.getAbsolutePath()));
+	}
+
+	/**
+	 * 
+	 * leading periods need to be removed or else the FileUtils.iteratorFiles method does not work
+	 * as expected
+	 * 
+	 * @param fileSuffixes
+	 * @return
+	 */
+	private static String[] removeLeadingPeriods(String[] fileSuffixes) {
+		if (fileSuffixes != null) {
+			for (int i = 0; i < fileSuffixes.length; i++) {
+				if (fileSuffixes[i].startsWith(".")) {
+					fileSuffixes[i] = fileSuffixes[i].substring(1);
+				}
+			}
+		}
+		return fileSuffixes;
+	}
+
+	/**
+	 * Creates an iterator over a single File object
+	 * 
+	 * @param file
+	 * @param fileSuffixes
+	 * @return
+	 */
+	private static Iterator<File> createSingleFileIterator(File file, String... fileSuffixes) {
+		if (fileSuffixes != null)
+			if (!FileUtil.createFilenameSuffixFilter(fileSuffixes).accept(file.getParentFile(), file.getName()))
+				file = null;
+
+		final File singleFile = file;
+
+		return new Iterator<File>() {
+			private File nextFile = singleFile;
+
+			@Override
+			public boolean hasNext() {
+				return nextFile != null;
+			}
+
+			@Override
+			public File next() {
+				if (!hasNext()) {
+					throw new NoSuchElementException();
+				}
+
+				File fileToReturn = nextFile;
+				nextFile = null;
+				return fileToReturn;
+			}
+
+			@Override
+			public void remove() {
+				throw new UnsupportedOperationException("The remove() method is not supported for this iterator.");
+			}
+		};
+	}
+
+	/**
+	 * Returns an Iterator<File> over the files in the input directory
+	 * 
+	 * @param fileOrDirectory
+	 * @param recurse
+	 * @return
+	 * @throws IOException
+	 */
+	public static Iterator<File> getFileIterator(File fileOrDirectory, boolean recurse) throws IOException {
+		return getFileIterator(fileOrDirectory, recurse, (String[]) null);
+	}
+
 }
