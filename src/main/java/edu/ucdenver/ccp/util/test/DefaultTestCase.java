@@ -3,6 +3,9 @@ package edu.ucdenver.ccp.util.test;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.io.StringWriter;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
@@ -12,6 +15,7 @@ import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 
 import edu.ucdenver.ccp.util.file.FileUtil;
+import edu.ucdenver.ccp.util.string.StringUtil;
 
 /**
  * A super class for other test classes. It sets up a logger among other things.
@@ -41,6 +45,18 @@ public class DefaultTestCase {
 		InputStream is = clazz.getResourceAsStream(resourceName);
 		Assert.assertNotNull(is);
 		return is;
+	}
+
+	/**
+	 * Extracts the contents of a resource on the classpath and returns them as a String
+	 * 
+	 * @param clazz
+	 * @param resourceName
+	 * @return
+	 * @throws IOException
+	 */
+	protected String getContentsFromClasspathResource(Class<?> clazz, String resourceName, String encoding) throws IOException {
+		return StringUtil.convertStream(getResourceFromClasspath(clazz, resourceName), encoding);
 	}
 
 	/**
