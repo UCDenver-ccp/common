@@ -93,6 +93,8 @@ public class FileUtilTest extends DefaultTestCase {
 	private void setUpSampleDirectoryStructure() throws IOException {
 		File dir1 = folder.newFolder("dir1");
 		File dir2 = folder.newFolder("dir2");
+		@SuppressWarnings("unused")
+		File hiddenDir = folder.newFolder(".hidden");
 		File dir11 = FileUtil.appendPathElementsToDirectory(dir1, "dir11");
 		File dir111 = FileUtil.appendPathElementsToDirectory(dir11, "dir111");
 
@@ -109,6 +111,7 @@ public class FileUtilTest extends DefaultTestCase {
 		assertTrue(FileUtil.appendPathElementsToDirectory(dir11, "file5.txt").createNewFile());
 		assertTrue(FileUtil.appendPathElementsToDirectory(dir11, "file6.txt").createNewFile());
 		assertTrue(FileUtil.appendPathElementsToDirectory(dir111, "file7.txt").createNewFile());
+		assertTrue(FileUtil.appendPathElementsToDirectory(dir111, ".hiddenfile8.txt").createNewFile());
 	}
 
 	@Test
@@ -147,6 +150,14 @@ public class FileUtilTest extends DefaultTestCase {
 		checkFileIterator(FileUtil.getFileIterator(file99, true, "xml"), new HashSet<String>());
 	}
 
+	@Test
+	public void testFileIterator_pointedAtHiddenFile() throws Exception {
+		File hiddenFile = folder.newFile(".hiddenfile.txt");
+		Set<String> expectedFileNames = CollectionsUtil.createSet();
+		checkFileIterator(FileUtil.getFileIterator(hiddenFile, true), expectedFileNames);
+		checkFileIterator(FileUtil.getFileIterator(hiddenFile, true, ".txt"), expectedFileNames);
+	}
+	
 	private void checkFileIterator(Iterator<File> fileIter, Set<String> expectedFileNames) {
 		int count = 0;
 		while (fileIter.hasNext()) {

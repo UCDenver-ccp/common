@@ -15,6 +15,9 @@ import java.util.NoSuchElementException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.apache.commons.io.filefilter.HiddenFileFilter;
+import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.log4j.Logger;
 
 public class FileUtil {
@@ -297,7 +300,8 @@ public class FileUtil {
 	}
 
 	/**
-	 * Returns an Iterator<File> over the files in the input directory
+	 * Returns an Iterator<File> over the files in the input directory. Only visible (i.e. not
+	 * hidden) files and directories will be processed.
 	 * 
 	 * @param fileOrDirectory
 	 * @param recurse
@@ -312,10 +316,43 @@ public class FileUtil {
 			return createSingleFileIterator(fileOrDirectory, fileSuffixes);
 		} else if (FileUtil.isDirectoryValid(fileOrDirectory) == null) {
 			fileSuffixes = removeLeadingPeriods(fileSuffixes);
-			return FileUtils.iterateFiles(fileOrDirectory, fileSuffixes, recurse);
+			return FileUtils.iterateFiles(fileOrDirectory, createFileFilter(fileSuffixes),
+					createDirectoryFilter(recurse));
 		} else
 			throw new IOException(String.format("Input is not a valid file or directory: %s", fileOrDirectory
 					.getAbsolutePath()));
+	}
+
+	/**
+	 * Returns an IOFileFilter that accepts only file with the input suffixes. Files must also be
+	 * visible.
+	 * 
+	 * @param suffixes
+	 * @return
+	 */
+	private static IOFileFilter createFileFilter(String... suffixes) {
+		IOFileFilter fileFilter = FileFilterUtils.andFileFilter(FileFilterUtils.fileFileFilter(),
+				HiddenFileFilter.VISIBLE);
+		if (suffixes != null) {
+			for (String suffix : suffixes) {
+				fileFilter = FileFilterUtils.andFileFilter(fileFilter, FileFilterUtils.suffixFileFilter(suffix));
+			}
+		}
+		return fileFilter;
+	}
+
+	/**
+	 * Returns an IOFileFilter set up to either accept directories (if recurse == true) or to only
+	 * accept files (if recurse == false). Directories must be visible.
+	 * 
+	 * @param recurse
+	 * @return
+	 */
+	private static IOFileFilter createDirectoryFilter(boolean recurse) {
+		if (recurse)
+			return FileFilterUtils.andFileFilter(FileFilterUtils.directoryFileFilter(), HiddenFileFilter.VISIBLE);
+		else
+			return FileFilterUtils.andFileFilter(FileFilterUtils.fileFileFilter(), HiddenFileFilter.VISIBLE);
 	}
 
 	/**
@@ -338,14 +375,18 @@ public class FileUtil {
 	}
 
 	/**
-	 * Creates an iterator over a single File object
+	 * Creates an iterator over a single File object. File must be visible and must match one of the
+	 * input file suffixes if specified.
 	 * 
 	 * @param file
 	 * @param fileSuffixes
 	 * @return
 	 */
 	private static Iterator<File> createSingleFileIterator(File file, String... fileSuffixes) {
-		if (fileSuffixes != null)
+		if (file.getName().startsWith("."))
+			file = null;
+
+		if (file != null && fileSuffixes != null)
 			if (!FileUtil.createFilenameSuffixFilter(fileSuffixes).accept(file.getParentFile(), file.getName()))
 				file = null;
 
