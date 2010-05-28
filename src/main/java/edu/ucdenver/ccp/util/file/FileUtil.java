@@ -333,11 +333,14 @@ public class FileUtil {
 	private static IOFileFilter createFileFilter(String... suffixes) {
 		IOFileFilter fileFilter = FileFilterUtils.andFileFilter(FileFilterUtils.fileFileFilter(),
 				HiddenFileFilter.VISIBLE);
-		if (suffixes != null) {
-			for (String suffix : suffixes) {
-				fileFilter = FileFilterUtils.andFileFilter(fileFilter, FileFilterUtils.suffixFileFilter(suffix));
+		if (suffixes != null && suffixes.length > 0) {
+				IOFileFilter suffixFilter = FileFilterUtils.suffixFileFilter(suffixes[0]);
+				for (int i = 1; i < suffixes.length; i++) {
+					suffixFilter = FileFilterUtils.orFileFilter(suffixFilter, FileFilterUtils
+							.suffixFileFilter(suffixes[i]));
+				}
+				fileFilter = FileFilterUtils.andFileFilter(fileFilter, suffixFilter);
 			}
-		}
 		return fileFilter;
 	}
 
