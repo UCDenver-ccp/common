@@ -81,11 +81,12 @@ public class FTPUtilTest extends DefaultTestCase {
 		return localDirectory;
 	}
 
-@Test
-public void testPause() throws Exception {
-	long before = System.currentTimeMillis();
-	FTPUtil.pause(4);
-	long after = System.currentTimeMillis();
-	assertTrue(String.format("At least 4000 ms should have elapsed (%d)",after-before), 4000 <= (after-before));
-}
+	@Test
+	public void testPause() throws Exception {
+		long before = System.currentTimeMillis();
+		FTPUtil.pause(4);
+		long after = System.currentTimeMillis();
+		assertEquals(String.format("At least 4000 ms should have elapsed (%d)", after - before), 4000, after - before,
+				100);
+	}
 }
