@@ -332,7 +332,7 @@ public class FileUtil {
 	 */
 	private static IOFileFilter createFileFilter(String... suffixes) {
 		IOFileFilter fileFilter = FileFilterUtils.andFileFilter(FileFilterUtils.fileFileFilter(),
-				HiddenFileFilter.VISIBLE);
+				createVisibleFileFilter());
 		if (suffixes != null && suffixes.length > 0) {
 				IOFileFilter suffixFilter = FileFilterUtils.suffixFileFilter(suffixes[0]);
 				for (int i = 1; i < suffixes.length; i++) {
@@ -344,6 +344,11 @@ public class FileUtil {
 		return fileFilter;
 	}
 
+	
+	private static IOFileFilter createVisibleFileFilter() {
+		return FileFilterUtils.notFileFilter(FileFilterUtils.prefixFileFilter("."));
+	}
+	
 	/**
 	 * Returns an IOFileFilter set up to either accept directories (if recurse == true) or to only
 	 * accept files (if recurse == false). Directories must be visible.
@@ -353,9 +358,9 @@ public class FileUtil {
 	 */
 	private static IOFileFilter createDirectoryFilter(boolean recurse) {
 		if (recurse)
-			return FileFilterUtils.andFileFilter(FileFilterUtils.directoryFileFilter(), HiddenFileFilter.VISIBLE);
+			return FileFilterUtils.andFileFilter(FileFilterUtils.directoryFileFilter(), createVisibleFileFilter());
 		else
-			return FileFilterUtils.andFileFilter(FileFilterUtils.fileFileFilter(), HiddenFileFilter.VISIBLE);
+			return FileFilterUtils.andFileFilter(FileFilterUtils.fileFileFilter(), createVisibleFileFilter());
 	}
 
 	/**
