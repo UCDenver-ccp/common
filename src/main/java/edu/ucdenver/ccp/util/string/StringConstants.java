@@ -27,6 +27,7 @@ public class StringConstants {
 	public static final String HYPHEN_MINUS = "\u002D";
 	public static final String FULL_STOP = "\u002E";
 	public static final String SOLIDUS = "\u002F";
+	public static final String FORWARD_SLASH = "\u002F";
 	public static final String DIGIT_ZERO = "\u0030";
 	public static final String DIGIT_ONE = "\u0031";
 	public static final String DIGIT_TWO = "\u0032";
