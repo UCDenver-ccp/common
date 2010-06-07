@@ -2,6 +2,7 @@ package edu.ucdenver.ccp.util.file;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -363,6 +364,21 @@ public class FileUtil {
 			return FileFilterUtils.andFileFilter(FileFilterUtils.fileFileFilter(), createVisibleFileFilter());
 	}
 
+	
+	/**
+	 * Returns a FileFilter that accepts directories only
+	 * 
+	 * @return
+	 */
+	public static FileFilter DIRECTORY_FILTER() {
+		return new FileFilter() {
+
+			@Override
+			public boolean accept(File file) {
+				return file.isDirectory();
+			}
+		};
+	}
 	/**
 	 * 
 	 * leading periods need to be removed or else the FileUtils.iteratorFiles method does not work
