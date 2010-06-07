@@ -82,7 +82,7 @@
 	</target>	
 	
 	<!-- Generates the unit test reports in HTML -->
-	<target name="generate.unit.test.report" if="unit.test.reports.dir.exists" depends="init-test-dirs">
+	<target name="generate.unit.test.report" if="unit.test.reports.dir.exists">
 		<antcall target="generate.junit.report">
 			<param name="test.dir" value="${build.test.unit.dir}" />
 		</antcall>
