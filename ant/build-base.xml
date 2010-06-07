@@ -1,0 +1,138 @@
+<project name="build-base" default="" basedir=".." >
+
+	<import file="build-properties.xml" />
+	<import file="build-qa.xml" />
+	<import file="build-dependencies.xml" />
+
+	<property name="ant.dir" value="ant" />
+	<property name="ant.external.lib.dir" value="${basedir}/../common/${ant.dir}/lib" />
+
+	<property name="test-resources.jar.name" value="${project.name}-test-resources.jar" />
+
+	
+	<path id="ant.contrib.classpath">
+		<fileset dir="${ant.external.lib.dir}">
+			<include name="**/ant-contrib*.jar" />
+		</fileset>
+	</path>
+	
+	<!-- The compile classpath contains jars necessary for compile- and run-time. -->
+	<path id="classpath.compile">
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<path refid="classpath.compile.dependency"/>
+	</path>
+
+	<path id="classpath.compile.test">
+		<fileset dir="${lib.test.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<pathelement path="${source.test.dir}" />		
+	</path>
+
+	<!-- Convenience properties for re-use in other invoked scripts -->
+	<property name="classpath.compile.property" refid="classpath.compile"/>
+	<property name="classpath.compile.test.property" refid="classpath.compile.test"/>
+	
+	<!-- Deletes compiled and generated code -->
+	<target name="clean" description="Deletes compiled and generated code">
+		<delete dir="${build.dir}" />
+	</target>
+	
+	<target name="init" depends="clean">
+		<!--taskdef resource="net/sf/antcontrib/antcontrib.properties" classpathref="ant.contrib.classpath" /-->
+		<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+		
+		<mkdir dir="${build.dir}"/>
+		<mkdir dir="${build.classes.dir}"/>
+		<mkdir dir="${build.distribution.dir}"/>
+		<mkdir dir="${build.javadoc.dir}"/>
+	</target>
+
+	<target name="build-only" depends="init,build-dependencies,compile,dist" description="Builds and packages into a jar file." />
+
+	<!-- Build and run unit tests only (no functional tests) -->
+	<target name="build" depends="build-dependencies,init,compile,run.unit.tests,dist" description="Builds, unit tests and packages into a jar file if the tests are successful." />
+
+	<!-- Build and run code analyses -->
+	<target name="build-analysis" depends="build-only,complete.code.analysis" description="Builds and runs all source code analyses." />
+
+	<!-- Compiles the Java code -->
+	<target name="compile" depends="build-dependencies" description="Compiles the Java code">
+		<echo message="Compiling project ${project.name}" />
+		<echo message="BASE DIRECTORY = ${basedir}" />
+
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${build.classes.dir}" />
+		
+		<echo message="Compilation classpath : ${classpath.compile.property}"/>
+		<echo message="Test Compilation classpath : ${classpath.compile.test.property}"/>
+		
+		<javac srcdir="${source.dir}" destdir="${build.classes.dir}" debug="on" deprecation="off">
+			<classpath refid="classpath.compile" />
+		</javac>
+		<javac srcdir="${source.test.dir}" destdir="${build.classes.dir}" debug="on" deprecation="off">
+			<classpath refid="classpath.compile" />
+			<classpath refid="classpath.compile.test" />
+		</javac>
+
+		<copy todir="${build.classes.dir}">
+			<fileset dir="${source.dir}">
+				<include name="**/*.properties" />
+				<include name="**/*.xml" />
+				<include name="**/*.xslt" />
+			</fileset>
+		</copy>
+	</target>
+
+	<!-- Packages the project into a JAR file -->
+	<target name="dist" depends="compile" description="Packages the files into a JAR file">
+		<echo message="Packaging the project ${project.name}" />
+
+		<mkdir dir="${build.distribution.dir}" />
+		<jar destFile="${build.distribution.dir}/${project.name}.jar">
+			<fileset dir="${build.classes.dir}">
+				<include name="**/*.*" />
+				<exclude name="**/*Test.*" />
+				<exclude name="**/*TestFn.*" />
+			</fileset>
+		</jar>
+
+		<antcall target="create-javadoc"/>
+		
+		<antcall target="copy-dependencies"/>
+		
+		<copy todir="${build.distribution.dir}" overwrite="true" >
+			<fileset dir="${lib.dir}">
+				<include name="**/*" />
+			</fileset>			
+		</copy>
+		
+
+
+	</target>
+
+	<!-- Builds the Javadocs -->
+	<target name="create-javadoc">
+		<javadoc sourcepath="${source.dir}" destdir="${build.javadoc.dir}" use="yes" 
+			windowtitle="Center for Computational Pharmacology Biomedical Discovery Accelerator API" linksource="yes">
+
+			<classpath>
+				<path refid="classpath.compile" />
+				<path refid="classpath.compile.test" />
+				<pathelement location="${build.classes.dir}" />
+			</classpath>
+			<!--
+			<link href="http://java.sun.com/j2se/1.5.0/docs/api/" />
+			-->
+			<doctitle>
+				<![CDATA[<h1>Center for Computational Pharmacology API</h1>]]>
+			</doctitle>
+	</javadoc>
+</target>
+
+
+
+
+</project>

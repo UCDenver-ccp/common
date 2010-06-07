@@ -1,0 +1,143 @@
+<project name="build-testing" default="">
+	
+	<import file="build-properties.xml" />
+	
+	<property name="build.test.dir" value="${build.dir}/test" />
+	<property name="build.test.unit.dir" value="${build.test.dir}/unit" />
+	<property name="build.test.fn.dir" value="${build.test.dir}/functional" />
+		
+	<path id="classpath.tests" description="classpath to run unit tests">
+		<pathelement path="${build.classes.dir}" />	
+		<path refid="classpath.compile"/>
+		<path refid="classpath.compile.test"/>
+		<path refid="classpath.compile.dependency"/>
+	</path>	
+	
+	<!--  Cobertura -->
+	<property name="code.analysis.dir" value="/home/hudson/codeqa" description="home of all analysis libraries"/>
+	<property name="cobertura.home" value="${code.analysis.dir}/cobertura" />
+	<path id="classpath.cobertura">
+		<fileset dir="${cobertura.home}">
+			<include name="cobertura.jar" />
+			<include name="lib/**/*.jar" />
+		</fileset>
+	</path>
+	
+	<property name="cobertura.dir" value="${build.dir}/cobertura" />
+	<property name="build.classes.instrumented.dir" value="${cobertura.dir}/instrumented-classes" />
+	
+	
+	<!-- Cleans the base analysis directory -->
+	<target name="clean.analysis.output.directories">
+		<delete dir="${test.dir}" />
+	</target>
+	
+	<target name="init-test-dirs" description="Initializes folders for unit tests">
+		<delete dir="${build.test.dir}" />
+		
+		<mkdir dir="${build.test.unit.dir}/xml" />
+		<mkdir dir="${build.test.unit.dir}/html" />
+		<mkdir dir="${build.test.fn.dir}/xml" />
+		<mkdir dir="${build.test.fn.dir}/html" />
+	</target>	
+	
+	<target name="test.unit" description="Runs unit tests" depends="init-test-dirs">
+		<property name="cp" refid="classpath.tests"/>
+		<echo message="Unit tests classpath: ${cp}" />
+		<antcall target="run.junit">
+			<param name="includes.unit.regex" value="**/*Test.class" />
+			<param name="classpath.junit" value="${cp}" />
+		</antcall>
+	</target>
+
+	<target name="test.fn" description="Runs functional tests" depends="init-test-dirs">
+		<property name="cp" refid="classpath.tests"/>
+		<antcall target="run.junit">
+			<param name="includes.fn.regex" value="**/*TestFn.class" />
+			<param name="classpath.junit" value="${cp}" />
+		</antcall>
+	</target>
+	
+	<!-- Runs JUnit. Requires input parameters for ${includes.unit.regex}, ${includes.fn.regex}, and ${classpath.junit}. 
+	     If the unit.regex or fn.regex are not included, then those particular tests are not run. -->
+	<target name="run.junit" depends="init-test-dirs">
+		<junit fork="yes" errorProperty="test.failed" failureProperty="test.failed" dir="${basedir}" maxmemory="1024m">
+			<classpath path="${classpath.junit}"/>
+			<sysproperty key="net.sourceforge.cobertura.datafile" file="${cobertura.dir}/cobertura.ser" />
+			
+			<formatter type="brief" usefile="false" />
+			<formatter type="xml" />
+			<batchtest todir="${build.test.unit.dir}/xml">
+				<fileset dir="${build.classes.dir}" includes="${includes.unit.regex}" />
+			</batchtest>
+			<batchtest todir="${build.test.fn.dir}/xml">
+				<fileset dir="${build.classes.dir}" includes="${includes.fn.regex}" />
+			</batchtest>
+		</junit>
+		<available file="${build.test.unit.dir}" type="dir" property="unit.test.reports.dir.exists" />
+		<antcall target="generate.unit.test.report" />
+		<available file="${build.test.fn.dir}" type="dir" property="fn.test.reports.dir.exists" />
+		<antcall target="generate.fn.test.report" />
+		<fail message="***** Test(s) failed. Check reports for details." if="test.failed" />
+	</target>	
+	
+	<!-- Generates the unit test reports in HTML -->
+	<target name="generate.unit.test.report" if="unit.test.reports.dir.exists" depends="init-test-dirs">
+		<antcall target="generate.junit.report">
+			<param name="test.dir" value="${build.test.unit.dir}" />
+		</antcall>
+	</target>
+
+	<!-- Generates the functional test reports in HTML -->
+	<target name="generate.fn.test.report" if="fn.test.reports.dir.exists">
+		<antcall target="generate.junit.report">
+			<param name="test.dir" value="${build.test.fn.dir}" />
+		</antcall>
+	</target>
+
+	<!-- Generates JUnit reports. Requires input parameters for ${test.dir} -->
+	<target name="generate.junit.report">
+		<junitreport todir="${test.dir}/xml">
+			<fileset dir="${test.dir}/xml">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report todir="${test.dir}/html" />
+		</junitreport>
+	</target>
+
+	<target name="cobertura-init" description="Initializes resources needed for coverage analysis">
+		<taskdef classpathref="classpath.cobertura" resource="tasks.properties" />
+		<delete dir="${cobertura.dir}"/>
+		<mkdir dir="${cobertura.dir}"/>
+		<mkdir dir="${build.classes.instrumented.dir}"/>
+	</target>
+
+	<target name="instrument" description="Instrument class with Cobertura" depends="cobertura-init">
+		<cobertura-instrument datafile="${cobertura.dir}/cobertura.ser" todir="${build.classes.instrumented.dir}">
+		    <fileset dir="${build.classes.dir}">
+		        <include name="**/*.class"/>
+		    </fileset>
+		</cobertura-instrument>
+	</target>
+	
+	<target name="run.coverage.analysis" description="Computes test code coverage using Cobertura" depends="instrument">
+		
+		<path id="classpath.tests.instrumented" description="instrumented classpath to run unit tests">
+			<pathelement path="${build.classes.instrumented.dir}"/>
+			<path refid="classpath.tests"/>
+			<path refid="classpath.cobertura"/>
+		</path>
+		
+		<property name="cp" refid="classpath.tests.instrumented"/>
+		
+		<antcall target="run.junit">
+			<param name="includes.unit.regex" value="**/*Test.class" />
+			<param name="includes.fn.regex" value="**/*TestFn.class" />
+			<param name="classpath.junit" value="${cp}" />
+		</antcall>
+		
+		<cobertura-report datafile="${cobertura.dir}/cobertura.ser" srcdir="${source.dir}" destdir="${cobertura.dir}/report"/>
+		<cobertura-report format="xml" datafile="${cobertura.dir}/cobertura.ser" srcdir="${source.dir}" destdir="${cobertura.dir}/report"/>
+	</target>
+
+</project>

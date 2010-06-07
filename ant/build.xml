@@ -1,9 +1,8 @@
 <project name="ccp-common" default="build" basedir="..">
-	<import file="setup.xml" />
-	<import file=".build-scripts/build-base.xml" />
-	<property name="project.name" value="${ant.project.name}" />
-
-
+	
+	<import file="build-base.xml" />
+	
 	<!-- List internal project dependencies here (comma-delimited) -->
 	<property name="dependency.list" value="" />
+	<path id="classpath.compile.dependency" />
 </project>

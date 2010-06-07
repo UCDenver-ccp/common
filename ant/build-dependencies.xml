@@ -1,0 +1,55 @@
+<project name="build-dependencies" default="">
+
+	<import file="build-properties.xml" />
+	
+	<property name="get.dependencies" value="false" />
+	<property name="svn.url" value="http://compbio.ucdenver.edu/svn/ccp" />
+	<property name="svn.user" value="build" />
+	<property name="svn.pass" value="" />
+	<property name="svn.revision" value="HEAD" />
+	<property name="svn.project.branch" value="/trunk" />
+
+	<typedef resource="net/sf/antcontrib/antcontrib.properties" classpath="${dependencies.dir}/common/ant/lib/ant-contrib-1.0b3.jar"/>
+	<typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpath="${dependencies.dir}/common/"/>
+	
+	<target name="build-dependencies" unless="skip.build.dependencies">
+		<echo message="Building ${ant.project.name} dependencies ..."/>
+		<foreach list="${dependency.list}" target="build-dependency" param="dependency.name" delimiter="," inheritall="false" inheritrefs="false" />
+	</target>
+
+	<target name="build-dependency">
+		<echo message="Building dependency ${dependency.name} ..." />
+		<condition property="dependency.missing">
+            <and>
+                <not>
+                    <available file="${dependencies.dir}/${dependency.name}"/>
+                </not>
+                <equals arg1="${get.dependencies}" arg2="true" />
+            </and>
+        </condition>
+
+		<antcall target="get-dependency" inheritall="true" inheritrefs="true"/>	
+		<ant antfile="${dependencies.dir}/${dependency.name}/ant/build.xml" inheritall="false" inheritrefs="false"/>
+	</target>
+
+	<target name="get-dependency" if="dependency.missing">
+		<echo message="Checking out dependency ${dependency.name}"/>
+		<svn username="${svn.user}" password="${svn.pass}" svnkit="true">
+			<export srcUrl="${svn.url}/${dependency.name}/${svn.project.branch}" revision="${svn.revision}" destPath="${dependencies.dir}/${dependency.name}" />
+		</svn>
+	</target>	
+	
+	<target name="copy-dependencies">
+		<echo message="Copying ${ant.project.name} dependencies to distribution folder ${build.distribution.dir}"/>
+		<foreach list="${dependency.list}" target="copy-dependency" param="dependency.name" delimiter="," inheritall="false" inheritrefs="false" />
+	</target>
+
+	<target name="copy-dependency">
+		<copy todir="${build.distribution.dir}">
+			<fileset dir="${dependencies.dir}/${dependency.name}/${build.distribution.dir}">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+	</target>
+
+</project>
