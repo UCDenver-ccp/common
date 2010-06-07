@@ -43,7 +43,7 @@ public class DefaultTestCase {
 	 */
 	protected InputStream getResourceFromClasspath(Class<?> clazz, String resourceName) {
 		InputStream is = clazz.getResourceAsStream(resourceName);
-		Assert.assertNotNull(is);
+		Assert.assertNotNull("Resource not found: " + resourceName, is);
 		return is;
 	}
 
