@@ -11,13 +11,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
-import org.apache.commons.io.filefilter.HiddenFileFilter;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.log4j.Logger;
 
@@ -335,21 +336,20 @@ public class FileUtil {
 		IOFileFilter fileFilter = FileFilterUtils.andFileFilter(FileFilterUtils.fileFileFilter(),
 				createVisibleFileFilter());
 		if (suffixes != null && suffixes.length > 0) {
-				IOFileFilter suffixFilter = FileFilterUtils.suffixFileFilter(suffixes[0]);
-				for (int i = 1; i < suffixes.length; i++) {
-					suffixFilter = FileFilterUtils.orFileFilter(suffixFilter, FileFilterUtils
-							.suffixFileFilter(suffixes[i]));
-				}
-				fileFilter = FileFilterUtils.andFileFilter(fileFilter, suffixFilter);
+			IOFileFilter suffixFilter = FileFilterUtils.suffixFileFilter(suffixes[0]);
+			for (int i = 1; i < suffixes.length; i++) {
+				suffixFilter = FileFilterUtils
+						.orFileFilter(suffixFilter, FileFilterUtils.suffixFileFilter(suffixes[i]));
 			}
+			fileFilter = FileFilterUtils.andFileFilter(fileFilter, suffixFilter);
+		}
 		return fileFilter;
 	}
 
-	
 	private static IOFileFilter createVisibleFileFilter() {
 		return FileFilterUtils.notFileFilter(FileFilterUtils.prefixFileFilter("."));
 	}
-	
+
 	/**
 	 * Returns an IOFileFilter set up to either accept directories (if recurse == true) or to only
 	 * accept files (if recurse == false). Directories must be visible.
@@ -364,7 +364,6 @@ public class FileUtil {
 			return FileFilterUtils.andFileFilter(FileFilterUtils.fileFileFilter(), createVisibleFileFilter());
 	}
 
-	
 	/**
 	 * Returns a FileFilter that accepts directories only
 	 * 
@@ -379,6 +378,23 @@ public class FileUtil {
 			}
 		};
 	}
+
+	/**
+	 * Returns a set containing the directory names in the input directory
+	 * 
+	 * @param directory
+	 * @return
+	 * @throws FileNotFoundException
+	 */
+	public static Set<String> getDirectoryListing(File directory) throws FileNotFoundException {
+		validateDirectory(directory);
+		Set<String> directoryNames = new HashSet<String>();
+		File[] directories = directory.listFiles(DIRECTORY_FILTER());
+		for (File dir : directories)
+			directoryNames.add(dir.getName());
+		return directoryNames;
+	}
+
 	/**
 	 * 
 	 * leading periods need to be removed or else the FileUtils.iteratorFiles method does not work
