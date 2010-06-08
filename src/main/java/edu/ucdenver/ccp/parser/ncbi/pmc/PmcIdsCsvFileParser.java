@@ -67,7 +67,7 @@ public class PmcIdsCsvFileParser extends LineFileParser<PmcIdsCsvFileData> {
 		if (columns.length != FILE_COLUMN_COUNT) {
 			throw new IllegalArgumentException(String.format(
 					"Unable to initialize a new PmcIdsCsvFileData object. Expected %d columns in the input "
-							+ "String[] but there were %d columns.", FILE_COLUMN_COUNT, columns.length));
+							+ "String[] but there were %d columns. Line = %s", FILE_COLUMN_COUNT, columns.length, line));
 		}
 		return initializeNewPmcIdsCsvFileData(columns);
 	}
