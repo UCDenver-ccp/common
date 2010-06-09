@@ -3,9 +3,6 @@ package edu.ucdenver.ccp.util.test;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.io.StringWriter;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
