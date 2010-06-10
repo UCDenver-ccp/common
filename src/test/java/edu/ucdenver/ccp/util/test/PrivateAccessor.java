@@ -37,16 +37,32 @@ public class PrivateAccessor {
 			NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		Assert.assertNotNull(o);
 		Assert.assertNotNull(methodName);
-		Assert.assertNotNull(params);
+//		Assert.assertNotNull(params);
 
-		Class<?>[] paramClses = new Class<?>[params.length];
-		for (int i = 0; i < params.length; i++) {
-			paramClses[i] = params[i].getClass();
-		}
+		Class<?>[] paramClses = getParameterClasses(params);
 
 		final Method method = o.getClass().getDeclaredMethod(methodName, paramClses);
 		method.setAccessible(true);
 		return method.invoke(o, params);
 	}
+
+	private static Class<?>[] getParameterClasses(Object... params) {
+		if (params == null)
+			return new Class<?>[0];
+		Class<?>[] paramClses = new Class<?>[params.length];
+		for (int i = 0; i < params.length; i++) {
+			paramClses[i] = params[i].getClass();
+		}
+		return paramClses;
+	}
+	
+	
+	public static Object invokeStaticPrivateMethod(Class<?> clazz, String methodName, Object... params)
+			throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, SecurityException, NoSuchMethodException {
+		final Method method = clazz.getDeclaredMethod(methodName, getParameterClasses(params));
+		method.setAccessible(true);
+		return method.invoke(null, params);
+	}
+	
 
 }
