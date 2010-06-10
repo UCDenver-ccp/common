@@ -33,8 +33,10 @@ import edu.ucdenver.ccp.util.string.StringConstants;
  * 
  */
 public class PmcIdsCsvFileParser extends LineFileParser<PmcIdsCsvFileData> {
-	public static final String DELIMITER = StringConstants.COMMA;
+	public static final String DELIMITER_REGEX = StringConstants.COMMA;
+	public static final char FIELD_ENCLOSURE = StringConstants.QUOTATION_MARK;
 	private static final int FILE_COLUMN_COUNT = 12;
+	private static final String FIELD_ENCLOSING_REGEX = Character.toString(StringConstants.QUOTATION_MARK);
 
 	public PmcIdsCsvFileParser(File inputFile) throws IOException {
 		super(inputFile);
@@ -63,7 +65,7 @@ public class PmcIdsCsvFileParser extends LineFileParser<PmcIdsCsvFileData> {
 	 * @return
 	 */
 	public static PmcIdsCsvFileData parsePmcIdsCsvFileDataFromLine(String line) {
-		String[] columns = FileLoaderUtil.getColumnsFromLine(line, DELIMITER);
+		String[] columns = FileLoaderUtil.getColumnsFromLine(line, DELIMITER_REGEX, FIELD_ENCLOSING_REGEX);
 		if (columns.length != FILE_COLUMN_COUNT) {
 			throw new IllegalArgumentException(String.format(
 					"Unable to initialize a new PmcIdsCsvFileData object. Expected %d columns in the input "
