@@ -113,6 +113,7 @@ public class StringConstants {
 
 	public static final String TWO_FORWARD_SLASHES = SOLIDUS + SOLIDUS;
 	public static final String POUND_SIGN = NUMBER_SIGN;
+	public static final char NULL_CHAR = '\u0000';
 
 	// 0009 <control>
 	// = CHARACTER_TABULATION
