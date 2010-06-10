@@ -5,14 +5,18 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.LineIterator;
+import org.apache.log4j.Logger;
 
 import edu.ucdenver.ccp.util.collections.CollectionsUtil;
+import edu.ucdenver.ccp.util.string.StringConstants;
+import edu.ucdenver.ccp.util.string.StringUtil;
 
 public class FileLoaderUtil {
 
@@ -90,17 +94,38 @@ public class FileLoaderUtil {
 	 * @return
 	 * @throws ArrayIndexOutOfBoundsException
 	 */
-	public static String[] getColumnsFromLine(String line, String delimiter, int... columnIndexes)
+	public static String[] getColumnsFromLine(String line, String delimiterRegex, int... columnIndexes)
 			throws ArrayIndexOutOfBoundsException {
-		if (delimiter == null) {
+		return getColumnsFromLine(line, delimiterRegex, null, columnIndexes);
+		// if (delimiter == null) {
+		// return new String[] { line };
+		// } else {
+		// String[] lineTokens = line.split(delimiter);
+		// if (columnIndexes == null || columnIndexes.length == 0) {
+		// columnIndexes = CollectionsUtil.createZeroBasedSequence(lineTokens.length);
+		// }
+		// String[] outputColumns = new String[columnIndexes.length];
+		// int outputIndex = 0;
+		// for (int columnIndex : columnIndexes) {
+		// ensureColumnIndexIsValid(columnIndex, line, lineTokens);
+		// outputColumns[outputIndex++] = lineTokens[columnIndex];
+		// }
+		// return outputColumns;
+		// }
+	}
+
+	public static String[] getColumnsFromLine(String line, String delimiterRegex, String fieldEnclosingRegex,
+			int... columnIndexes) {
+		if (delimiterRegex == null) {
 			return new String[] { line };
 		} else {
-			String[] lineTokens = line.split(delimiter);
+			String[] lineTokens = StringUtil.splitWithFieldEnclosure(line, delimiterRegex, fieldEnclosingRegex);
 			if (columnIndexes == null || columnIndexes.length == 0) {
 				columnIndexes = CollectionsUtil.createZeroBasedSequence(lineTokens.length);
 			}
 			String[] outputColumns = new String[columnIndexes.length];
 			int outputIndex = 0;
+			logger.info("Column indexes: " + Arrays.toString(columnIndexes));
 			for (int columnIndex : columnIndexes) {
 				ensureColumnIndexIsValid(columnIndex, line, lineTokens);
 				outputColumns[outputIndex++] = lineTokens[columnIndex];
@@ -176,6 +201,8 @@ public class FileLoaderUtil {
 		return (columnIndex > -1 && columnIndex < lineTokens.length);
 	}
 
+	private static final Logger logger = Logger.getLogger(FileLoaderUtil.class);
+
 	/**
 	 * Checks that the columnIndex index exists in the input String[]. If the index does not exist,
 	 * an exception is thrown.
@@ -188,6 +215,7 @@ public class FileLoaderUtil {
 	 */
 	private static void ensureColumnIndexIsValid(int columnIndex, String line, String[] lineTokens)
 			throws ArrayIndexOutOfBoundsException {
+		logger.info(String.format("Column tokens: %s", Arrays.toString(lineTokens)));
 		if (!isColumnIndexValid(columnIndex, lineTokens)) {
 			throw new ArrayIndexOutOfBoundsException(String.format(
 					"Column index %d does not exist on line. There are only %d columns on line: %s", columnIndex,
