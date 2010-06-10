@@ -84,7 +84,11 @@ public class PmcIdsCsvFileParser extends LineFileParser<PmcIdsCsvFileData> {
 		String journalTitle = columns[0];
 		String issn = columns[1];
 		String electronicIssn = columns[2];
-		int publicationYear = Integer.parseInt(columns[3]);
+		int publicationYear;
+		if (columns[3].trim().isEmpty())
+			publicationYear = -1;
+		else
+			publicationYear = Integer.parseInt(columns[3]);
 		String volume = columns[4];
 		String issue = columns[5];
 		String page = columns[6];
