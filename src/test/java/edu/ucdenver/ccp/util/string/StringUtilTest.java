@@ -1,12 +1,15 @@
 package edu.ucdenver.ccp.util.string;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-public class StringUtilTest {
+import edu.ucdenver.ccp.util.test.DefaultTestCase;
+
+public class StringUtilTest extends DefaultTestCase {
 
 	@Test
 	public void testIsInteger_validPositiveInput() throws Exception {
@@ -76,7 +79,75 @@ public class StringUtilTest {
 		assertTrue(StringUtil.startsWithRegex("2010-04-06", RegExPatterns.getNDigitsPattern(2)));
 		assertTrue(StringUtil.startsWithRegex("2010-04-06", RegExPatterns.getNDigitsPattern(1)));
 		assertTrue(StringUtil.startsWithRegex("2010-04-06", "^" + RegExPatterns.getNDigitsPattern(4)));
-		
+
 		assertFalse(StringUtil.startsWithRegex("2010-04-06", RegExPatterns.getNDigitsPattern(5)));
 	}
+
+	@Test
+	public void testContainsRegex() throws Exception {
+		assertTrue(StringUtil.containsRegex("2010-04-06", RegExPatterns.getNDigitsPattern(4)));
+		assertFalse(StringUtil.containsRegex("2010-04-06", RegExPatterns.getNDigitsPattern(5)));
+	}
+
+	@Test
+	public void testCreateRepeatingString() throws Exception {
+		String expectedStr = StringConstants.AMPERSAND + StringConstants.AMPERSAND + StringConstants.AMPERSAND;
+		assertEquals(String.format("String should contain 3 ampersands"), expectedStr, StringUtil
+				.createRepeatingString(StringConstants.AMPERSAND, 3));
+
+		assertEquals(String.format("String should contain 6 ampersands"), expectedStr + expectedStr, StringUtil
+				.createRepeatingString(StringConstants.AMPERSAND + StringConstants.AMPERSAND, 3));
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testSplitWithFieldDelimiter_ZeroInDelimiter() throws Exception {
+		StringUtil.splitWithFieldEnclosure("\"", String.format(".%s", StringConstants.DIGIT_ZERO), Character
+				.toString(StringConstants.QUOTATION_MARK));
+	}
+
+	@Test
+	public void testSplitWithFieldDelimiter() throws Exception {
+		String inputStr = "J Clin Invest,0021-9738,1558-8238,1940,19,\"Index, vol.1-17\",1,10.1172/JCI101100,PMC548872,0,,live";
+		String[] expectedTokens = new String[] { "J Clin Invest", "0021-9738", "1558-8238", "1940", "19",
+				"\"Index, vol.1-17\"", "1", "10.1172/JCI101100", "PMC548872", "0", "", "live" };
+		assertArrayEquals(String.format("One token should include a comma"), expectedTokens, StringUtil
+				.splitWithFieldEnclosure(inputStr, StringConstants.COMMA, Character
+						.toString(StringConstants.QUOTATION_MARK)));
+	}
+
+	@Test
+	public void testSplitWithFieldDelimiter_NoColumns() throws Exception {
+		String inputStr = "J Clin Invest,0021-9738,1558-8238,1940,19,\"Index, vol.1-17\",1,10.1172/JCI101100,PMC548872,0,,live";
+		assertArrayEquals(String.format("One token should include a comma"), new String[] { inputStr }, StringUtil
+				.splitWithFieldEnclosure(inputStr, StringConstants.SEMICOLON, Character
+						.toString(StringConstants.QUOTATION_MARK)));
+	}
+
+	@Test
+	public void testSplitWithFieldDelimiter_FieldDelimiterNotPresentInText() throws Exception {
+		String inputStr = "J Clin Invest,0021-9738,1558-8238,1940,19,\"Index, vol.1-17\",1,10.1172/JCI101100,PMC548872,0,,live";
+		String[] expectedTokens = new String[] { "J Clin Invest", "0021-9738", "1558-8238", "1940", "19", "\"Index",
+				" vol.1-17\"", "1", "10.1172/JCI101100", "PMC548872", "0", "", "live" };
+		assertArrayEquals(String.format("One token should include a comma"), expectedTokens, StringUtil
+				.splitWithFieldEnclosure(inputStr, StringConstants.COMMA, StringConstants.SEMICOLON));
+	}
+
+	@Test
+	public void testSplitWithFieldDelimiter_FieldDelimiterNull() throws Exception {
+		String inputStr = "J Clin Invest,0021-9738,1558-8238,1940,19,\"Index, vol.1-17\",1,10.1172/JCI101100,PMC548872,0,,live";
+		String[] expectedTokens = new String[] { "J Clin Invest", "0021-9738", "1558-8238", "1940", "19", "\"Index",
+				" vol.1-17\"", "1", "10.1172/JCI101100", "PMC548872", "0", "", "live" };
+		assertArrayEquals(String.format("One token should include a comma"), expectedTokens, StringUtil
+				.splitWithFieldEnclosure(inputStr, StringConstants.COMMA, null));
+	}
+
+	@Test
+	public void testSplitWithFieldDelimiter_FieldDelimiterIsRegexSpecialCharacter() throws Exception {
+		String inputStr = "J Clin Invest,0021-9738,1558-8238,1940,19,*Index, vol.1-17*,1,10.1172/JCI101100,PMC548872,0,,live";
+		String[] expectedTokens = new String[] { "J Clin Invest", "0021-9738", "1558-8238", "1940", "19",
+				"*Index, vol.1-17*", "1", "10.1172/JCI101100", "PMC548872", "0", "", "live" };
+		assertArrayEquals(String.format("One token should include a comma"), expectedTokens, StringUtil
+				.splitWithFieldEnclosure(inputStr, StringConstants.COMMA, "\\*"));
+	}
+
 }

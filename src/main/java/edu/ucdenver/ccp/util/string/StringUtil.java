@@ -6,12 +6,14 @@ import static edu.ucdenver.ccp.util.string.RegExPatterns.HAS_NUMBERS_ONLY_OPT_NE
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 
 public class StringUtil {
-
 	/**
 	 * Returns true if the input string is an integer, false otherwise.
 	 * 
@@ -88,10 +90,15 @@ public class StringUtil {
 		if (!regexStr.startsWith("^")) {
 			regexStr = "^" + regexStr;
 		}
+		return containsRegex(inputStr, regexStr);
+	}
+
+	
+	public static boolean containsRegex(String inputStr, String regexStr) {
 		Pattern p = Pattern.compile(regexStr);
 		return p.matcher(inputStr).find();
 	}
-
+	
 	/**
 	 * Converts the input InputStream to a String
 	 * 
@@ -109,6 +116,80 @@ public class StringUtil {
 			IOUtils.closeQuietly(sw);
 		}
 		return sw.toString();
+	}
+
+	/**
+	 * Splits the input string, but ignores any delimiters inside a field. For example, you might be
+	 * splitting a comma-delimited line but have a field indicated by quotation marks that can
+	 * contain a comma. e.g. token 1,token 2,"token, 3 has a comma",token 4
+	 * 
+	 * @param inputStr
+	 * @param delimiters
+	 * @return
+	 */
+	public static String[] splitWithFieldEnclosure(String inputStr, String delimiterRegex,
+			String optionalFieldEnclosureRegex) {
+		if (optionalFieldEnclosureRegex == null || !containsRegex(inputStr, optionalFieldEnclosureRegex))
+			return inputStr.split(delimiterRegex);
+		String copyOfInputStr = normalizeInputFields(inputStr, delimiterRegex, optionalFieldEnclosureRegex);
+		List<String> tokens = new ArrayList<String>();
+		int previousDelimiterEndIndex = 0;
+		Matcher matcher = Pattern.compile(delimiterRegex).matcher(copyOfInputStr);
+		while (matcher.find()) {
+			int delimiterStartIndex = matcher.start();
+			int delimiterEndIndex = matcher.end();
+			tokens.add(inputStr.substring(previousDelimiterEndIndex, delimiterStartIndex));
+			previousDelimiterEndIndex = delimiterEndIndex;
+		}
+		if (previousDelimiterEndIndex == 0)
+			tokens.add(inputStr);
+		else
+			tokens.add(inputStr.substring(previousDelimiterEndIndex));
+		return tokens.toArray(new String[tokens.size()]);
+	}
+
+	/**
+	 * Given an inputStr with possible delimiters hidden inside fields, this method returns a String
+	 * where the fields have been normalized (turned into a string of zero's)
+	 * 
+	 * @param inputStr
+	 * @param delimiterRegex
+	 * @param optionalFieldEnclosureCharacter
+	 * @return
+	 */
+	private static String normalizeInputFields(String inputStr, String delimiterRegex,
+			String optionalFieldEnclosureRegex) {
+		String tempReplacementStr = StringConstants.DIGIT_ZERO;
+		if (delimiterRegex.contains(tempReplacementStr))
+			throw new IllegalArgumentException(
+					"Warning. Potential error exists in current use of splitWithFieldDelimiter(). "
+							+ "This method uses the character '%s' internally during a split procedure. The "
+							+ "input delimiter contains the character '%s'. Therefore there is a potential conflict. "
+							+ "Please use a different delimiter. Exiting...");
+		String copyOfInputStr = inputStr;
+		Pattern fieldPattern = Pattern.compile(optionalFieldEnclosureRegex + ".*?"
+				+ optionalFieldEnclosureRegex);
+		Matcher matcher = fieldPattern.matcher(inputStr);
+		while (matcher.find()) {
+			copyOfInputStr = copyOfInputStr.replace(matcher.group(), createRepeatingString(StringConstants.DIGIT_ZERO,
+					matcher.group().length()));
+		}
+		return copyOfInputStr;
+	}
+
+	/**
+	 * Returns a sequence of the input string repeated length times.
+	 * 
+	 * @param inputStr
+	 * @param length
+	 * @return
+	 */
+	public static String createRepeatingString(String inputStr, int length) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < length; i++) {
+			sb.append(inputStr);
+		}
+		return sb.toString();
 	}
 
 }
