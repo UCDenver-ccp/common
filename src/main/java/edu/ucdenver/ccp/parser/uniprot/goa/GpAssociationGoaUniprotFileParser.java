@@ -9,6 +9,13 @@ import edu.ucdenver.ccp.util.file.FileLoaderUtil;
 import edu.ucdenver.ccp.util.string.RegExPatterns;
 import edu.ucdenver.ccp.util.string.StringConstants;
 
+/**
+ * Parser for the gp_association.goa_uniprot file available here:
+ * ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/UNIPROT/
+ * 
+ * @author Bill Baumgartner
+ * 
+ */
 public class GpAssociationGoaUniprotFileParser extends LineFileParser<GpAssociationGoaUniprotFileData> {
 
 	public static final String DELIMITER_REGEX = RegExPatterns.TAB;
