@@ -15,7 +15,6 @@ import org.apache.commons.io.LineIterator;
 import org.apache.log4j.Logger;
 
 import edu.ucdenver.ccp.util.collections.CollectionsUtil;
-import edu.ucdenver.ccp.util.string.StringConstants;
 import edu.ucdenver.ccp.util.string.StringUtil;
 
 public class FileLoaderUtil {
@@ -97,21 +96,6 @@ public class FileLoaderUtil {
 	public static String[] getColumnsFromLine(String line, String delimiterRegex, int... columnIndexes)
 			throws ArrayIndexOutOfBoundsException {
 		return getColumnsFromLine(line, delimiterRegex, null, columnIndexes);
-		// if (delimiter == null) {
-		// return new String[] { line };
-		// } else {
-		// String[] lineTokens = line.split(delimiter);
-		// if (columnIndexes == null || columnIndexes.length == 0) {
-		// columnIndexes = CollectionsUtil.createZeroBasedSequence(lineTokens.length);
-		// }
-		// String[] outputColumns = new String[columnIndexes.length];
-		// int outputIndex = 0;
-		// for (int columnIndex : columnIndexes) {
-		// ensureColumnIndexIsValid(columnIndex, line, lineTokens);
-		// outputColumns[outputIndex++] = lineTokens[columnIndex];
-		// }
-		// return outputColumns;
-		// }
 	}
 
 	public static String[] getColumnsFromLine(String line, String delimiterRegex, String fieldEnclosingRegex,
