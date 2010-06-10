@@ -5,14 +5,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.LineIterator;
-import org.apache.log4j.Logger;
 
 import edu.ucdenver.ccp.util.collections.CollectionsUtil;
 import edu.ucdenver.ccp.util.string.StringUtil;
@@ -109,7 +107,6 @@ public class FileLoaderUtil {
 			}
 			String[] outputColumns = new String[columnIndexes.length];
 			int outputIndex = 0;
-			logger.info("Column indexes: " + Arrays.toString(columnIndexes));
 			for (int columnIndex : columnIndexes) {
 				ensureColumnIndexIsValid(columnIndex, line, lineTokens);
 				outputColumns[outputIndex++] = lineTokens[columnIndex];
@@ -185,8 +182,6 @@ public class FileLoaderUtil {
 		return (columnIndex > -1 && columnIndex < lineTokens.length);
 	}
 
-	private static final Logger logger = Logger.getLogger(FileLoaderUtil.class);
-
 	/**
 	 * Checks that the columnIndex index exists in the input String[]. If the index does not exist,
 	 * an exception is thrown.
@@ -199,7 +194,6 @@ public class FileLoaderUtil {
 	 */
 	private static void ensureColumnIndexIsValid(int columnIndex, String line, String[] lineTokens)
 			throws ArrayIndexOutOfBoundsException {
-		logger.info(String.format("Column tokens: %s", Arrays.toString(lineTokens)));
 		if (!isColumnIndexValid(columnIndex, lineTokens)) {
 			throw new ArrayIndexOutOfBoundsException(String.format(
 					"Column index %d does not exist on line. There are only %d columns on line: %s", columnIndex,
