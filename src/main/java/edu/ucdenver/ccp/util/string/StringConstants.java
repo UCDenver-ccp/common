@@ -10,6 +10,8 @@ package edu.ucdenver.ccp.util.string;
 public class StringConstants {
 	public static final String BLANK = "";
 	public static final String NEW_LINE = "\n";
+	public static final String TAB = "\u0009";
+	
 
 	public static final String SPACE = "\u0020";
 	public static final String EXCLAMATION_MARK = "\u0021";
@@ -114,6 +116,7 @@ public class StringConstants {
 	public static final String TWO_FORWARD_SLASHES = SOLIDUS + SOLIDUS;
 	public static final String POUND_SIGN = NUMBER_SIGN;
 	public static final char NULL_CHAR = '\u0000';
+	public static final String UNDERSCORE = LOW_LINE;
 
 	// 0009 <control>
 	// = CHARACTER_TABULATION
