@@ -1,5 +1,6 @@
 package edu.ucdenver.ccp.util.collections;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -131,7 +132,35 @@ public class CollectionsUtilTest {
 				.computeCombinations(collectionOfListsToCombine));
 
 		assertEquals(String.format("Tuples should be as expected."), expectedTuples, tuples);
+	}
 
+	@Test
+	public void testCombineMaps() throws Exception {
+		Map<String, String> inputMap1 = CollectionsUtil.createMap("1", "blue", "2", "red", "3", "green");
+		Map<String, String> inputMap2 = CollectionsUtil.createMap("4", "purple", "5", "yellow", "1", "green");
+
+		Map<String, String> combinedMap = CollectionsUtil.combineMaps(inputMap1, inputMap2);
+
+		Map<String, String> expectedMap = CollectionsUtil.createMap("1", "green", "2", "red", "3", "green", "4",
+				"purple", "5", "yellow");
+		assertEquals(String.format("Map not as expected."), expectedMap, combinedMap);
+	}
+
+	@Test
+	public void testCombineUniqueMaps() throws Exception {
+		Map<String, Set<String>> inputMap1 = new HashMap<String, Set<String>>();
+		inputMap1.put("colors", CollectionsUtil.createSet("blue", "red", "yellow"));
+		inputMap1.put("numbers", CollectionsUtil.createSet("one", "two", "three"));
+
+		Map<String, Set<String>> inputMap2 = new HashMap<String, Set<String>>();
+		inputMap2.put("colors", CollectionsUtil.createSet("green", "red", "purple"));
+
+		Map<String, Set<String>> expectedMap = new HashMap<String, Set<String>>();
+		expectedMap.put("colors", CollectionsUtil.createSet("blue", "red", "yellow", "green", "purple"));
+		expectedMap.put("numbers", CollectionsUtil.createSet("one", "two", "three"));
+
+		Map<String, Set<String>> combinedMap = CollectionsUtil.combineUniqueMaps(inputMap1, inputMap2);
+		assertEquals(String.format("Expected map not the same as combined."), expectedMap, combinedMap);
 	}
 
 }

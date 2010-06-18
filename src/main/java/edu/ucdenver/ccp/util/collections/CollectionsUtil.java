@@ -87,7 +87,8 @@ public class CollectionsUtil {
 	}
 
 	/**
-	 * Combines all input maps and returns the aggregate map.
+	 * Combines all input maps and returns the aggregate map. Note, if a key appears in more than
+	 * one map it will be overwritten by the last value that is merged into the combined map.
 	 * 
 	 * @param <K>
 	 * @param <V>
@@ -98,6 +99,18 @@ public class CollectionsUtil {
 		Map<K, V> combinedMap = new HashMap<K, V>();
 		for (Map<K, V> map : maps) {
 			combinedMap.putAll(map);
+		}
+		return combinedMap;
+	}
+
+	public static <K, V> Map<K, Set<V>> combineUniqueMaps(Map<K, Set<V>>... maps) {
+		Map<K, Set<V>> combinedMap = new HashMap<K, Set<V>>();
+		for (Map<K, Set<V>> inputMap : maps) {
+			for (K key : inputMap.keySet()) {
+				Set<V> values = inputMap.get(key);
+				for (V value : values)
+					addToOne2ManyUniqueMap(key, value, combinedMap);
+			}
 		}
 		return combinedMap;
 	}
