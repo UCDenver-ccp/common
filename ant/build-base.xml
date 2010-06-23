@@ -82,6 +82,7 @@
 				<include name="**/*.properties" />
 				<include name="**/*.xml" />
 				<include name="**/*.xslt" />
+				<include name="**/*.xsl" />
 			</fileset>
 		</copy>
 	</target>
