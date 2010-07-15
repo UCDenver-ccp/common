@@ -130,7 +130,7 @@ public class StringUtil {
 	public static String[] splitWithFieldEnclosure(String inputStr, String delimiterRegex,
 			String optionalFieldEnclosureRegex) {
 		if (optionalFieldEnclosureRegex == null || !containsRegex(inputStr, optionalFieldEnclosureRegex))
-			return inputStr.split(delimiterRegex);
+			return inputStr.split(delimiterRegex,-1);
 		String copyOfInputStr = normalizeInputFields(inputStr, delimiterRegex, optionalFieldEnclosureRegex);
 		List<String> tokens = new ArrayList<String>();
 		int previousDelimiterEndIndex = 0;

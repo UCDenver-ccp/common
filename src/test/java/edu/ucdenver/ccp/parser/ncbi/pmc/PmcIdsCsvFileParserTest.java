@@ -35,7 +35,8 @@ public class PmcIdsCsvFileParserTest extends DefaultTestCase {
 		List<String> lines = CollectionsUtil.createList(
 				"Journal Title,ISSN,eISSN,Year,Volume,Issue,Page,DOI,PMCID,PMID,Manuscript Id,Release Date",
 				"Breast Cancer Res,1465-5411,1465-542X,2000,3,1,55,,PMC13900,11250746,,live",
-				"Breast Cancer Res,1465-5411,1465-542X,2000,3,1,61,,PMC13901,11250747,,live");
+				"Breast Cancer Res,1465-5411,1465-542X,2000,3,1,61,,PMC13901,11250747,,live",
+				"J Mol Biol,0022-2836,1089-8638,2010,399,1,71,10.1016/j.jmb.2010.03.043,PMC2880790,20361979,,");
 		pmcIdsCsvFile = TestUtil.populateTestFile(folder, "PMC-ids.csv", lines);
 	}
 	
@@ -79,13 +80,19 @@ public class PmcIdsCsvFileParserTest extends DefaultTestCase {
 				"PMC13901", "11250747", "", "live");
 	}
 
+	private PmcIdsCsvFileData getExpectedRecord3() {
+		return new PmcIdsCsvFileData("J Mol Biol","0022-2836","1089-8638",2010,"399","1","71","10.1016/j.jmb.2010.03.043","PMC2880790","20361979","","");
+	}
+	
 	@Test
 	public void testParse() throws Exception {
 		Iterator<PmcIdsCsvFileData> pmdIdsIter = new PmcIdsCsvFileParser(pmcIdsCsvFile);
-		assertTrue(String.format("Should be 1st of two pmc id records."), pmdIdsIter.hasNext());
+		assertTrue(String.format("Should be 1st of three pmc id records."), pmdIdsIter.hasNext());
 		checkPmcIdsCsvFileData(getExpectedRecord1(), pmdIdsIter.next());
-		assertTrue(String.format("Should be 2nd of two pmc id records."), pmdIdsIter.hasNext());
+		assertTrue(String.format("Should be 2nd of three pmc id records."), pmdIdsIter.hasNext());
 		checkPmcIdsCsvFileData(getExpectedRecord2(), pmdIdsIter.next());
+		assertTrue(String.format("Should be 3rd of three pmc id records."), pmdIdsIter.hasNext());
+		checkPmcIdsCsvFileData(getExpectedRecord3(), pmdIdsIter.next());
 		assertFalse(pmdIdsIter.hasNext());
 	}
 
