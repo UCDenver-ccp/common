@@ -2,6 +2,9 @@ package edu.ucdenver.ccp.parser.ncbi.pmc;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import edu.ucdenver.ccp.parser.LineFileParser;
 import edu.ucdenver.ccp.util.file.FileLoaderUtil;
@@ -99,5 +102,41 @@ public class PmcIdsCsvFileParser extends LineFileParser<PmcIdsCsvFileData> {
 		String releaseDate = columns[11];
 		return new PmcIdsCsvFileData(journalTitle, issn, electronicIssn, publicationYear, volume, issue, page, doi,
 				pmcAccession, pubMedID, manuscriptID, releaseDate);
+	}
+
+	/**
+	 * Returns a mapping from PMC ID to PubMed ID
+	 * 
+	 * @param pmcIdsCsvFile
+	 * @return
+	 * @throws IOException
+	 */
+	public static Map<String, String> getPmcID2PmidMap(File pmcIdsCsvFile) throws IOException {
+		Map<String, String> pmcID2PmidMap = new HashMap<String, String>();
+		for (PmcIdsCsvFileParser parser = new PmcIdsCsvFileParser(pmcIdsCsvFile); parser.hasNext();) {
+			PmcIdsCsvFileData dataRecord = parser.next();
+			pmcID2PmidMap.put(dataRecord.getPmcAccession(), dataRecord.getPubMedID());
+		}
+		return pmcID2PmidMap;
+	}
+
+	/**
+	 * Returns a mapping from PMC ID to the PMC-ids.csv data record for that particular article.
+	 * 
+	 * @param pmcIdsCsvFile
+	 * @param pmcIDsToIgnore
+	 * @return
+	 * @throws IOException
+	 */
+	public static Map<String, PmcIdsCsvFileData> getPmcID2PmcIDsCsvDataRecordMap(File pmcIdsCsvFile,
+			Set<String> pmcIDsToIgnore) throws IOException {
+		Map<String, PmcIdsCsvFileData> pmcID2PmcIdsCsvFileDataMap = new HashMap<String, PmcIdsCsvFileData>();
+		for (PmcIdsCsvFileParser parser = new PmcIdsCsvFileParser(pmcIdsCsvFile); parser.hasNext();) {
+			PmcIdsCsvFileData dataRecord = parser.next();
+			String pmcAccession = dataRecord.getPmcAccession();
+			if (!pmcIDsToIgnore.contains(pmcAccession))
+				pmcID2PmcIdsCsvFileDataMap.put(pmcAccession, dataRecord);
+		}
+		return pmcID2PmcIdsCsvFileDataMap;
 	}
 }
