@@ -13,9 +13,9 @@ public class FileWriterUtil {
 	 * @param lines
 	 * @param ps
 	 */
-	public static void printLines(List<String> lines, PrintStream ps) {
-		for (String line : lines) {
-			ps.println(line);
+	public static void printLines(List<?> lines, PrintStream ps) {
+		for (Object line : lines) {
+			ps.println(line.toString());
 		}
 	}
 
@@ -27,7 +27,7 @@ public class FileWriterUtil {
 	 * @param file
 	 * @throws FileNotFoundException
 	 */
-	public static void printLines(List<String> lines, File file) throws FileNotFoundException {
+	public static void printLines(List<?> lines, File file) throws FileNotFoundException {
 		PrintStream ps = new PrintStream(file);
 		printLines(lines, ps);
 		ps.close();
