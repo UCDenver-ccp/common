@@ -1,6 +1,5 @@
 package edu.ucdenver.ccp.common.collections;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -14,8 +13,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.junit.Test;
-
-import edu.ucdenver.ccp.common.collections.CollectionsUtil;
 
 public class CollectionsUtilTest {
 
@@ -141,6 +138,7 @@ public class CollectionsUtilTest {
 		Map<String, String> inputMap1 = CollectionsUtil.createMap("1", "blue", "2", "red", "3", "green");
 		Map<String, String> inputMap2 = CollectionsUtil.createMap("4", "purple", "5", "yellow", "1", "green");
 
+		@SuppressWarnings("unchecked")
 		Map<String, String> combinedMap = CollectionsUtil.combineMaps(inputMap1, inputMap2);
 
 		Map<String, String> expectedMap = CollectionsUtil.createMap("1", "green", "2", "red", "3", "green", "4",
@@ -161,6 +159,7 @@ public class CollectionsUtilTest {
 		expectedMap.put("colors", CollectionsUtil.createSet("blue", "red", "yellow", "green", "purple"));
 		expectedMap.put("numbers", CollectionsUtil.createSet("one", "two", "three"));
 
+		@SuppressWarnings("unchecked")
 		Map<String, Set<String>> combinedMap = CollectionsUtil.combineUniqueMaps(inputMap1, inputMap2);
 		assertEquals(String.format("Expected map not the same as combined."), expectedMap, combinedMap);
 	}
