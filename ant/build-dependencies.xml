@@ -5,7 +5,7 @@
 	<property name="get.dependencies" value="false" />
 	<property name="svn.url" value="http://compbio.ucdenver.edu/svn/ccp" />
 	<property name="svn.user" value="build" />
-	<property name="svn.pass" value="" />
+	<property name="svn.pass" value="build" />
 	<property name="svn.revision" value="HEAD" />
 	<property name="svn.project.branch" value="/trunk" />
 
