@@ -23,6 +23,8 @@ import edu.ucdenver.ccp.common.string.StringUtil;
 public class DefaultTestCase {
 	private static final Logger logger = Logger.getLogger(DefaultTestCase.class);
 
+	protected static final String DEFAULT_ENCODING = System.getProperty("file.encoding");
+	
 	static {
 		BasicConfigurator.configure();
 		Logger.getRootLogger().setLevel(Level.DEBUG);
