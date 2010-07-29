@@ -1,9 +1,9 @@
 package edu.ucdenver.ccp.common.file;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertArrayEquals;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,23 +15,20 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 
 import edu.ucdenver.ccp.common.collections.CollectionsUtil;
-import edu.ucdenver.ccp.common.file.FileLoaderUtil;
+import edu.ucdenver.ccp.common.file.reader.StreamLineIterator;
+import edu.ucdenver.ccp.common.file.reader.LineReader.Line;
 import edu.ucdenver.ccp.common.string.RegExPatterns;
 import edu.ucdenver.ccp.common.string.StringConstants;
+import edu.ucdenver.ccp.common.test.DefaultTestCase;
 
-public class FileLoaderUtilTest {
+public class FileLoaderUtilTest extends DefaultTestCase {
 
 	private static final String COMMENT_INDICATOR = StringConstants.TWO_FORWARD_SLASHES;
 
 	private static final String IS_COLUMN_INDEX_VALID_METHOD_NAME = "isColumnIndexValid";
-
-	@Rule
-	public TemporaryFolder folder = new TemporaryFolder();
 
 	private File oneColumnFile;
 	private File emptyFile;
@@ -144,7 +141,7 @@ public class FileLoaderUtilTest {
 
 	@Test(expected = NoSuchElementException.class)
 	public void testExceptionThrownIfFileHasNoLines() throws Exception {
-		Iterator<String> lineIter = FileLoaderUtil.getLineIterator(emptyFile, null);
+		StreamLineIterator lineIter = new StreamLineIterator(emptyFile, DEFAULT_ENCODING, null);
 		lineIter.next();
 	}
 
@@ -152,9 +149,9 @@ public class FileLoaderUtilTest {
 	public void testIteratorOnOneColumnFile() throws Exception {
 		List<String> expectedLines = getOneColumnLines();
 		int index = 0;
-		for (Iterator<String> lineIter = FileLoaderUtil.getLineIterator(oneColumnFile, null); lineIter.hasNext();) {
+		for (StreamLineIterator lineIter = new StreamLineIterator(oneColumnFile,DEFAULT_ENCODING, null); lineIter.hasNext();) {
 			assertEquals(String.format("Lines should be returned in order."), expectedLines.get(index++), lineIter
-					.next());
+					.next().getText());
 		}
 	}
 
@@ -183,9 +180,9 @@ public class FileLoaderUtilTest {
 	public void testIteratorOnFiveColumnFile() throws Exception {
 		List<String> expectedLines = getFiveColumnLines();
 		int index = 0;
-		for (Iterator<String> lineIter = FileLoaderUtil.getLineIterator(fiveColumnFile, null); lineIter.hasNext();) {
+		for (StreamLineIterator lineIter = new StreamLineIterator(fiveColumnFile, DEFAULT_ENCODING,null); lineIter.hasNext();) {
 			assertEquals(String.format("Lines should be returned in order."), expectedLines.get(index++), lineIter
-					.next());
+					.next().getText());
 		}
 	}
 
@@ -229,7 +226,7 @@ public class FileLoaderUtilTest {
 
 	@Test(expected = UnsupportedOperationException.class)
 	public void testRemoveThrowsException() throws Exception {
-		Iterator<String> lineIter = FileLoaderUtil.getLineIterator(oneColumnFile, null);
+		StreamLineIterator lineIter = new StreamLineIterator(oneColumnFile, DEFAULT_ENCODING, null);
 		lineIter.remove();
 	}
 
