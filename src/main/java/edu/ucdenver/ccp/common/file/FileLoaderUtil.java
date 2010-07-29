@@ -1,18 +1,13 @@
 package edu.ucdenver.ccp.common.file;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.LineIterator;
 
 import edu.ucdenver.ccp.common.collections.CollectionsUtil;
+import edu.ucdenver.ccp.common.file.reader.StreamLineIterator;
+import edu.ucdenver.ccp.common.file.reader.LineReader.Line;
 import edu.ucdenver.ccp.common.string.StringUtil;
 
 public class FileLoaderUtil {
@@ -73,9 +68,10 @@ public class FileLoaderUtil {
 							+ "set the delimiter to be null.", delimiter));
 		}
 		List<String[]> outputColumns = new ArrayList<String[]>();
-		for (Iterator<String> lineIter = getLineIterator(inputFile, encoding, commentIndicator); lineIter.hasNext();) {
-			String line = lineIter.next();
-			outputColumns.add(getColumnsFromLine(line, delimiter, columnIndexes));
+		for (StreamLineIterator lineIter = new StreamLineIterator(inputFile, encoding, commentIndicator); lineIter
+				.hasNext();) {
+			Line line = lineIter.next();
+			outputColumns.add(getColumnsFromLine(line.getText(), delimiter, columnIndexes));
 		}
 		return outputColumns;
 	}
@@ -162,6 +158,8 @@ public class FileLoaderUtil {
 	 * @throws IOException
 	 */
 	public static List<String> loadLinesFromFile(File inputFile, String encoding) throws IOException {
+		if (encoding == null)
+			encoding = System.getProperty("file.encoding");
 		return loadColumnFromDelimitedFile(inputFile, encoding, null, null, 0);
 	}
 
@@ -199,105 +197,6 @@ public class FileLoaderUtil {
 					"Column index %d does not exist on line. There are only %d columns on line: %s", columnIndex,
 					lineTokens.length, line));
 		}
-	}
-
-	/**
-	 * Returns an Iterator<String> over the lines of the input file.
-	 * 
-	 * @param inputFile
-	 * @return
-	 * @throws IOException
-	 */
-	public static Iterator<String> getLineIterator(final File inputFile, String encoding, final String commentIndicator)
-			throws IOException {
-		return getLineIterator(new FileInputStream(inputFile), encoding, commentIndicator);
-	}
-
-	/**
-	 * Returns an iterator over the lines in the InputStream. Assumes default character encoding.
-	 * 
-	 * @param inputStream
-	 * @param commentIndicator
-	 * @return
-	 * @throws IOException
-	 */
-	public static Iterator<String> getLineIterator(final InputStream inputStream, final String commentIndicator)
-			throws IOException {
-		return getLineIterator(inputStream, DEFAULT_ENCODING, commentIndicator);
-	}
-
-	/**
-	 * Returns an Iterator<String> over the lines of the input stream.
-	 * 
-	 * @param inputFile
-	 * @return
-	 * @throws IOException
-	 */
-	public static Iterator<String> getLineIterator(final InputStream inputStream, String encoding,
-			final String commentIndicator) throws IOException {
-		final LineIterator lineIterator = IOUtils.lineIterator(inputStream, encoding);
-
-		return new Iterator<String>() {
-			private String nextLine = null;
-			private int lineCount = 0;
-
-			@Override
-			public boolean hasNext() {
-				if (nextLine == null) {
-					if (lineIterator.hasNext()) {
-						String line = lineIterator.nextLine();
-						lineCount++;
-						if (isCommentLine(line, commentIndicator)) {
-							return hasNext();
-						}
-						nextLine = line;
-						return true;
-					}
-					return false;
-				}
-				return true;
-			}
-
-			@Override
-			public String next() {
-				if (!hasNext()) {
-					throw new NoSuchElementException();
-				}
-
-				String lineToReturn = nextLine;
-				nextLine = null;
-				return lineToReturn;
-			}
-
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException("The remove() method is not supported for this iterator.");
-			}
-
-			/**
-			 * Returns true if the line starts with the commentIndicator String. False otherwise,
-			 * and if the commentIndicator String is null.
-			 * 
-			 * @param line
-			 * @param commentIndicator
-			 * @return
-			 */
-			private boolean isCommentLine(String line, String commentIndicator) {
-				if (commentIndicator == null) {
-					return false;
-				}
-				return line.trim().startsWith(commentIndicator);
-			}
-		};
-	}
-
-	public static Iterator<String> getLineIterator(final File inputFile, final String commentIndicator)
-			throws IOException {
-		return getLineIterator(inputFile, DEFAULT_ENCODING, commentIndicator);
-	}
-
-	public static Iterator<String> getLineIterator(final File inputFile) throws IOException {
-		return getLineIterator(inputFile, DEFAULT_ENCODING, null);
 	}
 
 }
