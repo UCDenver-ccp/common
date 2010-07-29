@@ -73,34 +73,35 @@ public class TestUtil {
 		Collection<Method> getterMethods = getGetterMethods(expected);
 		for (Method method : getterMethods) {
 			String fieldName = method.getName().substring(3);
-			if (method.getReturnType().getName().startsWith("[I")) {
-				assertArrayEquals(String.format("Value for field %s must be the same.", fieldName), (int[]) method
-						.invoke(expected), (int[]) method.invoke(observed));
-			} else if (method.getReturnType().getName().startsWith("[B")) {
-				assertArrayEquals(String.format("Value for field %s must be the same.", fieldName), (byte[]) method
-						.invoke(expected), (byte[]) method.invoke(observed));
-			} else if (method.getReturnType().getName().startsWith("[C")) {
-				assertArrayEquals(String.format("Value for field %s must be the same.", fieldName), (char[]) method
-						.invoke(expected), (char[]) method.invoke(observed));
-			} else if (method.getReturnType().getName().startsWith("[F")) {
-				assertArrayEquals(String.format("Value for field %s must be the same.", fieldName), (float[]) method
-						.invoke(expected), (float[]) method.invoke(observed), 0.000001f);
-			} else if (method.getReturnType().getName().startsWith("[D")) {
-				assertArrayEquals(String.format("Value for field %s must be the same.", fieldName), (double[]) method
-						.invoke(expected), (double[]) method.invoke(observed), 0.000001d);
-			} else if (method.getReturnType().getName().startsWith("[J")) {
-				assertArrayEquals(String.format("Value for field %s must be the same.", fieldName), (long[]) method
-						.invoke(expected), (long[]) method.invoke(observed));
-			} else if (method.getReturnType().getName().startsWith("[S")) {
-				assertArrayEquals(String.format("Value for field %s must be the same.", fieldName), (short[]) method
-						.invoke(expected), (short[]) method.invoke(observed));
-			} else if (method.getReturnType().getName().startsWith("[")) {
-				assertArrayEquals(String.format("Value for field %s must be the same.", fieldName), (Object[]) method
-						.invoke(expected), (Object[]) method.invoke(observed));
-			} else {
-				assertEquals(String.format("Value for field %s must be the same.", fieldName), method.invoke(expected),
-						method.invoke(observed));
-			}
+			if (!fieldName.equals("ByteOffset"))
+				if (method.getReturnType().getName().startsWith("[I")) {
+					assertArrayEquals(String.format("Value for field %s must be the same.", fieldName), (int[]) method
+							.invoke(expected), (int[]) method.invoke(observed));
+				} else if (method.getReturnType().getName().startsWith("[B")) {
+					assertArrayEquals(String.format("Value for field %s must be the same.", fieldName), (byte[]) method
+							.invoke(expected), (byte[]) method.invoke(observed));
+				} else if (method.getReturnType().getName().startsWith("[C")) {
+					assertArrayEquals(String.format("Value for field %s must be the same.", fieldName), (char[]) method
+							.invoke(expected), (char[]) method.invoke(observed));
+				} else if (method.getReturnType().getName().startsWith("[F")) {
+					assertArrayEquals(String.format("Value for field %s must be the same.", fieldName),
+							(float[]) method.invoke(expected), (float[]) method.invoke(observed), 0.000001f);
+				} else if (method.getReturnType().getName().startsWith("[D")) {
+					assertArrayEquals(String.format("Value for field %s must be the same.", fieldName),
+							(double[]) method.invoke(expected), (double[]) method.invoke(observed), 0.000001d);
+				} else if (method.getReturnType().getName().startsWith("[J")) {
+					assertArrayEquals(String.format("Value for field %s must be the same.", fieldName), (long[]) method
+							.invoke(expected), (long[]) method.invoke(observed));
+				} else if (method.getReturnType().getName().startsWith("[S")) {
+					assertArrayEquals(String.format("Value for field %s must be the same.", fieldName),
+							(short[]) method.invoke(expected), (short[]) method.invoke(observed));
+				} else if (method.getReturnType().getName().startsWith("[")) {
+					assertArrayEquals(String.format("Value for field %s must be the same.", fieldName),
+							(Object[]) method.invoke(expected), (Object[]) method.invoke(observed));
+				} else {
+					assertEquals(String.format("Value for field %s must be the same.", fieldName), method
+							.invoke(expected), method.invoke(observed));
+				}
 		}
 	}
 
