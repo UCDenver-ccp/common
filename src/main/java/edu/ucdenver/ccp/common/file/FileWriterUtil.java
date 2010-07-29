@@ -2,7 +2,10 @@ package edu.ucdenver.ccp.common.file;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 public class FileWriterUtil {
@@ -33,4 +36,22 @@ public class FileWriterUtil {
 		ps.close();
 	}
 
+	
+	public static PrintStream openPrintStream(File outputFile, String encoding, boolean append) throws UnsupportedEncodingException, FileNotFoundException {
+		boolean autoflush = true;
+		return new PrintStream(new FileOutputStream(outputFile, append), autoflush, encoding);
+	}
+	
+	
+	public static void closePrintStream(PrintStream ps, File outputFile) throws IOException {
+		try {
+			if (ps.checkError())
+				throw new IOException(String.format("Error writing to file: %s", outputFile.getAbsolutePath()));
+		} finally {
+			if (ps != null) {
+				ps.close();
+			}
+		}
+	}
+	
 }
