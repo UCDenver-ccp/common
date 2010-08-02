@@ -1,5 +1,6 @@
 package edu.ucdenver.ccp.common.string;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -16,6 +17,7 @@ public class StringUtilTest extends DefaultTestCase {
 
 	@Test
 	public void testIsInteger_validPositiveInput() throws Exception {
+		assertTrue(StringUtil.isInteger("0"));
 		assertTrue(StringUtil.isInteger("1"));
 		assertTrue(StringUtil.isInteger("10"));
 		assertTrue(StringUtil.isInteger("1234567890"));
@@ -32,6 +34,7 @@ public class StringUtilTest extends DefaultTestCase {
 
 	@Test
 	public void testIsInteger_invalidInput() throws Exception {
+		assertFalse(StringUtil.isInteger("-0"));
 		assertFalse(StringUtil.isInteger("01"));
 		assertFalse(StringUtil.isInteger("this is not a number"));
 		assertFalse(StringUtil.isInteger("3.14159"));
@@ -39,6 +42,35 @@ public class StringUtilTest extends DefaultTestCase {
 		assertFalse(StringUtil.isInteger("-000005"));
 		assertFalse(StringUtil.isInteger(""));
 		assertFalse(StringUtil.isInteger(null));
+	}
+	
+	@Test
+	public void testIsNonNegativeInteger_validNonNegativeInput() throws Exception {
+		assertTrue(StringUtil.isNonNegativeInteger("1"));
+		assertTrue(StringUtil.isNonNegativeInteger("10"));
+		assertTrue(StringUtil.isNonNegativeInteger("1234567890"));
+		assertTrue(StringUtil.isNonNegativeInteger("9876543211"));
+	}
+	
+	
+	@Test
+	public void testIsNonNegativeInteger_negativeInput() throws Exception {
+		assertFalse(StringUtil.isNonNegativeInteger("-1"));
+		assertFalse(StringUtil.isNonNegativeInteger("-10"));
+		assertFalse(StringUtil.isNonNegativeInteger("-1234567890"));
+		assertFalse(StringUtil.isNonNegativeInteger("-9876543211"));
+	}
+	
+	@Test
+	public void testIsNonNegativeInteger_invalidInput() throws Exception {
+		assertFalse(StringUtil.isNonNegativeInteger("-0"));
+		assertFalse(StringUtil.isNonNegativeInteger("01"));
+		assertFalse(StringUtil.isNonNegativeInteger("this is not a number"));
+		assertFalse(StringUtil.isNonNegativeInteger("3.14159"));
+		assertFalse(StringUtil.isNonNegativeInteger("-09876543211"));
+		assertFalse(StringUtil.isNonNegativeInteger("-000005"));
+		assertFalse(StringUtil.isNonNegativeInteger(""));
+		assertFalse(StringUtil.isNonNegativeInteger(null));
 	}
 
 	@Test

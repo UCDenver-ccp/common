@@ -2,6 +2,8 @@ package edu.ucdenver.ccp.common.string;
 
 import static edu.ucdenver.ccp.common.string.RegExPatterns.HAS_NUMBERS_ONLY_OPT_NEG;
 import static edu.ucdenver.ccp.common.string.RegExPatterns.HAS_NUMBERS_ONLY_OPT_NEG_ZERO_START;
+import static edu.ucdenver.ccp.common.string.RegExPatterns.HAS_NUMBERS_ONLY;
+
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,10 +23,25 @@ public class StringUtil {
 	 * @return
 	 */
 	public static boolean isInteger(String inputStr) {
+		if (inputStr != null && inputStr.equals(StringConstants.DIGIT_ZERO))
+			return true;
 		return inputStr == null ? false : (inputStr.matches(HAS_NUMBERS_ONLY_OPT_NEG) && !inputStr
 				.matches(HAS_NUMBERS_ONLY_OPT_NEG_ZERO_START));
 	}
 
+	/**
+	 * Returns true if the input string is a non-negative integer, false otherwise.
+	 * 
+	 * @param inputStr
+	 * @return
+	 */
+	public static boolean isNonNegativeInteger(String inputStr) {
+		if (inputStr != null && inputStr.equals(StringConstants.DIGIT_ZERO))
+			return true;
+		return inputStr == null ? false : (inputStr.matches(HAS_NUMBERS_ONLY) && !inputStr
+				.matches(HAS_NUMBERS_ONLY_OPT_NEG_ZERO_START));
+	}
+	
 	/**
 	 * Returns a String consisting of the input String with specified suffix removed. If the input
 	 * String does not end with the specified suffix, an IllegalArgumentException is thrown.
