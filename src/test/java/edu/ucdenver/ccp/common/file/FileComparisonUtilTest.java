@@ -97,62 +97,62 @@ public class FileComparisonUtilTest extends DefaultTestCase {
 
 	@Test
 	public void testFileComparison_basefiles() throws Exception {
-		assertTrue(FileComparisonUtil.hasExpectedLines(baseFile, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
+		assertTrue(FileComparisonUtil.hasExpectedLines(baseFile, DEFAULT_ENCODING, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
 				LineOrder.AS_IN_FILE, ColumnOrder.AS_IN_FILE));
-		assertTrue(FileComparisonUtil.hasExpectedLines(baseFile, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
+		assertTrue(FileComparisonUtil.hasExpectedLines(baseFile,DEFAULT_ENCODING, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
 				LineOrder.AS_IN_FILE, ColumnOrder.ANY_ORDER));
-		assertTrue(FileComparisonUtil.hasExpectedLines(baseFile, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
+		assertTrue(FileComparisonUtil.hasExpectedLines(baseFile,DEFAULT_ENCODING, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
 				LineOrder.ANY_ORDER, ColumnOrder.AS_IN_FILE));
-		assertTrue(FileComparisonUtil.hasExpectedLines(baseFile, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
+		assertTrue(FileComparisonUtil.hasExpectedLines(baseFile,DEFAULT_ENCODING, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
 				LineOrder.ANY_ORDER, ColumnOrder.ANY_ORDER));
 	}
 
 	@Test
 	public void testFileComparison_basefilesLinesMixedColumnsInOrder() throws Exception {
-		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileLinesMixedOrderColumnsInOrder, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
+		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileLinesMixedOrderColumnsInOrder, DEFAULT_ENCODING,getBaseFileLines(), COLUMN_DELIMITER_REGEX,
 				LineOrder.AS_IN_FILE, ColumnOrder.AS_IN_FILE));
-		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileLinesMixedOrderColumnsInOrder, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
+		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileLinesMixedOrderColumnsInOrder, DEFAULT_ENCODING,getBaseFileLines(), COLUMN_DELIMITER_REGEX,
 				LineOrder.AS_IN_FILE, ColumnOrder.ANY_ORDER));
-		assertTrue(FileComparisonUtil.hasExpectedLines(baseFileLinesMixedOrderColumnsInOrder, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
+		assertTrue(FileComparisonUtil.hasExpectedLines(baseFileLinesMixedOrderColumnsInOrder,DEFAULT_ENCODING, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
 				LineOrder.ANY_ORDER, ColumnOrder.AS_IN_FILE));
-		assertTrue(FileComparisonUtil.hasExpectedLines(baseFileLinesMixedOrderColumnsInOrder, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
+		assertTrue(FileComparisonUtil.hasExpectedLines(baseFileLinesMixedOrderColumnsInOrder,DEFAULT_ENCODING, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
 				LineOrder.ANY_ORDER, ColumnOrder.ANY_ORDER));
 	}
 	
 	@Test
 	public void testFileComparison_basefilesLinesMixedColumnsMixed() throws Exception {
-		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileLinesMixedOrderColumnsMixedOrder, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
+		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileLinesMixedOrderColumnsMixedOrder,DEFAULT_ENCODING, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
 				LineOrder.AS_IN_FILE, ColumnOrder.AS_IN_FILE));
-		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileLinesMixedOrderColumnsMixedOrder, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
+		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileLinesMixedOrderColumnsMixedOrder,DEFAULT_ENCODING, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
 				LineOrder.AS_IN_FILE, ColumnOrder.ANY_ORDER));
-		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileLinesMixedOrderColumnsMixedOrder, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
+		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileLinesMixedOrderColumnsMixedOrder,DEFAULT_ENCODING, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
 				LineOrder.ANY_ORDER, ColumnOrder.AS_IN_FILE));
-		assertTrue(FileComparisonUtil.hasExpectedLines(baseFileLinesMixedOrderColumnsMixedOrder, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
+		assertTrue(FileComparisonUtil.hasExpectedLines(baseFileLinesMixedOrderColumnsMixedOrder,DEFAULT_ENCODING, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
 				LineOrder.ANY_ORDER, ColumnOrder.ANY_ORDER));
 	}
 	
 	
 	@Test
 	public void testFileComparison_basefilesLinesInOrderColumnsMixed() throws Exception {
-		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileLinesInOrderColumnsMixedOrder, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
+		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileLinesInOrderColumnsMixedOrder,DEFAULT_ENCODING, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
 				LineOrder.AS_IN_FILE, ColumnOrder.AS_IN_FILE));
-		assertTrue(FileComparisonUtil.hasExpectedLines(baseFileLinesInOrderColumnsMixedOrder, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
+		assertTrue(FileComparisonUtil.hasExpectedLines(baseFileLinesInOrderColumnsMixedOrder,DEFAULT_ENCODING, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
 				LineOrder.AS_IN_FILE, ColumnOrder.ANY_ORDER));
-		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileLinesInOrderColumnsMixedOrder, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
+		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileLinesInOrderColumnsMixedOrder,DEFAULT_ENCODING, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
 				LineOrder.ANY_ORDER, ColumnOrder.AS_IN_FILE));
-		assertTrue(FileComparisonUtil.hasExpectedLines(baseFileLinesInOrderColumnsMixedOrder, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
+		assertTrue(FileComparisonUtil.hasExpectedLines(baseFileLinesInOrderColumnsMixedOrder,DEFAULT_ENCODING, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
 				LineOrder.ANY_ORDER, ColumnOrder.ANY_ORDER));
 	}
 	
 	@Test
 	public void testFileComparison_basefilesMissingLine() throws Exception {
-		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileMissingLine, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
+		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileMissingLine, DEFAULT_ENCODING,getBaseFileLines(), COLUMN_DELIMITER_REGEX,
 				LineOrder.AS_IN_FILE, ColumnOrder.AS_IN_FILE));
-		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileMissingLine, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
+		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileMissingLine,DEFAULT_ENCODING, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
 				LineOrder.AS_IN_FILE, ColumnOrder.ANY_ORDER));
-		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileMissingLine, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
+		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileMissingLine, DEFAULT_ENCODING,getBaseFileLines(), COLUMN_DELIMITER_REGEX,
 				LineOrder.ANY_ORDER, ColumnOrder.AS_IN_FILE));
-		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileMissingLine, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
+		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileMissingLine, DEFAULT_ENCODING,getBaseFileLines(), COLUMN_DELIMITER_REGEX,
 				LineOrder.ANY_ORDER, ColumnOrder.ANY_ORDER));
 	}
 	
