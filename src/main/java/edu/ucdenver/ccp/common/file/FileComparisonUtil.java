@@ -38,9 +38,9 @@ public class FileComparisonUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public static boolean hasExpectedLines(File outputFile, List<String> expectedLines, String columnDelimiterRegex,
-			LineOrder lineOrder, ColumnOrder columnOrder) throws IOException {
-		List<String> lines = FileLoaderUtil.loadLinesFromFile(outputFile);
+	public static boolean hasExpectedLines(File outputFile, String encoding, List<String> expectedLines,
+			String columnDelimiterRegex, LineOrder lineOrder, ColumnOrder columnOrder) throws IOException {
+		List<String> lines = FileLoaderUtil.loadLinesFromFile(outputFile, encoding);
 		List<String> expectedLinesInFile = new ArrayList<String>(expectedLines);
 
 		int lineIndex = 0;
@@ -52,6 +52,7 @@ public class FileComparisonUtil {
 			}
 			lineIndex++;
 		}
+
 		return (lines.size() == expectedLines.size() && allLinesAsExpected);
 	}
 
@@ -96,9 +97,9 @@ public class FileComparisonUtil {
 			}
 			return false;
 		} else if (columnOrder == ColumnOrder.ANY_ORDER) {
-			String[] lineToks = line.split(delimiterRegex);
+			String[] lineToks = line.split(delimiterRegex, -1);
 			for (String expectedLine : expectedLines) {
-				String[] expectedLineToks = expectedLine.split(delimiterRegex);
+				String[] expectedLineToks = expectedLine.split(delimiterRegex, -1);
 				if (lineToks.length == expectedLineToks.length) {
 					if (CollectionsUtil.array2Set(lineToks).equals(CollectionsUtil.array2Set(expectedLineToks))) {
 						expectedLines.remove(expectedLine);
@@ -126,8 +127,8 @@ public class FileComparisonUtil {
 		if (columnOrder == ColumnOrder.AS_IN_FILE) {
 			return line.equals(expectedLine);
 		} else if (columnOrder == ColumnOrder.ANY_ORDER) {
-			String[] lineToks = line.split(delimiterRegex);
-			String[] expectedLineToks = expectedLine.split(delimiterRegex);
+			String[] lineToks = line.split(delimiterRegex, -1);
+			String[] expectedLineToks = expectedLine.split(delimiterRegex, -1);
 			if (lineToks.length == expectedLineToks.length) {
 				return CollectionsUtil.array2Set(lineToks).equals(CollectionsUtil.array2Set(expectedLineToks));
 			} else {
