@@ -226,4 +226,18 @@ public class CollectionsUtil {
 		}
 	}
 
+	/**
+	 * Consolidates the Collection of input Collections into a single Collection
+	 * 
+	 * @param <T>
+	 * @param inputCollections
+	 * @return
+	 */
+	public static <T> Collection<T> consolidate(Collection<Collection<T>> inputCollections) {
+		Collection<T> collection = new ArrayList<T>();
+		for (Collection<T> inputCollection : inputCollections)
+			collection.addAll(inputCollection);
+		return collection;
+	}
+
 }
