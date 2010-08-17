@@ -8,8 +8,8 @@ import java.util.Calendar;
 import org.junit.Test;
 
 import edu.ucdenver.ccp.common.calendar.CalendarUtil;
+import edu.ucdenver.ccp.common.reflection.PrivateAccessor;
 import edu.ucdenver.ccp.common.test.DefaultTestCase;
-import edu.ucdenver.ccp.common.test.PrivateAccessor;
 
 public class CalendarUtilTest extends DefaultTestCase {
 
