@@ -1,8 +1,8 @@
 <project name="ccp-common" default="build" basedir="..">
 	
-	<import file="build-base.xml" />
-	
 	<!-- List internal project dependencies here (comma-delimited) -->
 	<property name="dependency.list" value="" />
 	<path id="classpath.compile.dependency" />
+	
+	<import file="build-base.xml" />
 </project>
