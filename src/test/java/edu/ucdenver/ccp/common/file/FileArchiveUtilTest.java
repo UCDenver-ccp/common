@@ -12,10 +12,6 @@ import java.util.zip.GZIPInputStream;
 import org.junit.Test;
 
 import edu.ucdenver.ccp.common.collections.CollectionsUtil;
-import edu.ucdenver.ccp.common.file.FileArchiveUtil;
-import edu.ucdenver.ccp.common.file.FileLoaderUtil;
-import edu.ucdenver.ccp.common.file.FileUtil;
-import edu.ucdenver.ccp.common.file.FileWriterUtil;
 import edu.ucdenver.ccp.common.test.DefaultTestCase;
 
 public class FileArchiveUtilTest extends DefaultTestCase {
@@ -33,6 +29,7 @@ public class FileArchiveUtilTest extends DefaultTestCase {
 	private final String SAMPLE_TARBALL_FILE_NAME = "sampleTarball.tar";
 	private final String SAMPLE_ZIPPED_TARBALL_FILE_NAME = "sampleTarball.tgz";
 	private final String SAMPLE_ZIP_FILE_NAME = "sampleZipFile.zip";
+	private final String SAMPLE_UNIX_COMPRESS_FILE_NAME = "sampleUnixCompressFile.txt.Z";
 
 	@Test
 	public void testUnzipGzFile() throws Exception {
@@ -43,6 +40,19 @@ public class FileArchiveUtilTest extends DefaultTestCase {
 		List<String> linesFromUnzippedFile = FileLoaderUtil.loadLinesFromFile(unzippedFile);
 		assertTrue(String.format("The unzipped file should now exist."), unzippedFile.exists());
 		assertEquals(String.format("There should be two lines in the unzipped file."), expectedLinesInFile,
+				linesFromUnzippedFile);
+	}
+	
+	
+	@Test
+	public void testUnzipUnixCompressFile() throws Exception {
+		UncompressInputStream uis = new UncompressInputStream(getResourceFromClasspath(this.getClass(), SAMPLE_UNIX_COMPRESS_FILE_NAME));
+		File outputDirectory = folder.newFolder("unzippedUnixCompressFile");
+		File unzippedFile = FileUtil.appendPathElementsToDirectory(outputDirectory, "sampleUnixCompressFile.txt");
+		FileArchiveUtil.unzip(uis, unzippedFile.getName(), outputDirectory);
+		List<String> linesFromUnzippedFile = FileLoaderUtil.loadLinesFromFile(unzippedFile);
+		assertTrue(String.format("The unzipped file should now exist (unix compress)."), unzippedFile.exists());
+		assertEquals(String.format("There should be two lines in the unzipped file (unix compress)."), expectedLinesInFile,
 				linesFromUnzippedFile);
 	}
 

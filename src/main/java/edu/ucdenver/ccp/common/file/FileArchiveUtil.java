@@ -45,7 +45,7 @@ public class FileArchiveUtil {
 	private static final String tgz_suffix = ".tgz";
 	private static final String zip_suffix = ".zip";
 	private static final String bzip_suffix = ".bz2";
-	private static final String z_suffix = ".z";
+	private static final String z_suffix = ".Z";
 	private static final String tar_suffix = ".tar";
 
 	/**
@@ -65,12 +65,18 @@ public class FileArchiveUtil {
 			return getGzipInputStream(file);
 		} else if (isZipFile(file)) {
 			return getZipInputStream(file);
+		} else if (isUnixCompressFile(file)) {
+			return getUncompressInputStream(file);
 		} else if (isUnsupportedZipFormatFile(file)) {
 			throw new IllegalArgumentException(String.format(
 					"Method for reading compressed format is not supported for file: %s", file.getAbsolutePath()));
 		} else {
 			return new FileInputStream(file);
 		}
+	}
+
+	private static UncompressInputStream getUncompressInputStream(File file) throws FileNotFoundException, IOException {
+		return new UncompressInputStream(new BufferedInputStream(new FileInputStream(file)));
 	}
 
 	/**
@@ -119,6 +125,10 @@ public class FileArchiveUtil {
 
 	private static boolean isUnixCompressFile(File file) {
 		return hasCaseInsensitiveSuffix(file, z_suffix);
+	}
+
+	public static boolean isZippedFile(File file) {
+		return isGzipFile(file) || isZipFile(file) || isBZipFile(file) || isUnixCompressFile(file);
 	}
 
 	private static boolean isTarFile(File file) {
@@ -217,6 +227,9 @@ public class FileArchiveUtil {
 			} else if (isGzipFile(zippedFile)) {
 				is = getGzipInputStream(zippedFile);
 				return unzip((GZIPInputStream) is, getUnzippedFileName(zippedFile.getName()), outputDirectory);
+			} else if (isUnixCompressFile(zippedFile)) {
+				is = getUncompressInputStream(zippedFile);
+				return unzip((UncompressInputStream) is, getUnzippedFileName(zippedFile.getName()), outputDirectory);
 			} else {
 				throw new IllegalArgumentException(String.format("Unable to unzip file: %s", zippedFile
 						.getAbsolutePath()));
@@ -233,7 +246,7 @@ public class FileArchiveUtil {
 	 * @param name
 	 * @return
 	 */
-	private static String getUnzippedFileName(String filename) {
+	public static String getUnzippedFileName(String filename) {
 		if (filename.endsWith(gz_suffix.toLowerCase())) {
 			return StringUtil.removeSuffix(filename, gz_suffix.toLowerCase());
 		} else if (filename.endsWith(gz_suffix.toUpperCase())) {
@@ -242,6 +255,8 @@ public class FileArchiveUtil {
 			return StringUtil.replaceSuffix(filename, tgz_suffix.toLowerCase(), tar_suffix.toLowerCase());
 		} else if (filename.endsWith(tgz_suffix.toUpperCase())) {
 			return StringUtil.replaceSuffix(filename, tgz_suffix.toUpperCase(), tar_suffix.toUpperCase());
+		} else if (filename.endsWith(z_suffix)) {
+			return StringUtil.removeSuffix(filename, z_suffix);
 		} else {
 			throw new IllegalArgumentException(String.format(
 					"Only works for .gz and .tgz filenames. Input filename was: %s", filename));
@@ -273,6 +288,13 @@ public class FileArchiveUtil {
 				isFirst = false;
 			}
 		}
+		return outputFile;
+	}
+
+	public static File unzip(UncompressInputStream uncompressInputStream, String outputFileName, File outputDirectory)
+			throws IOException {
+		File outputFile = new File(outputDirectory.getAbsolutePath() + File.separator + outputFileName);
+		FileUtil.copy(uncompressInputStream, outputFile);
 		return outputFile;
 	}
 
