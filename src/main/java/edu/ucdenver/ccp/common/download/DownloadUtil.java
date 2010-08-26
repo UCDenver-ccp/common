@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.SocketException;
 
+import edu.ucdenver.ccp.common.file.FileArchiveUtil;
 import edu.ucdenver.ccp.common.file.FileUtil;
 import edu.ucdenver.ccp.common.ftp.FTPUtil;
 
@@ -36,6 +37,8 @@ public class DownloadUtil {
 					downloadedFile = FTPUtil.downloadFile(ftpd.server(), ftpd.port(), ftpd.path(), ftpd.filename(),
 							ftpd.filetype(), workDirectory, userName, password);
 				}
+				if (fileNeedsUnzipping(downloadedFile, clean))
+					downloadedFile = FileArchiveUtil.unzip(downloadedFile, workDirectory);
 				field.setAccessible(true);
 				field.set(object, downloadedFile);
 			}
@@ -56,5 +59,27 @@ public class DownloadUtil {
 			return false;
 		}
 		return downloadedFile.exists();
+	}
+
+	/**
+	 * If the input file is not a zip file, then this method return false immediately. Otherwise if
+	 * clean is true, it deletes any previous unzipped version of the file and return true. If clean
+	 * is false, it simply returns based on existence of the unzipped file (false if it exists, true
+	 * if it doesn't).
+	 * 
+	 * @param zippedFile
+	 * @param clean
+	 * @return
+	 */
+	private static boolean fileNeedsUnzipping(File zippedFile, boolean clean) {
+		if (!FileArchiveUtil.isZippedFile(zippedFile))
+			return false;
+		String unzippedFileName = FileArchiveUtil.getUnzippedFileName(zippedFile.getName());
+		File unzippedFile = FileUtil.appendPathElementsToDirectory(zippedFile.getParentFile(), unzippedFileName);
+		if (clean) {
+			unzippedFile.delete();
+			return true;
+		}
+		return unzippedFile.exists();
 	}
 }
