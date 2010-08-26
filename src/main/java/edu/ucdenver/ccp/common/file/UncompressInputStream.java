@@ -41,6 +41,8 @@ import java.io.FilterInputStream;
  * heavily on the <var>unlzw.c</var> code in <var>gzip-1.2.4</var> (written
  * by Peter Jannesen) and the original compress code.
  *
+ * Available here: http://www.koders.com/java/fidE36E3132E9B29F938759B4E3F1D1F4F1F3E0E0AB.aspx?s=md5
+ *
  * @version	0.3-2  18/06/1999
  * @author	Ronald Tschalr
  */
