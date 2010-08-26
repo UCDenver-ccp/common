@@ -30,7 +30,6 @@ private static final Logger logger = Logger.getLogger(LineIterator.class);
 			T line = (T) reader.readLine();
 			if (line == null)
 				return false;
-			logger.info("READ LINE: " + line.toString());
 			nextLine = line;
 			return true;
 		} catch (IOException e) {
