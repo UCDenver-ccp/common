@@ -8,8 +8,7 @@ import static edu.ucdenver.ccp.common.string.RegExPatterns.HAS_NUMBERS_ONLY;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -207,6 +206,24 @@ public class StringUtil {
 			sb.append(inputStr);
 		}
 		return sb.toString();
+	}
+
+	/**
+	 * Delimit values with provided delimiter and strip surrounding single characters (ex: double-quotes) .
+	 * 
+	 * @param values to delimit
+	 * @param delim delimiter.
+	 * 
+	 * @return converted values.
+	 */
+	public static Collection<String> delimitAndTrim(String values, String delim) {
+		List<String> list = Arrays.asList(values.split(delim));
+		List<String> trimmed = new ArrayList<String>();
+		for (String v : list)
+			if (v.trim().length() > 0)
+				trimmed.add(v.substring(1, v.length() - 1));
+		
+		return trimmed;
 	}
 
 }
