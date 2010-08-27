@@ -79,7 +79,7 @@ public class DownloadViaAnnotationsTest extends DefaultTestCase {
 		File workDirectory = folder.newFolder("workDir");
 		boolean clean = true;
 		MyGzFileProcessor fileProcessor = new MyGzFileProcessor(workDirectory, clean);
-		assertEquals("should be sample.txt", "sampleFile.txt", fileProcessor.getFileToProcess().getName());
+		assertEquals("should be sampleFile.txt", "sampleFile.txt", fileProcessor.getFileToProcess().getName());
 		assertTrue("file should exist locally", fileProcessor.getFileToProcess().exists());
 		assertEquals(String.format("Unzipped file should have expected lines"), expectedLinesInSampleGzFile,
 				FileLoaderUtil.loadLinesFromFile(fileProcessor.getFileToProcess(), DEFAULT_ENCODING));
