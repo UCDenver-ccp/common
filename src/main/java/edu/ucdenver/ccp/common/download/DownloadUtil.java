@@ -39,6 +39,10 @@ public class DownloadUtil {
 				}
 				if (fileNeedsUnzipping(downloadedFile, clean))
 					downloadedFile = FileArchiveUtil.unzip(downloadedFile, workDirectory);
+				else if (FileArchiveUtil.isZippedFile(downloadedFile))
+					// File has already been downloaded and unzipped
+					downloadedFile = getUnzippedFileReference(downloadedFile);
+
 				field.setAccessible(true);
 				field.set(object, downloadedFile);
 			}
@@ -74,12 +78,17 @@ public class DownloadUtil {
 	private static boolean fileNeedsUnzipping(File zippedFile, boolean clean) {
 		if (!FileArchiveUtil.isZippedFile(zippedFile))
 			return false;
-		String unzippedFileName = FileArchiveUtil.getUnzippedFileName(zippedFile.getName());
-		File unzippedFile = FileUtil.appendPathElementsToDirectory(zippedFile.getParentFile(), unzippedFileName);
+		File unzippedFile = getUnzippedFileReference(zippedFile);
 		if (clean) {
 			unzippedFile.delete();
 			return true;
 		}
 		return !unzippedFile.exists();
+	}
+
+	private static File getUnzippedFileReference(File zippedFile) {
+		String unzippedFileName = FileArchiveUtil.getUnzippedFileName(zippedFile.getName());
+		File unzippedFile = FileUtil.appendPathElementsToDirectory(zippedFile.getParentFile(), unzippedFileName);
+		return unzippedFile;
 	}
 }
