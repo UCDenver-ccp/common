@@ -71,12 +71,11 @@ public class FTPUtil {
 		return login(ftpServer, ftpUsername, ftpPassword, ftpClient);
 	}
 
-	
 	public static FTPClient initializeFtpClient(String ftpServer) throws SocketException, IOException {
 		FTPClient ftpClient = connect(ftpServer, -1);
 		return login(ftpServer, ANONYMOUS, ANONYMOUS, ftpClient);
 	}
-	
+
 	/**
 	 * Makes the FTP connection using the specified port. If port < 0, then the default port is
 	 * used.
@@ -149,15 +148,24 @@ public class FTPUtil {
 		}
 	}
 
-	public static File downloadFile(String ftpServer, int port, String remotePath,String fileName, FileType fileType, File workDirectory, String username, String password) throws IOException {
+	public static File downloadFile(String ftpServer, int port, String remotePath, String fileName, FileType fileType,
+			File workDirectory, String username, String password) throws IOException {
 		FTPClient ftpClient = FTPUtil.initializeFtpClient(ftpServer, port, username, password);
-    	FTPUtil.navigateToFtpDirectory(ftpClient, remotePath);
-    	File downloadedFile = FTPUtil.downloadFile(ftpClient, fileName, fileType, workDirectory);
-    	FTPUtil.closeFtpClient(ftpClient);
-    	return downloadedFile;
+		FTPUtil.navigateToFtpDirectory(ftpClient, remotePath);
+		File downloadedFile = FTPUtil.downloadFile(ftpClient, fileName, fileType, workDirectory);
+		FTPUtil.closeFtpClient(ftpClient);
+		return downloadedFile;
 	}
-	
-	
+
+	public static File downloadFile(String ftpServer, String remotePath, String fileName, FileType fileType,
+			File workDirectory) throws IOException {
+		FTPClient ftpClient = FTPUtil.initializeFtpClient(ftpServer, -1, "anonymous", "anonymous");
+		FTPUtil.navigateToFtpDirectory(ftpClient, remotePath);
+		File downloadedFile = FTPUtil.downloadFile(ftpClient, fileName, fileType, workDirectory);
+		FTPUtil.closeFtpClient(ftpClient);
+		return downloadedFile;
+	}
+
 	/**
 	 * Downloads a file by name from the connected FTP server to the local storage directory.
 	 * 
