@@ -80,6 +80,6 @@ public class DownloadUtil {
 			unzippedFile.delete();
 			return true;
 		}
-		return unzippedFile.exists();
+		return !unzippedFile.exists();
 	}
 }
