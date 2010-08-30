@@ -217,6 +217,9 @@ public class StringUtil {
 	 * @return converted values.
 	 */
 	public static Collection<String> delimitAndTrim(String values, String delim) {
+		if (values == null)
+			return Collections.<String>emptyList();
+		
 		List<String> list = Arrays.asList(values.split(delim));
 		List<String> trimmed = new ArrayList<String>();
 		for (String v : list)
