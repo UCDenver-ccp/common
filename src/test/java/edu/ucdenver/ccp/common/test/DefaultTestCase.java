@@ -3,6 +3,7 @@ package edu.ucdenver.ccp.common.test;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
@@ -73,5 +74,9 @@ public class DefaultTestCase {
 		FileUtil.copy(getResourceFromClasspath(clazz, resourceName), tempFile);
 		logger.debug(String.format("created file: %s", tempFile.getAbsolutePath()));
 		return tempFile;
+	}
+	
+	protected void assertEmpty(String errorMessage, Collection<?> collection) {
+		Assert.assertTrue(errorMessage, collection.isEmpty());
 	}
 }
