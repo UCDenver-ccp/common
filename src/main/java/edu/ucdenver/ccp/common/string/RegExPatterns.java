@@ -23,6 +23,8 @@ public class RegExPatterns {
 	 * Matches a tab character.
 	 */
 	public static final String TAB = "\\t";
+	
+	public static final String IS_NUMBER_OR_HYPHEN = "(\\-|\\d+)";
 
 	/**
 	 * For matching a method name, e.g. getText() or getId()

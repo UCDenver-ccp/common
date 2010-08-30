@@ -10,6 +10,7 @@ import static org.junit.Assert.*;
 import java.util.regex.Pattern;
 
 import org.junit.Test;
+import static edu.ucdenver.ccp.common.string.RegExPatterns.IS_NUMBER_OR_HYPHEN;
 
 public class RegExPatternsTest {
 
@@ -92,6 +93,16 @@ public class RegExPatternsTest {
 		assertTrue(matchesPartialInput("abc def 546 fjg", getNDigitsPattern(1)));
 		assertTrue(matchesPartialInput("abc def 546 fjg", getNDigitsPattern(0)));
 		assertFalse(matchesPartialInput("abc def 546 fjg", getNDigitsPattern(4)));
+	}
+
+	@Test
+	public void testIsNumberOrHyphen() throws Exception {
+		assertTrue(matchesEntireInput("99", IS_NUMBER_OR_HYPHEN));
+		assertTrue(matchesEntireInput("-", IS_NUMBER_OR_HYPHEN));
+		assertFalse(matchesEntireInput("-99", IS_NUMBER_OR_HYPHEN));
+		assertFalse(matchesEntireInput("abc", IS_NUMBER_OR_HYPHEN));
+		assertFalse(matchesEntireInput("9abc", IS_NUMBER_OR_HYPHEN));
+		assertFalse(matchesEntireInput("-abc", IS_NUMBER_OR_HYPHEN));
 	}
 
 }
