@@ -156,8 +156,7 @@ public class StringUtilTest extends DefaultTestCase {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testSplitWithFieldDelimiter_ZeroInDelimiter() throws Exception {
-		StringUtil.splitWithFieldEnclosure("\"", String.format(".%s", StringConstants.DIGIT_ZERO), Character
-				.toString(StringConstants.QUOTATION_MARK));
+		StringUtil.splitWithFieldEnclosure("\"", String.format(".%s", StringConstants.DIGIT_ZERO), StringConstants.QUOTATION_MARK);
 	}
 
 	@Test
@@ -166,8 +165,7 @@ public class StringUtilTest extends DefaultTestCase {
 		String[] expectedTokens = new String[] { "J Clin Invest", "0021-9738", "1558-8238", "1940", "19",
 				"\"Index, vol.1-17\"", "1", "10.1172/JCI101100", "PMC548872", "0", "", "live" };
 		assertArrayEquals(String.format("One token should include a comma"), expectedTokens, StringUtil
-				.splitWithFieldEnclosure(inputStr, StringConstants.COMMA, Character
-						.toString(StringConstants.QUOTATION_MARK)));
+				.splitWithFieldEnclosure(inputStr, StringConstants.COMMA, StringConstants.QUOTATION_MARK));
 	}
 
 	@Test
@@ -176,16 +174,14 @@ public class StringUtilTest extends DefaultTestCase {
 		String[] expectedTokens = new String[] { "J Clin Invest", "0021-9738", "1558-8238", "1940", "19",
 				"\"Index, vol.1-17\"", "1", "10.1172/JCI101100", "PMC548872", "0", "", "" };
 		assertArrayEquals(String.format("One token should include a comma"), expectedTokens, StringUtil
-				.splitWithFieldEnclosure(inputStr, StringConstants.COMMA, Character
-						.toString(StringConstants.QUOTATION_MARK)));
+				.splitWithFieldEnclosure(inputStr, StringConstants.COMMA, StringConstants.QUOTATION_MARK));
 	}
 
 	@Test
 	public void testSplitWithFieldDelimiter_NoColumns() throws Exception {
 		String inputStr = "J Clin Invest,0021-9738,1558-8238,1940,19,\"Index, vol.1-17\",1,10.1172/JCI101100,PMC548872,0,,live";
 		assertArrayEquals(String.format("One token should include a comma"), new String[] { inputStr }, StringUtil
-				.splitWithFieldEnclosure(inputStr, StringConstants.SEMICOLON, Character
-						.toString(StringConstants.QUOTATION_MARK)));
+				.splitWithFieldEnclosure(inputStr, StringConstants.SEMICOLON, StringConstants.QUOTATION_MARK));
 	}
 
 	@Test
@@ -220,7 +216,7 @@ public class StringUtilTest extends DefaultTestCase {
 		String inputStr = "\"D015430\",";
 		List<String> expectedTokens = CollectionsUtil.createList("\"D015430\"");
 		assertEquals(String.format("One token should be returned"), expectedTokens, StringUtil.delimitAndTrim(inputStr,
-				StringConstants.COMMA, Character.toString(StringConstants.QUOTATION_MARK), RemoveFieldEnclosures.FALSE));
+				StringConstants.COMMA, StringConstants.QUOTATION_MARK, RemoveFieldEnclosures.FALSE));
 	}
 
 	@Test
@@ -228,7 +224,7 @@ public class StringUtilTest extends DefaultTestCase {
 		String inputStr = "\"D015430\",";
 		List<String> expectedTokens = CollectionsUtil.createList("D015430");
 		assertEquals(String.format("One token should be returned"), expectedTokens, StringUtil.delimitAndTrim(inputStr,
-				StringConstants.COMMA, Character.toString(StringConstants.QUOTATION_MARK), RemoveFieldEnclosures.TRUE));
+				StringConstants.COMMA, StringConstants.QUOTATION_MARK, RemoveFieldEnclosures.TRUE));
 	}
 
 }

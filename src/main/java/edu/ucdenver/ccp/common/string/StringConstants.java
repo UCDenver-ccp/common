@@ -11,11 +11,12 @@ public class StringConstants {
 	public static final String BLANK = "";
 	public static final String NEW_LINE = "\n";
 	public static final String TAB = "\u0009";
-	
 
 	public static final String SPACE = "\u0020";
 	public static final String EXCLAMATION_MARK = "\u0021";
-	public static final char QUOTATION_MARK = 0x22;
+	private static final char QUOTATION_MARK_CHAR = 0x22;
+	public static final String QUOTATION_MARK = Character.toString(QUOTATION_MARK_CHAR);
+
 	public static final String NUMBER_SIGN = "\u0023";
 	public static final String DOLLAR_SIGN = "\u0024";
 	public static final String PERCENT_SIGN = "\u0025";
@@ -74,10 +75,9 @@ public class StringConstants {
 	public static final String LATIN_CAPITAL_LETTER_Y = "\u0059";
 	public static final String LATIN_CAPITAL_LETTER_Z = "\u005A";
 	public static final String LEFT_SQUARE_BRACKET = "\u005B";
-//	public static final String REVERSE_SOLIDUS = "\u005C\u005C";
+	// public static final String REVERSE_SOLIDUS = "\u005C\u005C";
 	public static final char REVERSE_SOLIDUS = 0x5C;
-	
-	
+
 	public static final String RIGHT_SQUARE_BRACKET = "\u005D";
 	public static final String CIRCUMFLEX_ACCENT = "\u005E";
 	public static final String LOW_LINE = "\u005F";
