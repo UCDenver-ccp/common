@@ -257,6 +257,8 @@ public class FileArchiveUtil {
 			return StringUtil.replaceSuffix(filename, tgz_suffix.toUpperCase(), tar_suffix.toUpperCase());
 		} else if (filename.endsWith(z_suffix)) {
 			return StringUtil.removeSuffix(filename, z_suffix);
+		} else if (filename.endsWith(zip_suffix)) {
+			return StringUtil.removeSuffix(filename, zip_suffix);
 		} else {
 			throw new IllegalArgumentException(String.format(
 					"Only works for .gz and .tgz filenames. Input filename was: %s", filename));
