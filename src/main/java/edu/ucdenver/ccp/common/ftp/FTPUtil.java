@@ -109,7 +109,7 @@ public class FTPUtil {
 			throws IOException {
 		ftpClient.login(ftpUsername, ftpPassword);
 		checkFtpConnection(ftpClient, ftpServer, ftpUsername, ftpPassword);
-		logger.info(String.format("Connected to FTP ServeR: %s.", ftpServer));
+		logger.info(String.format("Connected to FTP Server: %s.", ftpServer));
 		return ftpClient;
 	}
 
