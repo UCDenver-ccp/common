@@ -10,6 +10,7 @@ import java.util.List;
 import org.junit.Test;
 
 import edu.ucdenver.ccp.common.collections.CollectionsUtil;
+import edu.ucdenver.ccp.common.string.StringUtil.RemoveFieldEnclosures;
 import edu.ucdenver.ccp.common.test.DefaultTestCase;
 
 public class StringUtilTest extends DefaultTestCase {
@@ -219,7 +220,7 @@ public class StringUtilTest extends DefaultTestCase {
 		String inputStr = "\"D015430\",";
 		List<String> expectedTokens = CollectionsUtil.createList("\"D015430\"");
 		assertEquals(String.format("One token should be returned"), expectedTokens, StringUtil.delimitAndTrim(inputStr,
-				StringConstants.COMMA, Character.toString(StringConstants.QUOTATION_MARK), false));
+				StringConstants.COMMA, Character.toString(StringConstants.QUOTATION_MARK), RemoveFieldEnclosures.FALSE));
 	}
 
 	@Test
@@ -227,7 +228,7 @@ public class StringUtilTest extends DefaultTestCase {
 		String inputStr = "\"D015430\",";
 		List<String> expectedTokens = CollectionsUtil.createList("D015430");
 		assertEquals(String.format("One token should be returned"), expectedTokens, StringUtil.delimitAndTrim(inputStr,
-				StringConstants.COMMA, Character.toString(StringConstants.QUOTATION_MARK), true));
+				StringConstants.COMMA, Character.toString(StringConstants.QUOTATION_MARK), RemoveFieldEnclosures.TRUE));
 	}
 
 }

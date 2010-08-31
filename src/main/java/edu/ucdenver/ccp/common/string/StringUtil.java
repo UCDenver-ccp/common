@@ -257,15 +257,19 @@ public class StringUtil {
 	 * @return
 	 */
 	public static String[] splitWithFieldEnclosure(String inputStr, String delimiterRegex,
-			String optionalFieldEnclosureRegex, boolean removeOptionalFieldEnclosure) {
+			String optionalFieldEnclosureRegex, RemoveFieldEnclosures removeOptionalFieldEnclosure) {
 		String[] tokens = splitWithFieldEnclosure(inputStr, delimiterRegex, optionalFieldEnclosureRegex);
-		if (removeOptionalFieldEnclosure)
+		if (removeOptionalFieldEnclosure.equals(RemoveFieldEnclosures.TRUE))
 			for (int i = 0; i < tokens.length; i++)
 				if (StringUtil.startsAndEndsWithRegex(tokens[i], optionalFieldEnclosureRegex)) {
 					tokens[i] = StringUtil.removePrefixRegex(tokens[i], optionalFieldEnclosureRegex);
 					tokens[i] = StringUtil.removeSuffixRegex(tokens[i], optionalFieldEnclosureRegex);
 				}
 		return tokens;
+	}
+	
+	public enum RemoveFieldEnclosures {
+		TRUE, FALSE;
 	}
 
 	/**
@@ -278,7 +282,7 @@ public class StringUtil {
 	 * @return
 	 */
 	public static List<String> delimitAndTrim(String inputStr, String delimiterRegex,
-			String optionalFieldEnclosureRegex, boolean removeOptionalFieldEnclosure) {
+			String optionalFieldEnclosureRegex, RemoveFieldEnclosures removeOptionalFieldEnclosure) {
 		String[] tokens = splitWithFieldEnclosure(inputStr, delimiterRegex, optionalFieldEnclosureRegex,
 				removeOptionalFieldEnclosure);
 		List<String> nonEmptyTokens = new ArrayList<String>();
