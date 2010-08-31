@@ -1,16 +1,15 @@
 package edu.ucdenver.ccp.common.string;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
 import org.junit.Test;
 
-import edu.ucdenver.ccp.common.string.RegExPatterns;
-import edu.ucdenver.ccp.common.string.StringConstants;
-import edu.ucdenver.ccp.common.string.StringUtil;
+import edu.ucdenver.ccp.common.collections.CollectionsUtil;
 import edu.ucdenver.ccp.common.test.DefaultTestCase;
 
 public class StringUtilTest extends DefaultTestCase {
@@ -43,7 +42,7 @@ public class StringUtilTest extends DefaultTestCase {
 		assertFalse(StringUtil.isInteger(""));
 		assertFalse(StringUtil.isInteger(null));
 	}
-	
+
 	@Test
 	public void testIsNonNegativeInteger_validNonNegativeInput() throws Exception {
 		assertTrue(StringUtil.isNonNegativeInteger("1"));
@@ -51,8 +50,7 @@ public class StringUtilTest extends DefaultTestCase {
 		assertTrue(StringUtil.isNonNegativeInteger("1234567890"));
 		assertTrue(StringUtil.isNonNegativeInteger("9876543211"));
 	}
-	
-	
+
 	@Test
 	public void testIsNonNegativeInteger_negativeInput() throws Exception {
 		assertFalse(StringUtil.isNonNegativeInteger("-1"));
@@ -60,7 +58,7 @@ public class StringUtilTest extends DefaultTestCase {
 		assertFalse(StringUtil.isNonNegativeInteger("-1234567890"));
 		assertFalse(StringUtil.isNonNegativeInteger("-9876543211"));
 	}
-	
+
 	@Test
 	public void testIsNonNegativeInteger_invalidInput() throws Exception {
 		assertFalse(StringUtil.isNonNegativeInteger("-0"));
@@ -78,6 +76,27 @@ public class StringUtilTest extends DefaultTestCase {
 		assertEquals("Suffix should be stripped.", "myFile.txt", StringUtil.removeSuffix("myFile.txt.gz", ".gz"));
 		assertEquals("Suffix should be stripped.", "myFile", StringUtil.removeSuffix("myFile.txt.gz.abc.123.xyz-654",
 				".txt.gz.abc.123.xyz-654"));
+	}
+
+	@Test
+	public void testRemoveRegexSuffix_ValidInput() throws Exception {
+		assertEquals("Suffix should be stripped.", "myFile", StringUtil.removeSuffixRegex("myFile.txt.txt.txt.txt.txt",
+				"(\\.txt)+"));
+		assertEquals("Suffix should be stripped.", "myFile", StringUtil.removeSuffixRegex("myFile.tgz", "\\..gz"));
+	}
+
+	@Test
+	public void testRemoveRegexSuffix_EmptyInput() throws Exception {
+		assertEquals("Suffix should be stripped.", "myFile.txt.txt.txt.txt.txt", StringUtil.removeSuffixRegex(
+				"myFile.txt.txt.txt.txt.txt", ""));
+		assertEquals("Suffix should be stripped.", "myFile.tgz", StringUtil.removeSuffixRegex("myFile.tgz", ""));
+	}
+
+	@Test
+	public void testRemoveRegexPrefix_ValidInput() throws Exception {
+		assertEquals("Suffix should be stripped.", "e.txt.txt.txt.txt.txt", StringUtil.removePrefixRegex(
+				"myFile.txt.txt.txt.txt.txt", "(m?y?Fil)"));
+		assertEquals("Suffix should be stripped.", "gz", StringUtil.removePrefixRegex("myFile.tgz", "my.*?t"));
 	}
 
 	@Test
@@ -149,7 +168,7 @@ public class StringUtilTest extends DefaultTestCase {
 				.splitWithFieldEnclosure(inputStr, StringConstants.COMMA, Character
 						.toString(StringConstants.QUOTATION_MARK)));
 	}
-	
+
 	@Test
 	public void testSplitWithFieldDelimiter_EmptyColumnsAtEnd() throws Exception {
 		String inputStr = "J Clin Invest,0021-9738,1558-8238,1940,19,\"Index, vol.1-17\",1,10.1172/JCI101100,PMC548872,0,,";
@@ -193,6 +212,22 @@ public class StringUtilTest extends DefaultTestCase {
 				"*Index, vol.1-17*", "1", "10.1172/JCI101100", "PMC548872", "0", "", "live" };
 		assertArrayEquals(String.format("One token should include a comma"), expectedTokens, StringUtil
 				.splitWithFieldEnclosure(inputStr, StringConstants.COMMA, "\\*"));
+	}
+
+	@Test
+	public void testDelimitAndTrim_WithTrailingDelimiter() throws Exception {
+		String inputStr = "\"D015430\",";
+		List<String> expectedTokens = CollectionsUtil.createList("\"D015430\"");
+		assertEquals(String.format("One token should be returned"), expectedTokens, StringUtil.delimitAndTrim(inputStr,
+				StringConstants.COMMA, Character.toString(StringConstants.QUOTATION_MARK), false));
+	}
+
+	@Test
+	public void testDelimitAndTrim_WithTrailingDelimiter_RemoveFieldEnclosures() throws Exception {
+		String inputStr = "\"D015430\",";
+		List<String> expectedTokens = CollectionsUtil.createList("D015430");
+		assertEquals(String.format("One token should be returned"), expectedTokens, StringUtil.delimitAndTrim(inputStr,
+				StringConstants.COMMA, Character.toString(StringConstants.QUOTATION_MARK), true));
 	}
 
 }

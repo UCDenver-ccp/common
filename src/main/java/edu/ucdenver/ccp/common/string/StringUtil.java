@@ -4,7 +4,6 @@ import static edu.ucdenver.ccp.common.string.RegExPatterns.HAS_NUMBERS_ONLY_OPT_
 import static edu.ucdenver.ccp.common.string.RegExPatterns.HAS_NUMBERS_ONLY_OPT_NEG_ZERO_START;
 import static edu.ucdenver.ccp.common.string.RegExPatterns.HAS_NUMBERS_ONLY;
 
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -40,7 +39,7 @@ public class StringUtil {
 		return inputStr == null ? false : (inputStr.matches(HAS_NUMBERS_ONLY) && !inputStr
 				.matches(HAS_NUMBERS_ONLY_OPT_NEG_ZERO_START));
 	}
-	
+
 	/**
 	 * Returns a String consisting of the input String with specified suffix removed. If the input
 	 * String does not end with the specified suffix, an IllegalArgumentException is thrown.
@@ -95,6 +94,58 @@ public class StringUtil {
 	}
 
 	/**
+	 * Removes a suffix from the input String if the specified regular expression matches
+	 * 
+	 * @param inputStr
+	 * @param regexStr
+	 * @return
+	 */
+	public static String removeSuffixRegex(String inputStr, String regexStr) {
+		if (endsWithRegex(inputStr, regexStr)) {
+			regexStr = checkForRegexEndPattern(regexStr);
+			Pattern p = Pattern.compile(regexStr);
+			Matcher m = p.matcher(inputStr);
+			if (m.find())
+				return inputStr.substring(0, inputStr.length() - m.group().length());
+		}
+		throw new IllegalArgumentException(String.format("Cannot remove suffix regex \"%s\" from String \"%s\".",
+				regexStr, inputStr));
+	}
+
+	private static String checkForRegexEndPattern(String regexStr) {
+		if (!regexStr.endsWith("$")) {
+			regexStr = regexStr + "$";
+		}
+		return regexStr;
+	}
+
+	/**
+	 * Removes a prefix from the input String if the specified regular expression matches
+	 * 
+	 * @param inputStr
+	 * @param regexStr
+	 * @return
+	 */
+	public static String removePrefixRegex(String inputStr, String regexStr) {
+		if (startsWithRegex(inputStr, regexStr)) {
+			regexStr = checkForRegexStartPattern(regexStr);
+			Pattern p = Pattern.compile(regexStr);
+			Matcher m = p.matcher(inputStr);
+			if (m.find())
+				return inputStr.substring(m.group().length());
+		}
+		throw new IllegalArgumentException(String.format("Cannot remove prefix regex \"%s\" from String \"%s\".",
+				regexStr, inputStr));
+	}
+
+	private static String checkForRegexStartPattern(String regexStr) {
+		if (!regexStr.startsWith("^")) {
+			regexStr = "^" + regexStr;
+		}
+		return regexStr;
+	}
+
+	/**
 	 * Returns true if the beginning of the inputStr matches the regular expression, false
 	 * otherwise.
 	 * 
@@ -103,18 +154,46 @@ public class StringUtil {
 	 * @return
 	 */
 	public static boolean startsWithRegex(String inputStr, String regexStr) {
-		if (!regexStr.startsWith("^")) {
-			regexStr = "^" + regexStr;
-		}
+		regexStr = checkForRegexStartPattern(regexStr);
 		return containsRegex(inputStr, regexStr);
 	}
 
-	
+	/**
+	 * Returns true if the end of the inputStr matches the regular expression, false otherwise
+	 * 
+	 * @param inputStr
+	 * @param regexStr
+	 * @return
+	 */
+	public static boolean endsWithRegex(String inputStr, String regexStr) {
+		regexStr = checkForRegexEndPattern(regexStr);
+		return containsRegex(inputStr, regexStr);
+	}
+
+	/**
+	 * Returns true if the input String contains a match to the specified regular expression
+	 * 
+	 * @param inputStr
+	 * @param regexStr
+	 * @return
+	 */
 	public static boolean containsRegex(String inputStr, String regexStr) {
 		Pattern p = Pattern.compile(regexStr);
 		return p.matcher(inputStr).find();
 	}
-	
+
+	/**
+	 * Returns true if the input string both starts and ends with the specified regex, false
+	 * otherwise
+	 * 
+	 * @param inputStr
+	 * @param regexStr
+	 * @return
+	 */
+	private static boolean startsAndEndsWithRegex(String inputStr, String regexStr) {
+		return startsWithRegex(inputStr, regexStr) && endsWithRegex(inputStr, regexStr);
+	}
+
 	/**
 	 * Converts the input InputStream to a String
 	 * 
@@ -146,7 +225,7 @@ public class StringUtil {
 	public static String[] splitWithFieldEnclosure(String inputStr, String delimiterRegex,
 			String optionalFieldEnclosureRegex) {
 		if (optionalFieldEnclosureRegex == null || !containsRegex(inputStr, optionalFieldEnclosureRegex))
-			return inputStr.split(delimiterRegex,-1);
+			return inputStr.split(delimiterRegex, -1);
 		String copyOfInputStr = normalizeInputFields(inputStr, delimiterRegex, optionalFieldEnclosureRegex);
 		List<String> tokens = new ArrayList<String>();
 		int previousDelimiterEndIndex = 0;
@@ -162,6 +241,51 @@ public class StringUtil {
 		else
 			tokens.add(inputStr.substring(previousDelimiterEndIndex));
 		return tokens.toArray(new String[tokens.size()]);
+	}
+
+	/**
+	 * The version of splitWithFieldEnclosure provides a boolean flag which allows the field
+	 * enclosures to be optionally removed. If removeOptionalFieldEnclosure is set to true then the
+	 * field enclosures are removed. For example, if the following comma-delimited String is split
+	 * using a colon field enclosure: ":1:,:2:,:3:" this method will output [":1:",":2:",":3:"] if
+	 * removeOptionalFieldEnclosure = false or ["1","2","3"] if removeOptionalFieldEnclosure = true
+	 * 
+	 * @param inputStr
+	 * @param delimiterRegex
+	 * @param optionalFieldEnclosureRegex
+	 * @param removeOptionalFieldEnclosure
+	 * @return
+	 */
+	public static String[] splitWithFieldEnclosure(String inputStr, String delimiterRegex,
+			String optionalFieldEnclosureRegex, boolean removeOptionalFieldEnclosure) {
+		String[] tokens = splitWithFieldEnclosure(inputStr, delimiterRegex, optionalFieldEnclosureRegex);
+		if (removeOptionalFieldEnclosure)
+			for (int i = 0; i < tokens.length; i++)
+				if (StringUtil.startsAndEndsWithRegex(tokens[i], optionalFieldEnclosureRegex)) {
+					tokens[i] = StringUtil.removePrefixRegex(tokens[i], optionalFieldEnclosureRegex);
+					tokens[i] = StringUtil.removeSuffixRegex(tokens[i], optionalFieldEnclosureRegex);
+				}
+		return tokens;
+	}
+
+	/**
+	 * Delimits the input String as described in splitWithFieldEnclosure, but returns only non-empty
+	 * tokens
+	 * 
+	 * @param inputStr
+	 * @param delimiterRegex
+	 * @param optionalFieldEnclosureRegex
+	 * @return
+	 */
+	public static List<String> delimitAndTrim(String inputStr, String delimiterRegex,
+			String optionalFieldEnclosureRegex, boolean removeOptionalFieldEnclosure) {
+		String[] tokens = splitWithFieldEnclosure(inputStr, delimiterRegex, optionalFieldEnclosureRegex,
+				removeOptionalFieldEnclosure);
+		List<String> nonEmptyTokens = new ArrayList<String>();
+		for (String token : tokens)
+			if (!token.trim().isEmpty())
+				nonEmptyTokens.add(token.trim());
+		return nonEmptyTokens;
 	}
 
 	/**
@@ -183,8 +307,7 @@ public class StringUtil {
 							+ "input delimiter contains the character '%s'. Therefore there is a potential conflict. "
 							+ "Please use a different delimiter. Exiting...");
 		String copyOfInputStr = inputStr;
-		Pattern fieldPattern = Pattern.compile(optionalFieldEnclosureRegex + ".*?"
-				+ optionalFieldEnclosureRegex);
+		Pattern fieldPattern = Pattern.compile(optionalFieldEnclosureRegex + ".*?" + optionalFieldEnclosureRegex);
 		Matcher matcher = fieldPattern.matcher(inputStr);
 		while (matcher.find()) {
 			copyOfInputStr = copyOfInputStr.replace(matcher.group(), createRepeatingString(StringConstants.DIGIT_ZERO,
@@ -209,10 +332,13 @@ public class StringUtil {
 	}
 
 	/**
-	 * Delimit values with provided delimiter and strip surrounding single characters (ex: double-quotes) .
+	 * Delimit values with provided delimiter and strip surrounding single characters (ex:
+	 * double-quotes) .
 	 * 
-	 * @param values to delimit
-	 * @param delim delimiter.
+	 * @param values
+	 *            to delimit
+	 * @param delim
+	 *            delimiter.
 	 * 
 	 * @return converted values.
 	 */
@@ -225,7 +351,7 @@ public class StringUtil {
 		for (String v : list)
 			if (v.trim().length() > 0)
 				trimmed.add(v.substring(1, v.length() - 1));
-		
+
 		return trimmed;
 	}
 
