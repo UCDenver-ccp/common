@@ -45,6 +45,17 @@ public class StringUtilTest extends DefaultTestCase {
 	}
 
 	@Test
+	public void testIsIntegerGreaterThanZero() throws Exception {
+		assertTrue(StringUtil.isIntegerGreaterThanZero("1"));
+		assertTrue(StringUtil.isIntegerGreaterThanZero("10"));
+		assertTrue(StringUtil.isIntegerGreaterThanZero("1234567890"));
+		assertTrue(StringUtil.isIntegerGreaterThanZero("9876543211"));
+		assertFalse(StringUtil.isIntegerGreaterThanZero("0"));
+		assertFalse(StringUtil.isIntegerGreaterThanZero("-1"));
+		assertFalse(StringUtil.isIntegerGreaterThanZero("this is not a number"));
+	}
+
+	@Test
 	public void testIsNonNegativeInteger_validNonNegativeInput() throws Exception {
 		assertTrue(StringUtil.isNonNegativeInteger("1"));
 		assertTrue(StringUtil.isNonNegativeInteger("10"));
@@ -156,7 +167,8 @@ public class StringUtilTest extends DefaultTestCase {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testSplitWithFieldDelimiter_ZeroInDelimiter() throws Exception {
-		StringUtil.splitWithFieldEnclosure("\"", String.format(".%s", StringConstants.DIGIT_ZERO), StringConstants.QUOTATION_MARK);
+		StringUtil.splitWithFieldEnclosure("\"", String.format(".%s", StringConstants.DIGIT_ZERO),
+				StringConstants.QUOTATION_MARK);
 	}
 
 	@Test

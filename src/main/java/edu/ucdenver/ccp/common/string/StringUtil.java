@@ -41,6 +41,17 @@ public class StringUtil {
 	}
 
 	/**
+	 * Returns true if the input string is a non-negative integer and is not zero
+	 * 
+	 * @param inputStr
+	 * @return
+	 */
+	public static boolean isIntegerGreaterThanZero(String inputStr) {
+		inputStr = inputStr.trim();
+		return isNonNegativeInteger(inputStr) && !inputStr.equals(StringConstants.DIGIT_ZERO);
+	}
+
+	/**
 	 * Returns a String consisting of the input String with specified suffix removed. If the input
 	 * String does not end with the specified suffix, an IllegalArgumentException is thrown.
 	 * 
@@ -267,7 +278,7 @@ public class StringUtil {
 				}
 		return tokens;
 	}
-	
+
 	public enum RemoveFieldEnclosures {
 		TRUE, FALSE;
 	}
@@ -348,8 +359,8 @@ public class StringUtil {
 	 */
 	public static Collection<String> delimitAndTrim(String values, String delim) {
 		if (values == null)
-			return Collections.<String>emptyList();
-		
+			return Collections.<String> emptyList();
+
 		List<String> list = Arrays.asList(values.split(delim));
 		List<String> trimmed = new ArrayList<String>();
 		for (String v : list)
