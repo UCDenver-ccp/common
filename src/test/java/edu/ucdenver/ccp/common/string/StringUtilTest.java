@@ -13,6 +13,7 @@ import edu.ucdenver.ccp.common.collections.CollectionsUtil;
 import edu.ucdenver.ccp.common.string.StringUtil.RemoveFieldEnclosures;
 import edu.ucdenver.ccp.common.test.DefaultTestCase;
 
+
 public class StringUtilTest extends DefaultTestCase {
 
 	@Test
@@ -222,6 +223,56 @@ public class StringUtilTest extends DefaultTestCase {
 		assertArrayEquals(String.format("One token should include a comma"), expectedTokens, StringUtil
 				.splitWithFieldEnclosure(inputStr, StringConstants.COMMA, "\\*"));
 	}
+	
+	@Test
+	public void testStripNonAscii() {
+		try {
+		
+		String none 			= "simple word";
+		String one3byte 		= "�"; 
+			// octal 342 200 240  
+			// binary 011 100 010
+			//        010 000 000
+		 	//        010 100 000
+		String one3byteStripped = "?";
+		String two3byte 		= "��";
+		String two3byteStripped = "??";
+		String one2byte 		= "�"; 
+			// octal 303 237
+			// binary 011 000 011
+			//        010 011 111
+		String one2byteStripped = "?";
+		String two2byte 		= "��";
+		String two2byteStripped = "??";
+		String twoAnd3 = "��";
+		String twoAnd3Stripped = "??";
+		String threeAnd2 = "��";
+		String threeAnd2Stripped = "??";
+		String mixed = "�foo and � bar�";
+		String mixedStripped = "?foo and ? bar?";
+		String realData = "We thank Richelle Strom for generating the F2 intercross mice.";
+		String realDataStripped = "We thank Richelle Strom for generating the F2 intercross mice.";
+		//                         01234567890123456789012345678901234567890123456789012345678901
+		
+		assertTrue(StringUtil.stripNonAscii("").equals(""));
+		assertTrue(StringUtil.stripNonAscii(none).equals(none));
+		assertTrue(StringUtil.stripNonAscii(one2byte).equals(one2byteStripped));
+		assertTrue(StringUtil.stripNonAscii(one3byte).equals(one3byteStripped));		
+		assertTrue(StringUtil.stripNonAscii(two3byte).equals(two3byteStripped));
+		assertTrue(StringUtil.stripNonAscii(two2byte).equals(two2byteStripped));
+		assertTrue(StringUtil.stripNonAscii(twoAnd3).equals(twoAnd3Stripped));
+		assertTrue(StringUtil.stripNonAscii(threeAnd2).equals(threeAnd2Stripped));
+		assertTrue(StringUtil.stripNonAscii(mixed).equals(mixedStripped));
+		assertTrue(StringUtil.stripNonAscii(realData).equals(realDataStripped));
+		
+		}
+		catch (java.io.UnsupportedEncodingException x) {
+			System.err.println("error:" + x);
+			x.printStackTrace();
+		}
+	
+	}
+	
 
 	@Test
 	public void testDelimitAndTrim_WithTrailingDelimiter() throws Exception {
