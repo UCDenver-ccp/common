@@ -10,12 +10,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.Test;
 
 import edu.ucdenver.ccp.common.collections.CollectionsUtil;
-import edu.ucdenver.ccp.common.file.FileUtil;
+import edu.ucdenver.ccp.common.file.FileComparisonUtil.ColumnOrder;
+import edu.ucdenver.ccp.common.file.FileComparisonUtil.LineOrder;
 import edu.ucdenver.ccp.common.test.DefaultTestCase;
 
 public class FileUtilTest extends DefaultTestCase {
@@ -158,7 +160,7 @@ public class FileUtilTest extends DefaultTestCase {
 		checkFileIterator(FileUtil.getFileIterator(hiddenFile, true), expectedFileNames);
 		checkFileIterator(FileUtil.getFileIterator(hiddenFile, true, ".txt"), expectedFileNames);
 	}
-	
+
 	private void checkFileIterator(Iterator<File> fileIter, Set<String> expectedFileNames) {
 		int count = 0;
 		while (fileIter.hasNext()) {
@@ -170,5 +172,35 @@ public class FileUtilTest extends DefaultTestCase {
 		assertEquals(String.format("Expected %d files to be returned by iterator, but only observed %d",
 				expectedFileNames.size(), count), expectedFileNames.size(), count);
 
+	}
+
+	@Test
+	public void testCopyFileToFile() throws Exception {
+		List<String> lines = CollectionsUtil.createList("line1", "line2");
+		File fromFile = folder.newFile("fromFile.txt");
+		FileWriterUtil.printLines(lines, fromFile);
+
+		File toDirectory = folder.newFolder("toDir");
+		File toFile = FileUtil.appendPathElementsToDirectory(toDirectory, "toFile.txt");
+
+		FileUtil.copy(fromFile, toFile);
+		FileUtil.validateFile(toFile);
+		assertTrue("toFile is not as expected after copy(fromFile, toFile).", FileComparisonUtil.hasExpectedLines(
+				toFile, DEFAULT_ENCODING, lines, null, LineOrder.AS_IN_FILE, ColumnOrder.AS_IN_FILE));
+	}
+	
+	@Test
+	public void testCopyFileToDirectory() throws Exception {
+		List<String> lines = CollectionsUtil.createList("line1", "line2");
+		File fromFile = folder.newFile("fromFile.txt");
+		FileWriterUtil.printLines(lines, fromFile);
+
+		File toDirectory = folder.newFolder("toDir");
+		File toFile = FileUtil.appendPathElementsToDirectory(toDirectory, fromFile.getName());
+
+		FileUtil.copy(fromFile, toDirectory);
+		FileUtil.validateFile(toFile);
+		assertTrue("toFile is not as expected after copy(fromFile, toDirectory).", FileComparisonUtil.hasExpectedLines(
+				toFile, DEFAULT_ENCODING, lines, null, LineOrder.AS_IN_FILE, ColumnOrder.AS_IN_FILE));
 	}
 }

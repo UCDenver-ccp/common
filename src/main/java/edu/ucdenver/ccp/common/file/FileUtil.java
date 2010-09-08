@@ -194,9 +194,13 @@ public class FileUtil {
 	 * @param toFile
 	 * @throws IOException
 	 */
-	public static void copy(File fromFile, File toFile) throws IOException {
+	public static void copy(File fromFile, File toFileOrDirectory) throws IOException {
 		validateFile(fromFile);
 		FileInputStream fis = new FileInputStream(fromFile);
+		File toFile = toFileOrDirectory;
+		if (toFileOrDirectory.isDirectory()) {
+			toFile = FileUtil.appendPathElementsToDirectory(toFileOrDirectory, fromFile.getName());
+		}
 		FileOutputStream fos = new FileOutputStream(toFile);
 		copy(fis, fos);
 		fis.close();
