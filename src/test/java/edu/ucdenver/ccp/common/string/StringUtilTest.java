@@ -228,33 +228,39 @@ public class StringUtilTest extends DefaultTestCase {
 	public void testStripNonAscii() {
 		try {
 		
-		String none 			= "simple word";
-		String one3byte 		= "�"; 
-			// octal 342 200 240  
-			// binary 011 100 010
-			//        010 000 000
-		 	//        010 100 000
-		String one3byteStripped = "?";
-		String two3byte 		= "��";
+		String none 		= "simple word";
+		
+		String one 			= "\u0031";	// 31
+		String o_umlaut 	= "\u00f6"; // c3-b6 	o with diaeresis
+		String devanagari_one= "\u0967"; // e0-a5-0a7
+		
+		String one3byte 		= devanagari_one;
+		String one3byteStripped = "?"; 
+		
+		String two3byte 		= devanagari_one + devanagari_one;
 		String two3byteStripped = "??";
-		String one2byte 		= "�"; 
-			// octal 303 237
-			// binary 011 000 011
-			//        010 011 111
+		
+		String one2byte 		= o_umlaut; 
 		String one2byteStripped = "?";
-		String two2byte 		= "��";
+		
+		String two2byte 		= o_umlaut + o_umlaut;
 		String two2byteStripped = "??";
-		String twoAnd3 = "��";
+		
+		String twoAnd3 = o_umlaut + devanagari_one;
 		String twoAnd3Stripped = "??";
-		String threeAnd2 = "��";
+		
+		String threeAnd2 = devanagari_one + o_umlaut;
 		String threeAnd2Stripped = "??";
-		String mixed = "�foo and � bar�";
+		
+		String mixed = devanagari_one + "foo and " + o_umlaut + " bar" 
+			+ devanagari_one;
 		String mixedStripped = "?foo and ? bar?";
+		
 		String realData = "We thank Richelle Strom for generating the F2 intercross mice.";
 		String realDataStripped = "We thank Richelle Strom for generating the F2 intercross mice.";
 		//                         01234567890123456789012345678901234567890123456789012345678901
 		
-		assertTrue(StringUtil.stripNonAscii("").equals(""));
+		assertTrue(StringUtil.stripNonAscii("").equals("")); 
 		assertTrue(StringUtil.stripNonAscii(none).equals(none));
 		assertTrue(StringUtil.stripNonAscii(one2byte).equals(one2byteStripped));
 		assertTrue(StringUtil.stripNonAscii(one3byte).equals(one3byteStripped));		
