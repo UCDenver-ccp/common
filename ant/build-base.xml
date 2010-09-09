@@ -70,11 +70,11 @@
 		<echo message="Test Compilation classpath : ${classpath.compile.test.property}"/>
 		
 		<javac srcdir="${source.dir}" destdir="${build.classes.dir}" 
-			debug="on" deprecation="off" encoding="UTF8">
+			debug="on" deprecation="off">
 			<classpath refid="classpath.compile" />
 		</javac>
 		<javac srcdir="${source.test.dir}" destdir="${build.classes.dir}" 
-			debug="on" deprecation="off" encoding="UTF8">
+			debug="on" deprecation="off">
 			<classpath refid="classpath.compile" />
 			<classpath refid="classpath.compile.test" />
 		</javac>
