@@ -38,7 +38,10 @@ public class ConnectionPropertiesUtil {
 		String database = properties.getProperty(DATABASE);
 		String user = properties.getProperty(USER);
 		String password = properties.getProperty(PASSWORD);
-
+		
+		if (!urlprefix.endsWith("://")) {
+			throw new RuntimeException("URL prefix must end with ://");
+		}
 		return getConnection(driverName, urlprefix, host, port, database, user, password);
 
 	}
