@@ -85,6 +85,7 @@
 				<include name="**/*.xml" />
 				<include name="**/*.xslt" />
 				<include name="**/*.xsl" />
+				<include name="**/*.nt" />
 			</fileset>
 		</copy>
 	</target>
