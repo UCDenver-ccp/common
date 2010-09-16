@@ -19,10 +19,11 @@ public class StringUtilTest extends DefaultTestCase {
 	@Test
 	public void testIsInteger_validPositiveInput() throws Exception {
 		assertTrue(StringUtil.isInteger("0"));
+		assertTrue(StringUtil.isInteger("00"));
 		assertTrue(StringUtil.isInteger("1"));
 		assertTrue(StringUtil.isInteger("10"));
 		assertTrue(StringUtil.isInteger("1234567890"));
-		assertTrue(StringUtil.isInteger("9876543211"));
+		assertFalse(StringUtil.isInteger("9876543211"));
 	}
 
 	@Test
@@ -30,17 +31,17 @@ public class StringUtilTest extends DefaultTestCase {
 		assertTrue(StringUtil.isInteger("-1"));
 		assertTrue(StringUtil.isInteger("-10"));
 		assertTrue(StringUtil.isInteger("-1234567890"));
-		assertTrue(StringUtil.isInteger("-9876543211"));
+		assertFalse(StringUtil.isInteger("-9876543211"));
 	}
 
 	@Test
 	public void testIsInteger_invalidInput() throws Exception {
-		assertFalse(StringUtil.isInteger("-0"));
-		assertFalse(StringUtil.isInteger("01"));
+		assertTrue(StringUtil.isInteger("-0"));
+		assertTrue(StringUtil.isInteger("01"));
 		assertFalse(StringUtil.isInteger("this is not a number"));
 		assertFalse(StringUtil.isInteger("3.14159"));
 		assertFalse(StringUtil.isInteger("-09876543211"));
-		assertFalse(StringUtil.isInteger("-000005"));
+		assertTrue(StringUtil.isInteger("-000005"));
 		assertFalse(StringUtil.isInteger(""));
 		assertFalse(StringUtil.isInteger(null));
 	}
@@ -50,7 +51,7 @@ public class StringUtilTest extends DefaultTestCase {
 		assertTrue(StringUtil.isIntegerGreaterThanZero("1"));
 		assertTrue(StringUtil.isIntegerGreaterThanZero("10"));
 		assertTrue(StringUtil.isIntegerGreaterThanZero("1234567890"));
-		assertTrue(StringUtil.isIntegerGreaterThanZero("9876543211"));
+		assertFalse(StringUtil.isIntegerGreaterThanZero("9876543211"));
 		assertFalse(StringUtil.isIntegerGreaterThanZero("0"));
 		assertFalse(StringUtil.isIntegerGreaterThanZero("-1"));
 		assertFalse(StringUtil.isIntegerGreaterThanZero("this is not a number"));
@@ -61,7 +62,7 @@ public class StringUtilTest extends DefaultTestCase {
 		assertTrue(StringUtil.isNonNegativeInteger("1"));
 		assertTrue(StringUtil.isNonNegativeInteger("10"));
 		assertTrue(StringUtil.isNonNegativeInteger("1234567890"));
-		assertTrue(StringUtil.isNonNegativeInteger("9876543211"));
+		assertFalse(StringUtil.isNonNegativeInteger("9876543211"));
 	}
 
 	@Test
@@ -74,8 +75,8 @@ public class StringUtilTest extends DefaultTestCase {
 
 	@Test
 	public void testIsNonNegativeInteger_invalidInput() throws Exception {
-		assertFalse(StringUtil.isNonNegativeInteger("-0"));
-		assertFalse(StringUtil.isNonNegativeInteger("01"));
+		assertTrue(StringUtil.isNonNegativeInteger("-0"));
+		assertTrue(StringUtil.isNonNegativeInteger("01"));
 		assertFalse(StringUtil.isNonNegativeInteger("this is not a number"));
 		assertFalse(StringUtil.isNonNegativeInteger("3.14159"));
 		assertFalse(StringUtil.isNonNegativeInteger("-09876543211"));

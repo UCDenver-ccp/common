@@ -1,16 +1,8 @@
 package edu.ucdenver.ccp.common.string;
 
-import static edu.ucdenver.ccp.common.string.RegExPatterns.HAS_NUMBERS_ONLY_OPT_NEG;
-import static edu.ucdenver.ccp.common.string.RegExPatterns.HAS_NUMBERS_ONLY_OPT_NEG_ZERO_START;
-import static edu.ucdenver.ccp.common.string.RegExPatterns.HAS_NUMBERS_ONLY;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.regex.*;
 
 import org.apache.commons.io.IOUtils;
 
@@ -22,10 +14,13 @@ public class StringUtil {
 	 * @return
 	 */
 	public static boolean isInteger(String inputStr) {
-		if (inputStr != null && inputStr.equals(StringConstants.DIGIT_ZERO))
-			return true;
-		return inputStr == null ? false : (inputStr.matches(HAS_NUMBERS_ONLY_OPT_NEG) && !inputStr
-				.matches(HAS_NUMBERS_ONLY_OPT_NEG_ZERO_START));
+		try {
+			Integer.parseInt(inputStr);
+		} catch (NumberFormatException e) {
+			return false;
+		}
+		
+		return true;
 	}
 
 	/**
@@ -35,10 +30,15 @@ public class StringUtil {
 	 * @return
 	 */
 	public static boolean isNonNegativeInteger(String inputStr) {
-		if (inputStr != null && inputStr.equals(StringConstants.DIGIT_ZERO))
-			return true;
-		return inputStr == null ? false : (inputStr.matches(HAS_NUMBERS_ONLY) && !inputStr
-				.matches(HAS_NUMBERS_ONLY_OPT_NEG_ZERO_START));
+		int value = -1;
+		
+		try {
+			value = Integer.parseInt(inputStr);
+		} catch (NumberFormatException e) {
+			return false;
+		}
+		
+		return value >= 0;
 	}
 
 	/**
