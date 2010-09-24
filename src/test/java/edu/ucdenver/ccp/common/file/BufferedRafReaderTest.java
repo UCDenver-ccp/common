@@ -48,8 +48,9 @@ public class BufferedRafReaderTest extends DefaultTestCase {
 		asciiOnlyFile = folder.newFile("asciss.txt");
 		FileWriterUtil.printLines(CollectionsUtil.createList(asciiOnlyString), asciiOnlyFile);
 
-		FileUtil.copy(utf8File, new File("/tmp/utf8.txt"));
-		FileUtil.copy(asciiOnlyFile, new File("/tmp/ascii.txt"));
+		//TODO: why do this here? ; doesn't work on Windows; wrong place to test FileUtil
+//		FileUtil.copy(utf8File, new File("/tmp/utf8.txt"));
+//		FileUtil.copy(asciiOnlyFile, new File("/tmp/ascii.txt"));
 
 	}
 
