@@ -54,6 +54,7 @@
 		<antcall target="run.findbugs.analysis" />
 		<antcall target="run.pmd.analysis" />
 		<antcall target="run.duplicate.code.analysis" />
+		<antcall target="run.checkstyle.analysis" />
 	</target>
 
 	<!-- FindBugs Target -->
