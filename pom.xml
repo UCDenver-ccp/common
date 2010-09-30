@@ -17,6 +17,7 @@
 
   <build>
    <plugins>
+
   	<plugin>
     	<groupId>org.apache.maven.plugins</groupId>
     	<artifactId>maven-compiler-plugin</artifactId>
@@ -26,6 +27,7 @@
         	<target>1.6</target>
     	</configuration>
     </plugin>
+
     <plugin>
 	    <groupId>org.apache.maven.plugins</groupId>
 	    <artifactId>maven-surefire-plugin</artifactId>
@@ -42,12 +44,32 @@
 	          </excludes>
 	        <!-- attempts at fixing faulty test cases mentioned above -->
     		<additionalClasspathElements>
-      			<additionalClasspathElement>src/test/java/edu/ucdenver/ccp/common/file</additionalClasspathElement>
-      			<additionalClasspathElement>/src/test/java/edu/ucdenver/ccp/common/file</additionalClasspathElement>
-      			<additionalClasspathElement>/Users/roederc/subversion_workspace/common//src/test/java/edu/ucdenver/ccp/common/file</additionalClasspathElement>
+      			<additionalClasspathElement>
+					src/test/java/edu/ucdenver/ccp/common/file
+				</additionalClasspathElement>
+      			<additionalClasspathElement>
+					/src/test/java/edu/ucdenver/ccp/common/file
+				</additionalClasspathElement>
+      			<additionalClasspathElement>
+					/Users/roederc/subversion_workspace/common//src/test/java/edu/ucdenver/ccp/common/file
+				</additionalClasspathElement>
     		</additionalClasspathElements>
 	    </configuration>
 	</plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.3.1</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
    </plugins>
   </build>
   
