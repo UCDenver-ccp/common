@@ -31,11 +31,36 @@
 	    <artifactId>maven-surefire-plugin</artifactId>
 	    <version>2.5</version>
 	    <configuration>
-	        <argLine>-Xms512m -Xmx512m</argLine>
+	        <argLine>-Xms512m -Xmx2g</argLine>
+	          <excludes>
+				<!-- these are not tests -->
+	            <exclude>**/DefaultTestCase*</exclude>
+	            <exclude>**/TestUtil*</exclude>
+				<!-- these have classpath issues in maven -->
+	            <exclude>**/DownloadViaAnnotationsTest*</exclude>
+	            <exclude>**/FileArchiveUtilTest*</exclude>
+	          </excludes>
+	        <!-- attempts at fixing faulty test cases mentioned above -->
+    		<additionalClasspathElements>
+      			<additionalClasspathElement>src/test/java/edu/ucdenver/ccp/common/file</additionalClasspathElement>
+      			<additionalClasspathElement>/src/test/java/edu/ucdenver/ccp/common/file</additionalClasspathElement>
+      			<additionalClasspathElement>/Users/roederc/subversion_workspace/common//src/test/java/edu/ucdenver/ccp/common/file</additionalClasspathElement>
+    		</additionalClasspathElements>
 	    </configuration>
 	</plugin>
    </plugins>
   </build>
+  
+    <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <version>2.0.1</version>
+      </plugin>
+    </plugins>
+  </reporting>
+  
   
   <dependencies>
 
