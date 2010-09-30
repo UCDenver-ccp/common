@@ -15,9 +15,11 @@
   <name>${project.artifactId}</name>
   <description>ccp common code</description>
 
+
   <build>
    <plugins>
 
+	<!-- specify the java version -->
   	<plugin>
     	<groupId>org.apache.maven.plugins</groupId>
     	<artifactId>maven-compiler-plugin</artifactId>
@@ -28,6 +30,7 @@
     	</configuration>
     </plugin>
 
+	<!-- don't run broken tests -->
     <plugin>
 	    <groupId>org.apache.maven.plugins</groupId>
 	    <artifactId>maven-surefire-plugin</artifactId>
@@ -57,29 +60,102 @@
 	    </configuration>
 	</plugin>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>2.3.1</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>test-jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
+  	  <!-- don't inlcude the lucene code in the main jar -->
+	<plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-jar-plugin</artifactId>
+		<version>2.3.1</version>
+		<executions>
+
+			<!- created by default: common-1.0-SNAPSHOT.jar -->
+
+			<!--  lucene-free main jar: common-1.0-SNAPSHOT-main.jar -->
+			<execution>
+				<id>exe1</id>
+				<phase>package</phase>
+				<goals>
+					<goal>jar</goal>
+				</goals>
+				<configuration>
+					<finalName>common-${version}</finalName>
+					<classifier>main</classifier>
+					<classesDirectory>target/classes</classesDirectory>
+					<excludes>
+						<exclude>**/lucene/*</exclude>
+						<exclude>**/lucene*.jar</exclude>
+					</excludes>
+				</configuration>
+			</execution>
+
+			<!--  lucene-free test jar: common-1.0-SNAPSHOT-tests.jar -->
+			<execution>
+				<id>exe2</id>
+				<phase>package</phase>
+				<goals>
+					<goal>test-jar</goal>
+				</goals>
+				<configuration>
+					<finalName>common-${version}</finalName>
+					<classifier>test</classifier>
+					<classesDirectory>target/classes</classesDirectory>
+					<excludes>
+						<exclude>**/lucene/*</exclude>
+						<exclude>**/lucene*.jar</exclude>
+					</excludes>
+				</configuration>
+			</execution>
+
+			<!--  lucene main jar: common-lucene-1.0-SNAPSHOT-main.jar -->
+			<execution>
+				<id>exe3</id>
+				<phase>package</phase>
+				<goals>
+					<goal>jar</goal>
+				</goals>
+				<configuration>
+					<finalName>common-lucene-${version}</finalName>
+					<classifier>main</classifier>
+					<classesDirectory>target/classes</classesDirectory>
+					<includes>
+						<include>**</include>
+					</includes>
+				</configuration>
+			</execution>
+
+			<!--  lucene test jar: common-lucene-1.0-SNAPSHOT-tests.jar -->
+			<execution>
+				<id>exe4</id>
+				<phase>package</phase>
+				<goals>
+					<goal>test-jar</goal>
+				</goals>
+				<configuration>
+					<finalName>common-lucene-${version}</finalName>
+					<classifier>lucene-test</classifier>
+					<classesDirectory>target/classes</classesDirectory>
+					<includes>
+						<include>**</include>
+					</includes>
+				</configuration>
+			</execution>
+		</executions>
+	</plugin>
+
 
    </plugins>
   </build>
-  
-    <reporting>
+
+ 
+  <reporting>
     <plugins>
+
+	  <!-- run findbugs with "mvn site" --> 
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>findbugs-maven-plugin</artifactId>
         <version>2.0.1</version>
       </plugin>
+
     </plugins>
   </reporting>
   
