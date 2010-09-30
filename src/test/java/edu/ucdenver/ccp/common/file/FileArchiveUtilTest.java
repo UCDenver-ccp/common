@@ -52,6 +52,10 @@ public class FileArchiveUtilTest extends DefaultTestCase {
 	@Test
 	public void testUnzipGzFile() throws Exception {
 		GZIPInputStream gis = new GZIPInputStream(getResourceFromClasspath(this.getClass(), SAMPLE_GZIPPED_FILE_NAME));
+		/* other class doesn't work either:
+		 * GZIPInputStream gis = new GZIPInputStream(getResourceFromClasspath(
+		 * 	 this.getClass().forName("edu.ucdenver.ccp.common.file.FileArchiveUtil"), 
+		 *   SAMPLE_GZIPPED_FILE_NAME))*/
 		File outputDirectory = folder.newFolder("unzippedGZFile");
 		File unzippedFile = new File(outputDirectory.getAbsolutePath() + File.separator + "sampleFile.txt");
 		FileArchiveUtil.unzip(gis, unzippedFile.getName(), outputDirectory);
