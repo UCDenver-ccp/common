@@ -67,7 +67,7 @@
 		<version>2.3.1</version>
 		<executions>
 
-			<!- created by default: common-1.0-SNAPSHOT.jar -->
+			<!-- created by default: common-1.0-SNAPSHOT.jar -->
 
 			<!--  lucene-free main jar: common-1.0-SNAPSHOT-main.jar -->
 			<execution>
