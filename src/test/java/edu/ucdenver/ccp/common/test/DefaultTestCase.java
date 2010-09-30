@@ -61,6 +61,9 @@ public class DefaultTestCase {
 	 */
 	protected InputStream getResourceFromClasspath(Class<?> clazz, String resourceName) {
 		InputStream is = clazz.getResourceAsStream(resourceName);
+		if (is == null) {
+			logger.error("resource not found in classpath: " + resourceName);
+		}
 		Assert.assertNotNull("Resource not found: " + resourceName, is);
 		return is;
 	}
