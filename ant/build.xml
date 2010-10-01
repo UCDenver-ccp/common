@@ -5,4 +5,28 @@
 	<path id="classpath.compile.dependency" />
 	
 	<import file="build-base.xml" />
+	
+	
+	<!-- This distribution  excludes the lucene code and jar. -->
+	<target name="exportSF" description="create a tar file for the common project source on sourceforge">
+		<tar destfile="build/common.tar" compression="gzip">
+			<tarfileset dir="src" prefix="common/src">
+				<exclude name="**/main/resources/*.jar"/>
+				<exclude name="**/test/resources/*.jar"/>
+			</tarfileset>
+			
+			<tarfileset dir="ant" prefix="common/ant">
+				<include name="**"/>
+				<exclude name="**/lib/*.jar"/>
+			</tarfileset>
+
+			<tarfileset dir="." prefix="common">
+				<include name="COPYING"/>
+				<include name="pom.xml"/>
+			</tarfileset>
+
+		</tar>
+	</target>
+	
+	
 </project>
