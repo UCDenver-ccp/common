@@ -43,6 +43,10 @@ public class FileLineReader extends LineReader {
 		lineNumber = 0;
 	}
 
+	/**
+	 * Read next line.
+	 * @return instance of {@link FileLine} if available; otherwise, null.
+	 */
 	@Override
 	public FileLine readLine() throws IOException {
 		try {
