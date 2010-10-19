@@ -50,8 +50,8 @@ public class DefaultTestCase {
 	}
 
 	/**
-	 * Folder object only created here. Call folder.create() before using
-	 * so the folder is actually created on disk.
+	 * If folder doesn't appear to be created, check your junit version.
+	 * It works on 4.8.2, but has failed with 4.4 or 4.5.
 	 */
 	@Rule
 	public TemporaryFolder folder = new TemporaryFolder();
