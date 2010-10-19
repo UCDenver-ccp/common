@@ -49,8 +49,13 @@ public class DefaultTestCase {
 		Logger.getRootLogger().setLevel(Level.DEBUG);
 	}
 
+	/**
+	 * Folder object only created here. Call folder.create() before using
+	 * so the folder is actually created on disk.
+	 */
 	@Rule
 	public TemporaryFolder folder = new TemporaryFolder();
+
 
 	/**
 	 * Helper method for grabbing a file from the classpath and returning an InputStream
