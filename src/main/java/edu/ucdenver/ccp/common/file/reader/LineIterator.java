@@ -22,13 +22,10 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.apache.log4j.Logger;
-
 import edu.ucdenver.ccp.common.file.reader.LineReader.Line;
 
 
 public abstract class LineIterator<T extends Line> implements Iterator<T> {
-private static final Logger logger = Logger.getLogger(LineIterator.class);
 	
 	protected T nextLine = null;
 	protected final LineReader reader;
