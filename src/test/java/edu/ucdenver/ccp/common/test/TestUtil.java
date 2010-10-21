@@ -20,6 +20,7 @@ package edu.ucdenver.ccp.common.test;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -29,6 +30,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -143,6 +145,13 @@ public class TestUtil {
 		Pattern getMethodPattern = Pattern.compile(RegExPatterns.GETTER_METHOD_NAME_PATTERN);
 		Matcher m = getMethodPattern.matcher(method.getName());
 		return m.find();
+	}
+	
+	public static <T> void checkNext(Iterator<T> iter, T expectedValue) {
+		if (iter.hasNext())
+			assertEquals(String.format("Value should be as expected"), expectedValue, iter.next());
+		else
+			fail("Iterator expected to have another value but did not.");
 	}
 
 }
