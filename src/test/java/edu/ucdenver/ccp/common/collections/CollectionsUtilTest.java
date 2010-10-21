@@ -18,6 +18,7 @@
 
 package edu.ucdenver.ccp.common.collections;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -180,6 +181,15 @@ public class CollectionsUtilTest {
 		@SuppressWarnings("unchecked")
 		Map<String, Set<String>> combinedMap = CollectionsUtil.combineUniqueMaps(inputMap1, inputMap2);
 		assertEquals(String.format("Expected map not the same as combined."), expectedMap, combinedMap);
+	}
+	
+	@Test
+	public void testInitHashMap() throws Exception {
+		String key = "1";
+		Integer value = 1;
+		Map<String, Integer> map = CollectionsUtil.initHashMap();
+		map.put(key, value);
+		assertEquals(value, map.get(key));
 	}
 
 }

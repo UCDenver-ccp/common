@@ -21,6 +21,7 @@ package edu.ucdenver.ccp.common.collections;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -60,6 +61,18 @@ public class CollectionsUtil {
 			list.add(iter.next());
 		}
 		return list;
+	}
+
+	/**
+	 * Helper method for initializing a HashMap. This saves the developer from having to repeat K
+	 * and V on the right hand side.
+	 * 
+	 * @param <K>
+	 * @param <V>
+	 * @return
+	 */
+	public static <K, V> HashMap<K, V> initHashMap() {
+		return new HashMap<K, V>();
 	}
 
 	/**
