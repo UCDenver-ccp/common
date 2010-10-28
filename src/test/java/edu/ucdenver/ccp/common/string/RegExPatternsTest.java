@@ -22,6 +22,7 @@ import static edu.ucdenver.ccp.common.string.RegExPatterns.GETTER_METHOD_NAME_PA
 import static edu.ucdenver.ccp.common.string.RegExPatterns.HAS_NUMBERS_ONLY;
 import static edu.ucdenver.ccp.common.string.RegExPatterns.HAS_NUMBERS_ONLY_OPT_NEG;
 import static edu.ucdenver.ccp.common.string.RegExPatterns.HAS_NUMBERS_ONLY_OPT_NEG_ZERO_START;
+import static edu.ucdenver.ccp.common.string.RegExPatterns.IS_LETTER_OR_NUMBER;
 import static edu.ucdenver.ccp.common.string.RegExPatterns.getNDigitsPattern;
 import static org.junit.Assert.*;
 
@@ -121,6 +122,13 @@ public class RegExPatternsTest {
 		assertFalse(matchesEntireInput("abc", IS_NUMBER_OR_HYPHEN));
 		assertFalse(matchesEntireInput("9abc", IS_NUMBER_OR_HYPHEN));
 		assertFalse(matchesEntireInput("-abc", IS_NUMBER_OR_HYPHEN));
+	}
+
+	@Test
+	public void testIsLetterOrNumber() throws Exception {
+		assertTrue(matchesEntireInput("a", IS_LETTER_OR_NUMBER));
+		assertTrue(matchesEntireInput("0", IS_LETTER_OR_NUMBER));
+		assertFalse(matchesEntireInput("_", IS_LETTER_OR_NUMBER));
 	}
 
 }
