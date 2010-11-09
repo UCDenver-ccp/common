@@ -60,21 +60,10 @@ public class DirectoryListing {
 	    
 	    List<File> files = null;
 	    File dirFile=null;
-	    //try {	
-	    	dirFile = new File(dirPath);
-	    	files = dirWalker.getFiles(dirFile);
-	    //}
-//	    catch (Exception x) {
-//	    	logger.error("error" + x);
-//	    	x.printStackTrace();
-//	    	System.out.println(dirPath + ", " + dirFile);
-//	    }
-//	    finally {
-	    	
-	    	logger.debug(" returning " + files.size() + " list from " + dirPath);
-	    	return files;
-//	    }
-
+    	dirFile = new File(dirPath);
+    	files = dirWalker.getFiles(dirFile);
+    	logger.debug(" returning " + files.size() + " list from " + dirPath);
+    	return files;
 	}
 }
 
