@@ -30,11 +30,16 @@ import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.HiddenFileFilter;
 import org.apache.commons.io.filefilter.IOFileFilter;
 
+import org.apache.log4j.Logger;
+
 
 
 public class DirectoryListing {
+	
+	static Logger logger = Logger.getLogger(DirectoryListing.class);
 
-	public static List<File> getFiles(String dirPath, String suffix, Boolean recurse){
+	public static List<File> getFiles(String dirPath, String suffix, Boolean recurse)
+	throws IOException {
 	    /* Find all nxml files in the directory and place in List nxmlFiles */
 	    
 	    IOFileFilter dirFilter = FileFilterUtils.andFileFilter(
@@ -47,7 +52,7 @@ public class DirectoryListing {
 	    FileFilter filter = FileFilterUtils.orFileFilter(dirFilter, nxmlFileFilter);
 	    CollectFilesWalker dirWalker=null;
 	    if (recurse) {
-	    		dirWalker = new CollectFilesWalker(filter,-1);
+	    	dirWalker = new CollectFilesWalker(filter,-1);
 	    }
 	    else {
 			dirWalker = new CollectFilesWalker(filter,1);
@@ -55,18 +60,20 @@ public class DirectoryListing {
 	    
 	    List<File> files = null;
 	    File dirFile=null;
-	    try {	
+	    //try {	
 	    	dirFile = new File(dirPath);
 	    	files = dirWalker.getFiles(dirFile);
-	    }
-	    catch (Exception x) {
-	    	System.out.println("error" + x);
-	    	x.printStackTrace();
-	    	System.out.println(dirPath + ", " + dirFile);
-	    }
-	    finally {
+	    //}
+//	    catch (Exception x) {
+//	    	logger.error("error" + x);
+//	    	x.printStackTrace();
+//	    	System.out.println(dirPath + ", " + dirFile);
+//	    }
+//	    finally {
+	    	
+	    	logger.debug(" returning " + files.size() + " list from " + dirPath);
 	    	return files;
-	    }
+//	    }
 
 	}
 }
