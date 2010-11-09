@@ -89,7 +89,7 @@ public class DirectoryListingTest {
 	}
 	
 	@Test
-	public void TestOneLevel() {
+	public void TestOneLevel() throws Exception {
 		List<File> list = DirectoryListing.getFiles(testDir.getPath(), suffix, false);
 		assertTrue(list.contains(file1));
 		assertTrue(list.contains(file2));
@@ -99,7 +99,7 @@ public class DirectoryListingTest {
 	}
 	
 	@Test
-	public void TestTwoLevels() {
+	public void TestTwoLevels()  throws Exception {
 		List<File> list = DirectoryListing.getFiles(testDir.getPath(), suffix, true);
 		assertTrue(list.contains(file1));
 		assertTrue(list.contains(file2));
