@@ -18,13 +18,25 @@
 
 package edu.ucdenver.ccp.common.string;
 
-import java.io.*;
-import java.util.*;
-import java.util.regex.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 
 public class StringUtil {
+
+	private static final Logger logger = Logger.getLogger(StringUtil.class);
+
 	/**
 	 * Returns true if the input string is an integer, false otherwise.
 	 * 
@@ -37,7 +49,7 @@ public class StringUtil {
 		} catch (NumberFormatException e) {
 			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -49,13 +61,13 @@ public class StringUtil {
 	 */
 	public static boolean isNonNegativeInteger(String inputStr) {
 		int value = -1;
-		
+
 		try {
 			value = Integer.parseInt(inputStr);
 		} catch (NumberFormatException e) {
 			return false;
 		}
-		
+
 		return value >= 0;
 	}
 
@@ -344,8 +356,8 @@ public class StringUtil {
 		Pattern fieldPattern = Pattern.compile(optionalFieldEnclosureRegex + ".*?" + optionalFieldEnclosureRegex);
 		Matcher matcher = fieldPattern.matcher(inputStr);
 		while (matcher.find()) {
-			copyOfInputStr = copyOfInputStr.replace(matcher.group(), createRepeatingString(StringConstants.DIGIT_ZERO,
-					matcher.group().length()));
+			copyOfInputStr = copyOfInputStr.replace(matcher.group(),
+					createRepeatingString(StringConstants.DIGIT_ZERO, matcher.group().length()));
 		}
 		return copyOfInputStr;
 	}
@@ -383,60 +395,66 @@ public class StringUtil {
 		List<String> list = Arrays.asList(values.split(delim));
 		List<String> trimmed = new ArrayList<String>();
 		for (String v : list)
-			if (v.trim().length() > 0)
+			if (v.trim().length() > 0) {
 				trimmed.add(v.substring(1, v.length() - 1));
-
+				char firstChar = v.charAt(0);
+				char lastChar = v.charAt(v.length() - 1);
+				if (firstChar != lastChar)
+					logger.warn(String
+							.format("The StringUtil.delimitAndTrim(values,delim) method may not be behaving as you expect. " +
+									"This method trims the first and last characters of each element after delimiting the " +
+									"input String (useful for removing things like surrounding quotation marks). This " +
+									"warning is being displayed because the first and last characters being trimmed " +
+									"do not match (first='%s'; last='%s').",
+									firstChar, lastChar));
+			}
 		return trimmed;
 	}
-	
-	   public static String stripNonAscii(String input) 
-	    throws UnsupportedEncodingException {
-	        // In UTF-8, you can look at the bit pattern of a byte to tell 
-	    	// if it is part of a
-	        // single byte character, a two-byte character, or more.
-	        // A byte that starts with a zero bit is a one-byte character.
-	        // Bytes that start with a 1, are multi byte and the number of ones
-	        // before a zero is the number of bytes in the multi-byte characters.
-	        // See the examples in the code below.
-	        // http://canonical.org/~kragen/strlen-utf8.html
-	        // http://en.wikipedia.org/wiki/UTF-8
 
-	        byte dst[] = input.getBytes("UTF-8");
-	        StringBuffer buf = new StringBuffer();
-	        int index=0;
-	        while (index < dst.length) {
-	            int cleanByte = dst[index] & 0xFF;
+	public static String stripNonAscii(String input) throws UnsupportedEncodingException {
+		// In UTF-8, you can look at the bit pattern of a byte to tell
+		// if it is part of a
+		// single byte character, a two-byte character, or more.
+		// A byte that starts with a zero bit is a one-byte character.
+		// Bytes that start with a 1, are multi byte and the number of ones
+		// before a zero is the number of bytes in the multi-byte characters.
+		// See the examples in the code below.
+		// http://canonical.org/~kragen/strlen-utf8.html
+		// http://en.wikipedia.org/wiki/UTF-8
 
-	            // 0xxx xxxx: 1 byte
-	            if ( cleanByte < 128 && cleanByte >= 0 ) {
-	                // its safe, just add it to the string
-	                buf.append((char) cleanByte);
-	                index++;
-	            }
-	            // 10xx xxxx is a continuation byte, and is dealt with below.
-	            // 110x xxxx: 2 byte
-	            else if (cleanByte >= 128 + 64 && cleanByte < 128 + 64 + 32) {
-	                buf.append("?");
-	                index += 2; // consume this byte and its continuation byte
-	            }
-	            // 1110 xxxx: 3 byte
-	            else if (cleanByte >= 128 + 64 + 32 
-	            		&& cleanByte < 128 + 64 + 32 + 16) {
-	                buf.append('?');
-	                index += 3; // consume this byte and its continuation bytes
-	            }
-	            // 1111 0xxx: 4 byte
-	            else if (cleanByte >= 128 + 64 + 32 + 16 
-	            		&& cleanByte < 128 + 64 + 32 + 16 + 8) {
-	                buf.append('?');
-	                index += 4; // consume this byte and its continuation bytes
-	            }
-	            else {
-	                buf.append('?');
-	                index += 1;
-	            }
-	        }
-	        return buf.toString();
-	    }
+		byte dst[] = input.getBytes("UTF-8");
+		StringBuffer buf = new StringBuffer();
+		int index = 0;
+		while (index < dst.length) {
+			int cleanByte = dst[index] & 0xFF;
+
+			// 0xxx xxxx: 1 byte
+			if (cleanByte < 128 && cleanByte >= 0) {
+				// its safe, just add it to the string
+				buf.append((char) cleanByte);
+				index++;
+			}
+			// 10xx xxxx is a continuation byte, and is dealt with below.
+			// 110x xxxx: 2 byte
+			else if (cleanByte >= 128 + 64 && cleanByte < 128 + 64 + 32) {
+				buf.append("?");
+				index += 2; // consume this byte and its continuation byte
+			}
+			// 1110 xxxx: 3 byte
+			else if (cleanByte >= 128 + 64 + 32 && cleanByte < 128 + 64 + 32 + 16) {
+				buf.append('?');
+				index += 3; // consume this byte and its continuation bytes
+			}
+			// 1111 0xxx: 4 byte
+			else if (cleanByte >= 128 + 64 + 32 + 16 && cleanByte < 128 + 64 + 32 + 16 + 8) {
+				buf.append('?');
+				index += 4; // consume this byte and its continuation bytes
+			} else {
+				buf.append('?');
+				index += 1;
+			}
+		}
+		return buf.toString();
+	}
 
 }
