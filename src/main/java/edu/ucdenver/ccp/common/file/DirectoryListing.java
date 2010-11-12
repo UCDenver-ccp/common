@@ -62,6 +62,7 @@ public class DirectoryListing {
 	    File dirFile=null;
     	dirFile = new File(dirPath);
     	files = dirWalker.getFiles(dirFile);
+    	java.util.Collections.sort(files);
     	logger.debug(" returning " + files.size() + " list from " + dirPath);
     	return files;
 	}
