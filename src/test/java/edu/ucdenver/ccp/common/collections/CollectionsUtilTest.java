@@ -108,6 +108,21 @@ public class CollectionsUtilTest {
 	}
 
 	@Test
+	public void testCreateMap_2keyValuePairs() throws Exception {
+		Map<Integer, String> map = CollectionsUtil.createMap(1, "value1", 2, "value2");
+		Map<Integer, String> expectedMap = new HashMap<Integer, String>();
+		expectedMap.put(1, "value1");
+		expectedMap.put(2, "value2");
+		assertEquals(String.format("Maps should be identical."), expectedMap, map);
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testCreateMap_2keyValuePairs_duplicateKeys() throws Exception {
+		CollectionsUtil.createMap(1, "value1", 1, "value2");
+	}
+	
+	
+	@Test
 	public void testAddToOne2ManyMap() throws Exception {
 		Map<Integer, Set<String>> expectedMap = new HashMap<Integer, Set<String>>();
 		expectedMap.put(1, CollectionsUtil.createSet("a", "b", "c"));
@@ -190,5 +205,7 @@ public class CollectionsUtilTest {
 		map.put(key, value);
 		assertEquals(value, map.get(key));
 	}
+	
+	
 
 }

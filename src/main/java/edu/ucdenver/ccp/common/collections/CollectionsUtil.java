@@ -117,6 +117,27 @@ public class CollectionsUtil {
 	}
 
 	/**
+	 * Simple utility method for creating a map using 2 keys and 2 values
+	 * 
+	 * @param <K>
+	 * @param <V>
+	 * @param key1
+	 * @param value1
+	 * @param key2
+	 * @param value2
+	 * @return
+	 */
+	public static <K, V> Map<K, V> createMap(K key1, V value1, K key2, V value2) {
+		if (key1.equals(key2))
+			throw new IllegalArgumentException(
+					"Key1 = Key2, value1 will be overwritten! The createMap method requires unique keys.");
+		Map<K, V> map = new HashMap<K, V>();
+		map.put(key1, value1);
+		map.put(key2, value2);
+		return map;
+	}
+
+	/**
 	 * Combines all input maps and returns the aggregate map. Note, if a key appears in more than
 	 * one map it will be overwritten by the last value that is merged into the combined map.
 	 * 
