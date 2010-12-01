@@ -29,7 +29,7 @@
         </condition>
 
 		<antcall target="get-dependency" inheritall="true" inheritrefs="true"/>	
-		<ant antfile="${dependencies.dir}/${dependency.name}/ant/build.xml" inheritall="false" inheritrefs="false"/>
+		<ant antfile="${dependencies.dir}/${dependency.name}/ant/build.xml" target="build-only" inheritall="false" inheritrefs="false"/>
 	</target>
 
 	<target name="get-dependency" if="dependency.missing">
