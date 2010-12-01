@@ -21,6 +21,7 @@ package edu.ucdenver.ccp.common.collections;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -33,6 +34,17 @@ import org.apache.log4j.Logger;
 public class CollectionsUtil {
 	private static final Logger logger = Logger.getLogger(CollectionsUtil.class);
 
+	/**
+	 * Returns a List implementation for any input collection
+	 * 
+	 * @param <T>
+	 * @param collection
+	 * @return
+	 */
+	public static <T> List<T> createList(Collection<T> collection) {
+		return Collections.list(Collections.enumeration(collection));
+	}
+	
 	/**
 	 * Returns a List<T> containing the input arguments.
 	 * 
