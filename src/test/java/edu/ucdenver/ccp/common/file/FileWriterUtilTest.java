@@ -20,23 +20,19 @@ package edu.ucdenver.ccp.common.file;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.PrintStream;
+import java.nio.charset.UnmappableCharacterException;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 
 import edu.ucdenver.ccp.common.collections.CollectionsUtil;
-import edu.ucdenver.ccp.common.file.FileLoaderUtil;
-import edu.ucdenver.ccp.common.file.FileWriterUtil;
+import edu.ucdenver.ccp.common.test.DefaultTestCase;
 
-public class FileWriterUtilTest {
-
-	@Rule
-	public TemporaryFolder folder = new TemporaryFolder();
+public class FileWriterUtilTest extends DefaultTestCase {
 
 	private PrintStream ps;
 	private File outputFile;
@@ -54,7 +50,7 @@ public class FileWriterUtilTest {
 		ps.close();
 		List<String> linesWritten = FileLoaderUtil.loadLinesFromFile(outputFile);
 		assertEquals(String.format("Lines read from the output file should equal the lines written to it."),
-				linesWritten, lines);
+				lines, linesWritten);
 	}
 
 	@Test
@@ -65,5 +61,53 @@ public class FileWriterUtilTest {
 		List<String> lines = FileLoaderUtil.loadLinesFromFile(testFile);
 		assertEquals(String.format("Should have the 3 expected lines in the file."), expectedLines, lines);
 	}
+	
+	@Test
+	public void testBufferedWriterCreation() throws Exception {
+		CharacterEncoding encoding = CharacterEncoding.US_ASCII;
+		outputFile = CharacterEncoding.getEncodingSpecificFile(outputFile, encoding);
+		BufferedWriter writer = FileWriterUtil.initBufferedWriter(outputFile, encoding);
+		String line1 = "line 1";
+		String line2 = "line 2";
+		writer.write(line1);
+		writer.newLine();
+		writer.write(line2);
+		writer.newLine();
+		writer.close();
+		List<String> lines = CollectionsUtil.createList(line1, line2);
+		List<String> linesWritten = FileLoaderUtil.loadLinesFromFile(outputFile);
+		assertEquals(String.format("Lines read from the output file should equal the lines written to it."),
+				lines, linesWritten);
+	}
+	
+	
+	@Test(expected=UnmappableCharacterException.class)
+	public void testBufferedWriter_throwsExceptionIfEncodingConflict() throws Exception {
+		CharacterEncoding encoding = CharacterEncoding.US_ASCII;
+		outputFile = CharacterEncoding.getEncodingSpecificFile(outputFile, encoding);
+		BufferedWriter writer = FileWriterUtil.initBufferedWriter(outputFile, encoding);
+		writer.write("\u0327");
+		writer.newLine();
+		writer.close();
+	}
+	
+	@Test
+	public void testBufferedWriter_withUtf8() throws Exception {
+		CharacterEncoding encoding = CharacterEncoding.UTF_8;
+		outputFile = CharacterEncoding.getEncodingSpecificFile(outputFile, encoding);
+		BufferedWriter writer = FileWriterUtil.initBufferedWriter(outputFile, encoding);
+		String line1 = "fa\u0327ade";
+		String line2 = "nai\u0308ve";
+		writer.write(line1);
+		writer.newLine();
+		writer.write(line2);
+		writer.newLine();
+		writer.close();
+		List<String> lines = CollectionsUtil.createList(line1, line2);
+		List<String> linesWritten = FileLoaderUtil.loadLinesFromFile(outputFile);
+		assertEquals(String.format("Lines read from the output file should equal the lines written to it."),
+				lines, linesWritten);
+	}
+	
 
 }

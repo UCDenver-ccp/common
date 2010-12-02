@@ -18,15 +18,42 @@
 
 package edu.ucdenver.ccp.common.file;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 public class FileWriterUtil {
+	private static final Logger logger = Logger.getLogger(FileWriterUtil.class);
+
+	/**
+	 * Creates a BufferedWriter that validates the encoding of the characters it outputs If the
+	 * input file does not have an encoding-specific file name, the file name is altered and an
+	 * warning is logged.
+	 * 
+	 * @param outputFile
+	 * @param encoding
+	 * @return
+	 * @throws FileNotFoundException
+	 */
+	public static BufferedWriter initBufferedWriter(File outputFile, CharacterEncoding encoding)
+			throws FileNotFoundException {
+		if (!CharacterEncoding.hasEncodingSpecificFileName(outputFile, encoding)) {
+			String oldPath = outputFile.getAbsolutePath();
+			outputFile = CharacterEncoding.getEncodingSpecificFile(outputFile, encoding);
+			logger.warn(String.format(
+					"File name has been adjusted to reflect character encoding used. '%s' was changed to '%s'",
+					oldPath, outputFile.getName()));
+		}
+		return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), encoding.getEncoder()));
+	}
 
 	/**
 	 * Prints the input list of lines to the input PrintStream
@@ -54,13 +81,12 @@ public class FileWriterUtil {
 		ps.close();
 	}
 
-	
-	public static PrintStream openPrintStream(File outputFile, String encoding, boolean append) throws UnsupportedEncodingException, FileNotFoundException {
+	public static PrintStream openPrintStream(File outputFile, String encoding, boolean append)
+			throws UnsupportedEncodingException, FileNotFoundException {
 		boolean autoflush = true;
 		return new PrintStream(new FileOutputStream(outputFile, append), autoflush, encoding);
 	}
-	
-	
+
 	public static void closePrintStream(PrintStream ps, File outputFile) throws IOException {
 		try {
 			if (ps.checkError())
@@ -71,5 +97,5 @@ public class FileWriterUtil {
 			}
 		}
 	}
-	
+
 }
