@@ -354,7 +354,7 @@ public class CollectionsUtil {
 			collection.addAll(inputCollection);
 		return collection;
 	}
-	
+
 	/**
 	 * Given an input collection, this method returns a delimited String containing the items in the
 	 * collection
@@ -377,5 +377,19 @@ public class CollectionsUtil {
 		return StringUtil.removeSuffix(sb.toString(), delimiter);
 	}
 
+	/**
+	 * Returns the single element contained by the input collection
+	 * 
+	 * @throws IndexOutOfBoundsException
+	 *             if the collections contains either zerso or >1 elements
+	 * @param <T>
+	 * @param collection
+	 * @return
+	 */
+	public static <T> T getSingleElement(Collection<T> collection) {
+		if (collection.size() != 1)
+			throw new IndexOutOfBoundsException("Input collection must contain a single element.");
+		return collection.iterator().next();
+	}
 
 }
