@@ -31,7 +31,6 @@ import edu.ucdenver.ccp.common.collections.CollectionsUtil;
 import edu.ucdenver.ccp.common.string.StringUtil.RemoveFieldEnclosures;
 import edu.ucdenver.ccp.common.test.DefaultTestCase;
 
-
 public class StringUtilTest extends DefaultTestCase {
 
 	@Test
@@ -106,28 +105,28 @@ public class StringUtilTest extends DefaultTestCase {
 	@Test
 	public void testRemoveSuffix_ValidInput() throws Exception {
 		assertEquals("Suffix should be stripped.", "myFile.txt", StringUtil.removeSuffix("myFile.txt.gz", ".gz"));
-		assertEquals("Suffix should be stripped.", "myFile", StringUtil.removeSuffix("myFile.txt.gz.abc.123.xyz-654",
-				".txt.gz.abc.123.xyz-654"));
+		assertEquals("Suffix should be stripped.", "myFile",
+				StringUtil.removeSuffix("myFile.txt.gz.abc.123.xyz-654", ".txt.gz.abc.123.xyz-654"));
 	}
 
 	@Test
 	public void testRemoveRegexSuffix_ValidInput() throws Exception {
-		assertEquals("Suffix should be stripped.", "myFile", StringUtil.removeSuffixRegex("myFile.txt.txt.txt.txt.txt",
-				"(\\.txt)+"));
+		assertEquals("Suffix should be stripped.", "myFile",
+				StringUtil.removeSuffixRegex("myFile.txt.txt.txt.txt.txt", "(\\.txt)+"));
 		assertEquals("Suffix should be stripped.", "myFile", StringUtil.removeSuffixRegex("myFile.tgz", "\\..gz"));
 	}
 
 	@Test
 	public void testRemoveRegexSuffix_EmptyInput() throws Exception {
-		assertEquals("Suffix should be stripped.", "myFile.txt.txt.txt.txt.txt", StringUtil.removeSuffixRegex(
-				"myFile.txt.txt.txt.txt.txt", ""));
+		assertEquals("Suffix should be stripped.", "myFile.txt.txt.txt.txt.txt",
+				StringUtil.removeSuffixRegex("myFile.txt.txt.txt.txt.txt", ""));
 		assertEquals("Suffix should be stripped.", "myFile.tgz", StringUtil.removeSuffixRegex("myFile.tgz", ""));
 	}
 
 	@Test
 	public void testRemoveRegexPrefix_ValidInput() throws Exception {
-		assertEquals("Suffix should be stripped.", "e.txt.txt.txt.txt.txt", StringUtil.removePrefixRegex(
-				"myFile.txt.txt.txt.txt.txt", "(m?y?Fil)"));
+		assertEquals("Suffix should be stripped.", "e.txt.txt.txt.txt.txt",
+				StringUtil.removePrefixRegex("myFile.txt.txt.txt.txt.txt", "(m?y?Fil)"));
 		assertEquals("Suffix should be stripped.", "gz", StringUtil.removePrefixRegex("myFile.tgz", "my.*?t"));
 	}
 
@@ -154,8 +153,8 @@ public class StringUtilTest extends DefaultTestCase {
 
 	@Test
 	public void testReplaceSuffix_ValidInput() throws Exception {
-		assertEquals("Suffix should be replaced with .tar", "myTarball.tar", StringUtil.replaceSuffix("myTarball.tgz",
-				".tgz", ".tar"));
+		assertEquals("Suffix should be replaced with .tar", "myTarball.tar",
+				StringUtil.replaceSuffix("myTarball.tgz", ".tgz", ".tar"));
 	}
 
 	@Test
@@ -178,11 +177,11 @@ public class StringUtilTest extends DefaultTestCase {
 	@Test
 	public void testCreateRepeatingString() throws Exception {
 		String expectedStr = StringConstants.AMPERSAND + StringConstants.AMPERSAND + StringConstants.AMPERSAND;
-		assertEquals(String.format("String should contain 3 ampersands"), expectedStr, StringUtil
-				.createRepeatingString(StringConstants.AMPERSAND, 3));
+		assertEquals(String.format("String should contain 3 ampersands"), expectedStr,
+				StringUtil.createRepeatingString(StringConstants.AMPERSAND, 3));
 
-		assertEquals(String.format("String should contain 6 ampersands"), expectedStr + expectedStr, StringUtil
-				.createRepeatingString(StringConstants.AMPERSAND + StringConstants.AMPERSAND, 3));
+		assertEquals(String.format("String should contain 6 ampersands"), expectedStr + expectedStr,
+				StringUtil.createRepeatingString(StringConstants.AMPERSAND + StringConstants.AMPERSAND, 3));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -196,8 +195,8 @@ public class StringUtilTest extends DefaultTestCase {
 		String inputStr = "J Clin Invest,0021-9738,1558-8238,1940,19,\"Index, vol.1-17\",1,10.1172/JCI101100,PMC548872,0,,live";
 		String[] expectedTokens = new String[] { "J Clin Invest", "0021-9738", "1558-8238", "1940", "19",
 				"\"Index, vol.1-17\"", "1", "10.1172/JCI101100", "PMC548872", "0", "", "live" };
-		assertArrayEquals(String.format("One token should include a comma"), expectedTokens, StringUtil
-				.splitWithFieldEnclosure(inputStr, StringConstants.COMMA, StringConstants.QUOTATION_MARK));
+		assertArrayEquals(String.format("One token should include a comma"), expectedTokens,
+				StringUtil.splitWithFieldEnclosure(inputStr, StringConstants.COMMA, StringConstants.QUOTATION_MARK));
 	}
 
 	@Test
@@ -205,15 +204,15 @@ public class StringUtilTest extends DefaultTestCase {
 		String inputStr = "J Clin Invest,0021-9738,1558-8238,1940,19,\"Index, vol.1-17\",1,10.1172/JCI101100,PMC548872,0,,";
 		String[] expectedTokens = new String[] { "J Clin Invest", "0021-9738", "1558-8238", "1940", "19",
 				"\"Index, vol.1-17\"", "1", "10.1172/JCI101100", "PMC548872", "0", "", "" };
-		assertArrayEquals(String.format("One token should include a comma"), expectedTokens, StringUtil
-				.splitWithFieldEnclosure(inputStr, StringConstants.COMMA, StringConstants.QUOTATION_MARK));
+		assertArrayEquals(String.format("One token should include a comma"), expectedTokens,
+				StringUtil.splitWithFieldEnclosure(inputStr, StringConstants.COMMA, StringConstants.QUOTATION_MARK));
 	}
 
 	@Test
 	public void testSplitWithFieldDelimiter_NoColumns() throws Exception {
 		String inputStr = "J Clin Invest,0021-9738,1558-8238,1940,19,\"Index, vol.1-17\",1,10.1172/JCI101100,PMC548872,0,,live";
-		assertArrayEquals(String.format("One token should include a comma"), new String[] { inputStr }, StringUtil
-				.splitWithFieldEnclosure(inputStr, StringConstants.SEMICOLON, StringConstants.QUOTATION_MARK));
+		assertArrayEquals(String.format("One token should include a comma"), new String[] { inputStr },
+				StringUtil.splitWithFieldEnclosure(inputStr, StringConstants.SEMICOLON, StringConstants.QUOTATION_MARK));
 	}
 
 	@Test
@@ -221,8 +220,8 @@ public class StringUtilTest extends DefaultTestCase {
 		String inputStr = "J Clin Invest,0021-9738,1558-8238,1940,19,\"Index, vol.1-17\",1,10.1172/JCI101100,PMC548872,0,,live";
 		String[] expectedTokens = new String[] { "J Clin Invest", "0021-9738", "1558-8238", "1940", "19", "\"Index",
 				" vol.1-17\"", "1", "10.1172/JCI101100", "PMC548872", "0", "", "live" };
-		assertArrayEquals(String.format("One token should include a comma"), expectedTokens, StringUtil
-				.splitWithFieldEnclosure(inputStr, StringConstants.COMMA, StringConstants.SEMICOLON));
+		assertArrayEquals(String.format("One token should include a comma"), expectedTokens,
+				StringUtil.splitWithFieldEnclosure(inputStr, StringConstants.COMMA, StringConstants.SEMICOLON));
 	}
 
 	@Test
@@ -230,8 +229,8 @@ public class StringUtilTest extends DefaultTestCase {
 		String inputStr = "J Clin Invest,0021-9738,1558-8238,1940,19,\"Index, vol.1-17\",1,10.1172/JCI101100,PMC548872,0,,live";
 		String[] expectedTokens = new String[] { "J Clin Invest", "0021-9738", "1558-8238", "1940", "19", "\"Index",
 				" vol.1-17\"", "1", "10.1172/JCI101100", "PMC548872", "0", "", "live" };
-		assertArrayEquals(String.format("One token should include a comma"), expectedTokens, StringUtil
-				.splitWithFieldEnclosure(inputStr, StringConstants.COMMA, null));
+		assertArrayEquals(String.format("One token should include a comma"), expectedTokens,
+				StringUtil.splitWithFieldEnclosure(inputStr, StringConstants.COMMA, null));
 	}
 
 	@Test
@@ -239,65 +238,62 @@ public class StringUtilTest extends DefaultTestCase {
 		String inputStr = "J Clin Invest,0021-9738,1558-8238,1940,19,*Index, vol.1-17*,1,10.1172/JCI101100,PMC548872,0,,live";
 		String[] expectedTokens = new String[] { "J Clin Invest", "0021-9738", "1558-8238", "1940", "19",
 				"*Index, vol.1-17*", "1", "10.1172/JCI101100", "PMC548872", "0", "", "live" };
-		assertArrayEquals(String.format("One token should include a comma"), expectedTokens, StringUtil
-				.splitWithFieldEnclosure(inputStr, StringConstants.COMMA, "\\*"));
+		assertArrayEquals(String.format("One token should include a comma"), expectedTokens,
+				StringUtil.splitWithFieldEnclosure(inputStr, StringConstants.COMMA, "\\*"));
 	}
-	
+
 	@Test
 	public void testStripNonAscii() {
 		try {
-		
-		String none 		= "simple word";
-		
-		String one 			= "\u0031";	// 31
-		String o_umlaut 	= "\u00f6"; // c3-b6 	o with diaeresis
-		String devanagari_one= "\u0967"; // e0-a5-0a7
-		
-		String one3byte 		= devanagari_one;
-		String one3byteStripped = "?"; 
-		
-		String two3byte 		= devanagari_one + devanagari_one;
-		String two3byteStripped = "??";
-		
-		String one2byte 		= o_umlaut; 
-		String one2byteStripped = "?";
-		
-		String two2byte 		= o_umlaut + o_umlaut;
-		String two2byteStripped = "??";
-		
-		String twoAnd3 = o_umlaut + devanagari_one;
-		String twoAnd3Stripped = "??";
-		
-		String threeAnd2 = devanagari_one + o_umlaut;
-		String threeAnd2Stripped = "??";
-		
-		String mixed = devanagari_one + "foo and " + o_umlaut + " bar" 
-			+ devanagari_one;
-		String mixedStripped = "?foo and ? bar?";
-		
-		String realData = "We thank Richelle Strom for generating the F2 intercross mice.";
-		String realDataStripped = "We thank Richelle Strom for generating the F2 intercross mice.";
-		//                         01234567890123456789012345678901234567890123456789012345678901
-		
-		assertTrue(StringUtil.stripNonAscii("").equals("")); 
-		assertTrue(StringUtil.stripNonAscii(none).equals(none));
-		assertTrue(StringUtil.stripNonAscii(one2byte).equals(one2byteStripped));
-		assertTrue(StringUtil.stripNonAscii(one3byte).equals(one3byteStripped));		
-		assertTrue(StringUtil.stripNonAscii(two3byte).equals(two3byteStripped));
-		assertTrue(StringUtil.stripNonAscii(two2byte).equals(two2byteStripped));
-		assertTrue(StringUtil.stripNonAscii(twoAnd3).equals(twoAnd3Stripped));
-		assertTrue(StringUtil.stripNonAscii(threeAnd2).equals(threeAnd2Stripped));
-		assertTrue(StringUtil.stripNonAscii(mixed).equals(mixedStripped));
-		assertTrue(StringUtil.stripNonAscii(realData).equals(realDataStripped));
-		
-		}
-		catch (java.io.UnsupportedEncodingException x) {
+
+			String none = "simple word";
+
+			String one = "\u0031"; // 31
+			String o_umlaut = "\u00f6"; // c3-b6 o with diaeresis
+			String devanagari_one = "\u0967"; // e0-a5-0a7
+
+			String one3byte = devanagari_one;
+			String one3byteStripped = "?";
+
+			String two3byte = devanagari_one + devanagari_one;
+			String two3byteStripped = "??";
+
+			String one2byte = o_umlaut;
+			String one2byteStripped = "?";
+
+			String two2byte = o_umlaut + o_umlaut;
+			String two2byteStripped = "??";
+
+			String twoAnd3 = o_umlaut + devanagari_one;
+			String twoAnd3Stripped = "??";
+
+			String threeAnd2 = devanagari_one + o_umlaut;
+			String threeAnd2Stripped = "??";
+
+			String mixed = devanagari_one + "foo and " + o_umlaut + " bar" + devanagari_one;
+			String mixedStripped = "?foo and ? bar?";
+
+			String realData = "We thank Richelle Strom for generating the F2 intercross mice.";
+			String realDataStripped = "We thank Richelle Strom for generating the F2 intercross mice.";
+			// 01234567890123456789012345678901234567890123456789012345678901
+
+			assertTrue(StringUtil.stripNonAscii("").equals(""));
+			assertTrue(StringUtil.stripNonAscii(none).equals(none));
+			assertTrue(StringUtil.stripNonAscii(one2byte).equals(one2byteStripped));
+			assertTrue(StringUtil.stripNonAscii(one3byte).equals(one3byteStripped));
+			assertTrue(StringUtil.stripNonAscii(two3byte).equals(two3byteStripped));
+			assertTrue(StringUtil.stripNonAscii(two2byte).equals(two2byteStripped));
+			assertTrue(StringUtil.stripNonAscii(twoAnd3).equals(twoAnd3Stripped));
+			assertTrue(StringUtil.stripNonAscii(threeAnd2).equals(threeAnd2Stripped));
+			assertTrue(StringUtil.stripNonAscii(mixed).equals(mixedStripped));
+			assertTrue(StringUtil.stripNonAscii(realData).equals(realDataStripped));
+
+		} catch (java.io.UnsupportedEncodingException x) {
 			System.err.println("error:" + x);
 			x.printStackTrace();
 		}
-	
+
 	}
-	
 
 	@Test
 	public void testDelimitAndTrim_WithTrailingDelimiter() throws Exception {
