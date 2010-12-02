@@ -44,7 +44,7 @@ public class CollectionsUtil {
 	public static <T> List<T> createList(Collection<T> collection) {
 		return Collections.list(Collections.enumeration(collection));
 	}
-	
+
 	/**
 	 * Returns a List<T> containing the input arguments.
 	 * 
@@ -98,6 +98,20 @@ public class CollectionsUtil {
 			return null;
 		}
 		return new HashSet<T>(Arrays.asList(setEntries));
+	}
+
+	/**
+	 * Creates a set using the members of the input Iterable<T>
+	 * 
+	 * @param <T>
+	 * @param iterable
+	 * @return
+	 */
+	public static <T> Set<T> createSet(Iterable<T> iterable) {
+		Set<T> set = new HashSet<T>();
+		for (T entry : iterable)
+			set.add(entry);
+		return set;
 	}
 
 	/**
