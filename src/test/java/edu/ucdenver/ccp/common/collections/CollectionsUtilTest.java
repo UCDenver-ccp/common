@@ -206,6 +206,16 @@ public class CollectionsUtilTest {
 		assertEquals(value, map.get(key));
 	}
 	
-	
+	@Test
+	public void testCreateDelimitedString() throws Exception {
+		List<String> list = CollectionsUtil.createList("1", "2", "3");
+		String delimitedStr = CollectionsUtil.createDelimitedString(list, "|");
+		String expectedStr = "1|2|3";
+		assertEquals(String.format("output or createDelimitedString not as expected."), expectedStr, delimitedStr);
+
+		List<Integer> numberList = CollectionsUtil.createList(1, 2, 3);
+		delimitedStr = CollectionsUtil.createDelimitedString(numberList, "|");
+		assertEquals(String.format("output or createDelimitedString not as expected."), expectedStr, delimitedStr);
+	}
 
 }

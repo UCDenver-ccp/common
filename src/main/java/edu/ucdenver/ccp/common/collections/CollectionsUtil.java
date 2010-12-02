@@ -31,6 +31,8 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import edu.ucdenver.ccp.common.string.StringUtil;
+
 public class CollectionsUtil {
 	private static final Logger logger = Logger.getLogger(CollectionsUtil.class);
 
@@ -352,5 +354,28 @@ public class CollectionsUtil {
 			collection.addAll(inputCollection);
 		return collection;
 	}
+	
+	/**
+	 * Given an input collection, this method returns a delimited String containing the items in the
+	 * collection
+	 * 
+	 * @param <T>
+	 * @param collection
+	 * @param delimiter
+	 * @return
+	 */
+	public static <T> String createDelimitedString(Collection<T> collection, String delimiter) {
+		if (collection == null)
+			return null;
+		if (collection.isEmpty())
+			return "";
+		StringBuilder sb = new StringBuilder();
+		for (T element : collection) {
+			sb.append(element.toString());
+			sb.append(delimiter);
+		}
+		return StringUtil.removeSuffix(sb.toString(), delimiter);
+	}
+
 
 }
