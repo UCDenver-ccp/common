@@ -392,4 +392,19 @@ public class CollectionsUtil {
 		return collection.iterator().next();
 	}
 
+	/**
+	 * Returns a String representation of the input collection by calling each element's toString()
+	 * method.
+	 * 
+	 * @param <T>
+	 * @param collection
+	 * @return
+	 */
+	public static <T> Collection<String> toString(Collection<T> collection) {
+		Collection<String> strings = new ArrayList<String>();
+		for (T item : collection)
+			strings.add(item.toString());
+		return strings;
+	}
+
 }
