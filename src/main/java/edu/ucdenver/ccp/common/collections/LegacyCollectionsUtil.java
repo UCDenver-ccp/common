@@ -30,9 +30,16 @@ public class LegacyCollectionsUtil {
 	 * compiler warnings.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> List<T> checkList(List list, Class<T> clazz) {
+	public static <T> List<T> checkList(@SuppressWarnings("rawtypes") List list, Class<T> clazz) {
 		List<T> checkedList = Collections.checkedList(new ArrayList<T>(), clazz);
-		checkedList.addAll(list);
+		try {
+			checkedList.addAll(list);
+		} catch (ClassCastException cce) {
+			for (Object item : list)
+				if (!(clazz.isInstance(item)))
+					throw new ClassCastException(String.format("Cannot cast from class %s to expected class %s.", item
+							.getClass().getName(), clazz.getName()));
+		}
 		return checkedList;
 	}
 
