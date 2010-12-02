@@ -218,4 +218,12 @@ public class CollectionsUtilTest {
 		assertEquals(String.format("output or createDelimitedString not as expected."), expectedStr, delimitedStr);
 	}
 
+	
+	@Test
+	public void testToString() throws Exception {
+		Set<Integer> integerSet = CollectionsUtil.createSet(1, 2, 3, 4, 5);
+		Set<String> strings = new HashSet<String>(CollectionsUtil.toString(integerSet));
+		assertEquals(String.format("Set should now contain strings."),
+				CollectionsUtil.createSet("1", "2", "3", "4", "5"), strings);
+	}
 }
