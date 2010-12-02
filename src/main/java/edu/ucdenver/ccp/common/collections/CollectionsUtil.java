@@ -143,7 +143,22 @@ public class CollectionsUtil {
 	}
 
 	/**
-	 * Simple utility method for creating a map using 2 keys and 2 values
+	 * Simple utility to initialize a map with one key/value pair
+	 * 
+	 * @param <K>
+	 * @param <V>
+	 * @param key
+	 * @param value
+	 * @return
+	 */
+	public static <K, V> Map<K, V> createMap(K key, V value) {
+		Map<K, V> map = new HashMap<K, V>();
+		map.put(key, value);
+		return map;
+	}
+
+	/**
+	 * Simple utility to initialize a map with two key/value pairs.
 	 * 
 	 * @param <K>
 	 * @param <V>
@@ -160,6 +175,27 @@ public class CollectionsUtil {
 		Map<K, V> map = new HashMap<K, V>();
 		map.put(key1, value1);
 		map.put(key2, value2);
+		return map;
+	}
+
+	/**
+	 * Simple utility to initialize a mpa with three key/value pairs.
+	 * 
+	 * @param <K>
+	 * @param <V>
+	 * @param key1
+	 * @param value1
+	 * @param key2
+	 * @param value2
+	 * @param key3
+	 * @param value3
+	 * @return
+	 */
+	public static <K, V> Map<K, V> createMap(K key1, V value1, K key2, V value2, K key3, V value3) {
+		Map<K, V> map = new HashMap<K, V>();
+		map.put(key1, value1);
+		map.put(key2, value2);
+		map.put(key3, value3);
 		return map;
 	}
 
