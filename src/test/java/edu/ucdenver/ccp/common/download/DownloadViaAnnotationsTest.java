@@ -23,6 +23,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.SocketException;
 import java.util.List;
 
@@ -34,6 +35,8 @@ import edu.ucdenver.ccp.common.collections.CollectionsUtil;
 import edu.ucdenver.ccp.common.download.DownloadUtil;
 import edu.ucdenver.ccp.common.download.FtpDownload;
 import edu.ucdenver.ccp.common.file.FileLoaderUtil;
+import edu.ucdenver.ccp.common.file.FileUtil;
+import edu.ucdenver.ccp.common.file.FileWriterUtil;
 import edu.ucdenver.ccp.common.ftp.FTPUtil.FileType;
 import edu.ucdenver.ccp.common.test.DefaultTestCase;
 import edu.ucdenver.ccp.common.test.MockFtpServer;
@@ -103,12 +106,62 @@ public class DownloadViaAnnotationsTest extends DefaultTestCase {
 				FileLoaderUtil.loadLinesFromFile(fileProcessor.getFileToProcess(), DEFAULT_ENCODING));
 	}
 
-	private class MyGzFileProcessor {
+	@Test
+	public void testNoDownloadIfFilePresentAndCleanFalse() throws Exception {
+		File workDirectory = folder.newFolder("workDir");
+		boolean clean = false;
+		File sampleFile = FileUtil.appendPathElementsToDirectory(workDirectory, "sampleFile.txt");
+		List<String> expectedLines = CollectionsUtil
+				.createList("This file already exists and doesn't need to be downloaded again.");
+		FileWriterUtil.printLines(expectedLines, sampleFile);
+		MyGzFileProcessor_BAD_PORT fileProcessor = new MyGzFileProcessor_BAD_PORT(workDirectory, clean);
+		assertEquals("should be sampleFile.txt", "sampleFile.txt", fileProcessor.getFileToProcess().getName());
+		assertTrue("file should exist locally", fileProcessor.getFileToProcess().exists());
+		assertEquals(String.format("Unzipped file should have expected lines - it should not have been overwritten"),
+				expectedLines, FileLoaderUtil.loadLinesFromFile(fileProcessor.getFileToProcess(), DEFAULT_ENCODING));
+	}
+
+	
+	@Test
+	public void testNoDownloadIfZippedFilePresentAndCleanFalse() throws Exception {
+		File workDirectory = folder.newFolder("workDir");
+		boolean clean = false;
+		FileUtil.copy(getResourceFromClasspath(getClass(), SAMPLE_GZ_FILE_NAME), FileUtil.appendPathElementsToDirectory(workDirectory, SAMPLE_GZ_FILE_NAME));
+		MyGzFileProcessor_BAD_PORT fileProcessor = new MyGzFileProcessor_BAD_PORT(workDirectory, clean);
+		assertEquals("should be sampleFile.txt", "sampleFile.txt", fileProcessor.getFileToProcess().getName());
+		assertTrue("file should exist locally", fileProcessor.getFileToProcess().exists());
+		assertEquals(String.format("Unzipped file should have expected lines - it should not have been overwritten"),
+				expectedLinesInSampleGzFile, FileLoaderUtil.loadLinesFromFile(fileProcessor.getFileToProcess(), DEFAULT_ENCODING));
+	}
+	
+	private static class MyGzFileProcessor {
 
 		@FtpDownload(server = FTP_HOST, port = FTP_PORT, path = "", filename = SAMPLE_GZ_FILE_NAME, filetype = FileType.BINARY)
 		private File fileToProcess;
 
 		public MyGzFileProcessor(File workDirectory, boolean clean) throws SocketException, IOException,
+				IllegalArgumentException, IllegalAccessException {
+			DownloadUtil.download(this, workDirectory, MockFtpServer.USER_NAME, MockFtpServer.PASSWORD, clean);
+		}
+
+		public File getFileToProcess() {
+			return fileToProcess;
+		}
+	}
+
+	/**
+	 * Attempting a download using this class will cause a failure due to the incorrect port. This
+	 * class can therefore be used to test that a download does not occur.
+	 * 
+	 * @author bill
+	 * 
+	 */
+	private static class MyGzFileProcessor_BAD_PORT {
+
+		@FtpDownload(server = FTP_HOST, port = 0000, path = "", filename = SAMPLE_GZ_FILE_NAME, filetype = FileType.BINARY)
+		private File fileToProcess;
+
+		public MyGzFileProcessor_BAD_PORT(File workDirectory, boolean clean) throws SocketException, IOException,
 				IllegalArgumentException, IllegalAccessException {
 			DownloadUtil.download(this, workDirectory, MockFtpServer.USER_NAME, MockFtpServer.PASSWORD, clean);
 		}

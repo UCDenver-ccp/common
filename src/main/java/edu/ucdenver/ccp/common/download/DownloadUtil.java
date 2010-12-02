@@ -70,14 +70,19 @@ public class DownloadUtil {
 
 	private static void unpackFileAndAssignField(Object object, File workDirectory, Field field, boolean clean,
 			File downloadedFile) throws IOException, IllegalAccessException {
+		downloadedFile = unpackDownloadedFile(workDirectory, clean, downloadedFile);
+
+		field.setAccessible(true);
+		field.set(object, downloadedFile);
+	}
+
+	public static File unpackDownloadedFile(File workDirectory, boolean clean, File downloadedFile) throws IOException {
 		if (fileNeedsUnzipping(downloadedFile, clean))
 			downloadedFile = FileArchiveUtil.unzip(downloadedFile, workDirectory);
 		else if (FileArchiveUtil.isZippedFile(downloadedFile))
 			// File has already been downloaded and unzipped
-			downloadedFile = getUnzippedFileReference(downloadedFile);
-
-		field.setAccessible(true);
-		field.set(object, downloadedFile);
+			downloadedFile = FileArchiveUtil.getUnzippedFileReference(downloadedFile);
+		return downloadedFile;
 	}
 
 	private static void handleFtpDownload(Object object, File workDirectory, Field field, String userName,
@@ -89,8 +94,8 @@ public class DownloadUtil {
 			password = ftpd.password();
 		File downloadedFile = FileUtil.appendPathElementsToDirectory(workDirectory, ftpd.filename());
 		if (!fileExists(downloadedFile, clean)) {
-			downloadedFile = FTPUtil.downloadFile(ftpd.server(), ftpd.port(), ftpd.path(), ftpd.filename(), ftpd
-					.filetype(), workDirectory, userName, password);
+			downloadedFile = FTPUtil.downloadFile(ftpd.server(), ftpd.port(), ftpd.path(), ftpd.filename(),
+					ftpd.filetype(), workDirectory, userName, password);
 		}
 		unpackFileAndAssignField(object, workDirectory, field, clean, downloadedFile);
 	}
@@ -103,12 +108,17 @@ public class DownloadUtil {
 	 * @param clean
 	 * @return
 	 */
-	private static boolean fileExists(File downloadedFile, boolean clean) {
+	public static boolean fileExists(File downloadedFile, boolean clean) {
+		File unzippedFile = null;
+		if (FileArchiveUtil.isZippedFile(downloadedFile))
+			unzippedFile = FileArchiveUtil.getUnzippedFileReference(downloadedFile);
 		if (clean) {
 			downloadedFile.delete();
+			if (unzippedFile != null)
+				unzippedFile.delete();
 			return false;
 		}
-		return downloadedFile.exists();
+		return downloadedFile.exists() || (unzippedFile != null && unzippedFile.exists());
 	}
 
 	/**
@@ -124,7 +134,7 @@ public class DownloadUtil {
 	private static boolean fileNeedsUnzipping(File zippedFile, boolean clean) {
 		if (!FileArchiveUtil.isZippedFile(zippedFile))
 			return false;
-		File unzippedFile = getUnzippedFileReference(zippedFile);
+		File unzippedFile = FileArchiveUtil.getUnzippedFileReference(zippedFile);
 		if (clean) {
 			unzippedFile.delete();
 			return true;
@@ -132,9 +142,5 @@ public class DownloadUtil {
 		return !unzippedFile.exists();
 	}
 
-	private static File getUnzippedFileReference(File zippedFile) {
-		String unzippedFileName = FileArchiveUtil.getUnzippedFileName(zippedFile.getName());
-		File unzippedFile = FileUtil.appendPathElementsToDirectory(zippedFile.getParentFile(), unzippedFileName);
-		return unzippedFile;
-	}
+	
 }
