@@ -283,6 +283,13 @@ public class FileArchiveUtil {
 		}
 	}
 
+	
+	public static File getUnzippedFileReference(File zippedFile) {
+		String unzippedFileName = getUnzippedFileName(zippedFile.getName());
+		File unzippedFile = FileUtil.appendPathElementsToDirectory(zippedFile.getParentFile(), unzippedFileName);
+		return unzippedFile;
+	}
+	
 	public static File unzip(GZIPInputStream gzipInputStream, String outputFileName, File outputDirectory)
 			throws IOException {
 		File outputFile = new File(outputDirectory.getAbsolutePath() + File.separator + outputFileName);
