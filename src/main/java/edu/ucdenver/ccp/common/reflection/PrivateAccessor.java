@@ -21,6 +21,7 @@ package edu.ucdenver.ccp.common.reflection;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Set;
 
 /**
  * Provides access to private members in classes. Modified from
@@ -71,6 +72,27 @@ public class PrivateAccessor {
 		return getPrivateField(superclass, fieldName);
 	}
 
+	/**
+	 * Get all declared and inherited class fields recursively
+	 * 
+	 * @param clazz class to reflect on
+	 * @param fields to hold return value
+	 * @return all declared and inherited fields
+	 */
+	public static Set<Field> getAllFields(Class<?> clazz, Set<Field> fields) {
+		for (Field field : clazz.getDeclaredFields()) {
+			fields.add(field);
+			field.setAccessible(true);
+			fields.add(field);
+		}
+		
+		Class<?> superclass = clazz.getSuperclass();
+		if (superclass == null)
+			return fields;
+		
+		return getAllFields(superclass, fields);
+	}
+	
 	public static Object invokePrivateMethod(Object o, String methodName, Object... params) throws SecurityException,
 			NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 
