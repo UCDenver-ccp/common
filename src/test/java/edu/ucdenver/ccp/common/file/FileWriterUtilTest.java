@@ -47,7 +47,7 @@ public class FileWriterUtilTest extends DefaultTestCase {
 		List<String> lines = CollectionsUtil.createList("line 1", "line 2", "line 3", "line 4");
 		FileWriterUtil.printLines(lines, writer);
 		writer.close();
-		List<String> linesWritten = FileLoaderUtil.loadLinesFromFile(outputFile, CharacterEncoding.US_ASCII);
+		List<String> linesWritten = FileReaderUtil.loadLinesFromFile(outputFile, CharacterEncoding.US_ASCII);
 		assertEquals(String.format("Lines read from the output file should equal the lines written to it."),
 				lines, linesWritten);
 	}
@@ -57,7 +57,7 @@ public class FileWriterUtilTest extends DefaultTestCase {
 		File testFile = folder.newFile("test.ascii");
 		List<String> expectedLines = CollectionsUtil.createList("line1", "line2", "line3");
 		FileWriterUtil.printLines(expectedLines, testFile, CharacterEncoding.US_ASCII);
-		List<String> lines = FileLoaderUtil.loadLinesFromFile(testFile, CharacterEncoding.US_ASCII);
+		List<String> lines = FileReaderUtil.loadLinesFromFile(testFile, CharacterEncoding.US_ASCII);
 		assertEquals(String.format("Should have the 3 expected lines in the file."), expectedLines, lines);
 	}
 	
@@ -74,7 +74,7 @@ public class FileWriterUtilTest extends DefaultTestCase {
 		writer.newLine();
 		writer.close();
 		List<String> lines = CollectionsUtil.createList(line1, line2);
-		List<String> linesWritten = FileLoaderUtil.loadLinesFromFile(outputFile, encoding);
+		List<String> linesWritten = FileReaderUtil.loadLinesFromFile(outputFile, encoding);
 		assertEquals(String.format("Lines read from the output file should equal the lines written to it."),
 				lines, linesWritten);
 	}
@@ -103,7 +103,7 @@ public class FileWriterUtilTest extends DefaultTestCase {
 		writer.newLine();
 		writer.close();
 		List<String> lines = CollectionsUtil.createList(line1, line2);
-		List<String> linesWritten = FileLoaderUtil.loadLinesFromFile(outputFile, encoding);
+		List<String> linesWritten = FileReaderUtil.loadLinesFromFile(outputFile, encoding);
 		assertEquals(String.format("Lines read from the output file should equal the lines written to it."),
 				lines, linesWritten);
 	}

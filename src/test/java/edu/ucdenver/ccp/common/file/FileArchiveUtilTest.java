@@ -59,7 +59,7 @@ public class FileArchiveUtilTest extends DefaultTestCase {
 		File outputDirectory = folder.newFolder("unzippedGZFile");
 		File unzippedFile = new File(outputDirectory.getAbsolutePath() + File.separator + "sampleFile.txt");
 		FileArchiveUtil.unzip(gis, unzippedFile.getName(), outputDirectory);
-		List<String> linesFromUnzippedFile = FileLoaderUtil.loadLinesFromFile(unzippedFile, CharacterEncoding.US_ASCII);
+		List<String> linesFromUnzippedFile = FileReaderUtil.loadLinesFromFile(unzippedFile, CharacterEncoding.US_ASCII);
 		assertTrue(String.format("The unzipped file should now exist."), unzippedFile.exists());
 		assertEquals(String.format("There should be two lines in the unzipped file."), expectedLinesInFile,
 				linesFromUnzippedFile);
@@ -72,7 +72,7 @@ public class FileArchiveUtilTest extends DefaultTestCase {
 		File outputDirectory = folder.newFolder("unzippedUnixCompressFile");
 		File unzippedFile = FileUtil.appendPathElementsToDirectory(outputDirectory, "sampleUnixCompressFile.txt");
 		FileArchiveUtil.unzip(uis, unzippedFile.getName(), outputDirectory);
-		List<String> linesFromUnzippedFile = FileLoaderUtil.loadLinesFromFile(unzippedFile, CharacterEncoding.US_ASCII);
+		List<String> linesFromUnzippedFile = FileReaderUtil.loadLinesFromFile(unzippedFile, CharacterEncoding.US_ASCII);
 		assertTrue(String.format("The unzipped file should now exist (unix compress)."), unzippedFile.exists());
 		assertEquals(String.format("There should be two lines in the unzipped file (unix compress)."), expectedLinesInFile,
 				linesFromUnzippedFile);
@@ -135,7 +135,7 @@ public class FileArchiveUtilTest extends DefaultTestCase {
 		assertEquals(String.format("Should be 3 entries on the second level (3 files)"),
 				expectedFileNamesOnSecondLevel, CollectionsUtil.array2Set(dir1Directory.list()));
 		File file6txtFile = new File(dir1Directory.getAbsolutePath() + File.separator + SAMPLE_FILE_6_NAME);
-		List<String> linesFromUnzippedFile = FileLoaderUtil.loadLinesFromFile(file6txtFile, CharacterEncoding.US_ASCII);
+		List<String> linesFromUnzippedFile = FileReaderUtil.loadLinesFromFile(file6txtFile, CharacterEncoding.US_ASCII);
 		assertTrue(String.format("The unzipped file should now exist."), file6txtFile.exists());
 		assertEquals(String.format("There should be two lines in the unzipped file."), expectedLinesInFile,
 				linesFromUnzippedFile);
@@ -166,7 +166,7 @@ public class FileArchiveUtilTest extends DefaultTestCase {
 		FileArchiveUtil.unzip(zippedTestFile, unzippedFolder);
 		File unzippedTestFile = new File(unzippedFolder.getAbsolutePath() + File.separator + "test.ascii");
 		assertTrue(String.format("Unzipped file must exist"), unzippedTestFile.exists());
-		List<String> lines = FileLoaderUtil.loadLinesFromFile(unzippedTestFile, CharacterEncoding.US_ASCII);
+		List<String> lines = FileReaderUtil.loadLinesFromFile(unzippedTestFile, CharacterEncoding.US_ASCII);
 		assertEquals(String
 				.format("Lines in unzipped file should match lines put into original file prior to gzipping."),
 				expectedLines, lines);

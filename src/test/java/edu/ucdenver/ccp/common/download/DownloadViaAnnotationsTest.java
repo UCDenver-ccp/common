@@ -35,7 +35,7 @@ import edu.ucdenver.ccp.common.collections.CollectionsUtil;
 import edu.ucdenver.ccp.common.download.DownloadUtil;
 import edu.ucdenver.ccp.common.download.FtpDownload;
 import edu.ucdenver.ccp.common.file.CharacterEncoding;
-import edu.ucdenver.ccp.common.file.FileLoaderUtil;
+import edu.ucdenver.ccp.common.file.FileReaderUtil;
 import edu.ucdenver.ccp.common.file.FileUtil;
 import edu.ucdenver.ccp.common.file.FileWriterUtil;
 import edu.ucdenver.ccp.common.ftp.FTPUtil.FileType;
@@ -104,7 +104,7 @@ public class DownloadViaAnnotationsTest extends DefaultTestCase {
 		assertEquals("should be sampleFile.ascii", "sampleFile.ascii", fileProcessor.getFileToProcess().getName());
 		assertTrue("file should exist locally", fileProcessor.getFileToProcess().exists());
 		assertEquals(String.format("Unzipped file should have expected lines"), expectedLinesInSampleGzFile,
-				FileLoaderUtil.loadLinesFromFile(fileProcessor.getFileToProcess(), CharacterEncoding.US_ASCII));
+				FileReaderUtil.loadLinesFromFile(fileProcessor.getFileToProcess(), CharacterEncoding.US_ASCII));
 	}
 
 	@Test
@@ -119,7 +119,7 @@ public class DownloadViaAnnotationsTest extends DefaultTestCase {
 		assertEquals("should be sampleFile.ascii", "sampleFile.ascii", fileProcessor.getFileToProcess().getName());
 		assertTrue("file should exist locally", fileProcessor.getFileToProcess().exists());
 		assertEquals(String.format("Unzipped file should have expected lines - it should not have been overwritten"),
-				expectedLines, FileLoaderUtil.loadLinesFromFile(fileProcessor.getFileToProcess(), CharacterEncoding.US_ASCII));
+				expectedLines, FileReaderUtil.loadLinesFromFile(fileProcessor.getFileToProcess(), CharacterEncoding.US_ASCII));
 	}
 
 	
@@ -132,7 +132,7 @@ public class DownloadViaAnnotationsTest extends DefaultTestCase {
 		assertEquals("should be sampleFile.ascii", "sampleFile.ascii", fileProcessor.getFileToProcess().getName());
 		assertTrue("file should exist locally", fileProcessor.getFileToProcess().exists());
 		assertEquals(String.format("Unzipped file should have expected lines - it should not have been overwritten"),
-				expectedLinesInSampleGzFile, FileLoaderUtil.loadLinesFromFile(fileProcessor.getFileToProcess(), CharacterEncoding.US_ASCII));
+				expectedLinesInSampleGzFile, FileReaderUtil.loadLinesFromFile(fileProcessor.getFileToProcess(), CharacterEncoding.US_ASCII));
 	}
 	
 	private static class MyGzFileProcessor {

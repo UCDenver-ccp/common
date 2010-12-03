@@ -58,7 +58,7 @@ public class FileComparisonUtil {
 	 */
 	public static boolean hasExpectedLines(File outputFile, CharacterEncoding encoding, List<String> expectedLines,
 			String columnDelimiterRegex, LineOrder lineOrder, ColumnOrder columnOrder) throws IOException {
-		List<String> lines = FileLoaderUtil.loadLinesFromFile(outputFile, encoding);
+		List<String> lines = FileReaderUtil.loadLinesFromFile(outputFile, encoding);
 		List<String> expectedLinesInFile = new ArrayList<String>(expectedLines);
 
 		int lineIndex = 0;

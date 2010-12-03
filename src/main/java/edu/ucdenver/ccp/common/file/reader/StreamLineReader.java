@@ -26,7 +26,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import edu.ucdenver.ccp.common.file.CharacterEncoding;
-import edu.ucdenver.ccp.common.file.FileLoaderUtil;
+import edu.ucdenver.ccp.common.file.FileReaderUtil;
 
 public class StreamLineReader extends LineReader {
 
@@ -36,13 +36,13 @@ public class StreamLineReader extends LineReader {
 	public StreamLineReader(InputStream inputStream, CharacterEncoding encoding, String skipLinePrefix) throws IOException {
 		super(skipLinePrefix);
 		lineNumber = 0;
-		reader = FileLoaderUtil.initBufferedReader(inputStream, encoding);
+		reader = FileReaderUtil.initBufferedReader(inputStream, encoding);
 	}
 
 	public StreamLineReader(File inputFile, CharacterEncoding encoding, String skipLinePrefix) throws IOException {
 		super(skipLinePrefix);
 		lineNumber = 0;
-		reader = FileLoaderUtil.initBufferedReader(inputFile, encoding);
+		reader = FileReaderUtil.initBufferedReader(inputFile, encoding);
 	}
 
 	@Override

@@ -33,9 +33,9 @@ import edu.ucdenver.ccp.common.file.reader.StreamLineIterator;
 import edu.ucdenver.ccp.common.file.reader.LineReader.Line;
 import edu.ucdenver.ccp.common.string.StringUtil;
 
-public class FileLoaderUtil {
+public class FileReaderUtil {
 
-	private FileLoaderUtil() {
+	private FileReaderUtil() {
 		// do not instantiate
 	}
 
