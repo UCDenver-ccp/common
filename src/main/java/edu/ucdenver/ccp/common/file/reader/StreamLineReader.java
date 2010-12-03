@@ -25,21 +25,24 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import edu.ucdenver.ccp.common.file.CharacterEncoding;
+import edu.ucdenver.ccp.common.file.FileLoaderUtil;
+
 public class StreamLineReader extends LineReader {
 
 	private final BufferedReader reader;
 	private int lineNumber = 0;
 
-	public StreamLineReader(InputStream inputStream, String encoding, String skipLinePrefix) throws IOException {
+	public StreamLineReader(InputStream inputStream, CharacterEncoding encoding, String skipLinePrefix) throws IOException {
 		super(skipLinePrefix);
 		lineNumber = 0;
-		reader = new BufferedReader(new InputStreamReader(inputStream, encoding));
+		reader = FileLoaderUtil.initBufferedReader(inputStream, encoding);
 	}
 
-	public StreamLineReader(File inputFile, String encoding, String skipLinePrefix) throws IOException {
+	public StreamLineReader(File inputFile, CharacterEncoding encoding, String skipLinePrefix) throws IOException {
 		super(skipLinePrefix);
 		lineNumber = 0;
-		reader = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile), encoding));
+		reader = FileLoaderUtil.initBufferedReader(inputFile, encoding);
 	}
 
 	@Override

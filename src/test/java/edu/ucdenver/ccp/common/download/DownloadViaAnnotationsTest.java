@@ -34,6 +34,7 @@ import org.junit.Test;
 import edu.ucdenver.ccp.common.collections.CollectionsUtil;
 import edu.ucdenver.ccp.common.download.DownloadUtil;
 import edu.ucdenver.ccp.common.download.FtpDownload;
+import edu.ucdenver.ccp.common.file.CharacterEncoding;
 import edu.ucdenver.ccp.common.file.FileLoaderUtil;
 import edu.ucdenver.ccp.common.file.FileUtil;
 import edu.ucdenver.ccp.common.file.FileWriterUtil;
@@ -45,7 +46,7 @@ public class DownloadViaAnnotationsTest extends DefaultTestCase {
 
 	private static final String FTP_HOST = "localhost";
 	private static final int FTP_PORT = 9981;
-	private static final String SAMPLE_GZ_FILE_NAME = "sampleFile.txt.gz";
+	private static final String SAMPLE_GZ_FILE_NAME = "sampleFile.ascii.gz";
 	private MockFtpServer ftu;
 
 	private final List<String> expectedLinesInSampleGzFile = CollectionsUtil.createList("This is line 1.",
@@ -65,10 +66,10 @@ public class DownloadViaAnnotationsTest extends DefaultTestCase {
 
 	private void populateFtpDirectory() throws IOException {
 		ftu.addFile("/file3");
-		ftu.addFile("/file5.txt");
+		ftu.addFile("/file5.ascii");
 		ftu.addFile("/file6.xml");
-		ftu.addFile("/file7.txt");
-		ftu.addFile("/sampleFile.txt.gz", getResourceFromClasspath(this.getClass(), SAMPLE_GZ_FILE_NAME));
+		ftu.addFile("/file7.ascii");
+		ftu.addFile("/sampleFile.ascii.gz", getResourceFromClasspath(this.getClass(), SAMPLE_GZ_FILE_NAME));
 	}
 
 	@Test
@@ -76,13 +77,13 @@ public class DownloadViaAnnotationsTest extends DefaultTestCase {
 		File workDirectory = folder.newFolder("workDir");
 		boolean clean = true;
 		MyFileProcessor fileProcessor = new MyFileProcessor(workDirectory, clean);
-		assertEquals("should be file5.txt", "file5.txt", fileProcessor.getFileToProcess().getName());
+		assertEquals("should be file5.ascii", "file5.ascii", fileProcessor.getFileToProcess().getName());
 		assertTrue("file should exist locally", fileProcessor.getFileToProcess().exists());
 	}
 
 	private class MyFileProcessor {
 
-		@FtpDownload(server = FTP_HOST, port = FTP_PORT, path = "", filename = "file5.txt", filetype = FileType.ASCII)
+		@FtpDownload(server = FTP_HOST, port = FTP_PORT, path = "", filename = "file5.ascii", filetype = FileType.ASCII)
 		private File fileToProcess;
 
 		public MyFileProcessor(File workDirectory, boolean clean) throws SocketException, IOException,
@@ -100,25 +101,25 @@ public class DownloadViaAnnotationsTest extends DefaultTestCase {
 		File workDirectory = folder.newFolder("workDir");
 		boolean clean = true;
 		MyGzFileProcessor fileProcessor = new MyGzFileProcessor(workDirectory, clean);
-		assertEquals("should be sampleFile.txt", "sampleFile.txt", fileProcessor.getFileToProcess().getName());
+		assertEquals("should be sampleFile.ascii", "sampleFile.ascii", fileProcessor.getFileToProcess().getName());
 		assertTrue("file should exist locally", fileProcessor.getFileToProcess().exists());
 		assertEquals(String.format("Unzipped file should have expected lines"), expectedLinesInSampleGzFile,
-				FileLoaderUtil.loadLinesFromFile(fileProcessor.getFileToProcess(), DEFAULT_ENCODING));
+				FileLoaderUtil.loadLinesFromFile(fileProcessor.getFileToProcess(), CharacterEncoding.US_ASCII));
 	}
 
 	@Test
 	public void testNoDownloadIfFilePresentAndCleanFalse() throws Exception {
 		File workDirectory = folder.newFolder("workDir");
 		boolean clean = false;
-		File sampleFile = FileUtil.appendPathElementsToDirectory(workDirectory, "sampleFile.txt");
+		File sampleFile = FileUtil.appendPathElementsToDirectory(workDirectory, "sampleFile.ascii");
 		List<String> expectedLines = CollectionsUtil
 				.createList("This file already exists and doesn't need to be downloaded again.");
-		FileWriterUtil.printLines(expectedLines, sampleFile);
+		FileWriterUtil.printLines(expectedLines, sampleFile, CharacterEncoding.US_ASCII);
 		MyGzFileProcessor_BAD_PORT fileProcessor = new MyGzFileProcessor_BAD_PORT(workDirectory, clean);
-		assertEquals("should be sampleFile.txt", "sampleFile.txt", fileProcessor.getFileToProcess().getName());
+		assertEquals("should be sampleFile.ascii", "sampleFile.ascii", fileProcessor.getFileToProcess().getName());
 		assertTrue("file should exist locally", fileProcessor.getFileToProcess().exists());
 		assertEquals(String.format("Unzipped file should have expected lines - it should not have been overwritten"),
-				expectedLines, FileLoaderUtil.loadLinesFromFile(fileProcessor.getFileToProcess(), DEFAULT_ENCODING));
+				expectedLines, FileLoaderUtil.loadLinesFromFile(fileProcessor.getFileToProcess(), CharacterEncoding.US_ASCII));
 	}
 
 	
@@ -128,10 +129,10 @@ public class DownloadViaAnnotationsTest extends DefaultTestCase {
 		boolean clean = false;
 		FileUtil.copy(getResourceFromClasspath(getClass(), SAMPLE_GZ_FILE_NAME), FileUtil.appendPathElementsToDirectory(workDirectory, SAMPLE_GZ_FILE_NAME));
 		MyGzFileProcessor_BAD_PORT fileProcessor = new MyGzFileProcessor_BAD_PORT(workDirectory, clean);
-		assertEquals("should be sampleFile.txt", "sampleFile.txt", fileProcessor.getFileToProcess().getName());
+		assertEquals("should be sampleFile.ascii", "sampleFile.ascii", fileProcessor.getFileToProcess().getName());
 		assertTrue("file should exist locally", fileProcessor.getFileToProcess().exists());
 		assertEquals(String.format("Unzipped file should have expected lines - it should not have been overwritten"),
-				expectedLinesInSampleGzFile, FileLoaderUtil.loadLinesFromFile(fileProcessor.getFileToProcess(), DEFAULT_ENCODING));
+				expectedLinesInSampleGzFile, FileLoaderUtil.loadLinesFromFile(fileProcessor.getFileToProcess(), CharacterEncoding.US_ASCII));
 	}
 	
 	private static class MyGzFileProcessor {

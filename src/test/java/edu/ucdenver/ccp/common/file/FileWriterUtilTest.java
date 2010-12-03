@@ -22,7 +22,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.PrintStream;
 import java.nio.charset.UnmappableCharacterException;
 import java.util.List;
 
@@ -34,31 +33,31 @@ import edu.ucdenver.ccp.common.test.DefaultTestCase;
 
 public class FileWriterUtilTest extends DefaultTestCase {
 
-	private PrintStream ps;
+	private BufferedWriter writer;
 	private File outputFile;
 
 	@Before
 	public void setUp() throws Exception {
-		outputFile = folder.newFile("outputFile.txt");
-		ps = new PrintStream(outputFile);
+		outputFile = folder.newFile("outputFile.ascii");
+		writer = FileWriterUtil.initBufferedWriter(outputFile, CharacterEncoding.US_ASCII);
 	}
 
 	@Test
 	public void testPrintLines() throws Exception {
 		List<String> lines = CollectionsUtil.createList("line 1", "line 2", "line 3", "line 4");
-		FileWriterUtil.printLines(lines, ps);
-		ps.close();
-		List<String> linesWritten = FileLoaderUtil.loadLinesFromFile(outputFile);
+		FileWriterUtil.printLines(lines, writer);
+		writer.close();
+		List<String> linesWritten = FileLoaderUtil.loadLinesFromFile(outputFile, CharacterEncoding.US_ASCII);
 		assertEquals(String.format("Lines read from the output file should equal the lines written to it."),
 				lines, linesWritten);
 	}
 
 	@Test
 	public void testPrintLinesToFile() throws Exception {
-		File testFile = folder.newFile("test.txt");
+		File testFile = folder.newFile("test.ascii");
 		List<String> expectedLines = CollectionsUtil.createList("line1", "line2", "line3");
-		FileWriterUtil.printLines(expectedLines, testFile);
-		List<String> lines = FileLoaderUtil.loadLinesFromFile(testFile);
+		FileWriterUtil.printLines(expectedLines, testFile, CharacterEncoding.US_ASCII);
+		List<String> lines = FileLoaderUtil.loadLinesFromFile(testFile, CharacterEncoding.US_ASCII);
 		assertEquals(String.format("Should have the 3 expected lines in the file."), expectedLines, lines);
 	}
 	
@@ -75,7 +74,7 @@ public class FileWriterUtilTest extends DefaultTestCase {
 		writer.newLine();
 		writer.close();
 		List<String> lines = CollectionsUtil.createList(line1, line2);
-		List<String> linesWritten = FileLoaderUtil.loadLinesFromFile(outputFile);
+		List<String> linesWritten = FileLoaderUtil.loadLinesFromFile(outputFile, encoding);
 		assertEquals(String.format("Lines read from the output file should equal the lines written to it."),
 				lines, linesWritten);
 	}
@@ -94,7 +93,7 @@ public class FileWriterUtilTest extends DefaultTestCase {
 	@Test
 	public void testBufferedWriter_withUtf8() throws Exception {
 		CharacterEncoding encoding = CharacterEncoding.UTF_8;
-		outputFile = CharacterEncoding.getEncodingSpecificFile(outputFile, encoding);
+		File outputFile = CharacterEncoding.getEncodingSpecificFile(folder.newFile("text.utf8"), encoding);
 		BufferedWriter writer = FileWriterUtil.initBufferedWriter(outputFile, encoding);
 		String line1 = "fa\u0327ade";
 		String line2 = "nai\u0308ve";
@@ -104,7 +103,7 @@ public class FileWriterUtilTest extends DefaultTestCase {
 		writer.newLine();
 		writer.close();
 		List<String> lines = CollectionsUtil.createList(line1, line2);
-		List<String> linesWritten = FileLoaderUtil.loadLinesFromFile(outputFile);
+		List<String> linesWritten = FileLoaderUtil.loadLinesFromFile(outputFile, encoding);
 		assertEquals(String.format("Lines read from the output file should equal the lines written to it."),
 				lines, linesWritten);
 	}

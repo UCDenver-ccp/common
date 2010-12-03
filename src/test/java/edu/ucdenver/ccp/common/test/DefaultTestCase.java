@@ -30,6 +30,7 @@ import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 
+import edu.ucdenver.ccp.common.file.CharacterEncoding;
 import edu.ucdenver.ccp.common.file.FileUtil;
 import edu.ucdenver.ccp.common.string.StringUtil;
 
@@ -42,8 +43,6 @@ import edu.ucdenver.ccp.common.string.StringUtil;
 public class DefaultTestCase {
 	private static final Logger logger = Logger.getLogger(DefaultTestCase.class);
 
-	protected static final String DEFAULT_ENCODING = System.getProperty("file.encoding");
-	
 	static {
 		BasicConfigurator.configure();
 		Logger.getRootLogger().setLevel(Level.DEBUG);
@@ -82,7 +81,7 @@ public class DefaultTestCase {
 	 * @return
 	 * @throws IOException
 	 */
-	protected String getContentsFromClasspathResource(Class<?> clazz, String resourceName, String encoding) throws IOException {
+	protected String getContentsFromClasspathResource(Class<?> clazz, String resourceName, CharacterEncoding encoding) throws IOException {
 		return StringUtil.convertStream(getResourceFromClasspath(clazz, resourceName), encoding);
 	}
 

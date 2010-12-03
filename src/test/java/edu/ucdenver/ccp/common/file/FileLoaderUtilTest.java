@@ -159,7 +159,7 @@ public class FileLoaderUtilTest extends DefaultTestCase {
 
 	@Test(expected = NoSuchElementException.class)
 	public void testExceptionThrownIfFileHasNoLines() throws Exception {
-		StreamLineIterator lineIter = new StreamLineIterator(emptyFile, DEFAULT_ENCODING, null);
+		StreamLineIterator lineIter = new StreamLineIterator(emptyFile, CharacterEncoding.US_ASCII, null);
 		lineIter.next();
 	}
 
@@ -167,7 +167,7 @@ public class FileLoaderUtilTest extends DefaultTestCase {
 	public void testIteratorOnOneColumnFile() throws Exception {
 		List<String> expectedLines = getOneColumnLines();
 		int index = 0;
-		for (StreamLineIterator lineIter = new StreamLineIterator(oneColumnFile,DEFAULT_ENCODING, null); lineIter.hasNext();) {
+		for (StreamLineIterator lineIter = new StreamLineIterator(oneColumnFile,CharacterEncoding.US_ASCII, null); lineIter.hasNext();) {
 			assertEquals(String.format("Lines should be returned in order."), expectedLines.get(index++), lineIter
 					.next().getText());
 		}
@@ -177,28 +177,28 @@ public class FileLoaderUtilTest extends DefaultTestCase {
 	public void testLoadLinesFromSingleColumnFile() throws Exception {
 		List<String> expectedColumn = getOneColumnLines();
 		assertEquals(String.format("The single column in this file should be extracted"), expectedColumn,
-				FileLoaderUtil.loadLinesFromFile(oneColumnFile, null));
+				FileLoaderUtil.loadLinesFromFile(oneColumnFile, CharacterEncoding.US_ASCII));
 	}
 
 	@Test
 	public void testLoadLinesFromFiveColumnFile() throws Exception {
 		List<String> expectedColumn = getFiveColumnLines();
 		assertEquals(String.format("All five columns in this file should be extracted"), expectedColumn, FileLoaderUtil
-				.loadLinesFromFile(fiveColumnFile, null));
+				.loadLinesFromFile(fiveColumnFile, CharacterEncoding.US_ASCII));
 	}
 
 	@Test
 	public void testLoadFirstColumnFromSingleColumnFile() throws Exception {
 		List<String> expectedColumn = getOneColumnLines();
 		assertEquals(String.format("The single column in this file should be extracted"), expectedColumn,
-				FileLoaderUtil.loadColumnFromDelimitedFile(oneColumnFile, null, null, 0));
+				FileLoaderUtil.loadColumnFromDelimitedFile(oneColumnFile,CharacterEncoding.US_ASCII, null, null, 0));
 	}
 
 	@Test
 	public void testIteratorOnFiveColumnFile() throws Exception {
 		List<String> expectedLines = getFiveColumnLines();
 		int index = 0;
-		for (StreamLineIterator lineIter = new StreamLineIterator(fiveColumnFile, DEFAULT_ENCODING,null); lineIter.hasNext();) {
+		for (StreamLineIterator lineIter = new StreamLineIterator(fiveColumnFile, CharacterEncoding.US_ASCII,null); lineIter.hasNext();) {
 			assertEquals(String.format("Lines should be returned in order."), expectedLines.get(index++), lineIter
 					.next().getText());
 		}
@@ -208,43 +208,43 @@ public class FileLoaderUtilTest extends DefaultTestCase {
 	public void testLoadThirdColumnFromFiveColumnFile() throws Exception {
 		List<String> expectedColumn = CollectionsUtil.createList("13", "23", "33", "43", "53", "63");
 		assertEquals(String.format("The single column in this file should be extracted"), expectedColumn,
-				FileLoaderUtil.loadColumnFromDelimitedFile(fiveColumnFile, RegExPatterns.TAB, null, 2));
+				FileLoaderUtil.loadColumnFromDelimitedFile(fiveColumnFile, CharacterEncoding.US_ASCII,RegExPatterns.TAB, null, 2));
 	}
 
 	@Test
 	public void testLoadThirdColumnFromFiveColumnFileWithMissingDataOnLineThree() throws Exception {
 		List<String> expectedColumn = CollectionsUtil.createList("13", "23", "33", "43", "53", "63");
 		assertEquals(String.format("The single column in this file should be extracted"), expectedColumn,
-				FileLoaderUtil.loadColumnFromDelimitedFile(fiveColumnFileWithErrorOnLineThree, RegExPatterns.TAB, null,
+				FileLoaderUtil.loadColumnFromDelimitedFile(fiveColumnFileWithErrorOnLineThree, CharacterEncoding.US_ASCII,RegExPatterns.TAB, null,
 						2));
 	}
 
 	@Test(expected = ArrayIndexOutOfBoundsException.class)
 	public void testLoadFifthColumnFromFiveColumnFileWithMissingDataOnLineThree() throws Exception {
-		FileLoaderUtil.loadColumnFromDelimitedFile(fiveColumnFileWithErrorOnLineThree, RegExPatterns.TAB, null, 5);
+		FileLoaderUtil.loadColumnFromDelimitedFile(fiveColumnFileWithErrorOnLineThree, CharacterEncoding.US_ASCII,RegExPatterns.TAB, null, 5);
 	}
 
 	@Test
 	public void testLoadThirdColumnFromFiveColumnFileWithCommentOnLineFour() throws Exception {
 		List<String> expectedColumn = CollectionsUtil.createList("13", "23", "33", "53", "63");
 		assertEquals(String.format("The single column in this file should be extracted"), expectedColumn,
-				FileLoaderUtil.loadColumnFromDelimitedFile(fiveColumnFileWithCommentOnLineFour, RegExPatterns.TAB,
+				FileLoaderUtil.loadColumnFromDelimitedFile(fiveColumnFileWithCommentOnLineFour, CharacterEncoding.US_ASCII,RegExPatterns.TAB,
 						COMMENT_INDICATOR, 2));
 	}
 
 	@Test(expected = ArrayIndexOutOfBoundsException.class)
 	public void testInvalidColumnIndex_too_high_ReturnsException() throws Exception {
-		FileLoaderUtil.loadColumnFromDelimitedFile(fiveColumnFileWithCommentOnLineFour, RegExPatterns.TAB, null, 15);
+		FileLoaderUtil.loadColumnFromDelimitedFile(fiveColumnFileWithCommentOnLineFour,CharacterEncoding.US_ASCII, RegExPatterns.TAB, null, 15);
 	}
 
 	@Test(expected = ArrayIndexOutOfBoundsException.class)
 	public void testInvalidColumnIndex_too_low_ReturnsException() throws Exception {
-		FileLoaderUtil.loadColumnFromDelimitedFile(fiveColumnFileWithCommentOnLineFour, RegExPatterns.TAB, null, -1);
+		FileLoaderUtil.loadColumnFromDelimitedFile(fiveColumnFileWithCommentOnLineFour, CharacterEncoding.US_ASCII,RegExPatterns.TAB, null, -1);
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
 	public void testRemoveThrowsException() throws Exception {
-		StreamLineIterator lineIter = new StreamLineIterator(oneColumnFile, DEFAULT_ENCODING, null);
+		StreamLineIterator lineIter = new StreamLineIterator(oneColumnFile, CharacterEncoding.US_ASCII, null);
 		lineIter.remove();
 	}
 
@@ -254,7 +254,7 @@ public class FileLoaderUtilTest extends DefaultTestCase {
 				"22", "23", "25" }, new String[] { "32", "33", "35" }, new String[] { "42", "43", "45" }, new String[] {
 				"52", "53", "55" }, new String[] { "62", "63", "65" });
 
-		List<String[]> extractedColumns = FileLoaderUtil.loadColumnsFromDelimitedFile(fiveColumnFile,
+		List<String[]> extractedColumns = FileLoaderUtil.loadColumnsFromDelimitedFile(fiveColumnFile, CharacterEncoding.US_ASCII,
 				RegExPatterns.TAB, null, 1, 2, 4);
 		compareListsOfStringArrays(expectedColumns, extractedColumns);
 	}
@@ -266,7 +266,7 @@ public class FileLoaderUtilTest extends DefaultTestCase {
 				new String[] { getFiveColumnLines().get(3) }, new String[] { getFiveColumnLines().get(4) },
 				new String[] { getFiveColumnLines().get(5) });
 
-		List<String[]> extractedColumns = FileLoaderUtil.loadColumnsFromDelimitedFile(fiveColumnFile, null, null, 2, 3,
+		List<String[]> extractedColumns = FileLoaderUtil.loadColumnsFromDelimitedFile(fiveColumnFile,CharacterEncoding.US_ASCII, null, null, 2, 3,
 				5);
 		compareListsOfStringArrays(expectedColumns, extractedColumns);
 	}
@@ -288,17 +288,17 @@ public class FileLoaderUtilTest extends DefaultTestCase {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testIllegalArgumentExceptionIfDelimiterButNoColumnIndexes() throws Exception {
-		FileLoaderUtil.loadColumnsFromDelimitedFile(fiveColumnFile, RegExPatterns.TAB, null);
+		FileLoaderUtil.loadColumnsFromDelimitedFile(fiveColumnFile,CharacterEncoding.US_ASCII, RegExPatterns.TAB, null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testIllegalArgumentExceptionIfDelimiterButEmptyColumnIndexes() throws Exception {
-		FileLoaderUtil.loadColumnsFromDelimitedFile(fiveColumnFile, RegExPatterns.TAB, null, new int[0]);
+		FileLoaderUtil.loadColumnsFromDelimitedFile(fiveColumnFile, CharacterEncoding.US_ASCII,RegExPatterns.TAB, null, new int[0]);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testIllegalArgumentExceptionIfDelimiterButNullColumnIndexes() throws Exception {
-		FileLoaderUtil.loadColumnsFromDelimitedFile(fiveColumnFile, RegExPatterns.TAB, null, null);
+		FileLoaderUtil.loadColumnsFromDelimitedFile(fiveColumnFile,CharacterEncoding.US_ASCII, RegExPatterns.TAB, null, null);
 	}
 
 	@Test

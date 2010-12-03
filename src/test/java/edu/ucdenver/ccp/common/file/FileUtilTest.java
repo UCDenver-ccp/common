@@ -195,23 +195,23 @@ public class FileUtilTest extends DefaultTestCase {
 	@Test
 	public void testCopyFileToFile() throws Exception {
 		List<String> lines = CollectionsUtil.createList("line1", "line2");
-		File fromFile = folder.newFile("fromFile.txt");
-		FileWriterUtil.printLines(lines, fromFile);
+		File fromFile = folder.newFile("fromFile.ascii");
+		FileWriterUtil.printLines(lines, fromFile, CharacterEncoding.US_ASCII);
 
 		File toDirectory = folder.newFolder("toDir");
-		File toFile = FileUtil.appendPathElementsToDirectory(toDirectory, "toFile.txt");
+		File toFile = FileUtil.appendPathElementsToDirectory(toDirectory, "toFile.ascii");
 
 		FileUtil.copy(fromFile, toFile);
 		FileUtil.validateFile(toFile);
 		assertTrue("toFile is not as expected after copy(fromFile, toFile).", FileComparisonUtil.hasExpectedLines(
-				toFile, DEFAULT_ENCODING, lines, null, LineOrder.AS_IN_FILE, ColumnOrder.AS_IN_FILE));
+				toFile, CharacterEncoding.US_ASCII, lines, null, LineOrder.AS_IN_FILE, ColumnOrder.AS_IN_FILE));
 	}
 	
 	@Test
 	public void testCopyFileToDirectory() throws Exception {
 		List<String> lines = CollectionsUtil.createList("line1", "line2");
-		File fromFile = folder.newFile("fromFile.txt");
-		FileWriterUtil.printLines(lines, fromFile);
+		File fromFile = folder.newFile("fromFile.ascii");
+		FileWriterUtil.printLines(lines, fromFile, CharacterEncoding.US_ASCII);
 
 		File toDirectory = folder.newFolder("toDir");
 		File toFile = FileUtil.appendPathElementsToDirectory(toDirectory, fromFile.getName());
@@ -219,6 +219,6 @@ public class FileUtilTest extends DefaultTestCase {
 		FileUtil.copy(fromFile, toDirectory);
 		FileUtil.validateFile(toFile);
 		assertTrue("toFile is not as expected after copy(fromFile, toDirectory).", FileComparisonUtil.hasExpectedLines(
-				toFile, DEFAULT_ENCODING, lines, null, LineOrder.AS_IN_FILE, ColumnOrder.AS_IN_FILE));
+				toFile, CharacterEncoding.US_ASCII, lines, null, LineOrder.AS_IN_FILE, ColumnOrder.AS_IN_FILE));
 	}
 }

@@ -33,6 +33,8 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
+import edu.ucdenver.ccp.common.file.CharacterEncoding;
+
 public class StringUtil {
 
 	private static final Logger logger = Logger.getLogger(StringUtil.class);
@@ -244,10 +246,10 @@ public class StringUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public static String convertStream(InputStream is, String encoding) throws IOException {
+	public static String convertStream(InputStream is, CharacterEncoding encoding) throws IOException {
 		StringWriter sw = new StringWriter();
 		try {
-			IOUtils.copy(is, sw, encoding);
+			IOUtils.copy(is, sw, encoding.getCharacterSetName());
 		} finally {
 			IOUtils.closeQuietly(is);
 			IOUtils.closeQuietly(sw);

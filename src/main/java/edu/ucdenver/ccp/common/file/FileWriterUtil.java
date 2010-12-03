@@ -24,35 +24,107 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
 public class FileWriterUtil {
-	private static final Logger logger = Logger.getLogger(FileWriterUtil.class);
 
 	/**
-	 * Creates a BufferedWriter that validates the encoding of the characters it outputs If the
-	 * input file does not have an encoding-specific file name, the file name is altered and an
-	 * warning is logged.
+	 * The WriteMode enum is closely tied to the boolean "append" argument that is found in the
+	 * constructor of the FileOutputStream class. It can be used to control whether a file is
+	 * overwritten or if new content is appended to what is already there. Use this enum in place of
+	 * the boolean append parameter for more readable code.
+	 * 
+	 * @author Center for Computational Pharmacology; ccpsupport@ucdenver.edu
+	 * 
+	 */
+	public enum WriteMode {
+		/**
+		 * Use WriteMode.APPEND if you want to append content to the end of a file
+		 */
+		APPEND(true),
+		/**
+		 * Use WriteMode.OVERWRITE if you want to overwrite a file (and in the process delete any
+		 * previous content)
+		 */
+		OVERWRITE(false);
+
+		private final boolean append;
+
+		private WriteMode(boolean append) {
+			this.append = append;
+		}
+
+		public boolean append() {
+			return append;
+		}
+
+	}
+
+	/**
+	 * The FileSuffixEnforcement enum is a proxy for a boolean that is used to specify whether
+	 * character encoding-specific file suffixes must be used. See initBufferedWriter().
+	 * 
+	 * @author Center for Computational Pharmacology; ccpsupport@ucdenver.edu
+	 * 
+	 */
+	public enum FileSuffixEnforcement {
+		ON, OFF
+	}
+
+	/**
+	 * Creates a BufferedWriter that uses proper character encoding validation.
 	 * 
 	 * @param outputFile
 	 * @param encoding
+	 *            the CharacterEncoding to use when writing to the output file
+	 * @param writeMode
+	 *            WriteMode.APPEND to append to the output file, WriteMode.OVERWRITE to overwrite
+	 *            the output file
+	 * @param suffixEnforcement
+	 *            if FileSuffixEnforcement.ON then the output file must have the appropriate
+	 *            character encoding-specific file suffix to avoid an IllegalArgumentException. If
+	 *            FileSuffixEnforcement.OFF then the file name suffix is not checked. (any suffix
+	 *            will be permitted).
 	 * @return
 	 * @throws FileNotFoundException
+	 * @throws IllegalArgumentException
+	 *             thrown if file suffix enforcement is active and the specified output file name
+	 *             suffix does not match the expected character encoding-specific suffix
+	 */
+	public static BufferedWriter initBufferedWriter(File outputFile, CharacterEncoding encoding, WriteMode writeMode,
+			FileSuffixEnforcement suffixEnforcement) throws FileNotFoundException {
+		if (suffixEnforcement.equals(FileSuffixEnforcement.ON))
+			if (!CharacterEncoding.hasEncodingSpecificFileName(outputFile, encoding)) {
+				String errorMessage = String
+						.format(
+								"Illegal file name detected. File suffix enforcement is active and the file name suffix "
+										+ "for file: %s does not match the expected character encoding-specific suffix (%s). Use "
+										+ "CharacterEncoding.getEncodingSpecificFile(file, encoding) to ensure a valid file name "
+										+ "when file suffix enforcement is active. Full file path:%s", outputFile
+										.getName(), encoding.getFileSuffix(), outputFile.getAbsolutePath());
+				throw new IllegalArgumentException(errorMessage);
+			}
+		return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile, writeMode.append()), encoding
+				.getEncoder()));
+	}
+
+	/**
+	 * Creates a BufferedWriter that uses proper character encoding validation. By default this
+	 * BufferedWriter will overwrite the specified output file and character encoding-specific file
+	 * suffix enforcement is active.
+	 * 
+	 * @param outputFile
+	 * @param encoding
+	 *            the CharacterEncoding to use when writing to the output file
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IllegalArgumentException
+	 *             thrown if file suffix enforcement is active and the specified output file name
+	 *             suffix does not match the expected character encoding-specific suffix
 	 */
 	public static BufferedWriter initBufferedWriter(File outputFile, CharacterEncoding encoding)
 			throws FileNotFoundException {
-		if (!CharacterEncoding.hasEncodingSpecificFileName(outputFile, encoding)) {
-			String oldPath = outputFile.getAbsolutePath();
-			outputFile = CharacterEncoding.getEncodingSpecificFile(outputFile, encoding);
-			logger.warn(String.format(
-					"File name has been adjusted to reflect character encoding used. '%s' was changed to '%s'",
-					oldPath, outputFile.getName()));
-		}
-		return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), encoding.getEncoder()));
+		return initBufferedWriter(outputFile, encoding, WriteMode.OVERWRITE, FileSuffixEnforcement.ON);
 	}
 
 	/**
@@ -60,10 +132,12 @@ public class FileWriterUtil {
 	 * 
 	 * @param lines
 	 * @param ps
+	 * @throws IOException
 	 */
-	public static void printLines(List<?> lines, PrintStream ps) {
+	public static void printLines(List<?> lines, BufferedWriter writer) throws IOException {
 		for (Object line : lines) {
-			ps.println(line.toString());
+			writer.write(line.toString());
+			writer.newLine();
 		}
 	}
 
@@ -73,29 +147,27 @@ public class FileWriterUtil {
 	 * 
 	 * @param lines
 	 * @param file
-	 * @throws FileNotFoundException
+	 * @throws IOException
 	 */
-	public static void printLines(List<?> lines, File file) throws FileNotFoundException {
-		PrintStream ps = new PrintStream(file);
-		printLines(lines, ps);
-		ps.close();
+	public static void printLines(List<?> lines, File file, CharacterEncoding encoding) throws IOException {
+		BufferedWriter writer = initBufferedWriter(file, encoding);
+		printLines(lines, writer);
+		writer.close();
 	}
 
-	public static PrintStream openPrintStream(File outputFile, String encoding, boolean append)
-			throws UnsupportedEncodingException, FileNotFoundException {
-		boolean autoflush = true;
-		return new PrintStream(new FileOutputStream(outputFile, append), autoflush, encoding);
-	}
-
-	public static void closePrintStream(PrintStream ps, File outputFile) throws IOException {
-		try {
-			if (ps.checkError())
-				throw new IOException(String.format("Error writing to file: %s", outputFile.getAbsolutePath()));
-		} finally {
-			if (ps != null) {
-				ps.close();
-			}
-		}
+	/**
+	 * Prints the input list of lines to the specified file. The file is overwritten with the input
+	 * lines.
+	 * 
+	 * @param lines
+	 * @param file
+	 * @throws IOException
+	 */
+	public static void printLines(List<?> lines, File file, CharacterEncoding encoding, WriteMode writeMode,
+			FileSuffixEnforcement suffixEnforementPolicy) throws IOException {
+		BufferedWriter writer = initBufferedWriter(file, encoding, writeMode, suffixEnforementPolicy);
+		printLines(lines, writer);
+		writer.close();
 	}
 
 }

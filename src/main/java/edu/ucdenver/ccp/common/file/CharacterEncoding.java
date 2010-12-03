@@ -5,6 +5,13 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
 
+/**
+ * This enum ties together various character encodings with canonical file suffixes used to indicate
+ * the encoding of a particular file.
+ * 
+ * @author Center for Computational Pharmacology; ccpsupport@ucdenver.edu
+ * 
+ */
 public enum CharacterEncoding {
 
 	US_ASCII("US-ASCII", ".ascii"), UTF_8("UTF-8", ".utf8"), ISO_8859_1("ISO-8859-1", ".iso8859-1");
@@ -17,16 +24,20 @@ public enum CharacterEncoding {
 		this.fileSuffix = fileSuffix;
 	}
 
+	public String getCharacterSetName() {
+		return characterSetName;
+	}
+
 	public String getFileSuffix() {
 		return fileSuffix;
 	}
 
 	public CharsetEncoder getEncoder() {
-		return Charset.forName(characterSetName).newEncoder();
+		return Charset.forName(getCharacterSetName()).newEncoder();
 	}
 
 	public CharsetDecoder getDecoder() {
-		return Charset.forName(characterSetName).newDecoder();
+		return Charset.forName(getCharacterSetName()).newDecoder();
 	}
 
 	/**
@@ -59,10 +70,25 @@ public enum CharacterEncoding {
 		return file;
 	}
 
+	/**
+	 * Returns true if the input file name has the expected character encoding-specific file suffix
+	 * 
+	 * @param fileName
+	 * @param encoding
+	 * @return
+	 */
 	public static boolean hasEncodingSpecificFileName(String fileName, CharacterEncoding encoding) {
 		return fileName.endsWith(encoding.getFileSuffix());
 	}
 
+	/**
+	 * Returns true if the name of the input file reference has the expected character
+	 * encoding-specific file suffix
+	 * 
+	 * @param file
+	 * @param encoding
+	 * @return
+	 */
 	public static boolean hasEncodingSpecificFileName(File file, CharacterEncoding encoding) {
 		return hasEncodingSpecificFileName(file.getName(), encoding);
 	}

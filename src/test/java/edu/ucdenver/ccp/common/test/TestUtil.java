@@ -39,6 +39,10 @@ import org.apache.log4j.Logger;
 import org.junit.internal.ArrayComparisonFailure;
 import org.junit.rules.TemporaryFolder;
 
+import edu.ucdenver.ccp.common.file.CharacterEncoding;
+import edu.ucdenver.ccp.common.file.FileWriterUtil;
+import edu.ucdenver.ccp.common.file.FileWriterUtil.FileSuffixEnforcement;
+import edu.ucdenver.ccp.common.file.FileWriterUtil.WriteMode;
 import edu.ucdenver.ccp.common.string.RegExPatterns;
 
 /**
@@ -62,10 +66,10 @@ public class TestUtil {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public static File populateTestFile(TemporaryFolder folder, String fileName, List<String> lines)
+	public static File populateTestFile(TemporaryFolder folder, String fileName, List<String> lines, CharacterEncoding encoding)
 			throws FileNotFoundException, IOException {
 		File file = folder.newFile(fileName);
-		return populateTestFile(file, lines);
+		return populateTestFile(file, lines, encoding);
 	}
 
 	/**
@@ -77,12 +81,8 @@ public class TestUtil {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public static File populateTestFile(File file, List<String> lines) throws FileNotFoundException, IOException {
-		PrintStream ps = new PrintStream(file);
-		for (String line : lines) {
-			ps.println(line);
-		}
-		ps.close();
+	public static File populateTestFile(File file, List<String> lines, CharacterEncoding encoding) throws FileNotFoundException, IOException {
+		FileWriterUtil.printLines(lines, file, encoding, WriteMode.OVERWRITE, FileSuffixEnforcement.OFF);
 		return file;
 	}
 

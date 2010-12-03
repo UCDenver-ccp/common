@@ -23,6 +23,7 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
+import edu.ucdenver.ccp.common.file.CharacterEncoding;
 import edu.ucdenver.ccp.common.file.reader.LineReader.FileLine;
 
 /**
@@ -36,13 +37,14 @@ import edu.ucdenver.ccp.common.file.reader.LineReader.FileLine;
 public class FileLineIterator extends LineIterator<FileLine> {
 	private static final Logger logger = Logger.getLogger(FileLineIterator.class);
 
-	public FileLineIterator(File inputFile, String encoding, String skipLinePrefix) throws IOException {
+	public FileLineIterator(File inputFile, CharacterEncoding encoding, String skipLinePrefix) throws IOException {
 		super(inputFile, encoding, skipLinePrefix);
 		logger.info(String.format("Iterating through lines for file: %s", inputFile.getAbsolutePath()));
 	}
 
 	@Override
-	public FileLineReader initLineReader(Object inputFile, String encoding, String skipLinePrefix) throws IOException {
+	public FileLineReader initLineReader(Object inputFile, CharacterEncoding encoding, String skipLinePrefix)
+			throws IOException {
 		return new FileLineReader((File) inputFile, encoding, skipLinePrefix);
 	}
 

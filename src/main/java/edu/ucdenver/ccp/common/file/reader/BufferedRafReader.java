@@ -25,6 +25,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.ucdenver.ccp.common.file.CharacterEncoding;
+
 /**
  * Original code downloaded from http://minddumped.blogspot.com/search/label/buffered. The original
  * class was called BufferedRaf. It has since been renamed BufferedRafReader because it does not
@@ -46,13 +48,13 @@ public class BufferedRafReader extends RandomAccessFile {
 	private int buffpos;
 	private ByteList byteList;
 
-	public BufferedRafReader(File file, String encoding) throws FileNotFoundException {
+	public BufferedRafReader(File file, CharacterEncoding encoding) throws FileNotFoundException {
 		super(file, "r");
 		bufferlength = 65536;
 		bytebuffer = new byte[bufferlength];
 		maxread = 0;
 		buffpos = 0;
-		byteList = new ByteList(encoding);
+		byteList = new ByteList(encoding.getCharacterSetName());
 	}
 
 	public int getbuffpos() {

@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import edu.ucdenver.ccp.common.file.CharacterEncoding;
 import edu.ucdenver.ccp.common.file.reader.LineReader.Line;
 
 
@@ -30,11 +31,11 @@ public abstract class LineIterator<T extends Line> implements Iterator<T> {
 	protected T nextLine = null;
 	protected final LineReader reader;
 	
-	public LineIterator(Object fileOrStream, String encoding, String skipLinePrefix) throws IOException {
+	public LineIterator(Object fileOrStream, CharacterEncoding encoding, String skipLinePrefix) throws IOException {
 		reader = initLineReader(fileOrStream, encoding, skipLinePrefix);
 	}
 	
-	public abstract LineReader initLineReader(Object fileOrStream, String encoding, String skipLinePrefix) throws IOException;
+	public abstract LineReader initLineReader(Object fileOrStream, CharacterEncoding encoding, String skipLinePrefix) throws IOException;
 
 	@Override
 	public boolean hasNext() {

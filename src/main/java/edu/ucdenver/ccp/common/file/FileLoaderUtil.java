@@ -18,8 +18,13 @@
 
 package edu.ucdenver.ccp.common.file;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,31 +35,32 @@ import edu.ucdenver.ccp.common.string.StringUtil;
 
 public class FileLoaderUtil {
 
-	private static final String FILE_ENCODING_PROPERTY = "file.encoding";
-	private static final String DEFAULT_ENCODING = System.getProperty(FILE_ENCODING_PROPERTY);
-
 	private FileLoaderUtil() {
 		// do not instantiate
 	}
 
 	/**
-	 * Returns a List<String[]> containing the column values for the input file. One String[] per
-	 * line of the file. If you want the entire line, set the delimiter to be null. If there is a
-	 * delimiter specified, you must specify at least one column index to return.
+	 * Returns a BufferedReader initialized to read the input character encoding from the input File
 	 * 
-	 * @param inputFile
-	 * @param delimiter
-	 * @param commentIndicator
-	 * @param columnIndexes
+	 * @param file
+	 * @param encoding
 	 * @return
-	 * @throws IOException
-	 * @throws ArrayIndexOutOfBoundsException
-	 * @throws IllegalArgumentException
+	 * @throws FileNotFoundException
 	 */
-	public static List<String[]> loadColumnsFromDelimitedFile(File inputFile, String delimiter,
-			String commentIndicator, int... columnIndexes) throws IOException, ArrayIndexOutOfBoundsException,
-			IllegalArgumentException {
-		return loadColumnsFromDelimitedFile(inputFile, DEFAULT_ENCODING, delimiter, commentIndicator, columnIndexes);
+	public static BufferedReader initBufferedReader(File file, CharacterEncoding encoding) throws FileNotFoundException {
+		return new BufferedReader(new InputStreamReader(new FileInputStream(file), encoding.getDecoder()));
+	}
+
+	/**
+	 * Returns a BufferedReader initialized to read the input character encoding from the specified
+	 * InputStream
+	 * 
+	 * @param inputStream
+	 * @param encoding
+	 * @return
+	 */
+	public static BufferedReader initBufferedReader(InputStream inputStream, CharacterEncoding encoding) {
+		return new BufferedReader(new InputStreamReader(inputStream, encoding.getDecoder()));
 	}
 
 	/**
@@ -76,9 +82,9 @@ public class FileLoaderUtil {
 	 * @throws IllegalArgumentException
 	 *             - if a delimiter is specified, but no column indexes are requested
 	 */
-	public static List<String[]> loadColumnsFromDelimitedFile(File inputFile, String encoding, String delimiter,
-			String commentIndicator, int... columnIndexes) throws IOException, ArrayIndexOutOfBoundsException,
-			IllegalArgumentException {
+	public static List<String[]> loadColumnsFromDelimitedFile(File inputFile, CharacterEncoding encoding,
+			String delimiter, String commentIndicator, int... columnIndexes) throws IOException,
+			ArrayIndexOutOfBoundsException, IllegalArgumentException {
 		if (delimiter != null && (columnIndexes == null || columnIndexes.length == 0)) {
 			throw new IllegalArgumentException(String.format(
 					"Cannot parse columns from line. A delimiter \"%s\" has been specified, "
@@ -139,8 +145,8 @@ public class FileLoaderUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public static List<String> loadColumnFromDelimitedFile(File inputFile, String encoding, String delimiter,
-			String commentIndicator, int columnIndex) throws IOException {
+	public static List<String> loadColumnFromDelimitedFile(File inputFile, CharacterEncoding encoding,
+			String delimiter, String commentIndicator, int columnIndex) throws IOException {
 		List<String[]> singleColumnAsArrayList = loadColumnsFromDelimitedFile(inputFile, encoding, delimiter,
 				commentIndicator, columnIndex);
 		List<String> outputList = new ArrayList<String>(singleColumnAsArrayList.size());
@@ -151,11 +157,6 @@ public class FileLoaderUtil {
 		return outputList;
 	}
 
-	public static List<String> loadColumnFromDelimitedFile(File inputFile, String delimiter, String commentIndicator,
-			int columnIndex) throws IOException {
-		return loadColumnFromDelimitedFile(inputFile, DEFAULT_ENCODING, delimiter, commentIndicator, columnIndex);
-	}
-
 	/**
 	 * Returns a List<String> containing the lines loaded from the input File
 	 * 
@@ -164,7 +165,7 @@ public class FileLoaderUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public static List<String> loadLinesFromFile(File inputFile, String encoding, String commentIndicator)
+	public static List<String> loadLinesFromFile(File inputFile, CharacterEncoding encoding, String commentIndicator)
 			throws IOException {
 		return loadColumnFromDelimitedFile(inputFile, encoding, null, commentIndicator, 0);
 	}
@@ -175,14 +176,8 @@ public class FileLoaderUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public static List<String> loadLinesFromFile(File inputFile, String encoding) throws IOException {
-		if (encoding == null)
-			encoding = System.getProperty("file.encoding");
+	public static List<String> loadLinesFromFile(File inputFile, CharacterEncoding encoding) throws IOException {
 		return loadColumnFromDelimitedFile(inputFile, encoding, null, null, 0);
-	}
-
-	public static List<String> loadLinesFromFile(File inputFile) throws IOException {
-		return loadColumnFromDelimitedFile(inputFile, DEFAULT_ENCODING, null, null, 0);
 	}
 
 	/**

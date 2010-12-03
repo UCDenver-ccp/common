@@ -226,11 +226,11 @@ public class FileUtil {
 		validateFile(toFile);
 	}
 
-	public static String copyToString(File fromFile, String encoding) throws IOException {
+	public static String copyToString(File fromFile, CharacterEncoding encoding) throws IOException {
 		validateFile(fromFile);
 		FileInputStream fis = new FileInputStream(fromFile);
 		StringWriter sw = new StringWriter();
-		IOUtils.copy(fis, sw, encoding);
+		IOUtils.copy(fis, sw, encoding.getCharacterSetName());
 		fis.close();
 		sw.close();
 		return sw.toString();

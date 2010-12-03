@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
+import edu.ucdenver.ccp.common.file.CharacterEncoding;
 import edu.ucdenver.ccp.common.file.FileUtil;
 
 public class FileLineReader extends LineReader {
@@ -29,14 +30,14 @@ public class FileLineReader extends LineReader {
 	private final BufferedRafReader reader;
 	private int lineNumber = 0;
 
-	public FileLineReader(File dataFile, String encoding) throws IOException {
+	public FileLineReader(File dataFile, CharacterEncoding encoding) throws IOException {
 		super(null);
 		FileUtil.validateFile(dataFile);
 		reader = new BufferedRafReader(dataFile, encoding);
 		lineNumber = 0;
 	}
 
-	public FileLineReader(File dataFile, String encoding, String skipLinePrefix) throws IOException {
+	public FileLineReader(File dataFile, CharacterEncoding encoding, String skipLinePrefix) throws IOException {
 		super(skipLinePrefix);
 		FileUtil.validateFile(dataFile);
 		reader = new BufferedRafReader(dataFile, encoding);

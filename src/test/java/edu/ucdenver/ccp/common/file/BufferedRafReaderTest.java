@@ -39,31 +39,23 @@ public class BufferedRafReaderTest extends DefaultTestCase {
 
 	@Before
 	public void setUp() throws Exception {
-		utf8File = folder.newFile("utf8.txt");
-		byte[] utf8Bytes = utf8String.getBytes("UTF-8");
-		FileOutputStream fos = new FileOutputStream(utf8File);
-		fos.write(utf8Bytes);
-		fos.close();
-
-		asciiOnlyFile = folder.newFile("asciss.txt");
-		FileWriterUtil.printLines(CollectionsUtil.createList(asciiOnlyString), asciiOnlyFile);
-
-		//TODO: why do this here? ; doesn't work on Windows; wrong place to test FileUtil
-//		FileUtil.copy(utf8File, new File("/tmp/utf8.txt"));
-//		FileUtil.copy(asciiOnlyFile, new File("/tmp/ascii.txt"));
+		utf8File = folder.newFile("text.utf8");
+		FileWriterUtil.printLines(CollectionsUtil.createList(utf8String), utf8File, CharacterEncoding.UTF_8);
+		asciiOnlyFile = folder.newFile("text.ascii");
+		FileWriterUtil.printLines(CollectionsUtil.createList(asciiOnlyString), asciiOnlyFile, CharacterEncoding.US_ASCII);
 
 	}
 
 	@Test
 	public void testAsciiFileRead() throws Exception {
-		BufferedRafReader reader = new BufferedRafReader(asciiOnlyFile, System.getProperty("file.encoding"));
+		BufferedRafReader reader = new BufferedRafReader(asciiOnlyFile, CharacterEncoding.US_ASCII);
 		String line = reader.readBufferedLine();
 		assertEquals(String.format("Line should match expected ASCII-only line."), asciiOnlyString, line);
 	}
 
 	@Test
 	public void testUtf8FileRead() throws Exception {
-		BufferedRafReader reader = new BufferedRafReader(utf8File, "UTF-8");
+		BufferedRafReader reader = new BufferedRafReader(utf8File, CharacterEncoding.UTF_8);
 		String line = reader.readBufferedLine();
 		assertEquals(String.format("Line should match expected line containing utf-8 characters."), utf8String, line);
 	}

@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import edu.ucdenver.ccp.common.collections.CollectionsUtil;
+import edu.ucdenver.ccp.common.file.CharacterEncoding;
 import edu.ucdenver.ccp.common.file.FileLoaderUtil;
 
 public class TestUtilTest {
@@ -39,9 +40,9 @@ public class TestUtilTest {
 	@Test
 	public void testPopulateTestFile() throws Exception {
 		List<String> lines = CollectionsUtil.createList("Line 1", "Line 2", "Line 3");
-		File testFile = TestUtil.populateTestFile(folder, "test-file", lines);
+		File testFile = TestUtil.populateTestFile(folder, "test-file", lines, CharacterEncoding.UTF_8);
 		assertTrue(String.format("Test file should exist."), testFile.exists());
 		assertEquals(String.format("Lines in file should be as expected."), lines, FileLoaderUtil
-				.loadLinesFromFile(testFile));
+				.loadLinesFromFile(testFile, CharacterEncoding.UTF_8));
 	}
 }
