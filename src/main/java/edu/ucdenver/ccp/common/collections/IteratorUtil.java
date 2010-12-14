@@ -84,5 +84,9 @@ public class IteratorUtil {
 			}
 		};
 	}
+	
+	public static <T> Iterator<T> consolidate(Iterator<T> iterator1, Iterator<T> iterator2) {
+		return consolidate(CollectionsUtil.createList(iterator1, iterator2));
+	}
 
 }
