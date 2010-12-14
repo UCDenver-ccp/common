@@ -67,7 +67,12 @@ public class CollectionsUtilTest {
 	public void testCreateListWithEmptyInput() throws Exception {
 		assertEquals(String.format("Should return empty List for no input."), new ArrayList<String>(), CollectionsUtil
 				.createList());
-		assertNull(String.format("Should return null for null input."), CollectionsUtil.createList((Object[]) null));
+	}
+
+	@Test
+	public void testCreateSortedList() throws Exception {
+		assertEquals(String.format("List should be sorted."), CollectionsUtil.createList(1, 2, 3, 4, 5),
+				CollectionsUtil.createSortedList(CollectionsUtil.createList(5, 3, 2, 1, 4)));
 	}
 
 	@Test
@@ -115,13 +120,12 @@ public class CollectionsUtilTest {
 		expectedMap.put(2, "value2");
 		assertEquals(String.format("Maps should be identical."), expectedMap, map);
 	}
-	
-	@Test(expected=IllegalArgumentException.class)
+
+	@Test(expected = IllegalArgumentException.class)
 	public void testCreateMap_2keyValuePairs_duplicateKeys() throws Exception {
 		CollectionsUtil.createMap(1, "value1", 1, "value2");
 	}
-	
-	
+
 	@Test
 	public void testAddToOne2ManyMap() throws Exception {
 		Map<Integer, Set<String>> expectedMap = new HashMap<Integer, Set<String>>();
@@ -158,7 +162,6 @@ public class CollectionsUtilTest {
 		expectedTuples.add(CollectionsUtil.createList("B", "3", "X", "7"));
 		expectedTuples.add(CollectionsUtil.createList("B", "3", "X", "8"));
 
-		@SuppressWarnings("unchecked")
 		List<Collection<String>> collectionOfListsToCombine = CollectionsUtil.createList(list0, list1, list2, list3);
 		List<List<String>> tuples = CollectionsUtil.createList(CollectionsUtil
 				.computeCombinations(collectionOfListsToCombine));
@@ -196,7 +199,7 @@ public class CollectionsUtilTest {
 		Map<String, Set<String>> combinedMap = CollectionsUtil.combineUniqueMaps(inputMap1, inputMap2);
 		assertEquals(String.format("Expected map not the same as combined."), expectedMap, combinedMap);
 	}
-	
+
 	@Test
 	public void testInitHashMap() throws Exception {
 		String key = "1";
@@ -205,7 +208,7 @@ public class CollectionsUtilTest {
 		map.put(key, value);
 		assertEquals(value, map.get(key));
 	}
-	
+
 	@Test
 	public void testCreateDelimitedString() throws Exception {
 		List<String> list = CollectionsUtil.createList("1", "2", "3");
@@ -218,12 +221,23 @@ public class CollectionsUtilTest {
 		assertEquals(String.format("output or createDelimitedString not as expected."), expectedStr, delimitedStr);
 	}
 
-	
 	@Test
 	public void testToString() throws Exception {
 		Set<Integer> integerSet = CollectionsUtil.createSet(1, 2, 3, 4, 5);
 		Set<String> strings = new HashSet<String>(CollectionsUtil.toString(integerSet));
-		assertEquals(String.format("Set should now contain strings."),
-				CollectionsUtil.createSet("1", "2", "3", "4", "5"), strings);
+		assertEquals(String.format("Set should now contain strings."), CollectionsUtil.createSet("1", "2", "3", "4",
+				"5"), strings);
 	}
+
+	@Test
+	public void testConsolidateSets() throws Exception {
+		Collection<Set<String>> sets = new ArrayList<Set<String>>();
+		sets.add(CollectionsUtil.createSet("1", "2"));
+		sets.add(CollectionsUtil.createSet("2", "3"));
+
+		assertEquals(String.format("Sets should be consolidated"), CollectionsUtil.createSet("1", "2", "3"),
+				CollectionsUtil.consolidateSets(sets));
+
+	}
+
 }

@@ -48,17 +48,113 @@ public class CollectionsUtil {
 	}
 
 	/**
+	 * Returns a sorted list for any input collection
+	 * 
+	 * @param <T>
+	 *            must extend Comparable<T>
+	 * @param collection
+	 * @return
+	 */
+	public static <T extends Comparable<T>> List<T> createSortedList(Collection<T> collection) {
+		List<T> list = createList(collection);
+		Collections.sort(list);
+		return list;
+	}
+
+	/**
+	 * Returns an empty list
+	 * 
+	 * @param <T>
+	 * @return
+	 */
+	public static <T> List<T> createList() {
+		return Collections.emptyList();
+	}
+
+	/**
 	 * Returns a List<T> containing the input arguments.
 	 * 
 	 * @param <T>
-	 * @param listEntries
+	 * @param item1
 	 * @return
 	 */
-	public static <T> List<T> createList(T... listEntries) {
-		if (listEntries == null) {
-			return null;
-		}
-		return Arrays.asList(listEntries);
+	public static <T> List<T> createList(T item1) {
+		List<T> list = new ArrayList<T>();
+		list.add(item1);
+		return list;
+	}
+
+	/**
+	 * Returns a List<T> containing the input arguments.
+	 * 
+	 * @param <T>
+	 * @param item1
+	 * @param item2
+	 * @return
+	 */
+	public static <T> List<T> createList(T item1, T item2) {
+		List<T> list = new ArrayList<T>();
+		list.add(item1);
+		list.add(item2);
+		return list;
+	}
+
+	/**
+	 * Returns a List<T> containing the input arguments.
+	 * 
+	 * @param <T>
+	 * @param item1
+	 * @param item2
+	 * @param item3
+	 * @return
+	 */
+	public static <T> List<T> createList(T item1, T item2, T item3) {
+		List<T> list = new ArrayList<T>();
+		list.add(item1);
+		list.add(item2);
+		list.add(item3);
+		return list;
+	}
+
+	/**
+	 * Returns a List<T> containing the input arguments.
+	 * 
+	 * @param <T>
+	 * @param item1
+	 * @param item2
+	 * @param item3
+	 * @param item4
+	 * @return
+	 */
+	public static <T> List<T> createList(T item1, T item2, T item3, T item4) {
+		List<T> list = new ArrayList<T>();
+		list.add(item1);
+		list.add(item2);
+		list.add(item3);
+		list.add(item4);
+		return list;
+	}
+
+	/**
+	 * Returns a List<T> containing the input arguments.
+	 * 
+	 * @param <T>
+	 * @param item1
+	 * @param item2
+	 * @param item3
+	 * @param item4
+	 * @param otherItems
+	 * @return
+	 */
+	public static <T> List<T> createList(T item1, T item2, T item3, T item4, T... otherItems) {
+		List<T> list = new ArrayList<T>();
+		list.add(item1);
+		list.add(item2);
+		list.add(item3);
+		list.add(item4);
+		for (T item : otherItems)
+			list.add(item);
+		return list;
 	}
 
 	/**
@@ -354,7 +450,22 @@ public class CollectionsUtil {
 			collection.addAll(inputCollection);
 		return collection;
 	}
+	
+	/**
+	 * Consolidates the Collection of input Collections into a single Collection
+	 * 
+	 * @param <T>
+	 * @param inputSets
+	 * @return
+	 */
+	public static <T> Set<T> consolidateSets(Collection<Set<T>> inputSets) {
+		Set<T> set = new HashSet<T>();
+		for (Set<T> inputSet : inputSets)
+			set.addAll(inputSet);
+		return set;
+	}
 
+	
 	/**
 	 * Given an input collection, this method returns a delimited String containing the items in the
 	 * collection
