@@ -24,6 +24,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.Iterator;
 import java.util.List;
 
 public class FileWriterUtil {
@@ -156,8 +157,7 @@ public class FileWriterUtil {
 	}
 
 	/**
-	 * Prints the input list of lines to the specified file. The file is overwritten with the input
-	 * lines.
+	 * Prints the input list of lines to the specified file.
 	 * 
 	 * @param lines
 	 * @param file
@@ -167,6 +167,22 @@ public class FileWriterUtil {
 			FileSuffixEnforcement suffixEnforementPolicy) throws IOException {
 		BufferedWriter writer = initBufferedWriter(file, encoding, writeMode, suffixEnforementPolicy);
 		printLines(lines, writer);
+		writer.close();
+	}
+	
+	/**
+	 * Prints the contents of the input Iterator to the specified line.
+	 * @param lineIterator
+	 * @param file
+	 * @param encoding
+	 * @throws IOException
+	 */
+	public static void printLines(Iterator<?> lineIterator, File file, CharacterEncoding encoding) throws IOException {
+		BufferedWriter writer = initBufferedWriter(file, encoding);
+		while (lineIterator.hasNext()) {
+			writer.write(lineIterator.next().toString());
+			writer.newLine();
+		}
 		writer.close();
 	}
 
