@@ -39,6 +39,7 @@ import edu.ucdenver.ccp.common.file.FileReaderUtil;
 import edu.ucdenver.ccp.common.file.FileUtil;
 import edu.ucdenver.ccp.common.file.FileWriterUtil;
 import edu.ucdenver.ccp.common.ftp.FTPUtil.FileType;
+import edu.ucdenver.ccp.common.io.ClassPathUtil;
 import edu.ucdenver.ccp.common.test.DefaultTestCase;
 import edu.ucdenver.ccp.common.test.MockFtpServer;
 
@@ -69,7 +70,7 @@ public class DownloadViaAnnotationsTest extends DefaultTestCase {
 		ftu.addFile("/file5.ascii");
 		ftu.addFile("/file6.xml");
 		ftu.addFile("/file7.ascii");
-		ftu.addFile("/sampleFile.ascii.gz", getResourceFromClasspath(this.getClass(), SAMPLE_GZ_FILE_NAME));
+		ftu.addFile("/sampleFile.ascii.gz", ClassPathUtil.getResourceStreamFromClasspath(this.getClass(), SAMPLE_GZ_FILE_NAME));
 	}
 
 	@Test
@@ -127,7 +128,7 @@ public class DownloadViaAnnotationsTest extends DefaultTestCase {
 	public void testNoDownloadIfZippedFilePresentAndCleanFalse() throws Exception {
 		File workDirectory = folder.newFolder("workDir");
 		boolean clean = false;
-		FileUtil.copy(getResourceFromClasspath(getClass(), SAMPLE_GZ_FILE_NAME), FileUtil.appendPathElementsToDirectory(workDirectory, SAMPLE_GZ_FILE_NAME));
+		ClassPathUtil.copyClasspathResourceToFile(getClass(), SAMPLE_GZ_FILE_NAME, FileUtil.appendPathElementsToDirectory(workDirectory, SAMPLE_GZ_FILE_NAME));
 		MyGzFileProcessor_BAD_PORT fileProcessor = new MyGzFileProcessor_BAD_PORT(workDirectory, clean);
 		assertEquals("should be sampleFile.ascii", "sampleFile.ascii", fileProcessor.getFileToProcess().getName());
 		assertTrue("file should exist locally", fileProcessor.getFileToProcess().exists());

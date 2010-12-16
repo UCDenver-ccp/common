@@ -286,28 +286,6 @@ public class FileUtil {
 	}
 
 	/**
-	 * Copies a resource (file on the classpath) to the specified directory
-	 * 
-	 * @param resourceName
-	 * @param directory
-	 * @return
-	 * @throws IOException
-	 */
-	public static void copyResourceToFile(Class<?> cls, String resourceName, File file) throws IOException {
-		FileUtil.copy(cls.getResourceAsStream(resourceName), file);
-	}
-
-	/**
-	 * Returns an InputStream for the specified resource (file on the classpath)
-	 * 
-	 * @param resourceName
-	 * @return
-	 */
-	public static InputStream getResourceStream(Class<?> cls, String resourceName) {
-		return cls.getResourceAsStream(resourceName);
-	}
-
-	/**
 	 * Returns a reference to a File that is specified by the input file name, and located in the
 	 * input directory. The file is not created, only the reference.
 	 * 

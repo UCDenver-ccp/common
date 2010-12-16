@@ -20,7 +20,6 @@ package edu.ucdenver.ccp.common.test;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collection;
 
 import org.apache.log4j.BasicConfigurator;
@@ -32,7 +31,7 @@ import org.junit.rules.TemporaryFolder;
 
 import edu.ucdenver.ccp.common.file.CharacterEncoding;
 import edu.ucdenver.ccp.common.file.FileUtil;
-import edu.ucdenver.ccp.common.string.StringUtil;
+import edu.ucdenver.ccp.common.io.ClassPathUtil;
 
 /**
  * A super class for other test classes. It sets up a logger among other things.
@@ -56,34 +55,34 @@ public class DefaultTestCase {
 	public TemporaryFolder folder = new TemporaryFolder();
 
 
-	/**
-	 * Helper method for grabbing a file from the classpath and returning an InputStream
-	 * 
-	 * @param clazz
-	 * @param resourceName
-	 * @return
-	 */
-	protected InputStream getResourceFromClasspath(Class<?> clazz, String resourceName) {
-		InputStream is = clazz.getResourceAsStream(resourceName);
-		if (is == null) {
-			logger.error("resource not found in classpath: " + resourceName 
-					+ " class is: " + clazz.getCanonicalName());
-		}
-		Assert.assertNotNull("Resource not found: " + resourceName, is);
-		return is;
-	}
-
-	/**
-	 * Extracts the contents of a resource on the classpath and returns them as a String
-	 * 
-	 * @param clazz
-	 * @param resourceName
-	 * @return
-	 * @throws IOException
-	 */
-	protected String getContentsFromClasspathResource(Class<?> clazz, String resourceName, CharacterEncoding encoding) throws IOException {
-		return StringUtil.convertStream(getResourceFromClasspath(clazz, resourceName), encoding);
-	}
+//	/**
+//	 * Helper method for grabbing a file from the classpath and returning an InputStream
+//	 * 
+//	 * @param clazz
+//	 * @param resourceName
+//	 * @return
+//	 */
+//	protected InputStream getResourceFromClasspath(Class<?> clazz, String resourceName) {
+//		InputStream is = clazz.getResourceAsStream(resourceName);
+//		if (is == null) {
+//			logger.error("resource not found in classpath: " + resourceName 
+//					+ " class is: " + clazz.getCanonicalName());
+//		}
+//		Assert.assertNotNull("Resource not found: " + resourceName, is);
+//		return is;
+//	}
+//
+//	/**
+//	 * Extracts the contents of a resource on the classpath and returns them as a String
+//	 * 
+//	 * @param clazz
+//	 * @param resourceName
+//	 * @return
+//	 * @throws IOException
+//	 */
+//	protected String getContentsFromClasspathResource(Class<?> clazz, String resourceName, CharacterEncoding encoding) throws IOException {
+//		return StringUtil.convertStream(getResourceFromClasspath(clazz, resourceName), encoding);
+//	}
 
 	/**
 	 *Helper method for grabbing a file from the classpath and copying it to the temporary folder.
@@ -97,7 +96,7 @@ public class DefaultTestCase {
 	 */
 	protected File copyClasspathResourceToTemporaryFile(Class<?> clazz, String resourceName) throws IOException {
 		File tempFile = folder.newFile(resourceName);
-		FileUtil.copy(getResourceFromClasspath(clazz, resourceName), tempFile);
+		FileUtil.copy(ClassPathUtil.getResourceStreamFromClasspath(clazz, resourceName), tempFile);
 		logger.debug(String.format("created file: %s", tempFile.getAbsolutePath()));
 		return tempFile;
 	}

@@ -30,6 +30,7 @@ import java.util.zip.GZIPInputStream;
 import org.junit.Test;
 
 import edu.ucdenver.ccp.common.collections.CollectionsUtil;
+import edu.ucdenver.ccp.common.io.ClassPathUtil;
 import edu.ucdenver.ccp.common.test.DefaultTestCase;
 
 public class FileArchiveUtilTest extends DefaultTestCase {
@@ -51,7 +52,7 @@ public class FileArchiveUtilTest extends DefaultTestCase {
 
 	@Test
 	public void testUnzipGzFile() throws Exception {
-		GZIPInputStream gis = new GZIPInputStream(getResourceFromClasspath(this.getClass(), SAMPLE_GZIPPED_FILE_NAME));
+		GZIPInputStream gis = new GZIPInputStream(ClassPathUtil.getResourceStreamFromClasspath(this.getClass(), SAMPLE_GZIPPED_FILE_NAME));
 		/* other class doesn't work either:
 		 * GZIPInputStream gis = new GZIPInputStream(getResourceFromClasspath(
 		 * 	 this.getClass().forName("edu.ucdenver.ccp.common.file.FileArchiveUtil"), 
@@ -68,7 +69,7 @@ public class FileArchiveUtilTest extends DefaultTestCase {
 	
 	@Test
 	public void testUnzipUnixCompressFile() throws Exception {
-		UncompressInputStream uis = new UncompressInputStream(getResourceFromClasspath(this.getClass(), SAMPLE_UNIX_COMPRESS_FILE_NAME));
+		UncompressInputStream uis = new UncompressInputStream(ClassPathUtil.getResourceStreamFromClasspath(this.getClass(), SAMPLE_UNIX_COMPRESS_FILE_NAME));
 		File outputDirectory = folder.newFolder("unzippedUnixCompressFile");
 		File unzippedFile = FileUtil.appendPathElementsToDirectory(outputDirectory, "sampleUnixCompressFile.txt");
 		FileArchiveUtil.unzip(uis, unzippedFile.getName(), outputDirectory);
@@ -151,7 +152,7 @@ public class FileArchiveUtilTest extends DefaultTestCase {
 	 */
 	private File copyResourceToFile(String resourceName) throws Exception {
 		File file = folder.newFile(resourceName);
-		FileUtil.copyResourceToFile(FileArchiveUtil.class, resourceName, file);
+		ClassPathUtil.copyClasspathResourceToFile(FileArchiveUtil.class, resourceName, file);
 		return file;
 	}
 
