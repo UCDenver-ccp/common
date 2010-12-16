@@ -18,8 +18,15 @@
 
 package edu.ucdenver.ccp.common.properties;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
@@ -88,6 +95,37 @@ public abstract class PropertiesUtil {
 					"Expected to find property named \"%s\", but none could be found.", propertyName));
 		}
 		return propertyValue;
+	}
+
+	/**
+	 * Converts the input Properties into a <code>Map<String, String></code>
+	 * 
+	 * @param properties
+	 * @return
+	 */
+	public static Map<String, String> getPropertiesMap(Properties properties) {
+		Map<String, String> propertiesMap = new HashMap<String, String>();
+		for (Entry<Object, Object> entry : properties.entrySet())
+			propertiesMap.put(entry.getKey().toString(), entry.getValue().toString());
+		return propertiesMap;
+	}
+
+	/**
+	 * Loads a <code>Properties</code> object from the <code>InputStream</code> and returns a
+	 * <code>Map<String, String></code> contains the property key and values
+	 * 
+	 * @param inputStream
+	 * @return
+	 * @throws IOException
+	 */
+	public static Map<String, String> getPropertiesMap(InputStream inputStream) throws IOException {
+		try {
+			Properties properties = new Properties();
+			properties.load(inputStream);
+			return getPropertiesMap(properties);
+		} finally {
+			inputStream.close();
+		}
 	}
 
 }
