@@ -21,6 +21,9 @@ package edu.ucdenver.ccp.common.reflection;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -30,10 +33,13 @@ import java.util.Set;
 public class PrivateAccessor {
 
 	/**
+	 * Uses the Reflection API to return the value of the input field name for the input Object. Inherited
+	 * fields are supported.
 	 * 
-	 * @param o
-	 * @param fieldName
-	 * @return
+	 * @param o object
+	 * @param fieldName object's field name
+	 * @return value field value
+	 * 
 	 * @throws NoSuchFieldException
 	 * @throws IllegalAccessException
 	 * @throws IllegalArgumentException
@@ -119,6 +125,45 @@ public class PrivateAccessor {
 		final Method method = clazz.getDeclaredMethod(methodName, getParameterClasses(params));
 		method.setAccessible(true);
 		return method.invoke(null, params);
+	}
+
+	/**
+	 * Generate field value extraction message listing all available fields. 
+	 * 
+	 * @param clazz
+	 * @param fieldName
+	 * @return error message
+	 */
+	private static String getFieldValueExtractionErrorMessage(Class<?> clazz, String fieldName) {
+		List<String> validFieldNames = new ArrayList<String>();
+		Set<Field> fields = new HashSet<Field>();
+		getAllFields(clazz, fields);
+		for (Field field : fields)
+			validFieldNames.add(field.getName());
+		return String.format("Unable to extract field value from DataRecord for field: %s. Valid field names: %s",
+				fieldName, validFieldNames.toString());
+	}
+
+	/**
+	 * Uses the Reflection API to return the value of the input field name for the input Object. Inherited
+	 * fields are supported.
+	 * 
+	 * @param o object
+	 * @param fieldName object's field name
+	 * @return value field value
+	 * 
+	 * @throws RuntimeException if errors occur during field value access
+	 */
+	public static Object getFieldValue(Object o, String fieldName) {
+		try {
+			return getPrivateFieldValue(o, fieldName);
+		} catch (IllegalArgumentException e) {
+			throw new RuntimeException(getFieldValueExtractionErrorMessage(o.getClass(), fieldName), e);
+		} catch (NoSuchFieldException e) {
+			throw new RuntimeException(getFieldValueExtractionErrorMessage(o.getClass(), fieldName), e);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(getFieldValueExtractionErrorMessage(o.getClass(), fieldName), e);
+		}
 	}
 
 }
