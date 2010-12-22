@@ -26,6 +26,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.charset.MalformedInputException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -36,6 +37,7 @@ import org.junit.Test;
 import edu.ucdenver.ccp.common.collections.CollectionsUtil;
 import edu.ucdenver.ccp.common.file.FileComparisonUtil.ColumnOrder;
 import edu.ucdenver.ccp.common.file.FileComparisonUtil.LineOrder;
+import edu.ucdenver.ccp.common.string.StringConstants;
 import edu.ucdenver.ccp.common.test.DefaultTestCase;
 
 public class FileUtilTest extends DefaultTestCase {
@@ -57,8 +59,8 @@ public class FileUtilTest extends DefaultTestCase {
 		File file = folder.newFile("file");
 		String errorMessage = FileUtil.isDirectoryValid(file);
 		assertNotNull(errorMessage);
-		assertTrue(String.format("Error message should indicate that the input is not a directory."), errorMessage
-				.startsWith("Input directory is not a directory"));
+		assertTrue(String.format("Error message should indicate that the input is not a directory."),
+				errorMessage.startsWith("Input directory is not a directory"));
 	}
 
 	@Test
@@ -183,12 +185,13 @@ public class FileUtilTest extends DefaultTestCase {
 		int count = 0;
 		while (fileIter.hasNext()) {
 			File file = fileIter.next();
-			assertTrue(String.format("File name (%s) should be in expected set.", file.getName()), expectedFileNames
-					.contains(file.getName()));
+			assertTrue(String.format("File name (%s) should be in expected set.", file.getName()),
+					expectedFileNames.contains(file.getName()));
 			count++;
 		}
-		assertEquals(String.format("Expected %d files to be returned by iterator, but only observed %d",
-				expectedFileNames.size(), count), expectedFileNames.size(), count);
+		assertEquals(
+				String.format("Expected %d files to be returned by iterator, but only observed %d",
+						expectedFileNames.size(), count), expectedFileNames.size(), count);
 
 	}
 
@@ -206,7 +209,7 @@ public class FileUtilTest extends DefaultTestCase {
 		assertTrue("toFile is not as expected after copy(fromFile, toFile).", FileComparisonUtil.hasExpectedLines(
 				toFile, CharacterEncoding.US_ASCII, lines, null, LineOrder.AS_IN_FILE, ColumnOrder.AS_IN_FILE));
 	}
-	
+
 	@Test
 	public void testCopyFileToDirectory() throws Exception {
 		List<String> lines = CollectionsUtil.createList("line1", "line2");
@@ -220,5 +223,29 @@ public class FileUtilTest extends DefaultTestCase {
 		FileUtil.validateFile(toFile);
 		assertTrue("toFile is not as expected after copy(fromFile, toDirectory).", FileComparisonUtil.hasExpectedLines(
 				toFile, CharacterEncoding.US_ASCII, lines, null, LineOrder.AS_IN_FILE, ColumnOrder.AS_IN_FILE));
+	}
+
+	@Test
+	public void testCopyFileToString() throws Exception {
+		List<String> lines = CollectionsUtil.createList("line1", "line2:nai\u0308ve");
+		File fromFile = folder.newFile("fromFile.utf8");
+		FileWriterUtil.printLines(lines, fromFile, CharacterEncoding.UTF_8);
+
+		StringBuilder sb = new StringBuilder();
+		sb.append(lines.get(0) + StringConstants.NEW_LINE);
+		sb.append(lines.get(1) + StringConstants.NEW_LINE);
+		String expectedStr = sb.toString();
+
+		assertEquals(String.format("Text from file should be as expected and use UTF-8 encoding."), expectedStr,
+				FileUtil.copyToString(fromFile, CharacterEncoding.UTF_8));
+	}
+
+	@Test(expected = MalformedInputException.class)
+	public void testCopyFileToString_WithEncodingMismatch() throws Exception {
+		List<String> lines = CollectionsUtil.createList("line1", "line2:nai\u0308ve");
+		File fromFile = folder.newFile("fromFile.utf8");
+		FileWriterUtil.printLines(lines, fromFile, CharacterEncoding.UTF_8);
+
+		FileUtil.copyToString(fromFile, CharacterEncoding.US_ASCII);
 	}
 }

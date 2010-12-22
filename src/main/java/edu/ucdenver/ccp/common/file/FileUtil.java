@@ -27,6 +27,7 @@ import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.StringWriter;
 import java.util.HashSet;
@@ -39,6 +40,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.log4j.Logger;
+
+import edu.ucdenver.ccp.common.io.StreamUtil;
 
 public class FileUtil {
 
@@ -123,8 +126,8 @@ public class FileUtil {
 	public static void mkdir(File directory) throws IllegalStateException {
 		boolean succeeded = directory.mkdirs();
 		if (!succeeded) {
-			throw new IllegalStateException(String.format("Error while creating directory: %s", directory
-					.getAbsolutePath()));
+			throw new IllegalStateException(String.format("Error while creating directory: %s",
+					directory.getAbsolutePath()));
 		}
 	}
 
@@ -226,14 +229,9 @@ public class FileUtil {
 		validateFile(toFile);
 	}
 
-	public static String copyToString(File fromFile, CharacterEncoding encoding) throws IOException {
+	public static String copyToString(File fromFile, CharacterEncoding fromFileEncoding) throws IOException {
 		validateFile(fromFile);
-		FileInputStream fis = new FileInputStream(fromFile);
-		StringWriter sw = new StringWriter();
-		IOUtils.copy(fis, sw, encoding.getCharacterSetName());
-		fis.close();
-		sw.close();
-		return sw.toString();
+		return StreamUtil.toString(new InputStreamReader(new FileInputStream(fromFile), fromFileEncoding.getDecoder()));
 	}
 
 	/**
@@ -321,8 +319,8 @@ public class FileUtil {
 			return FileUtils.iterateFiles(fileOrDirectory, createFileFilter(fileSuffixes),
 					createDirectoryFilter(recurse));
 		} else
-			throw new IOException(String.format("Input is not a valid file or directory: %s", fileOrDirectory
-					.getAbsolutePath()));
+			throw new IOException(String.format("Input is not a valid file or directory: %s",
+					fileOrDirectory.getAbsolutePath()));
 	}
 
 	/**
