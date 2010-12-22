@@ -21,11 +21,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
 import edu.ucdenver.ccp.common.file.CharacterEncoding;
+import edu.ucdenver.ccp.common.string.StringUtil;
 
 /**
  * Original code downloaded from http://minddumped.blogspot.com/search/label/buffered. The original
@@ -54,7 +54,7 @@ public class BufferedRafReader extends RandomAccessFile {
 		bytebuffer = new byte[bufferlength];
 		maxread = 0;
 		buffpos = 0;
-		byteList = new ByteList(encoding.getCharacterSetName());
+		byteList = new ByteList(encoding);
 	}
 
 	public int getbuffpos() {
@@ -139,26 +139,26 @@ public class BufferedRafReader extends RandomAccessFile {
 	 * @author Center for Computational Pharmacology
 	 * 
 	 */
-	private class ByteList {
+	private static class ByteList {
 		private List<Byte> bytes;
-		private String encoding;
+		private CharacterEncoding encoding;
 
-		public ByteList(String encoding) {
+		public ByteList(CharacterEncoding encoding) {
 			bytes = new ArrayList<Byte>();
 			this.encoding = encoding;
 		}
 
 		public void add(byte aByte) {
-			bytes.add(new Byte(aByte));
+			bytes.add(Byte.valueOf(aByte));
 		}
 
 		@Override
 		public String toString() {
 			byte[] byteArray = getByteArray();
 			try {
-				return new String(byteArray, encoding);
-			} catch (UnsupportedEncodingException e) {
-				throw new RuntimeException(String.format("Unsupported character encoding: %s", encoding), e);
+				return StringUtil.toString(byteArray, encoding);
+			} catch (IOException e) {
+				throw new RuntimeException("Error converting ByteList to String.", e);
 			}
 		}
 
