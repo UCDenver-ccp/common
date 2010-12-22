@@ -18,8 +18,10 @@
 
 package edu.ucdenver.ccp.common.string;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -31,9 +33,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.input.ReaderInputStream;
 import org.apache.log4j.Logger;
 
 import edu.ucdenver.ccp.common.file.CharacterEncoding;
+import edu.ucdenver.ccp.common.io.StreamUtil;
 
 public class StringUtil {
 
@@ -403,12 +407,11 @@ public class StringUtil {
 				char lastChar = v.charAt(v.length() - 1);
 				if (firstChar != lastChar)
 					logger.warn(String
-							.format("The StringUtil.delimitAndTrim(values,delim) method may not be behaving as you expect. " +
-									"This method trims the first and last characters of each element after delimiting the " +
-									"input String (useful for removing things like surrounding quotation marks). This " +
-									"warning is being displayed because the first and last characters being trimmed " +
-									"do not match (first='%s'; last='%s').",
-									firstChar, lastChar));
+							.format("The StringUtil.delimitAndTrim(values,delim) method may not be behaving as you expect. "
+									+ "This method trims the first and last characters of each element after delimiting the "
+									+ "input String (useful for removing things like surrounding quotation marks). This "
+									+ "warning is being displayed because the first and last characters being trimmed "
+									+ "do not match (first='%s'; last='%s').", firstChar, lastChar));
 			}
 		return trimmed;
 	}
@@ -457,6 +460,18 @@ public class StringUtil {
 			}
 		}
 		return buf.toString();
+	}
+
+	/**
+	 * Converts a byteArray to a <code>String</code> in a character-encoding safe manner
+	 * 
+	 * @param byteArray
+	 * @param encoding
+	 * @return
+	 * @throws IOException
+	 */
+	public static String toString(byte[] byteArray, CharacterEncoding encoding) throws IOException {
+		return StreamUtil.toString(new InputStreamReader(new ByteArrayInputStream(byteArray), encoding.getDecoder()));
 	}
 
 }
