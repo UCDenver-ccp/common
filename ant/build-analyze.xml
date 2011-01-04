@@ -63,7 +63,7 @@
 		<echo message="Running FindBugs..." />
 		<delete dir="${findbugs.reports.dir}" />
 		<mkdir dir="${findbugs.reports.dir}" />
-		<findbugs home="${findbugs.home}" output="html" outputFile="${findbugs.reports.dir}/fb-index.html" jvmargs="-Xmx1024m">
+		<findbugs home="${findbugs.home}" outputFile="${findbugs.reports.dir}/findbugs.xml" jvmargs="-Xmx1024m">
 			<auxClasspath>
 				<pathelement path="${classpath.compile.property}" />
 				<pathelement path="${classpath.compile.test.property}" />
