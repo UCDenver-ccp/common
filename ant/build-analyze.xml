@@ -79,7 +79,7 @@
 		<delete dir="${checkstyle.reports.dir}" />
 		<mkdir dir="${checkstyle.reports.dir}" />
 		<checkstyle config="${code.analysis.dir}/checkstyle/ccp_checkstyle.xml" failureProperty="checkstyle.failure" failOnViolation="false">
-			<formatter type="xml" tofile="${checkstyle.reports.dir}/checkstyle_report.xml" />
+			<formatter type="xml" tofile="${checkstyle.reports.dir}/checkstyle-result.xml" />
 			<fileset dir="${source.dir}" includes="**/*.java" />
 			<fileset dir="${source.test.dir}" includes="**/*.java" />
 		</checkstyle>
