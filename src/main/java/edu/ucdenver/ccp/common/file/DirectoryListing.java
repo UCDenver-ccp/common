@@ -42,14 +42,10 @@ public class DirectoryListing {
 	throws IOException {
 	    /* Find all nxml files in the directory and place in List nxmlFiles */
 	    
-	    IOFileFilter dirFilter = FileFilterUtils.andFileFilter(
-	    		FileFilterUtils.directoryFileFilter(),
-	    		HiddenFileFilter.VISIBLE);
-	    IOFileFilter nxmlFileFilter = FileFilterUtils.andFileFilter(
-	    		FileFilterUtils.fileFileFilter(),
-	    		FileFilterUtils.suffixFileFilter(suffix));
+		IOFileFilter dirFilter = FileFilterUtils.and(FileFilterUtils.directoryFileFilter(), HiddenFileFilter.VISIBLE);
+		IOFileFilter nxmlFileFilter = FileFilterUtils.and(FileFilterUtils.fileFileFilter(), FileFilterUtils.suffixFileFilter(suffix));
 	    
-	    FileFilter filter = FileFilterUtils.orFileFilter(dirFilter, nxmlFileFilter);
+	    FileFilter filter = FileFilterUtils.or(dirFilter, nxmlFileFilter);
 	    CollectFilesWalker dirWalker=null;
 	    if (recurse) {
 	    	dirWalker = new CollectFilesWalker(filter,-1);

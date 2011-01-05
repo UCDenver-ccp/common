@@ -309,7 +309,6 @@ public class FileUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	@SuppressWarnings("unchecked")
 	public static Iterator<File> getFileIterator(File fileOrDirectory, boolean recurse, String... fileSuffixes)
 			throws IOException {
 		if (FileUtil.isFileValid(fileOrDirectory) == null) {
@@ -331,15 +330,13 @@ public class FileUtil {
 	 * @return
 	 */
 	private static IOFileFilter createFileFilter(String... suffixes) {
-		IOFileFilter fileFilter = FileFilterUtils.andFileFilter(FileFilterUtils.fileFileFilter(),
-				createVisibleFileFilter());
+		IOFileFilter fileFilter = FileFilterUtils.and(FileFilterUtils.fileFileFilter(), createVisibleFileFilter());
 		if (suffixes != null && suffixes.length > 0) {
 			IOFileFilter suffixFilter = FileFilterUtils.suffixFileFilter(suffixes[0]);
 			for (int i = 1; i < suffixes.length; i++) {
-				suffixFilter = FileFilterUtils
-						.orFileFilter(suffixFilter, FileFilterUtils.suffixFileFilter(suffixes[i]));
+				suffixFilter = FileFilterUtils.or(suffixFilter, FileFilterUtils.suffixFileFilter(suffixes[i]));
 			}
-			fileFilter = FileFilterUtils.andFileFilter(fileFilter, suffixFilter);
+			fileFilter = FileFilterUtils.and(fileFilter, suffixFilter);
 		}
 		return fileFilter;
 	}
@@ -357,9 +354,9 @@ public class FileUtil {
 	 */
 	private static IOFileFilter createDirectoryFilter(boolean recurse) {
 		if (recurse)
-			return FileFilterUtils.andFileFilter(FileFilterUtils.directoryFileFilter(), createVisibleFileFilter());
-		else
-			return FileFilterUtils.andFileFilter(FileFilterUtils.fileFileFilter(), createVisibleFileFilter());
+			return FileFilterUtils.and(FileFilterUtils.directoryFileFilter(), createVisibleFileFilter());
+		
+		return FileFilterUtils.and(FileFilterUtils.fileFileFilter(), createVisibleFileFilter());
 	}
 
 	/**
