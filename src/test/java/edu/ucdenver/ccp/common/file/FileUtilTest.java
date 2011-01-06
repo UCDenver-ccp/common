@@ -43,13 +43,13 @@ import edu.ucdenver.ccp.common.test.DefaultTestCase;
 public class FileUtilTest extends DefaultTestCase {
 
 	@Test
-	public void testIsDirectoryValid_inputIsDirectory() throws Exception {
+	public void testIsDirectoryValid_inputIsDirectory() {
 		File directory = folder.newFolder("dir");
 		assertNull(FileUtil.isDirectoryValid(directory));
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void testIsDirectoryValid_inputIsNull() throws Exception {
+	public void testIsDirectoryValid_inputIsNull() {
 		File nullFile = null;
 		FileUtil.isDirectoryValid(nullFile);
 	}
@@ -64,7 +64,7 @@ public class FileUtilTest extends DefaultTestCase {
 	}
 
 	@Test
-	public void testIsDirectoryValid_inputDoesNotExist() throws Exception {
+	public void testIsDirectoryValid_inputDoesNotExist() {
 		File directory = folder.newFolder("dir2");
 		File directoryNotExist = new File(directory + File.separator + "thisDirectoryDoesNotExist");
 		String errorMessage = FileUtil.isDirectoryValid(directoryNotExist);
@@ -86,7 +86,7 @@ public class FileUtilTest extends DefaultTestCase {
 	}
 
 	@Test
-	public void testAppendPathElementToDirectory() throws Exception {
+	public void testAppendPathElementToDirectory() {
 		String directoryName = String.format("%sthis%sis%sa%sdirectory", File.separator, File.separator,
 				File.separator, File.separator);
 		File directory = new File(directoryName);

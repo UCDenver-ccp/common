@@ -27,7 +27,7 @@ import edu.ucdenver.ccp.common.xml.XmlUtil;
 public class XmlUtilTest {
 
 	@Test
-	public void testConvertXmlEscapeCharacters_quote() throws Exception {
+	public void testConvertXmlEscapeCharacters_quote() {
 		String inputText = "This phrase has \"quotation marks\" in it.";
 		String expectedText = "This phrase has &quot;quotation marks&quot; in it.";
 		assertEquals(String.format("Should have converted quotes."), expectedText, XmlUtil
@@ -35,7 +35,7 @@ public class XmlUtilTest {
 	}
 	
 	@Test
-	public void testConvertXmlEscapeCharacters_all() throws Exception {
+	public void testConvertXmlEscapeCharacters_all() {
 		String inputText = "This 'phrase has everything in it\" & <more>.";
 		String expectedText = "This &apos;phrase has everything in it&quot; &amp; &lt;more&gt;.";
 		assertEquals(String.format("Should have converted everything."), expectedText, XmlUtil

@@ -16,9 +16,8 @@ public class LegacyCollectionsUtilTest {
 	 * The warnings being suppressed in this method are due to the creation of a legacy raw-type
 	 * List, which is necessary in order to test the LegacyCollectionsUtil.checkList() method.
 	 */
-	@SuppressWarnings("unchecked")
 	@Test
-	public void testCheckList_HomogeneousListInput() throws Exception {
+	public void testCheckList_HomogeneousListInput() {
 		List<String> expectedList = CollectionsUtil.createList("string 1", "string 2");
 
 		List legacyList = initRawTypeList("string 1", "string 2");
@@ -32,9 +31,8 @@ public class LegacyCollectionsUtilTest {
 	 * The warnings being suppressed in this method are due to the creation of a legacy raw-type
 	 * List, which is necessary in order to test the LegacyCollectionsUtil.checkList() method.
 	 */
-	@SuppressWarnings("unchecked")
 	@Test(expected = ClassCastException.class)
-	public void testCheckList_HeterogeneousListInput() throws Exception {
+	public void testCheckList_HeterogeneousListInput() {
 		List legacyList = initRawTypeList("string 1", new Integer(1));
 		LegacyCollectionsUtil.checkList(legacyList, String.class);
 	}
@@ -43,9 +41,8 @@ public class LegacyCollectionsUtilTest {
 	 * The warnings being suppressed in this method are due to the creation of a legacy raw-type
 	 * Iterator, which is necessary in order to test the LegacyCollectionsUtil.checkIterator() method.
 	 */
-	@SuppressWarnings("unchecked")
 	@Test
-	public void testCheckIterator_HomogeneousInput() throws Exception {
+	public void testCheckIterator_HomogeneousInput() {
 		String value1 = "1";
 		String value2 = "2";
 		String value3 = "3";
@@ -62,9 +59,8 @@ public class LegacyCollectionsUtilTest {
 	 * The warnings being suppressed in this method are due to the creation of a legacy raw-type
 	 * Iterator, which is necessary in order to test the LegacyCollectionsUtil.checkIterator() method.
 	 */
-	@SuppressWarnings("unchecked")
 	@Test(expected = ClassCastException.class)
-	public void testCheckIterator_HeterogeneousInput() throws Exception {
+	public void testCheckIterator_HeterogeneousInput() {
 		String value1 = "1";
 		String value2 = "2";
 		Integer value3 = new Integer(3);
@@ -83,11 +79,6 @@ public class LegacyCollectionsUtilTest {
 	 * @param listMembers
 	 * @return
 	 */
-	/*
-	 * The warnings are being suppressed in this method because we are intentionally creating a
-	 * raw-type List
-	 */
-	@SuppressWarnings("unchecked")
 	private List initRawTypeList(Object... listMembers) {
 		return Arrays.asList(listMembers);
 	}

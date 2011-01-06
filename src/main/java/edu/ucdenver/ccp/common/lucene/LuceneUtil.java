@@ -30,7 +30,6 @@ import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
@@ -168,9 +167,8 @@ public class LuceneUtil {
 	 * @param idFieldName
 	 * @param idList
 	 * @throws IOException
-	 * @throws ParseException
 	 */
-	public void deleteFromIndex(String idFieldName, List<String> idList) throws IOException, ParseException {
+	public void deleteFromIndex(String idFieldName, List<String> idList) throws IOException {
 		IndexWriter indexWriter = new IndexWriter(indexDirectory, analyzer, false, IndexWriter.MaxFieldLength.UNLIMITED);
 		int index = 0;
 		Term[] termsToDelete = new Term[idList.size()];

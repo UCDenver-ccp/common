@@ -36,7 +36,7 @@ import edu.ucdenver.ccp.common.test.DefaultTestCase;
 public class StringUtilTest extends DefaultTestCase {
 
 	@Test
-	public void testIsInteger_validPositiveInput() throws Exception {
+	public void testIsInteger_validPositiveInput() {
 		assertTrue(StringUtil.isInteger("0"));
 		assertTrue(StringUtil.isInteger("00"));
 		assertTrue(StringUtil.isInteger("1"));
@@ -46,7 +46,7 @@ public class StringUtilTest extends DefaultTestCase {
 	}
 
 	@Test
-	public void testIsInteger_validNegativeInput() throws Exception {
+	public void testIsInteger_validNegativeInput() {
 		assertTrue(StringUtil.isInteger("-1"));
 		assertTrue(StringUtil.isInteger("-10"));
 		assertTrue(StringUtil.isInteger("-1234567890"));
@@ -54,7 +54,7 @@ public class StringUtilTest extends DefaultTestCase {
 	}
 
 	@Test
-	public void testIsInteger_invalidInput() throws Exception {
+	public void testIsInteger_invalidInput() {
 		assertTrue(StringUtil.isInteger("-0"));
 		assertTrue(StringUtil.isInteger("01"));
 		assertFalse(StringUtil.isInteger("this is not a number"));
@@ -66,7 +66,7 @@ public class StringUtilTest extends DefaultTestCase {
 	}
 
 	@Test
-	public void testIsIntegerGreaterThanZero() throws Exception {
+	public void testIsIntegerGreaterThanZero() {
 		assertTrue(StringUtil.isIntegerGreaterThanZero("1"));
 		assertTrue(StringUtil.isIntegerGreaterThanZero("10"));
 		assertTrue(StringUtil.isIntegerGreaterThanZero("1234567890"));
@@ -77,7 +77,7 @@ public class StringUtilTest extends DefaultTestCase {
 	}
 
 	@Test
-	public void testIsNonNegativeInteger_validNonNegativeInput() throws Exception {
+	public void testIsNonNegativeInteger_validNonNegativeInput() {
 		assertTrue(StringUtil.isNonNegativeInteger("1"));
 		assertTrue(StringUtil.isNonNegativeInteger("10"));
 		assertTrue(StringUtil.isNonNegativeInteger("1234567890"));
@@ -85,7 +85,7 @@ public class StringUtilTest extends DefaultTestCase {
 	}
 
 	@Test
-	public void testIsNonNegativeInteger_negativeInput() throws Exception {
+	public void testIsNonNegativeInteger_negativeInput() {
 		assertFalse(StringUtil.isNonNegativeInteger("-1"));
 		assertFalse(StringUtil.isNonNegativeInteger("-10"));
 		assertFalse(StringUtil.isNonNegativeInteger("-1234567890"));
@@ -93,7 +93,7 @@ public class StringUtilTest extends DefaultTestCase {
 	}
 
 	@Test
-	public void testIsNonNegativeInteger_invalidInput() throws Exception {
+	public void testIsNonNegativeInteger_invalidInput() {
 		assertTrue(StringUtil.isNonNegativeInteger("-0"));
 		assertTrue(StringUtil.isNonNegativeInteger("01"));
 		assertFalse(StringUtil.isNonNegativeInteger("this is not a number"));
@@ -112,21 +112,21 @@ public class StringUtilTest extends DefaultTestCase {
 	}
 
 	@Test
-	public void testRemoveRegexSuffix_ValidInput() throws Exception {
+	public void testRemoveRegexSuffix_ValidInput() {
 		assertEquals("Suffix should be stripped.", "myFile",
 				StringUtil.removeSuffixRegex("myFile.txt.txt.txt.txt.txt", "(\\.txt)+"));
 		assertEquals("Suffix should be stripped.", "myFile", StringUtil.removeSuffixRegex("myFile.tgz", "\\..gz"));
 	}
 
 	@Test
-	public void testRemoveRegexSuffix_EmptyInput() throws Exception {
+	public void testRemoveRegexSuffix_EmptyInput() {
 		assertEquals("Suffix should be stripped.", "myFile.txt.txt.txt.txt.txt",
 				StringUtil.removeSuffixRegex("myFile.txt.txt.txt.txt.txt", ""));
 		assertEquals("Suffix should be stripped.", "myFile.tgz", StringUtil.removeSuffixRegex("myFile.tgz", ""));
 	}
 
 	@Test
-	public void testRemoveRegexPrefix_ValidInput() throws Exception {
+	public void testRemoveRegexPrefix_ValidInput() {
 		assertEquals("Suffix should be stripped.", "e.txt.txt.txt.txt.txt",
 				StringUtil.removePrefixRegex("myFile.txt.txt.txt.txt.txt", "(m?y?Fil)"));
 		assertEquals("Suffix should be stripped.", "gz", StringUtil.removePrefixRegex("myFile.tgz", "my.*?t"));
@@ -154,13 +154,13 @@ public class StringUtilTest extends DefaultTestCase {
 	}
 
 	@Test
-	public void testReplaceSuffix_ValidInput() throws Exception {
+	public void testReplaceSuffix_ValidInput() {
 		assertEquals("Suffix should be replaced with .tar", "myTarball.tar",
 				StringUtil.replaceSuffix("myTarball.tgz", ".tgz", ".tar"));
 	}
 
 	@Test
-	public void testStartsWithRegex() throws Exception {
+	public void testStartsWithRegex() {
 		assertTrue(StringUtil.startsWithRegex("2010-04-06", RegExPatterns.getNDigitsPattern(4)));
 		assertTrue(StringUtil.startsWithRegex("2010-04-06", RegExPatterns.getNDigitsPattern(3)));
 		assertTrue(StringUtil.startsWithRegex("2010-04-06", RegExPatterns.getNDigitsPattern(2)));
@@ -171,13 +171,13 @@ public class StringUtilTest extends DefaultTestCase {
 	}
 
 	@Test
-	public void testContainsRegex() throws Exception {
+	public void testContainsRegex() {
 		assertTrue(StringUtil.containsRegex("2010-04-06", RegExPatterns.getNDigitsPattern(4)));
 		assertFalse(StringUtil.containsRegex("2010-04-06", RegExPatterns.getNDigitsPattern(5)));
 	}
 
 	@Test
-	public void testCreateRepeatingString() throws Exception {
+	public void testCreateRepeatingString() {
 		String expectedStr = StringConstants.AMPERSAND + StringConstants.AMPERSAND + StringConstants.AMPERSAND;
 		assertEquals(String.format("String should contain 3 ampersands"), expectedStr,
 				StringUtil.createRepeatingString(StringConstants.AMPERSAND, 3));
@@ -187,13 +187,13 @@ public class StringUtilTest extends DefaultTestCase {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testSplitWithFieldDelimiter_ZeroInDelimiter() throws Exception {
+	public void testSplitWithFieldDelimiter_ZeroInDelimiter() {
 		StringUtil.splitWithFieldEnclosure("\"", String.format(".%s", StringConstants.DIGIT_ZERO),
 				StringConstants.QUOTATION_MARK);
 	}
 
 	@Test
-	public void testSplitWithFieldDelimiter() throws Exception {
+	public void testSplitWithFieldDelimiter() {
 		String inputStr = "J Clin Invest,0021-9738,1558-8238,1940,19,\"Index, vol.1-17\",1,10.1172/JCI101100,PMC548872,0,,live";
 		String[] expectedTokens = new String[] { "J Clin Invest", "0021-9738", "1558-8238", "1940", "19",
 				"\"Index, vol.1-17\"", "1", "10.1172/JCI101100", "PMC548872", "0", "", "live" };
@@ -202,7 +202,7 @@ public class StringUtilTest extends DefaultTestCase {
 	}
 
 	@Test
-	public void testSplitWithFieldDelimiter_EmptyColumnsAtEnd() throws Exception {
+	public void testSplitWithFieldDelimiter_EmptyColumnsAtEnd() {
 		String inputStr = "J Clin Invest,0021-9738,1558-8238,1940,19,\"Index, vol.1-17\",1,10.1172/JCI101100,PMC548872,0,,";
 		String[] expectedTokens = new String[] { "J Clin Invest", "0021-9738", "1558-8238", "1940", "19",
 				"\"Index, vol.1-17\"", "1", "10.1172/JCI101100", "PMC548872", "0", "", "" };
@@ -211,14 +211,14 @@ public class StringUtilTest extends DefaultTestCase {
 	}
 
 	@Test
-	public void testSplitWithFieldDelimiter_NoColumns() throws Exception {
+	public void testSplitWithFieldDelimiter_NoColumns() {
 		String inputStr = "J Clin Invest,0021-9738,1558-8238,1940,19,\"Index, vol.1-17\",1,10.1172/JCI101100,PMC548872,0,,live";
 		assertArrayEquals(String.format("One token should include a comma"), new String[] { inputStr },
 				StringUtil.splitWithFieldEnclosure(inputStr, StringConstants.SEMICOLON, StringConstants.QUOTATION_MARK));
 	}
 
 	@Test
-	public void testSplitWithFieldDelimiter_FieldDelimiterNotPresentInText() throws Exception {
+	public void testSplitWithFieldDelimiter_FieldDelimiterNotPresentInText() {
 		String inputStr = "J Clin Invest,0021-9738,1558-8238,1940,19,\"Index, vol.1-17\",1,10.1172/JCI101100,PMC548872,0,,live";
 		String[] expectedTokens = new String[] { "J Clin Invest", "0021-9738", "1558-8238", "1940", "19", "\"Index",
 				" vol.1-17\"", "1", "10.1172/JCI101100", "PMC548872", "0", "", "live" };
@@ -227,7 +227,7 @@ public class StringUtilTest extends DefaultTestCase {
 	}
 
 	@Test
-	public void testSplitWithFieldDelimiter_FieldDelimiterNull() throws Exception {
+	public void testSplitWithFieldDelimiter_FieldDelimiterNull() {
 		String inputStr = "J Clin Invest,0021-9738,1558-8238,1940,19,\"Index, vol.1-17\",1,10.1172/JCI101100,PMC548872,0,,live";
 		String[] expectedTokens = new String[] { "J Clin Invest", "0021-9738", "1558-8238", "1940", "19", "\"Index",
 				" vol.1-17\"", "1", "10.1172/JCI101100", "PMC548872", "0", "", "live" };
@@ -236,7 +236,7 @@ public class StringUtilTest extends DefaultTestCase {
 	}
 
 	@Test
-	public void testSplitWithFieldDelimiter_FieldDelimiterIsRegexSpecialCharacter() throws Exception {
+	public void testSplitWithFieldDelimiter_FieldDelimiterIsRegexSpecialCharacter() {
 		String inputStr = "J Clin Invest,0021-9738,1558-8238,1940,19,*Index, vol.1-17*,1,10.1172/JCI101100,PMC548872,0,,live";
 		String[] expectedTokens = new String[] { "J Clin Invest", "0021-9738", "1558-8238", "1940", "19",
 				"*Index, vol.1-17*", "1", "10.1172/JCI101100", "PMC548872", "0", "", "live" };
@@ -250,7 +250,7 @@ public class StringUtilTest extends DefaultTestCase {
 
 			String none = "simple word";
 
-			String one = "\u0031"; // 31
+//			String one = "\u0031"; // 31
 			String o_umlaut = "\u00f6"; // c3-b6 o with diaeresis
 			String devanagari_one = "\u0967"; // e0-a5-0a7
 
@@ -298,7 +298,7 @@ public class StringUtilTest extends DefaultTestCase {
 	}
 
 	@Test
-	public void testDelimitAndTrim_WithTrailingDelimiter() throws Exception {
+	public void testDelimitAndTrim_WithTrailingDelimiter() {
 		String inputStr = "\"D015430\",";
 		List<String> expectedTokens = CollectionsUtil.createList("\"D015430\"");
 		assertEquals(String.format("One token should be returned"), expectedTokens, StringUtil.delimitAndTrim(inputStr,
@@ -306,7 +306,7 @@ public class StringUtilTest extends DefaultTestCase {
 	}
 
 	@Test
-	public void testDelimitAndTrim_WithTrailingDelimiter_RemoveFieldEnclosures() throws Exception {
+	public void testDelimitAndTrim_WithTrailingDelimiter_RemoveFieldEnclosures() {
 		String inputStr = "\"D015430\",";
 		List<String> expectedTokens = CollectionsUtil.createList("D015430");
 		assertEquals(String.format("One token should be returned"), expectedTokens, StringUtil.delimitAndTrim(inputStr,

@@ -341,11 +341,10 @@ public class FTPUtil {
 	 */
 	private static List<FTPFile> getFilesAvailableForDownload(FTPClient ftpClient, String fileSuffix)
 			throws IOException {
-		if (fileSuffix == null) {
+		if (fileSuffix == null)
 			return Arrays.asList(ftpClient.listFiles());
-		} else {
-			return Arrays.asList(ftpClient.listFiles(String.format("*%s", fileSuffix)));
-		}
+		
+		return Arrays.asList(ftpClient.listFiles(String.format("*%s", fileSuffix)));
 	}
 
 	/**

@@ -3,9 +3,6 @@ package edu.ucdenver.ccp.common.io;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-
-import org.apache.commons.io.input.ReaderInputStream;
 import org.apache.log4j.Logger;
 
 import edu.ucdenver.ccp.common.file.CharacterEncoding;

@@ -101,7 +101,7 @@ public class FTPUtilTest extends DefaultTestCase {
 	}
 
 	@Test
-	public void testPause() throws Exception {
+	public void testPause() {
 		long before = System.currentTimeMillis();
 		FTPUtil.pause(4);
 		long after = System.currentTimeMillis();

@@ -21,8 +21,6 @@ package edu.ucdenver.ccp.common.file;
 import static org.junit.Assert.*;
 
 import java.io.File;
-import java.io.FileOutputStream;
-
 import org.junit.Before;
 import org.junit.Test;
 

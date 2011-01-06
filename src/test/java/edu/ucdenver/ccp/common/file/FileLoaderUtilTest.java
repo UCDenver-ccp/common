@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -37,7 +36,6 @@ import org.junit.Test;
 
 import edu.ucdenver.ccp.common.collections.CollectionsUtil;
 import edu.ucdenver.ccp.common.file.reader.StreamLineIterator;
-import edu.ucdenver.ccp.common.file.reader.LineReader.Line;
 import edu.ucdenver.ccp.common.string.RegExPatterns;
 import edu.ucdenver.ccp.common.string.StringConstants;
 import edu.ucdenver.ccp.common.test.DefaultTestCase;

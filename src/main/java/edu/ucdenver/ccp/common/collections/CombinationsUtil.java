@@ -113,9 +113,9 @@ public class CombinationsUtil {
 							}
 						}
 						return true;
-					} else {
-						return false;
 					}
+					
+					return false;
 				}
 				return true;
 			}
@@ -151,51 +151,50 @@ public class CombinationsUtil {
 		// logger.info("Entries size: " + entries.size() + " -- " + entries.toString());
 		if (entries.size() < 2)
 			return IteratorUtil.getEmptyIterator();
-		else
-			return new Iterator<CombinationsUtil.Pair<T>>() {
-				private int outerIndex = 0;
-				private int innerIndex = 1;
-				private int listLength = outerList.size();
 
-				private CombinationsUtil.Pair<T> nextPair = null;
+		return new Iterator<CombinationsUtil.Pair<T>>() {
+			private int outerIndex = 0;
+			private int innerIndex = 1;
+			private int listLength = outerList.size();
 
-				@Override
-				public boolean hasNext() {
-					if (nextPair == null) {
-						if (outerIndex < listLength || innerIndex < listLength) {
-							if (innerIndex == listLength) {
-								outerIndex++;
-								if (outerIndex == listLength - 1)
-									return false;
-								innerIndex = outerIndex + 1;
-							}
-							nextPair = new CombinationsUtil.Pair<T>(outerList.get(outerIndex),
-									outerList.get(innerIndex));
-							innerIndex++;
-							return true;
+			private CombinationsUtil.Pair<T> nextPair = null;
+
+			@Override
+			public boolean hasNext() {
+				if (nextPair == null) {
+					if (outerIndex < listLength || innerIndex < listLength) {
+						if (innerIndex == listLength) {
+							outerIndex++;
+							if (outerIndex == listLength - 1)
+								return false;
+							innerIndex = outerIndex + 1;
 						}
-						return false;
+						nextPair = new CombinationsUtil.Pair<T>(outerList.get(outerIndex), outerList.get(innerIndex));
+						innerIndex++;
+						return true;
 					}
-					return true;
+					return false;
+				}
+				return true;
+			}
+
+			@Override
+			public CombinationsUtil.Pair<T> next() {
+				if (!hasNext()) {
+					throw new NoSuchElementException();
 				}
 
-				@Override
-				public CombinationsUtil.Pair<T> next() {
-					if (!hasNext()) {
-						throw new NoSuchElementException();
-					}
+				CombinationsUtil.Pair<T> pairToReturn = nextPair;
+				nextPair = null;
+				return pairToReturn;
+			}
 
-					CombinationsUtil.Pair<T> pairToReturn = nextPair;
-					nextPair = null;
-					return pairToReturn;
-				}
+			@Override
+			public void remove() {
+				throw new UnsupportedOperationException("The remove operation is not supported by this iterator.");
+			}
 
-				@Override
-				public void remove() {
-					throw new UnsupportedOperationException("The remove operation is not supported by this iterator.");
-				}
-
-			};
+		};
 
 	}
 

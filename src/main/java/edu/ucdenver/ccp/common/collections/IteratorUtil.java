@@ -59,10 +59,10 @@ public class IteratorUtil {
 					if (currentIterator.hasNext()) {
 						nextT = currentIterator.next();
 						return true;
-					} else {
-						currentIterator = null;
-						return hasNext();
 					}
+					
+					currentIterator = null;
+					return hasNext();
 				}
 				return true;
 			}

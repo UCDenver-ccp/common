@@ -34,21 +34,21 @@ import static edu.ucdenver.ccp.common.string.RegExPatterns.IS_NUMBER_OR_HYPHEN;
 public class RegExPatternsTest {
 
 	@Test
-	public void test_has_numbers_only_pattern_match_expected() throws Exception {
+	public void test_has_numbers_only_pattern_match_expected() {
 		assertTrue(matchesEntireInput("123456", HAS_NUMBERS_ONLY));
 		assertTrue(matchesEntireInput("0", HAS_NUMBERS_ONLY));
 		assertTrue(matchesEntireInput("000203005005060448692", HAS_NUMBERS_ONLY));
 	}
 
 	@Test
-	public void test_has_numbers_only_pattern_match_not_expected() throws Exception {
+	public void test_has_numbers_only_pattern_match_not_expected() {
 		assertFalse(matchesEntireInput("-0", HAS_NUMBERS_ONLY));
 		assertFalse(matchesEntireInput(" 0", HAS_NUMBERS_ONLY));
 		assertFalse(matchesEntireInput("1234b56436", HAS_NUMBERS_ONLY));
 	}
 
 	@Test
-	public void test_has_numbers_only_opt_neg_pattern_match_expected() throws Exception {
+	public void test_has_numbers_only_opt_neg_pattern_match_expected() {
 		assertTrue(matchesEntireInput("123456", HAS_NUMBERS_ONLY_OPT_NEG));
 		assertTrue(matchesEntireInput("0", HAS_NUMBERS_ONLY_OPT_NEG));
 		assertTrue(matchesEntireInput("000203005005060448692", HAS_NUMBERS_ONLY_OPT_NEG));
@@ -59,14 +59,14 @@ public class RegExPatternsTest {
 	}
 
 	@Test
-	public void test_has_numbers_only_opt_neg_pattern_match_not_expected() throws Exception {
+	public void test_has_numbers_only_opt_neg_pattern_match_not_expected() {
 		assertFalse(matchesEntireInput(" 0", HAS_NUMBERS_ONLY_OPT_NEG));
 		assertFalse(matchesEntireInput("- 0", HAS_NUMBERS_ONLY_OPT_NEG));
 		assertFalse(matchesEntireInput("-1234b56436", HAS_NUMBERS_ONLY_OPT_NEG));
 	}
 
 	@Test
-	public void test_has_numbers_only_opt_neg_zero_start_pattern_match_expected() throws Exception {
+	public void test_has_numbers_only_opt_neg_zero_start_pattern_match_expected() {
 		assertTrue(matchesEntireInput("0123456", HAS_NUMBERS_ONLY_OPT_NEG_ZERO_START));
 		assertTrue(matchesEntireInput("0", HAS_NUMBERS_ONLY_OPT_NEG_ZERO_START));
 		assertTrue(matchesEntireInput("000203005005060448692", HAS_NUMBERS_ONLY_OPT_NEG_ZERO_START));
@@ -77,7 +77,7 @@ public class RegExPatternsTest {
 	}
 
 	@Test
-	public void test_has_numbers_only_opt_neg_zero_start_pattern_match_not_expected() throws Exception {
+	public void test_has_numbers_only_opt_neg_zero_start_pattern_match_not_expected() {
 		assertFalse(matchesEntireInput(" 0", HAS_NUMBERS_ONLY_OPT_NEG_ZERO_START));
 		assertFalse(matchesEntireInput("-123456", HAS_NUMBERS_ONLY_OPT_NEG_ZERO_START));
 		assertFalse(matchesEntireInput("-1234b56436", HAS_NUMBERS_ONLY_OPT_NEG_ZERO_START));
@@ -88,7 +88,7 @@ public class RegExPatternsTest {
 	}
 
 	@Test
-	public void test_getter_method_name_pattern() throws Exception {
+	public void test_getter_method_name_pattern() {
 		assertTrue(matchesPartialInput("getText", GETTER_METHOD_NAME_PATTERN));
 		assertTrue(matchesPartialInput("getID", GETTER_METHOD_NAME_PATTERN));
 		assertFalse(matchesPartialInput("getter", GETTER_METHOD_NAME_PATTERN));
@@ -101,7 +101,7 @@ public class RegExPatternsTest {
 	}
 
 	@Test
-	public void testgetNDigitsPattern() throws Exception {
+	public void testgetNDigitsPattern() {
 		assertTrue(matchesEntireInput("2010", getNDigitsPattern(4)));
 		assertFalse(matchesEntireInput("2010", getNDigitsPattern(0)));
 		assertFalse(matchesEntireInput("2010", getNDigitsPattern(3)));
@@ -115,7 +115,7 @@ public class RegExPatternsTest {
 	}
 
 	@Test
-	public void testIsNumberOrHyphen() throws Exception {
+	public void testIsNumberOrHyphen() {
 		assertTrue(matchesEntireInput("99", IS_NUMBER_OR_HYPHEN));
 		assertTrue(matchesEntireInput("-", IS_NUMBER_OR_HYPHEN));
 		assertFalse(matchesEntireInput("-99", IS_NUMBER_OR_HYPHEN));
@@ -125,7 +125,7 @@ public class RegExPatternsTest {
 	}
 
 	@Test
-	public void testIsLetterOrNumber() throws Exception {
+	public void testIsLetterOrNumber() {
 		assertTrue(matchesEntireInput("a", IS_LETTER_OR_NUMBER));
 		assertTrue(matchesEntireInput("0", IS_LETTER_OR_NUMBER));
 		assertFalse(matchesEntireInput("_", IS_LETTER_OR_NUMBER));

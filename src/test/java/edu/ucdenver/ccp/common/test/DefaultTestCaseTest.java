@@ -44,10 +44,9 @@ public class DefaultTestCaseTest extends DefaultTestCase {
 	@Test
 	public void test_folder_creation() {
 		long start = System.nanoTime();
-		for (int i=1; i<10000; i++) {
-			File newFolder = folder.newFolder("folder" + i);
-			//System.out.println("new folder: " + newFolder.getAbsolutePath());
-		}
+		for (int i=1; i<10000; i++)
+			folder.newFolder("folder" + i);
+		
 		long end = System.nanoTime();
 		long durationMilli = (end - start)/1000000;
 		assertTrue (durationMilli < 10000);

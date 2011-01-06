@@ -120,19 +120,19 @@ public class FileReaderUtil {
 			int... columnIndexes) {
 		if (delimiterRegex == null) {
 			return new String[] { line };
-		} else {
-			String[] lineTokens = StringUtil.splitWithFieldEnclosure(line, delimiterRegex, fieldEnclosingRegex);
-			if (columnIndexes == null || columnIndexes.length == 0) {
-				columnIndexes = CollectionsUtil.createZeroBasedSequence(lineTokens.length);
-			}
-			String[] outputColumns = new String[columnIndexes.length];
-			int outputIndex = 0;
-			for (int columnIndex : columnIndexes) {
-				ensureColumnIndexIsValid(columnIndex, line, lineTokens);
-				outputColumns[outputIndex++] = lineTokens[columnIndex];
-			}
-			return outputColumns;
 		}
+		
+		String[] lineTokens = StringUtil.splitWithFieldEnclosure(line, delimiterRegex, fieldEnclosingRegex);
+		if (columnIndexes == null || columnIndexes.length == 0) {
+			columnIndexes = CollectionsUtil.createZeroBasedSequence(lineTokens.length);
+		}
+		String[] outputColumns = new String[columnIndexes.length];
+		int outputIndex = 0;
+		for (int columnIndex : columnIndexes) {
+			ensureColumnIndexIsValid(columnIndex, line, lineTokens);
+			outputColumns[outputIndex++] = lineTokens[columnIndex];
+		}
+		return outputColumns;
 	}
 
 	/**

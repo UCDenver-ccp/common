@@ -20,7 +20,7 @@ public class CombinationsUtilTest {
 
 	
 	@Test
-	public void testComputeCombinations() throws Exception {
+	public void testComputeCombinations() {
 		Collection<String> list0 = CollectionsUtil.createList("A", "B");
 		Collection<String> list1 = CollectionsUtil.createList("1", "2", "3");
 		Collection<String> list2 = CollectionsUtil.createList("X");
@@ -40,7 +40,6 @@ public class CombinationsUtilTest {
 		expectedTuples.add(CollectionsUtil.createList("B", "3", "X", "7"));
 		expectedTuples.add(CollectionsUtil.createList("B", "3", "X", "8"));
 
-		@SuppressWarnings("unchecked")
 		List<Collection<String>> collectionOfListsToCombine = CollectionsUtil.createList(list0, list1, list2, list3);
 		List<List<String>> tuples = CollectionsUtil.createList(CombinationsUtil
 				.computeCombinations(collectionOfListsToCombine));
@@ -49,7 +48,7 @@ public class CombinationsUtilTest {
 	}
 
 	@Test
-	public void testComputePairwiseCombinations_SinglePair() throws Exception {
+	public void testComputePairwiseCombinations_SinglePair() {
 		Set<String> pairMembers = CollectionsUtil.createSet("A", "B");
 		List<CombinationsUtil.Pair<String>> pairs = CollectionsUtil.createList(CombinationsUtil.computePairwiseCombinations(pairMembers));
 		List<CombinationsUtil.Pair<String>> expectedPairs = new ArrayList<CombinationsUtil.Pair<String>>();
@@ -60,7 +59,7 @@ public class CombinationsUtilTest {
 	}
 
 	@Test
-	public void testPairEquals() throws Exception {
+	public void testPairEquals() {
 		assertTrue(String.format("Identical pairs should match."),
 				new CombinationsUtil.Pair<String>("A", "B").equals(new CombinationsUtil.Pair<String>("A", "B")));
 		assertFalse(String.format("Mismatched pairs should not match."),
@@ -72,7 +71,7 @@ public class CombinationsUtilTest {
 	}
 
 	@Test
-	public void testComputePairwiseCombinations_MultiplePairs() throws Exception {
+	public void testComputePairwiseCombinations_MultiplePairs() {
 		Set<String> pairMembers = CollectionsUtil.createSet("A", "B", "C", "D");
 		Set<CombinationsUtil.Pair<String>> pairs = new HashSet<CombinationsUtil.Pair<String>>(CollectionsUtil.createList(CombinationsUtil
 				.computePairwiseCombinations(pairMembers)));
@@ -89,7 +88,7 @@ public class CombinationsUtilTest {
 	}
 	
 	@Test
-	public void testComputePairwiseCombinations_OneEntry() throws Exception {
+	public void testComputePairwiseCombinations_OneEntry() {
 		Set<String> pairMembers = CollectionsUtil.createSet("A");
 		List<CombinationsUtil.Pair<String>> pairs = CollectionsUtil.createList(CombinationsUtil.computePairwiseCombinations(pairMembers));
 
@@ -97,7 +96,7 @@ public class CombinationsUtilTest {
 
 	}
 	@Test
-	public void testComputePairwiseCombinations_ZeroEntries() throws Exception {
+	public void testComputePairwiseCombinations_ZeroEntries() {
 		Set<String> pairMembers = new HashSet<String>();
 		List<CombinationsUtil.Pair<String>> pairs = CollectionsUtil.createList(CombinationsUtil.computePairwiseCombinations(pairMembers));
 		
@@ -106,7 +105,7 @@ public class CombinationsUtilTest {
 	}
 	
 	@Test
-	public void testComputePairwiseCombinations_2CollectionInput() throws Exception {
+	public void testComputePairwiseCombinations_2CollectionInput() {
 		Collection<String> input1 = CollectionsUtil.createList("A","B","C");
 		Collection<String> input2 = CollectionsUtil.createList("A","X","Y");
 		Set<CombinationsUtil.Pair<String>> expectedPairs = new HashSet<CombinationsUtil.Pair<String>>();
@@ -124,7 +123,7 @@ public class CombinationsUtilTest {
 	}
 	
 	@Test
-	public void testComputePairwiseCombinations_2CollectionInput_ProhibitSelfPairs() throws Exception {
+	public void testComputePairwiseCombinations_2CollectionInput_ProhibitSelfPairs() {
 		Collection<String> input1 = CollectionsUtil.createList("A","B","C");
 		Collection<String> input2 = CollectionsUtil.createList("A","X","Y");
 		Set<CombinationsUtil.Pair<String>> expectedPairs = new HashSet<CombinationsUtil.Pair<String>>();
@@ -141,7 +140,7 @@ public class CombinationsUtilTest {
 	}
 	
 	@Test
-	public void testComputePairwiseCombinations_2CollectionInput_emptyInput() throws Exception {
+	public void testComputePairwiseCombinations_2CollectionInput_emptyInput() {
 		Collection<String> input1 = Collections.emptyList();
 		Collection<String> input2 = CollectionsUtil.createList("A","X","Y");
 		Set<CombinationsUtil.Pair<String>> expectedPairs = Collections.emptySet();

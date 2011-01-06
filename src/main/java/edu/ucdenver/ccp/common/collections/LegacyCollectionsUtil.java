@@ -53,12 +53,6 @@ public class LegacyCollectionsUtil {
 	 * @param clazz
 	 * @return
 	 */
-	/*
-	 * This method deals with the raw-type Iterator. Because of this, type checking cannot be done
-	 * by the compiler and is instead done at runtime, therefore it is safe to suppress the
-	 * "unchecked" compiler warnings.
-	 */
-	@SuppressWarnings("unchecked")
 	public static <T> Iterator<T> checkIterator(final Iterator iter, final Class<T> clazz) {
 		return new Iterator<T>() {
 

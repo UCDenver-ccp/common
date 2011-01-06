@@ -18,22 +18,16 @@
 
 package edu.ucdenver.ccp.common.file.reader;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 
-import edu.ucdenver.ccp.common.file.CharacterEncoding;
-import edu.ucdenver.ccp.common.file.FileReaderUtil;
+import edu.ucdenver.ccp.common.file.*;
 
 public class StreamLineReader extends LineReader {
 
 	private final BufferedReader reader;
 	private int lineNumber = 0;
 
-	public StreamLineReader(InputStream inputStream, CharacterEncoding encoding, String skipLinePrefix) throws IOException {
+	public StreamLineReader(InputStream inputStream, CharacterEncoding encoding, String skipLinePrefix) {
 		super(skipLinePrefix);
 		lineNumber = 0;
 		reader = FileReaderUtil.initBufferedReader(inputStream, encoding);

@@ -27,7 +27,7 @@ import edu.ucdenver.ccp.common.string.StringBufferUtil;
 public class StringBufferUtilTest {
 
 	@Test
-	public void testPrependToStringBuffer() throws Exception {
+	public void testPrependToStringBuffer() {
 		String originalText = "This is some text.";
 		String prependedText = "Prepended Text Here.";
 		StringBuffer sb = new StringBuffer();

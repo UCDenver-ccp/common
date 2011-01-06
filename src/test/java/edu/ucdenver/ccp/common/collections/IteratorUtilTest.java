@@ -11,7 +11,7 @@ import org.junit.Test;
 public class IteratorUtilTest {
 	
 	@Test
-	public void testConsolidateIterator() throws Exception {
+	public void testConsolidateIterator() {
 		List<Integer> list1 = CollectionsUtil.createList(1, 2, 3, 4);
 		List<Integer> list2 = CollectionsUtil.createList(5, 6, 7, 8);
 		List<Integer> emptyList = new ArrayList<Integer>();

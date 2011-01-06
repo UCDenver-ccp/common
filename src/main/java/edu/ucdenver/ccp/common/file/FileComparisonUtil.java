@@ -149,9 +149,9 @@ public class FileComparisonUtil {
 			String[] expectedLineToks = expectedLine.split(delimiterRegex, -1);
 			if (lineToks.length == expectedLineToks.length) {
 				return CollectionsUtil.array2Set(lineToks).equals(CollectionsUtil.array2Set(expectedLineToks));
-			} else {
-				return false;
 			}
+			
+			return false;
 		} else
 			throw new RuntimeException(String.format("Unknown ColumnOrder: %s", columnOrder.toString()));
 	}

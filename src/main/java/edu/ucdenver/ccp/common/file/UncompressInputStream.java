@@ -78,14 +78,14 @@ class UncompressInputStream extends FilterInputStream
 
 
     byte[] one = new byte[1];
-    public synchronized int read() throws IOException
-    {
-	int b = in.read(one, 0, 1);
-	if (b == 1)
-	    return (one[0] & 0xff);
-	else
-	    return -1;
-    }
+
+	public synchronized int read() throws IOException {
+		int b = in.read(one, 0, 1);
+		if (b == 1)
+			return (one[0] & 0xff);
+
+		return -1;
+	}
 
 
     // string table stuff
@@ -351,9 +351,9 @@ class UncompressInputStream extends FilterInputStream
 	int got = read(tmp, 0, (int) num);
 
 	if (got > 0)
-	    return (long) got;
-	else
-	    return 0L;
+	    return got;
+	
+	return 0L;
     }
 
 
