@@ -44,6 +44,7 @@
 	<target name="test.unit" description="Runs unit tests" depends="init-test-dirs">
 		<property name="cp" refid="classpath.tests"/>
 		<echo message="Unit tests classpath: ${cp}" />
+		<echoproperties/>
 		<antcall target="run.junit">
 			<param name="includes.unit.regex" value="**/*Test.class" />
 			<param name="classpath.junit" value="${cp}" />
