@@ -156,7 +156,7 @@ public class BufferedRafReader extends RandomAccessFile {
 		public String toString() {
 			byte[] byteArray = getByteArray();
 			try {
-				return StringUtil.toString(byteArray, encoding);
+				return StringUtil.decode(byteArray, encoding);
 			} catch (IOException e) {
 				throw new RuntimeException("Error converting ByteList to String.", e);
 			}

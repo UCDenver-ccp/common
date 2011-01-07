@@ -462,15 +462,17 @@ public class StringUtil {
 	}
 
 	/**
-	 * Converts a byteArray to a <code>String</code> in a character-encoding safe manner
+	 * Converts a byteArray to a <code>String</code> in a character-encoding safe manner 
+	 * by decoding it using specified character set. 
 	 * 
 	 * @param byteArray
 	 * @param encoding
 	 * @return
 	 * @throws IOException
 	 */
-	public static String toString(byte[] byteArray, CharacterEncoding encoding) throws IOException {
-		return StreamUtil.toString(new InputStreamReader(new ByteArrayInputStream(byteArray), encoding.getDecoder()));
+	public static String decode(byte[] byteArray, CharacterEncoding encoding) throws IOException {
+		InputStreamReader isr = new InputStreamReader(new ByteArrayInputStream(byteArray), encoding.getDecoder());
+		return StreamUtil.toString(isr);
 	}
 
 }
