@@ -22,6 +22,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static edu.ucdenver.ccp.common.string.StringUtil.*;
 
 import java.nio.charset.MalformedInputException;
 import java.util.List;
@@ -319,18 +320,16 @@ public class StringUtilTest extends DefaultTestCase {
 		String utf8String = "nai\u0308ve";
 
 		byte[] asciiByteArray = asciiString.getBytes();
-		assertEquals(String.format("ASCII bytes should be able to be read using ASCII encoding"), asciiString,
-				StringUtil.toString(asciiByteArray, CharacterEncoding.US_ASCII));
-		assertEquals(String.format("ASCII bytes should be able to be read using UTF-8 encoding"), asciiString,
-				StringUtil.toString(asciiByteArray, CharacterEncoding.UTF_8));
-		assertEquals(String.format("UTF-8 bytes should be able to be read using UTF-8 encoding"), utf8String,
-				StringUtil.toString(utf8String.getBytes(), CharacterEncoding.UTF_8));
+		assertEquals("ASCII bytes should be able to be read using ASCII encoding", asciiString, decode(asciiByteArray, CharacterEncoding.US_ASCII));
+		assertEquals("ASCII bytes should be able to be read using UTF-8 encoding", asciiString, decode(asciiByteArray, CharacterEncoding.UTF_8));
+		assertEquals("UTF-8 bytes should be able to be read using UTF-8 encoding", utf8String, 
+				decode(utf8String.getBytes(CharacterEncoding.UTF_8.getCharacterSetName()), CharacterEncoding.UTF_8));
 	}
 
 	@Test(expected = MalformedInputException.class)
 	public void testByteArrayToString_WithEncodingMismatch() throws Exception {
 		String utf8String = "nai\u0308ve";
-		StringUtil.toString(utf8String.getBytes(), CharacterEncoding.US_ASCII);
+		StringUtil.decode(utf8String.getBytes(CharacterEncoding.UTF_8.getCharacterSetName()), CharacterEncoding.US_ASCII);
 	}
 
 }
