@@ -54,7 +54,7 @@ public class FTPUtil {
 		private FileType(int type) {
 			this.type = type;
 		}
-	};
+	}
 
 	/**
 	 * Initializes a FTPClient
