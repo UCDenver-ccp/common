@@ -1,9 +1,7 @@
 package edu.ucdenver.ccp.common.file;
 
 import java.io.File;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetDecoder;
-import java.nio.charset.CharsetEncoder;
+import java.nio.charset.*;
 
 /**
  * This enum ties together various character encodings with canonical file suffixes used to indicate
@@ -33,11 +31,11 @@ public enum CharacterEncoding {
 	}
 
 	public CharsetEncoder getEncoder() {
-		return Charset.forName(getCharacterSetName()).newEncoder();
+		return Charset.forName(getCharacterSetName()).newEncoder().onMalformedInput(CodingErrorAction.REPORT).onUnmappableCharacter(CodingErrorAction.REPORT);
 	}
 
 	public CharsetDecoder getDecoder() {
-		return Charset.forName(getCharacterSetName()).newDecoder();
+		return Charset.forName(getCharacterSetName()).newDecoder().onMalformedInput(CodingErrorAction.REPORT).onUnmappableCharacter(CodingErrorAction.REPORT);
 	}
 
 	/**
