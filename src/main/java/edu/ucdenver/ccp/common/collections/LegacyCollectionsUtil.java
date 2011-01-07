@@ -53,7 +53,7 @@ public class LegacyCollectionsUtil {
 	 * @param clazz
 	 * @return
 	 */
-	public static <T> Iterator<T> checkIterator(final Iterator iter, final Class<T> clazz) {
+	public static <T> Iterator<T> checkIterator(final Iterator<T> iter, final Class<T> clazz) {
 		return new Iterator<T>() {
 
 			@Override

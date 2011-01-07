@@ -65,11 +65,13 @@ public class DirectoryListing {
 }
 
 // nearly trivial extension required by abstract DirectoryWalker used below
-class CollectFilesWalker extends DirectoryWalker {
+class CollectFilesWalker extends DirectoryWalker<File> {
 	public CollectFilesWalker(FileFilter filter,int levels) {
 			super(filter, levels);
 	}
-	protected void handleFile(File file, int depth, Collection results) throws IOException {
+	
+	@Override
+	protected void handleFile(File file, int depth, Collection<File> results) throws IOException {
 		results.add(file);
 	}
 	
