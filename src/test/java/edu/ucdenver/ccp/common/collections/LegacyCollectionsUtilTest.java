@@ -35,7 +35,7 @@ public class LegacyCollectionsUtilTest {
 	@Test(expected = ClassCastException.class)
 	public void testCheckList_HeterogeneousListInput() {
 		@SuppressWarnings("rawtypes")
-		List legacyList = initRawTypeList("string 1", new Integer(1));
+		List legacyList = initRawTypeList("string 1", Integer.valueOf(1));
 		LegacyCollectionsUtil.checkList(legacyList, String.class);
 	}
 
@@ -68,7 +68,7 @@ public class LegacyCollectionsUtilTest {
 	public void testCheckIterator_HeterogeneousInput() {
 		String value1 = "1";
 		String value2 = "2";
-		Integer value3 = new Integer(3);
+		Integer value3 = Integer.valueOf(3);
 
 		@SuppressWarnings("rawtypes")
 		Iterator legacyIter = initRawTypeList(value1, value2, value3).iterator();
