@@ -37,8 +37,10 @@ public class LegacyCollectionsUtil {
 		} catch (ClassCastException cce) {
 			for (Object item : list)
 				if (!(clazz.isInstance(item)))
-					throw new ClassCastException(String.format("Cannot cast from class %s to expected class %s.", item
-							.getClass().getName(), clazz.getName()));
+					throw new ClassCastException(
+							String.format(
+									"Raw-type List contains an unexpected class. Cannot cast from class %s to expected class %s.",
+									item.getClass().getName(), clazz.getName()));
 		}
 		return checkedList;
 	}
@@ -63,7 +65,15 @@ public class LegacyCollectionsUtil {
 
 			@Override
 			public T next() {
-				return clazz.cast(iter.next());
+				Object next = iter.next();
+				try {
+					return clazz.cast(next);
+				} catch (ClassCastException cce) {
+					throw new ClassCastException(
+							String.format(
+									"Raw-type Iterator returned an unexpected class. Cannot cast from class %s to expected class %s.",
+									next.getClass().getName(), clazz.getName()));
+				}
 			}
 
 			@Override
