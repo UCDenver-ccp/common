@@ -20,9 +20,10 @@ public class LegacyCollectionsUtil {
 	 * at runtime in this case, so compiler warnings for type checking are suppressed.
 	 * 
 	 * @param <T>
-	 * @param list
-	 * @param clazz
-	 * @return
+	 * @param list a raw-type list
+	 * @param clazz the Class expected to comprise the contents of the input raw-type list
+	 * @return a generified List which has been verified to contain only instances off the expected Class
+	 * @throws ClassCastException if a member of the input list is not an instance of the expected class
 	 */
 	/*
 	 * This method deals with the raw-type List. Because of this, type checking cannot be done by
@@ -51,9 +52,10 @@ public class LegacyCollectionsUtil {
 	 * warnings for unchecked types can be suppressed.
 	 * 
 	 * @param <T>
-	 * @param iter
-	 * @param clazz
-	 * @return
+	 * @param iter a raw-type iterator
+	 * @param clazz the Class expected by the user to be returned by the input raw-type iterator
+	 * @return a generified Iterator containing only instances of the specified class
+	 * @throws ClassCastException if the input iterator returns a class that is not an instance of the expected class
 	 */
 	public static <T> Iterator<T> checkIterator(@SuppressWarnings("rawtypes") final Iterator iter, final Class<T> clazz) {
 		return new Iterator<T>() {
@@ -65,15 +67,7 @@ public class LegacyCollectionsUtil {
 
 			@Override
 			public T next() {
-				Object next = iter.next();
-				try {
-					return clazz.cast(next);
-				} catch (ClassCastException cce) {
-					throw new ClassCastException(
-							String.format(
-									"Raw-type Iterator returned an unexpected class. Cannot cast from class %s to expected class %s.",
-									next.getClass().getName(), clazz.getName()));
-				}
+				return clazz.cast(iter.next());
 			}
 
 			@Override
