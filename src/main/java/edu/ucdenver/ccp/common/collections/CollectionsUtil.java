@@ -450,7 +450,7 @@ public class CollectionsUtil {
 			collection.addAll(inputCollection);
 		return collection;
 	}
-	
+
 	/**
 	 * Consolidates the Collection of input Collections into a single Collection
 	 * 
@@ -465,7 +465,6 @@ public class CollectionsUtil {
 		return set;
 	}
 
-	
 	/**
 	 * Given an input collection, this method returns a delimited String containing the items in the
 	 * collection
@@ -499,7 +498,8 @@ public class CollectionsUtil {
 	 */
 	public static <T> T getSingleElement(Collection<T> collection) {
 		if (collection.size() != 1)
-			throw new IndexOutOfBoundsException("Input collection must contain a single element.");
+			throw new IndexOutOfBoundsException(String.format(
+					"Expected collection to contain a single element, but observed %d elements.", collection.size()));
 		return collection.iterator().next();
 	}
 
