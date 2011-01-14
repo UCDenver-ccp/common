@@ -123,10 +123,12 @@ public class FileUtil {
 	 * @throws IllegalStateException
 	 */
 	public static void mkdir(File directory) throws IllegalStateException {
-		boolean succeeded = directory.mkdirs();
-		if (!succeeded) {
-			throw new IllegalStateException(String.format("Error while creating directory: %s",
-					directory.getAbsolutePath()));
+		if (!directory.exists()) {
+			boolean succeeded = directory.mkdirs();
+			if (!succeeded) {
+				throw new IllegalStateException(String.format("Error while creating directory: %s",
+						directory.getAbsolutePath()));
+			}
 		}
 	}
 
@@ -354,7 +356,7 @@ public class FileUtil {
 	private static IOFileFilter createDirectoryFilter(boolean recurse) {
 		if (recurse)
 			return FileFilterUtils.and(FileFilterUtils.directoryFileFilter(), createVisibleFileFilter());
-		
+
 		return FileFilterUtils.and(FileFilterUtils.fileFileFilter(), createVisibleFileFilter());
 	}
 
