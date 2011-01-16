@@ -28,7 +28,7 @@
 		<fileset dir="${lib.test.dir}">
 			<include name="**/*.jar" />
 		</fileset>
-		<pathelement path="${source.test.dir}" />		
+		<pathelement path="${source.test.dir}" />
 	</path>
 
 	<!-- Convenience properties for re-use in other invoked scripts -->
@@ -53,10 +53,10 @@
 	<target name="build-only" depends="init,build-dependencies,compile,dist" description="Builds and packages into a jar file." />
 
 	<!-- Build and run unit tests only (no functional tests) -->
-	<target name="build" depends="build-dependencies,init,compile,run.unit.tests,dist" description="Builds, unit tests and packages into a jar file if the tests are successful." />
+	<target name="build" depends="build-dependencies,init,compile,create-javadoc,run.unit.tests,dist" description="Builds, unit tests and packages into a jar file if the tests are successful." />
 
 	<!-- Build and run code analyses -->
-	<target name="build-analysis" depends="build-only,complete.code.analysis" description="Builds and runs all source code analyses." />
+	<target name="build-analysis" depends="build-only,create-javadoc,complete.code.analysis" description="Builds and runs all source code analyses." />
 
 	<!-- Compiles the Java code -->
 	<target name="compile" depends="build-dependencies" description="Compiles the Java code">
@@ -103,8 +103,6 @@
 			</fileset>
 		</jar>
 
-		<antcall target="create-javadoc"/>
-		
 		<antcall target="copy-dependencies"/>
 		
 		<copy todir="${build.distribution.dir}" overwrite="true" >
