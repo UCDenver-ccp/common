@@ -29,6 +29,7 @@
 			<include name="**/*.jar" />
 		</fileset>
 		<pathelement path="${source.test.dir}" />
+		<path refid="classpath.test.dependency"/>
 	</path>
 
 	<!-- Convenience properties for re-use in other invoked scripts -->
@@ -110,15 +111,12 @@
 				<include name="**/*" />
 			</fileset>			
 		</copy>
-		
-
-
 	</target>
 
 	<!-- Builds the Javadocs -->
 	<target name="create-javadoc">
 		<javadoc sourcepath="${source.dir}" destdir="${build.javadoc.dir}" use="yes" 
-			windowtitle="Center for Computational Pharmacology Biomedical Discovery Accelerator API" linksource="yes">
+			windowtitle="Center for Computational Pharmacology" linksource="yes">
 
 			<classpath>
 				<path refid="classpath.compile" />
@@ -133,8 +131,4 @@
 			</doctitle>
 	</javadoc>
 </target>
-
-
-
-
 </project>
