@@ -15,6 +15,7 @@
 	<target name="build-dependencies" unless="skip.build.dependencies">
 		<echo message="Building ${ant.project.name} dependencies ..."/>
 		<foreach list="${dependency.list}" target="build-dependency" param="dependency.name" delimiter="," inheritall="false" inheritrefs="false" />
+		<foreach list="${test.dependency.list}" target="build-dependency" param="dependency.name" delimiter="," inheritall="false" inheritrefs="false" />
 	</target>
 
 	<target name="build-dependency">
