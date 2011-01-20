@@ -466,4 +466,22 @@ public class FileUtil {
 		return getFileIterator(fileOrDirectory, recurse, (String[]) null);
 	}
 
+	/**
+	 * Returns a File object with a relative path to the input directory
+	 * 
+	 * @param file
+	 * @param directory
+	 * @return
+	 */
+	public static File getFileRelativeToDirectory(File file, File directory) {
+		String directoryStr = directory.getAbsolutePath();
+		String fileStr = file.getAbsolutePath();
+		if (!fileStr.startsWith(directoryStr))
+			throw new IllegalArgumentException(String.format(
+					"Cannot determine relative file. Input file is not inside input directory. File=%s Directory=%s",
+					fileStr, directoryStr));
+		String relativeFileStr = fileStr.substring(directoryStr.length());
+		return new File(relativeFileStr);
+	}
+
 }
