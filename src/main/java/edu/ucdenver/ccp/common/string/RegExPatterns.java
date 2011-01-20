@@ -67,5 +67,35 @@ public class RegExPatterns {
 	public static final String getNDigitsPattern(int n) {
 		return String.format("\\d{%d}", n);
 	}
+	
+	/**
+	 * Prepares a string to be used in a Regular Expression search. This method places a backslash in front of
+	 * characters that need to be escaped in order to be recognized in a regular expression
+	 * 
+	 * @param regex
+	 *            the String to be converted into a Regular Expression search string
+	 * @return the converted String
+	 */
+	public static String escapeCharacterForRegEx(String regex) {
+		final String[] escapedChars = { "\\", "(", ")", "{", "}", "+", "*", "?", "[", "]", "^", "$", ".", "|" };
+		final String escape = "\\";
+		int splitIndex = -1;
+		String tmpStr = "";
+		for (int i = 0; i < escapedChars.length; i++) {
+			// escape characters for substr
+			if ((splitIndex = regex.indexOf(escapedChars[i])) > -1) {
+				int fromIndex = 0;
+				while (splitIndex > -1) { // check for mulitiple of same escapedChar in regex
+					// insert \ in front of the escaped character
+					tmpStr = regex.substring(0, splitIndex) + escape + regex.substring(splitIndex);
+					regex = tmpStr;
+					fromIndex = splitIndex + 2;
+					splitIndex = regex.indexOf(escapedChars[i], fromIndex);
+				}
+			}
+		}
+		return regex;
+	}
+
 
 }
