@@ -44,6 +44,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.jar.JarOutputStream;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.GZIPInputStream;
@@ -52,8 +57,10 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 import org.apache.tools.tar.TarEntry;
 import org.apache.tools.tar.TarInputStream;
+import org.apache.tools.tar.TarOutputStream;
 
 import edu.ucdenver.ccp.common.string.StringUtil;
 
@@ -69,6 +76,9 @@ public class FileArchiveUtil {
 	/**
 	 * Returns an InputStream for the specified file. This method can handle both .gz and .zip
 	 * files.
+	 * 
+	 * TODO: investigate apache commons-compress.. see if it can replace some/all of the code in
+	 * this class (http://commons.apache.org/compress/)
 	 * 
 	 * @param file
 	 * @return
@@ -166,8 +176,8 @@ public class FileArchiveUtil {
 			IllegalArgumentException, IOException {
 		FileUtil.validateDirectory(outputDirectory);
 		if (!isTarFile(tarFile)) {
-			throw new IllegalArgumentException(String.format("Cannot unpack. Input file is not a tarball: %s", tarFile
-					.getAbsolutePath()));
+			throw new IllegalArgumentException(String.format("Cannot unpack. Input file is not a tarball: %s",
+					tarFile.getAbsolutePath()));
 		}
 		TarInputStream tis = null;
 		try {
@@ -178,6 +188,78 @@ public class FileArchiveUtil {
 			}
 		} finally {
 			IOUtils.closeQuietly(tis);
+		}
+	}
+
+	public enum IncludeBaseDirectoryInPackage {
+		YES, NO
+	}
+
+	/**
+	 * Packs a directory and its contents into a tarball
+	 * 
+	 * @param directoryToPack
+	 * @param tarFile
+	 * @throws IOException
+	 */
+	public static void packTarFile(File directoryToPack, File tarFile,
+			IncludeBaseDirectoryInPackage includeBaseDirectory) throws IOException {
+		FileUtil.validateDirectory(directoryToPack);
+		TarOutputStream tos = new TarOutputStream(new FileOutputStream(tarFile));
+		tos.setLongFileMode(TarOutputStream.LONGFILE_GNU);
+		try {
+			for (Iterator<File> fileIter = FileUtil.getFileIterator(directoryToPack, true); fileIter.hasNext();) {
+				File file = fileIter.next();
+				File relativeDirectoryTarget = (includeBaseDirectory.equals(IncludeBaseDirectoryInPackage.YES)) ? directoryToPack
+						.getParentFile() : directoryToPack;
+				TarEntry tarEntry = new TarEntry(FileUtil.getFileRelativeToDirectory(file, relativeDirectoryTarget));
+				tarEntry.setSize(file.length());
+				tos.putNextEntry(tarEntry);
+				FileInputStream fis = new FileInputStream(file);
+				IOUtils.copyLarge(fis, tos);
+				fis.close();
+				tos.closeEntry();
+			}
+		} finally {
+			tos.close();
+		}
+	}
+
+	public static void packJarFile(File directoryToPack, File jarFile,
+			IncludeBaseDirectoryInPackage includeBaseDirectory) throws IOException {
+		FileUtil.validateDirectory(directoryToPack);
+		JarOutputStream jos = new JarOutputStream(new FileOutputStream(jarFile));
+		try {
+			for (Iterator<File> fileIter = FileUtil.getFileIterator(directoryToPack, true); fileIter.hasNext();) {
+				File file = fileIter.next();
+				File relativeDirectoryTarget = (includeBaseDirectory.equals(IncludeBaseDirectoryInPackage.YES)) ? directoryToPack
+						.getParentFile() : directoryToPack;
+				JarEntry tarEntry = new JarEntry(FileUtil.getFileRelativeToDirectory(file, relativeDirectoryTarget)
+						.getAbsolutePath());
+				tarEntry.setSize(file.length());
+				jos.putNextEntry(tarEntry);
+				FileInputStream fis = new FileInputStream(file);
+				IOUtils.copyLarge(fis, jos);
+				fis.close();
+				jos.closeEntry();
+			}
+		} finally {
+			jos.close();
+		}
+	}
+
+	/**
+	 * Unpacks a jar file into the specified directory
+	 * 
+	 * @param jarFile
+	 * @param outputDirectory
+	 * @throws IOException
+	 */
+	public static void unpackJarFile(File jarFile, File outputDirectory) throws IOException {
+		JarFile jar = new JarFile(jarFile);
+		for (Enumeration<JarEntry> jarEntryEnum = jar.entries(); jarEntryEnum.hasMoreElements();) {
+			JarEntry jarEntry = jarEntryEnum.nextElement();
+			copyJarEntryToFileSystem(jar.getInputStream(jarEntry), jarEntry, outputDirectory);
 		}
 	}
 
@@ -213,6 +295,7 @@ public class FileArchiveUtil {
 		if (tarEntry.isDirectory()) {
 			FileUtil.mkdir(outputPath);
 		} else {
+			FileUtil.mkdir(outputPath.getParentFile());
 			copyTarEntryToFile(tis, outputPath);
 		}
 	}
@@ -249,8 +332,8 @@ public class FileArchiveUtil {
 				is = getUncompressInputStream(zippedFile);
 				return unzip((UncompressInputStream) is, getUnzippedFileName(zippedFile.getName()), outputDirectory);
 			} else {
-				throw new IllegalArgumentException(String.format("Unable to unzip file: %s", zippedFile
-						.getAbsolutePath()));
+				throw new IllegalArgumentException(String.format("Unable to unzip file: %s",
+						zippedFile.getAbsolutePath()));
 			}
 		} finally {
 			IOUtils.closeQuietly(is);
@@ -283,13 +366,12 @@ public class FileArchiveUtil {
 		}
 	}
 
-	
 	public static File getUnzippedFileReference(File zippedFile) {
 		String unzippedFileName = getUnzippedFileName(zippedFile.getName());
 		File unzippedFile = FileUtil.appendPathElementsToDirectory(zippedFile.getParentFile(), unzippedFileName);
 		return unzippedFile;
 	}
-	
+
 	public static File unzip(GZIPInputStream gzipInputStream, String outputFileName, File outputDirectory)
 			throws IOException {
 		File outputFile = new File(outputDirectory.getAbsolutePath() + File.separator + outputFileName);
@@ -341,6 +423,7 @@ public class FileArchiveUtil {
 		if (zipEntry.isDirectory()) {
 			FileUtil.mkdir(outputPathFile);
 		} else {
+			FileUtil.mkdir(outputPathFile.getParentFile());
 			copyZipEntryToFile(zis, outputPathFile);
 		}
 		return outputPathFile;
@@ -357,6 +440,27 @@ public class FileArchiveUtil {
 	 */
 	private static void copyZipEntryToFile(ZipInputStream zis, File unzippedFile) throws IOException {
 		FileUtil.copy(zis, unzippedFile);
+	}
+
+	/**
+	 * Copies the contents of the input JarEntry InputStream to a file
+	 * 
+	 * @param jarEntryStream
+	 * @param jarEntry
+	 * @param outputDirectory
+	 * @return
+	 * @throws IOException
+	 */
+	private static File copyJarEntryToFileSystem(InputStream jarEntryStream, JarEntry jarEntry, File outputDirectory)
+			throws IOException {
+		File outputFile = FileUtil.appendPathElementsToDirectory(outputDirectory, jarEntry.getName());
+		if (jarEntry.isDirectory()) {
+			FileUtil.mkdir(outputFile);
+		} else {
+			FileUtil.mkdir(outputFile.getParentFile());
+			FileUtil.copy(jarEntryStream, outputFile);
+		}
+		return outputFile;
 	}
 
 	/**

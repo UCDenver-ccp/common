@@ -23,13 +23,20 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.zip.GZIPInputStream;
 
+import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import edu.ucdenver.ccp.common.collections.CollectionsUtil;
+import edu.ucdenver.ccp.common.file.FileArchiveUtil.IncludeBaseDirectoryInPackage;
+import edu.ucdenver.ccp.common.file.FileComparisonUtil.ColumnOrder;
+import edu.ucdenver.ccp.common.file.FileComparisonUtil.LineOrder;
+import edu.ucdenver.ccp.common.file.FileWriterUtil.FileSuffixEnforcement;
+import edu.ucdenver.ccp.common.file.FileWriterUtil.WriteMode;
 import edu.ucdenver.ccp.common.io.ClassPathUtil;
 import edu.ucdenver.ccp.common.test.DefaultTestCase;
 
@@ -49,14 +56,18 @@ public class FileArchiveUtilTest extends DefaultTestCase {
 	private final String SAMPLE_ZIPPED_TARBALL_FILE_NAME = "sampleTarball.tgz";
 	private final String SAMPLE_ZIP_FILE_NAME = "sampleZipFile.zip";
 	private final String SAMPLE_UNIX_COMPRESS_FILE_NAME = "sampleUnixCompressFile.txt.Z";
+	private final String SAMPLE_JAR_FILE = "sample.jar";
 
 	@Test
 	public void testUnzipGzFile() throws Exception {
-		GZIPInputStream gis = new GZIPInputStream(ClassPathUtil.getResourceStreamFromClasspath(this.getClass(), SAMPLE_GZIPPED_FILE_NAME));
-		/* other class doesn't work either:
-		 * GZIPInputStream gis = new GZIPInputStream(getResourceFromClasspath(
-		 * 	 this.getClass().forName("edu.ucdenver.ccp.common.file.FileArchiveUtil"), 
-		 *   SAMPLE_GZIPPED_FILE_NAME))*/
+		GZIPInputStream gis = new GZIPInputStream(ClassPathUtil.getResourceStreamFromClasspath(this.getClass(),
+				SAMPLE_GZIPPED_FILE_NAME));
+		/*
+		 * other class doesn't work either: GZIPInputStream gis = new
+		 * GZIPInputStream(getResourceFromClasspath(
+		 * this.getClass().forName("edu.ucdenver.ccp.common.file.FileArchiveUtil"),
+		 * SAMPLE_GZIPPED_FILE_NAME))
+		 */
 		File outputDirectory = folder.newFolder("unzippedGZFile");
 		File unzippedFile = new File(outputDirectory.getAbsolutePath() + File.separator + "sampleFile.txt");
 		FileArchiveUtil.unzip(gis, unzippedFile.getName(), outputDirectory);
@@ -65,18 +76,18 @@ public class FileArchiveUtilTest extends DefaultTestCase {
 		assertEquals(String.format("There should be two lines in the unzipped file."), expectedLinesInFile,
 				linesFromUnzippedFile);
 	}
-	
-	
+
 	@Test
 	public void testUnzipUnixCompressFile() throws Exception {
-		UncompressInputStream uis = new UncompressInputStream(ClassPathUtil.getResourceStreamFromClasspath(this.getClass(), SAMPLE_UNIX_COMPRESS_FILE_NAME));
+		UncompressInputStream uis = new UncompressInputStream(ClassPathUtil.getResourceStreamFromClasspath(
+				this.getClass(), SAMPLE_UNIX_COMPRESS_FILE_NAME));
 		File outputDirectory = folder.newFolder("unzippedUnixCompressFile");
 		File unzippedFile = FileUtil.appendPathElementsToDirectory(outputDirectory, "sampleUnixCompressFile.txt");
 		FileArchiveUtil.unzip(uis, unzippedFile.getName(), outputDirectory);
 		List<String> linesFromUnzippedFile = FileReaderUtil.loadLinesFromFile(unzippedFile, CharacterEncoding.US_ASCII);
 		assertTrue(String.format("The unzipped file should now exist (unix compress)."), unzippedFile.exists());
-		assertEquals(String.format("There should be two lines in the unzipped file (unix compress)."), expectedLinesInFile,
-				linesFromUnzippedFile);
+		assertEquals(String.format("There should be two lines in the unzipped file (unix compress)."),
+				expectedLinesInFile, linesFromUnzippedFile);
 	}
 
 	@Test
@@ -85,6 +96,58 @@ public class FileArchiveUtilTest extends DefaultTestCase {
 		File outputDirectory = folder.newFolder("untarredFile");
 		FileArchiveUtil.unpackTarFile(tarFile, outputDirectory);
 		validateUnpackedDirectoryStructure(outputDirectory);
+	}
+
+	@Test
+	public void testCreateTarFromDirectory() throws IOException {
+		File tarFile = FileUtil.appendPathElementsToDirectory(folder.newFolder("work"), "sample.tar");
+		File directoryToPack = initializeDirectoryToPack();
+		FileArchiveUtil.packTarFile(directoryToPack, tarFile, IncludeBaseDirectoryInPackage.NO);
+		assertTrue(String.format("Tar file must exist after being created."), tarFile.exists());
+		File unpackedDirectory = folder.newFolder("unpack");
+		FileArchiveUtil.unpackTarFile(tarFile, unpackedDirectory);
+		validateUnpackedDirectoryStructure(unpackedDirectory);
+	}
+	
+	@Test
+	public void testCreateJarFromDirectory() throws IOException {
+		File jarFile = FileUtil.appendPathElementsToDirectory(folder.newFolder("work"), "sample.jar");
+		File directoryToPack = initializeDirectoryToPack();
+		FileArchiveUtil.packJarFile(directoryToPack, jarFile, IncludeBaseDirectoryInPackage.NO);
+		assertTrue(String.format("Jar file must exist after being created."), jarFile.exists());
+		File unpackedDirectory = folder.newFolder("unpack");
+		FileArchiveUtil.unpackJarFile(jarFile, unpackedDirectory);
+		validateUnpackedDirectoryStructure(unpackedDirectory);
+	}
+	/**
+	 * Initializes a directory to use when testing "packing" methods, e.g. tar, jar, zip
+	 * 
+	 * <pre>
+	 * file1.txt
+	 * file2.txt
+	 * file3.txt
+	 * dir1/
+	 * dir1/file4.txt
+	 * dir1/file5.txt
+	 * dir1/file6.txt
+	 * </pre>
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	private File initializeDirectoryToPack() throws IOException {
+		File directoryToPack = folder.newFolder("main");
+		File dir1 = FileUtil.appendPathElementsToDirectory(directoryToPack, "dir1");
+		FileUtil.mkdir(dir1);
+		assertTrue(FileUtil.appendPathElementsToDirectory(directoryToPack, "file1.txt").createNewFile());
+		assertTrue(FileUtil.appendPathElementsToDirectory(directoryToPack, "file2.txt").createNewFile());
+		assertTrue(FileUtil.appendPathElementsToDirectory(directoryToPack, "file3.txt").createNewFile());
+		assertTrue(FileUtil.appendPathElementsToDirectory(dir1, "file4.txt").createNewFile());
+		assertTrue(FileUtil.appendPathElementsToDirectory(dir1, "file5.txt").createNewFile());
+		File file6 = FileUtil.appendPathElementsToDirectory(dir1, "file6.txt");
+		FileWriterUtil.printLines(expectedLinesInFile, file6, CharacterEncoding.US_ASCII, WriteMode.OVERWRITE,
+				FileSuffixEnforcement.OFF);
+		return directoryToPack;
 	}
 
 	@Test
@@ -106,6 +169,14 @@ public class FileArchiveUtilTest extends DefaultTestCase {
 	}
 
 	@Test
+	public void testUnPackJarFile() throws Exception {
+		File jarFile = copyResourceToFile(SAMPLE_JAR_FILE);
+		File outputDirectory = folder.newFolder("unjarredFile");
+		FileArchiveUtil.unpackJarFile(jarFile, outputDirectory);
+		validateUnpackedJarDirectoryStructure(outputDirectory);
+	}
+
+	@Test
 	public void testUnzippedFile() throws Exception {
 		File zipFile = copyResourceToFile(SAMPLE_ZIP_FILE_NAME);
 		File outputDirectory = folder.newFolder("unzippedFile");
@@ -114,10 +185,23 @@ public class FileArchiveUtilTest extends DefaultTestCase {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void TestUntarNonTarFile() throws Exception {
+	public void testUntarNonTarFile() throws Exception {
 		File zipFile = copyResourceToFile(SAMPLE_ZIP_FILE_NAME);
 		File outputDirectory = folder.newFolder("unzippedFile");
 		FileArchiveUtil.unpackTarFile(zipFile, outputDirectory);
+	}
+
+	/**
+	 * Removes the META-INF directory before validating the directory structure
+	 * 
+	 * @param outputDirectory
+	 * @throws IOException
+	 */
+	private void validateUnpackedJarDirectoryStructure(File outputDirectory) throws IOException {
+		File metaInfDirectory = FileUtil.appendPathElementsToDirectory(outputDirectory, "META-INF");
+		assertTrue(String.format("META-INF directory must exist."), metaInfDirectory.exists());
+		FileUtil.deleteDirectory(metaInfDirectory);
+		validateUnpackedDirectoryStructure(outputDirectory);
 	}
 
 	/**
@@ -168,8 +252,8 @@ public class FileArchiveUtilTest extends DefaultTestCase {
 		File unzippedTestFile = new File(unzippedFolder.getAbsolutePath() + File.separator + "test.ascii");
 		assertTrue(String.format("Unzipped file must exist"), unzippedTestFile.exists());
 		List<String> lines = FileReaderUtil.loadLinesFromFile(unzippedTestFile, CharacterEncoding.US_ASCII);
-		assertEquals(String
-				.format("Lines in unzipped file should match lines put into original file prior to gzipping."),
+		assertEquals(
+				String.format("Lines in unzipped file should match lines put into original file prior to gzipping."),
 				expectedLines, lines);
 	}
 }
