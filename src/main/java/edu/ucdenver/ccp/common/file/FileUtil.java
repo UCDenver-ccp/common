@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -376,16 +377,29 @@ public class FileUtil {
 	}
 
 	/**
+	 * Returns the set of directories in the specified directory
+	 * 
+	 * @param directory
+	 * @return
+	 * @throws FileNotFoundException
+	 */
+	public static Set<File> getDirectories(File directory) throws FileNotFoundException {
+		validateDirectory(directory);
+		File[] directories = directory.listFiles(DIRECTORY_FILTER());
+		return new HashSet<File>(Arrays.asList(directories));
+
+	}
+
+	/**
 	 * Returns a set containing the directory names in the input directory
 	 * 
 	 * @param directory
 	 * @return
 	 * @throws FileNotFoundException
 	 */
-	public static Set<String> getDirectoryListing(File directory) throws FileNotFoundException {
-		validateDirectory(directory);
+	public static Set<String> getDirectoryNames(File directory) throws FileNotFoundException {
+		Set<File> directories = getDirectories(directory);
 		Set<String> directoryNames = new HashSet<String>();
-		File[] directories = directory.listFiles(DIRECTORY_FILTER());
 		for (File dir : directories)
 			directoryNames.add(dir.getName());
 		return directoryNames;
@@ -482,6 +496,18 @@ public class FileUtil {
 					fileStr, directoryStr));
 		String relativeFileStr = fileStr.substring(directoryStr.length());
 		return new File(relativeFileStr);
+	}
+
+	/**
+	 * @param file
+	 * @return the terminal file suffix for the specified file
+	 */
+	public static String getFileSuffix(File file) {
+		String fileName = file.getName();
+		int lastIndexOfPeriod = fileName.lastIndexOf(".");
+		if (lastIndexOfPeriod == -1)
+			return "";
+		return fileName.substring(lastIndexOfPeriod);
 	}
 
 }

@@ -248,4 +248,21 @@ public class FileUtilTest extends DefaultTestCase {
 
 		FileUtil.copyToString(fromFile, CharacterEncoding.US_ASCII);
 	}
+
+	/**
+	 * Tests that the getFileSuffix method returns the proper file suffix
+	 * 
+	 * @throws IOException
+	 */
+	@Test
+	public void testGetFileSuffix() throws IOException {
+		File txtFile = folder.newFile("test.txt");
+		assertEquals(String.format("Expected .txt file suffix to be returned"), ".txt", FileUtil.getFileSuffix(txtFile));
+
+		txtFile = folder.newFile("test.txt.1.2.3.4.5.6.7.8");
+		assertEquals(String.format("Expected .8 file suffix to be returned"), ".8", FileUtil.getFileSuffix(txtFile));
+
+		txtFile = folder.newFile("test");
+		assertEquals(String.format("Expected no file suffix"), "", FileUtil.getFileSuffix(txtFile));
+	}
 }
