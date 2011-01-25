@@ -172,8 +172,7 @@ public class FileArchiveUtil {
 	 * @throws IllegalArgumentException
 	 * @throws IOException
 	 */
-	public static void unpackTarFile(File tarFile, File outputDirectory) throws FileNotFoundException,
-			IllegalArgumentException, IOException {
+	public static void unpackTarFile(File tarFile, File outputDirectory) throws IllegalArgumentException, IOException {
 		FileUtil.validateDirectory(outputDirectory);
 		if (!isTarFile(tarFile)) {
 			throw new IllegalArgumentException(String.format("Cannot unpack. Input file is not a tarball: %s",
