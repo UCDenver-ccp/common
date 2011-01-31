@@ -27,6 +27,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.MalformedInputException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -110,31 +112,53 @@ public class FileUtilTest extends DefaultTestCase {
 	 * ____________- file7.txt<br>
 	 * ___- dir2<br>
 	 * ______- file4.xml<br>
+	 * ___- .hiddenDirectory<br>
+	 * ______- fileInHiddenDir.txt<br>
 	 * 
 	 * @throws IOException
 	 */
-	private void setUpSampleDirectoryStructure() throws IOException {
+	private List<File> setUpSampleDirectoryStructure() throws IOException {
 		File dir1 = folder.newFolder("dir1");
 		File dir2 = folder.newFolder("dir2");
-		@SuppressWarnings("unused")
-		File hiddenDir = folder.newFolder(".hidden");
+
+		folder.newFolder(".hidden");
 		File dir11 = FileUtil.appendPathElementsToDirectory(dir1, "dir11");
 		File dir111 = FileUtil.appendPathElementsToDirectory(dir11, "dir111");
 
 		assertTrue(dir11.mkdir());
 		assertTrue(dir111.mkdir());
 
-		assertTrue(FileUtil.appendPathElementsToDirectory(folder.getRoot(), "file0.txt").createNewFile());
-		assertTrue(FileUtil.appendPathElementsToDirectory(folder.getRoot(), "file0.xml").createNewFile());
+		File file0txt = FileUtil.appendPathElementsToDirectory(folder.getRoot(), "file0.txt");
+		assertTrue(file0txt.createNewFile());
+		File file0xml = FileUtil.appendPathElementsToDirectory(folder.getRoot(), "file0.xml");
+		assertTrue(file0xml.createNewFile());
 
-		assertTrue(FileUtil.appendPathElementsToDirectory(dir1, "file1.txt").createNewFile());
-		assertTrue(FileUtil.appendPathElementsToDirectory(dir1, "file2.txt").createNewFile());
-		assertTrue(FileUtil.appendPathElementsToDirectory(dir1, "file3.xml").createNewFile());
-		assertTrue(FileUtil.appendPathElementsToDirectory(dir2, "file4.xml").createNewFile());
-		assertTrue(FileUtil.appendPathElementsToDirectory(dir11, "file5.txt").createNewFile());
-		assertTrue(FileUtil.appendPathElementsToDirectory(dir11, "file6.txt").createNewFile());
-		assertTrue(FileUtil.appendPathElementsToDirectory(dir111, "file7.txt").createNewFile());
-		assertTrue(FileUtil.appendPathElementsToDirectory(dir111, ".hiddenfile8.txt").createNewFile());
+		File file1txt = FileUtil.appendPathElementsToDirectory(dir1, "file1.txt");
+		assertTrue(file1txt.createNewFile());
+		File file2txt = FileUtil.appendPathElementsToDirectory(dir1, "file2.txt");
+		assertTrue(file2txt.createNewFile());
+		File file3xml = FileUtil.appendPathElementsToDirectory(dir1, "file3.xml");
+		assertTrue(file3xml.createNewFile());
+		File file4xml = FileUtil.appendPathElementsToDirectory(dir2, "file4.xml");
+		assertTrue(file4xml.createNewFile());
+		File file5txt = FileUtil.appendPathElementsToDirectory(dir11, "file5.txt");
+		assertTrue(file5txt.createNewFile());
+		File file6txt = FileUtil.appendPathElementsToDirectory(dir11, "file6.txt");
+		assertTrue(file6txt.createNewFile());
+		File file7txt = FileUtil.appendPathElementsToDirectory(dir111, "file7.txt");
+		assertTrue(file7txt.createNewFile());
+		File file8hidden = FileUtil.appendPathElementsToDirectory(dir111, ".hiddenfile8.txt");
+		assertTrue(file8hidden.createNewFile());
+
+		File hiddenDir = folder.newFolder(".hiddenDirectory");
+		File fileInHiddenDirectory = FileUtil.appendPathElementsToDirectory(hiddenDir, "fileInhiddenDir.txt");
+		assertTrue(fileInHiddenDirectory.createNewFile());
+
+		List<File> files = CollectionsUtil.createList(file0txt, file0xml, file1txt, file2txt, file3xml, file4xml,
+				file5txt, file6txt, file7txt);
+		Collections.sort(files);
+		return files;
+
 	}
 
 	@Test
@@ -144,6 +168,37 @@ public class FileUtilTest extends DefaultTestCase {
 				"file3.xml", "file4.xml", "file5.txt", "file6.txt", "file7.txt");
 		checkFileIterator(FileUtil.getFileIterator(folder.getRoot(), true, (String[]) null), expectedFileNames);
 		checkFileIterator(FileUtil.getFileIterator(folder.getRoot(), true), expectedFileNames);
+	}
+
+	@Test
+	public void testFileListingOverDirectory() throws IOException {
+		List<File> expectedFileListing = setUpSampleDirectoryStructure();
+		assertEquals(String.format("Files should be as expected (and sorted)"), expectedFileListing,
+				FileUtil.getFileListing(folder.getRoot(), true));
+	}
+
+	@Test
+	public void testFileListingOverDirectory_UsingFileSuffixFilter() throws IOException {
+		List<File> expectedTxtFileListing = keepTxtFiles(setUpSampleDirectoryStructure());
+		assertEquals(String.format("Files should be as expected (and sorted)"), expectedTxtFileListing,
+				FileUtil.getFileListing(folder.getRoot(), true, "txt"));
+		// assertEquals(String.format("Files should be as expected (and sorted) - DL"),
+		// expectedTxtFileListing,
+		// DirectoryListing.getFiles(folder.getRoot().getAbsolutePath(), "txt", true));
+	}
+
+	/**
+	 * Filters out files that are not .txt files
+	 * 
+	 * @param setUpSampleDirectoryStructure
+	 * @return
+	 */
+	private List<File> keepTxtFiles(List<File> inputFiles) {
+		List<File> txtFiles = new ArrayList<File>();
+		for (File file : inputFiles)
+			if (file.getName().endsWith(".txt"))
+				txtFiles.add(file);
+		return txtFiles;
 	}
 
 	@Test
