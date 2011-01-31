@@ -33,11 +33,13 @@ import java.util.Set;
 public class PrivateAccessor {
 
 	/**
-	 * Uses the Reflection API to return the value of the input field name for the input Object. Inherited
-	 * fields are supported.
+	 * Uses the Reflection API to return the value of the input field name for the input Object.
+	 * Inherited fields are supported.
 	 * 
-	 * @param o object
-	 * @param fieldName object's field name
+	 * @param o
+	 *            object
+	 * @param fieldName
+	 *            object's field name
 	 * @return value field value
 	 * 
 	 * @throws NoSuchFieldException
@@ -65,6 +67,13 @@ public class PrivateAccessor {
 		return field;
 	}
 
+	/**
+	 * Returns the private field with the specified name from the specified class
+	 * 
+	 * @param clazz
+	 * @param fieldName
+	 * @return
+	 */
 	private static Field getPrivateField(Class<?> clazz, String fieldName) {
 		for (Field field : clazz.getDeclaredFields()) {
 			if (field.getName().equals(fieldName)) {
@@ -81,8 +90,10 @@ public class PrivateAccessor {
 	/**
 	 * Get all declared and inherited class fields recursively
 	 * 
-	 * @param clazz class to reflect on
-	 * @param fields to hold return value
+	 * @param clazz
+	 *            class to reflect on
+	 * @param fields
+	 *            to hold return value
 	 * @return all declared and inherited fields
 	 */
 	public static Set<Field> getAllFields(Class<?> clazz, Set<Field> fields) {
@@ -91,14 +102,27 @@ public class PrivateAccessor {
 			field.setAccessible(true);
 			fields.add(field);
 		}
-		
+
 		Class<?> superclass = clazz.getSuperclass();
 		if (superclass == null)
 			return fields;
-		
+
 		return getAllFields(superclass, fields);
 	}
-	
+
+	/**
+	 * Helper method for invoking a private method using the specified set of parameters
+	 * 
+	 * @param o
+	 * @param methodName
+	 * @param params
+	 * @return
+	 * @throws SecurityException
+	 * @throws NoSuchMethodException
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 */
 	public static Object invokePrivateMethod(Object o, String methodName, Object... params) throws SecurityException,
 			NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 
@@ -109,6 +133,12 @@ public class PrivateAccessor {
 		return method.invoke(o, params);
 	}
 
+	/**
+	 * Returns an array of Classes corresponding to the classes of the input array
+	 * 
+	 * @param params
+	 * @return
+	 */
 	private static Class<?>[] getParameterClasses(Object... params) {
 		if (params == null)
 			return new Class<?>[0];
@@ -119,6 +149,19 @@ public class PrivateAccessor {
 		return paramClses;
 	}
 
+	/**
+	 * Invokes a static private method using the specified parameters
+	 * 
+	 * @param clazz
+	 * @param methodName
+	 * @param params
+	 * @return
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 * @throws SecurityException
+	 * @throws NoSuchMethodException
+	 */
 	public static Object invokeStaticPrivateMethod(Class<?> clazz, String methodName, Object... params)
 			throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, SecurityException,
 			NoSuchMethodException {
@@ -128,7 +171,7 @@ public class PrivateAccessor {
 	}
 
 	/**
-	 * Generate field value extraction message listing all available fields. 
+	 * Generate field value extraction message listing all available fields.
 	 * 
 	 * @param clazz
 	 * @param fieldName
@@ -145,14 +188,17 @@ public class PrivateAccessor {
 	}
 
 	/**
-	 * Uses the Reflection API to return the value of the input field name for the input Object. Inherited
-	 * fields are supported.
+	 * Uses the Reflection API to return the value of the input field name for the input Object.
+	 * Inherited fields are supported.
 	 * 
-	 * @param o object
-	 * @param fieldName object's field name
+	 * @param o
+	 *            object
+	 * @param fieldName
+	 *            object's field name
 	 * @return value field value
 	 * 
-	 * @throws RuntimeException if errors occur during field value access
+	 * @throws RuntimeException
+	 *             if errors occur during field value access
 	 */
 	public static Object getFieldValue(Object o, String fieldName) {
 		try {

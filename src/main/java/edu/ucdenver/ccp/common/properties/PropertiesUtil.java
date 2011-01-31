@@ -26,12 +26,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
 
+/**
+ * Utility class for dealing with Java Properties objects
+ * 
+ * @author bill
+ * 
+ */
 public abstract class PropertiesUtil {
-
-	private static final Logger logger = Logger.getLogger(PropertiesUtil.class);
 
 	/**
 	 * Loads a properties file from the specified path
@@ -58,7 +62,6 @@ public abstract class PropertiesUtil {
 		} catch (IOException ex) {
 			String path = file == null ? null : file.getAbsolutePath();
 			String message = "Problem loading properties file: " + path;
-			logger.error(message, ex);
 			throw new RuntimeException(message, ex);
 		} finally {
 			IOUtils.closeQuietly(fis);

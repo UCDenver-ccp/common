@@ -18,6 +18,12 @@
 
 package edu.ucdenver.ccp.common.xml;
 
+/**
+ * Utility class for dealing with XML content
+ * 
+ * @author bill
+ * 
+ */
 public class XmlUtil {
 
 	/**
@@ -27,7 +33,7 @@ public class XmlUtil {
 	 * @return
 	 */
 	public static String convertXmlEscapeCharacters(String inputStr) {
-		return inputStr.replaceAll("&", "&amp;").replaceAll("\"", "&quot;").replaceAll("'", "&apos;").replaceAll("<",
-				"&lt;").replaceAll(">", "&gt;");
+		return inputStr.replaceAll("&", "&amp;").replaceAll("\"", "&quot;").replaceAll("'", "&apos;")
+				.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 	}
 }

@@ -40,14 +40,43 @@ import java.util.Properties;
  * @author Philip Ogren
  */
 public class ConnectionPropertiesUtil {
+	/**
+	 * JDBC driver name
+	 */
 	public static final String DRIVER_NAME = "DRIVER_NAME";
+	/**
+	 * URL prefix for JDBC access
+	 */
 	public static final String URL_PREFIX = "URL_PREFIX";
+	/**
+	 * Host computer for the database
+	 */
 	public static final String HOST = "HOST";
+	/**
+	 * Port where database access is available
+	 */
 	public static final String PORT = "PORT";
+	/**
+	 * Name of the database
+	 */
 	public static final String DATABASE = "DATABASE";
+	/**
+	 * User name
+	 */
 	public static final String USER = "USER";
+	/**
+	 * Password
+	 */
 	public static final String PASSWORD = "PASSWORD";
 
+	/**
+	 * Returns a database connection given the specified properties
+	 * 
+	 * @param properties
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public static Connection getConnection(Properties properties) throws ClassNotFoundException, SQLException {
 		String driverName = properties.getProperty(DRIVER_NAME);
 		String urlprefix = properties.getProperty(URL_PREFIX);
@@ -56,7 +85,7 @@ public class ConnectionPropertiesUtil {
 		String database = properties.getProperty(DATABASE);
 		String user = properties.getProperty(USER);
 		String password = properties.getProperty(PASSWORD);
-		
+
 		if (!urlprefix.endsWith("://")) {
 			throw new RuntimeException("URL prefix must end with ://");
 		}
@@ -64,6 +93,20 @@ public class ConnectionPropertiesUtil {
 
 	}
 
+	/**
+	 * Creates a database connection specific to the input arguments
+	 * 
+	 * @param driverName
+	 * @param urlprefix
+	 * @param host
+	 * @param port
+	 * @param database
+	 * @param user
+	 * @param password
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public static Connection getConnection(String driverName, String urlprefix, String host, String port,
 			String database, String user, String password) throws ClassNotFoundException, SQLException {
 		Class.forName(driverName);
