@@ -27,6 +27,12 @@ import java.io.OutputStreamWriter;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Utility class for writing files
+ * 
+ * @author bill
+ * 
+ */
 public class FileWriterUtil {
 
 	/**
@@ -49,12 +55,24 @@ public class FileWriterUtil {
 		 */
 		OVERWRITE(false);
 
+		/**
+		 * If set to true, append will allow files to be appended to instead of overwritten
+		 */
 		private final boolean append;
 
+		/**
+		 * Private constructor for initializing the WriteMode enum
+		 * 
+		 * @param append
+		 */
 		private WriteMode(boolean append) {
 			this.append = append;
 		}
 
+		/**
+		 * @return true if the desired effect is to append to the file, false if a file is to be
+		 *         overwritten
+		 */
 		public boolean append() {
 			return append;
 		}
@@ -69,7 +87,14 @@ public class FileWriterUtil {
 	 * 
 	 */
 	public enum FileSuffixEnforcement {
-		ON, OFF
+		/**
+		 * Signifies that file suffix checks should be enforced
+		 */
+		ON,
+		/**
+		 * Signifies that file suffix checks should be ignored
+		 */
+		OFF
 	}
 
 	/**
@@ -97,16 +122,15 @@ public class FileWriterUtil {
 		if (suffixEnforcement.equals(FileSuffixEnforcement.ON))
 			if (!CharacterEncoding.hasEncodingSpecificFileName(outputFile, encoding)) {
 				String errorMessage = String
-						.format(
-								"Illegal file name detected. File suffix enforcement is active and the file name suffix "
-										+ "for file: %s does not match the expected character encoding-specific suffix (%s). Use "
-										+ "CharacterEncoding.getEncodingSpecificFile(file, encoding) to ensure a valid file name "
-										+ "when file suffix enforcement is active. Full file path:%s", outputFile
-										.getName(), encoding.getFileSuffix(), outputFile.getAbsolutePath());
+						.format("Illegal file name detected. File suffix enforcement is active and the file name suffix "
+								+ "for file: %s does not match the expected character encoding-specific suffix (%s). Use "
+								+ "CharacterEncoding.getEncodingSpecificFile(file, encoding) to ensure a valid file name "
+								+ "when file suffix enforcement is active. Full file path:%s", outputFile.getName(),
+								encoding.getFileSuffix(), outputFile.getAbsolutePath());
 				throw new IllegalArgumentException(errorMessage);
 			}
-		return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile, writeMode.append()), encoding
-				.getEncoder()));
+		return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile, writeMode.append()),
+				encoding.getEncoder()));
 	}
 
 	/**
@@ -169,9 +193,10 @@ public class FileWriterUtil {
 		printLines(lines, writer);
 		writer.close();
 	}
-	
+
 	/**
 	 * Prints the contents of the input Iterator to the specified line.
+	 * 
 	 * @param lineIterator
 	 * @param file
 	 * @param encoding
