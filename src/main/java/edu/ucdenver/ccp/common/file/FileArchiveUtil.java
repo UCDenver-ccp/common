@@ -57,20 +57,47 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
 import org.apache.tools.tar.TarEntry;
 import org.apache.tools.tar.TarInputStream;
 import org.apache.tools.tar.TarOutputStream;
 
 import edu.ucdenver.ccp.common.string.StringUtil;
 
+/**
+ * Utility class for handling archive files of various types
+ * 
+ * @author bill
+ * 
+ */
+/**
+ * @author bill
+ * 
+ */
 public class FileArchiveUtil {
 
+	/**
+	 * Suffix signifying a gzipped file
+	 */
 	private static final String gz_suffix = ".gz";
+	/**
+	 * Suffix signifying a gzipped tarball file
+	 */
 	private static final String tgz_suffix = ".tgz";
+	/**
+	 * suffix signifying a zip file
+	 */
 	private static final String zip_suffix = ".zip";
+	/**
+	 * suffix signifying a bzipped file
+	 */
 	private static final String bzip_suffix = ".bz2";
+	/**
+	 * suffix signifying a .Z file
+	 */
 	private static final String z_suffix = ".Z";
+	/**
+	 * suffix signifying a tarball file
+	 */
 	private static final String tar_suffix = ".tar";
 
 	/**
@@ -103,7 +130,14 @@ public class FileArchiveUtil {
 		}
 	}
 
-	private static UncompressInputStream getUncompressInputStream(File file) throws FileNotFoundException, IOException {
+	/**
+	 * Returns an UncompressInputStream for the given .Z file
+	 * 
+	 * @param file
+	 * @return
+	 * @throws IOException
+	 */
+	private static UncompressInputStream getUncompressInputStream(File file) throws IOException {
 		return new UncompressInputStream(new BufferedInputStream(new FileInputStream(file)));
 	}
 
@@ -131,40 +165,98 @@ public class FileArchiveUtil {
 		return new GZIPInputStream(new FileInputStream(file));
 	}
 
+	/**
+	 * Returns false if the input file is a zip file that is not handled by this class. TODO: Check
+	 * to see if UnixCompress should still be an unsupported zip file format
+	 * 
+	 * @param file
+	 * @return
+	 */
 	private static boolean isUnsupportedZipFormatFile(File file) {
 		return isBZipFile(file) || isUnixCompressFile(file);
 	}
 
+	/**
+	 * Matches the file suffix to the input file in a case-insensitive manner
+	 * 
+	 * @param file
+	 * @param fileSuffix
+	 * @return true if the input file has the specified file suffix regardless of upper/lower case
+	 */
 	private static boolean hasCaseInsensitiveSuffix(File file, String fileSuffix) {
 		return file.getName().endsWith(fileSuffix.toLowerCase()) || file.getName().endsWith(fileSuffix.toUpperCase());
 	}
 
+	/**
+	 * Returns true if the input file is a gzip file. Determination is made by examining the file
+	 * suffix.
+	 * 
+	 * @param file
+	 * @return true if the file is a gzip file, false otherwise
+	 */
 	private static boolean isGzipFile(File file) {
 		return hasCaseInsensitiveSuffix(file, gz_suffix) || hasCaseInsensitiveSuffix(file, tgz_suffix);
 	}
 
+	/**
+	 * Returns true if the input file is a zip file. Determination is made by examining the file
+	 * suffix.
+	 * 
+	 * @param file
+	 * @return true if the file is a zip file, false otherwise
+	 */
 	private static boolean isZipFile(File file) {
 		return hasCaseInsensitiveSuffix(file, zip_suffix);
 	}
 
+	/**
+	 * Returns true if the input file is a bzip file. Determination is made by examining the file
+	 * suffix.
+	 * 
+	 * @param file
+	 * @return true if the file is a bzip file, false otherwise
+	 */
 	private static boolean isBZipFile(File file) {
 		return hasCaseInsensitiveSuffix(file, bzip_suffix);
 	}
 
+	/**
+	 * Returns true if the input file is a .Z file. Determination is made by examining the file
+	 * suffix.
+	 * 
+	 * @param file
+	 * @return true if the file is a .Z file, false otherwise
+	 */
 	private static boolean isUnixCompressFile(File file) {
 		return hasCaseInsensitiveSuffix(file, z_suffix);
 	}
 
+	/**
+	 * Returns true if the input file is a zipped file. Determination is made by examining the file
+	 * suffix.
+	 * 
+	 * @param file
+	 * @return true if the file is a zipped file, false otherwise
+	 */
 	public static boolean isZippedFile(File file) {
 		return isGzipFile(file) || isZipFile(file) || isBZipFile(file) || isUnixCompressFile(file);
 	}
 
+	/**
+	 * Returns true if the input file is a tar file. Determination is made by examining the file
+	 * suffix.
+	 * 
+	 * @param file
+	 * @return true if the file is a tar file, false otherwise
+	 */
 	private static boolean isTarFile(File file) {
 		return hasCaseInsensitiveSuffix(file, tar_suffix) || hasCaseInsensitiveSuffix(file, tgz_suffix);
 	}
 
 	/**
-	 * Untars a file into the specified output directory TODO: Use CheckSums?
+	 * Untars a file into the specified output directory TODO: Use CheckSums? TODO: Validate that
+	 * unpackTarFile works as advertised. Noticed some incomplete unpacking when dealing with large
+	 * tar files in the Elsevier collection
 	 * 
 	 * @param tarFile
 	 * @param outputDirectory
@@ -190,8 +282,22 @@ public class FileArchiveUtil {
 		}
 	}
 
+	/**
+	 * Enum representing a boolean parameter indicating whether or not the base directory should be
+	 * included when packaging a tar file
+	 * 
+	 * @author bill
+	 * 
+	 */
 	public enum IncludeBaseDirectoryInPackage {
-		YES, NO
+		/**
+		 * Indicates that the base directory should be included as part of the tar file contents
+		 */
+		YES,
+		/**
+		 * Indicates that the base directory should not be included as part of the tar file contents
+		 */
+		NO
 	}
 
 	/**
@@ -224,6 +330,15 @@ public class FileArchiveUtil {
 		}
 	}
 
+	/**
+	 * Packages the contents of the specified directory into a jar file. Can also be used to create
+	 * WAR files.
+	 * 
+	 * @param directoryToPack
+	 * @param jarFile
+	 * @param includeBaseDirectory
+	 * @throws IOException
+	 */
 	public static void packJarFile(File directoryToPack, File jarFile,
 			IncludeBaseDirectoryInPackage includeBaseDirectory) throws IOException {
 		FileUtil.validateDirectory(directoryToPack);
@@ -318,6 +433,14 @@ public class FileArchiveUtil {
 		}
 	}
 
+	/**
+	 * Unzips the specified file into the specified directory
+	 * 
+	 * @param zippedFile
+	 * @param outputDirectory
+	 * @return a reference to the unzipped file
+	 * @throws IOException
+	 */
 	public static File unzip(File zippedFile, File outputDirectory) throws IOException {
 		InputStream is = null;
 		try {
@@ -365,12 +488,28 @@ public class FileArchiveUtil {
 		}
 	}
 
+	/**
+	 * Given a reference to a zipped file, this method returns a reference to the appropriately
+	 * names unzipped version of this file (typically by stripping off the zip suffix)
+	 * 
+	 * @param zippedFile
+	 * @return
+	 */
 	public static File getUnzippedFileReference(File zippedFile) {
 		String unzippedFileName = getUnzippedFileName(zippedFile.getName());
 		File unzippedFile = FileUtil.appendPathElementsToDirectory(zippedFile.getParentFile(), unzippedFileName);
 		return unzippedFile;
 	}
 
+	/**
+	 * Unzip method specific to gzipped files
+	 * 
+	 * @param gzipInputStream
+	 * @param outputFileName
+	 * @param outputDirectory
+	 * @return
+	 * @throws IOException
+	 */
 	public static File unzip(GZIPInputStream gzipInputStream, String outputFileName, File outputDirectory)
 			throws IOException {
 		File outputFile = new File(outputDirectory.getAbsolutePath() + File.separator + outputFileName);
@@ -399,6 +538,15 @@ public class FileArchiveUtil {
 		return outputFile;
 	}
 
+	/**
+	 * Unzip method specific to .Z files
+	 * 
+	 * @param uncompressInputStream
+	 * @param outputFileName
+	 * @param outputDirectory
+	 * @return
+	 * @throws IOException
+	 */
 	public static File unzip(UncompressInputStream uncompressInputStream, String outputFileName, File outputDirectory)
 			throws IOException {
 		File outputFile = new File(outputDirectory.getAbsolutePath() + File.separator + outputFileName);
