@@ -25,18 +25,53 @@ import java.util.NoSuchElementException;
 import edu.ucdenver.ccp.common.file.CharacterEncoding;
 import edu.ucdenver.ccp.common.file.reader.LineReader.Line;
 
-
+/**
+ * Abstract class for creating an iterator over the lines from some collecion (e.g. a file)
+ * 
+ * @author bill
+ * 
+ * @param <T>
+ */
 public abstract class LineIterator<T extends Line> implements Iterator<T> {
-	
+
+	/**
+	 * Stores the next line to return
+	 */
 	protected T nextLine = null;
+	/**
+	 * Stores the <code>LineReader</code> used to extract the lines returned by this
+	 * <code>Iterator</code> implementation
+	 */
 	protected final LineReader reader;
-	
+
+	/**
+	 * Initializes a new <code>LineIterator</code> to the input object (typically a file or stream)
+	 * 
+	 * @param fileOrStream
+	 * @param encoding
+	 * @param skipLinePrefix
+	 * @throws IOException
+	 */
 	public LineIterator(Object fileOrStream, CharacterEncoding encoding, String skipLinePrefix) throws IOException {
 		reader = initLineReader(fileOrStream, encoding, skipLinePrefix);
 	}
-	
-	public abstract LineReader initLineReader(Object fileOrStream, CharacterEncoding encoding, String skipLinePrefix) throws IOException;
 
+	/**
+	 * Helper method for initializing the <code>LineReader</code>. To be implemented by subclasses
+	 * of <code>LineIterator</code>
+	 * 
+	 * @param fileOrStream
+	 * @param encoding
+	 * @param skipLinePrefix
+	 * @return
+	 * @throws IOException
+	 */
+	public abstract LineReader initLineReader(Object fileOrStream, CharacterEncoding encoding, String skipLinePrefix)
+			throws IOException;
+
+	/**
+	 * @see java.util.Iterator#hasNext()
+	 */
 	@Override
 	public boolean hasNext() {
 		if (nextLine != null)
@@ -53,6 +88,9 @@ public abstract class LineIterator<T extends Line> implements Iterator<T> {
 		}
 	}
 
+	/**
+	 * @see java.util.Iterator#next()
+	 */
 	@Override
 	public T next() {
 		if (!hasNext()) {
@@ -63,9 +101,16 @@ public abstract class LineIterator<T extends Line> implements Iterator<T> {
 		return lineToReturn;
 	}
 
+	/**
+	 * This method is not implemented for the LineIterator class.
+	 * 
+	 * @throws UnsupportedOperationException
+	 *             if this method is called
+	 */
 	@Override
 	public void remove() {
-		throw new UnsupportedOperationException("The remove() operation is not supported by LineIterator and its subclasses.");
+		throw new UnsupportedOperationException(
+				"The remove() operation is not supported by LineIterator and its subclasses.");
 	}
-	
+
 }
