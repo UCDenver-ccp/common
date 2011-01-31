@@ -32,8 +32,17 @@ import java.util.Set;
 
 import org.junit.Test;
 
+/**
+ * This class contains tests for the CollectionsUtil class.
+ * 
+ * @author bill
+ * 
+ */
 public class CollectionsUtilTest {
 
+	/**
+	 * Tests the normal operation of the createSet() method
+	 */
 	@Test
 	public void testCreateSetWithValidInput() {
 		Set<String> expectedSet = new HashSet<String>();
@@ -42,17 +51,23 @@ public class CollectionsUtilTest {
 		expectedSet.add("3");
 
 		assertEquals(String.format("Sets should be equal."), expectedSet, CollectionsUtil.createSet("1", "2", "3"));
-		assertEquals(String.format("Sets should be equal."), expectedSet, CollectionsUtil.createSet("1", "2", "3", "1",
-				"2", "3", "3"));
+		assertEquals(String.format("Sets should be equal."), expectedSet,
+				CollectionsUtil.createSet("1", "2", "3", "1", "2", "3", "3"));
 	}
 
+	/**
+	 * Tests the createSet() method using empty/null input
+	 */
 	@Test
 	public void testCreateSetWithEmptyInput() {
-		assertEquals(String.format("Should return empty set for no input."), new HashSet<String>(), CollectionsUtil
-				.createSet());
+		assertEquals(String.format("Should return empty set for no input."), new HashSet<String>(),
+				CollectionsUtil.createSet());
 		assertNull(String.format("Should return null for null input."), CollectionsUtil.createSet((Object[]) null));
 	}
 
+	/**
+	 * Tests the normal operation of the createList() method
+	 */
 	@Test
 	public void testCreateListWithValidInput() {
 		List<String> expectedList = new ArrayList<String>();
@@ -63,18 +78,27 @@ public class CollectionsUtilTest {
 		assertEquals(String.format("Lists should be equal."), expectedList, CollectionsUtil.createList("2", "2", "3"));
 	}
 
+	/**
+	 * Tests the createList() method using empty input
+	 */
 	@Test
 	public void testCreateListWithEmptyInput() {
-		assertEquals(String.format("Should return empty List for no input."), new ArrayList<String>(), CollectionsUtil
-				.createList());
+		assertEquals(String.format("Should return empty List for no input."), new ArrayList<String>(),
+				CollectionsUtil.createList());
 	}
 
+	/**
+	 * Tests the normal operation of the createSortedList() method
+	 */
 	@Test
 	public void testCreateSortedList() {
 		assertEquals(String.format("List should be sorted."), CollectionsUtil.createList(1, 2, 3, 4, 5),
 				CollectionsUtil.createSortedList(CollectionsUtil.createList(5, 3, 2, 1, 4)));
 	}
 
+	/**
+	 * Tests the normal operation of the parseInts() method
+	 */
 	@Test
 	public void testParseInts() {
 		List<String> toParseList = CollectionsUtil.createList("5", "6", "789", "1", "-4", "0");
@@ -83,6 +107,9 @@ public class CollectionsUtilTest {
 				expectedIntList, CollectionsUtil.parseInts(toParseList));
 	}
 
+	/**
+	 * Tests the normal operation of the array2Set() method
+	 */
 	@Test
 	public void testArray2Set() {
 		Set<String> expectedSet = new HashSet<String>();
@@ -90,18 +117,24 @@ public class CollectionsUtilTest {
 		expectedSet.add("2");
 		expectedSet.add("3");
 
-		assertEquals(String.format("Simple conversion from array to set."), expectedSet, CollectionsUtil
-				.array2Set(new String[] { "1", "2", "3" }));
-		assertEquals(String.format("Lossy conversion from array to set."), expectedSet, CollectionsUtil
-				.array2Set(new String[] { "1", "2", "3", "3", "3", "2" }));
+		assertEquals(String.format("Simple conversion from array to set."), expectedSet,
+				CollectionsUtil.array2Set(new String[] { "1", "2", "3" }));
+		assertEquals(String.format("Lossy conversion from array to set."), expectedSet,
+				CollectionsUtil.array2Set(new String[] { "1", "2", "3", "3", "3", "2" }));
 	}
 
+	/**
+	 * Tests the normal operation of the createZeroBasedSequence() method
+	 */
 	@Test
 	public void testCreateZeroBasedSequence() {
 		int[] expected = new int[] { 0, 1, 2, 3, 4, 5, 6, 7 };
 		assertArrayEquals("Should have 8 sequential members.", expected, CollectionsUtil.createZeroBasedSequence(8));
 	}
 
+	/**
+	 * Tests the normal operation of the createMap() method
+	 */
 	@Test
 	public void testCreateMap() {
 		Map<String, String> map = CollectionsUtil.createMap("key1", "value1", "key2", "value2", "key3", "value3");
@@ -112,6 +145,10 @@ public class CollectionsUtilTest {
 		assertEquals(String.format("Maps should be identical."), expectedMap, map);
 	}
 
+	/**
+	 * Tests the normal operation of the createMap() method using different types for keys and
+	 * values
+	 */
 	@Test
 	public void testCreateMap_2keyValuePairs() {
 		Map<Integer, String> map = CollectionsUtil.createMap(1, "value1", 2, "value2");
@@ -121,11 +158,17 @@ public class CollectionsUtilTest {
 		assertEquals(String.format("Maps should be identical."), expectedMap, map);
 	}
 
+	/**
+	 * Tests that createMap() with a duplicate keys results in an IllegalArgumentException
+	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void testCreateMap_2keyValuePairs_duplicateKeys() {
 		CollectionsUtil.createMap(1, "value1", 1, "value2");
 	}
 
+	/**
+	 * Tests the normal operation of the addToOne2ManyUniqueMap() method
+	 */
 	@Test
 	public void testAddToOne2ManyMap() {
 		Map<Integer, Set<String>> expectedMap = new HashMap<Integer, Set<String>>();
@@ -141,34 +184,9 @@ public class CollectionsUtilTest {
 		assertEquals(String.format("Maps should be equal."), expectedMap, map);
 	}
 
-	@Test
-	public void testComputeCombinations() {
-		Collection<String> list0 = CollectionsUtil.createList("A", "B");
-		Collection<String> list1 = CollectionsUtil.createList("1", "2", "3");
-		Collection<String> list2 = CollectionsUtil.createList("X");
-		Collection<String> list3 = CollectionsUtil.createList("7", "8");
-
-		List<List<String>> expectedTuples = new ArrayList<List<String>>();
-		expectedTuples.add(CollectionsUtil.createList("A", "1", "X", "7"));
-		expectedTuples.add(CollectionsUtil.createList("A", "1", "X", "8"));
-		expectedTuples.add(CollectionsUtil.createList("A", "2", "X", "7"));
-		expectedTuples.add(CollectionsUtil.createList("A", "2", "X", "8"));
-		expectedTuples.add(CollectionsUtil.createList("A", "3", "X", "7"));
-		expectedTuples.add(CollectionsUtil.createList("A", "3", "X", "8"));
-		expectedTuples.add(CollectionsUtil.createList("B", "1", "X", "7"));
-		expectedTuples.add(CollectionsUtil.createList("B", "1", "X", "8"));
-		expectedTuples.add(CollectionsUtil.createList("B", "2", "X", "7"));
-		expectedTuples.add(CollectionsUtil.createList("B", "2", "X", "8"));
-		expectedTuples.add(CollectionsUtil.createList("B", "3", "X", "7"));
-		expectedTuples.add(CollectionsUtil.createList("B", "3", "X", "8"));
-
-		List<Collection<String>> collectionOfListsToCombine = CollectionsUtil.createList(list0, list1, list2, list3);
-		List<List<String>> tuples = CollectionsUtil.createList(CollectionsUtil
-				.computeCombinations(collectionOfListsToCombine));
-
-		assertEquals(String.format("Tuples should be as expected."), expectedTuples, tuples);
-	}
-
+	/**
+	 * Tests the normal operation of the combineMaps() method
+	 */
 	@Test
 	public void testCombineMaps() {
 		Map<String, String> inputMap1 = CollectionsUtil.createMap("1", "blue", "2", "red", "3", "green");
@@ -182,6 +200,9 @@ public class CollectionsUtilTest {
 		assertEquals(String.format("Map not as expected."), expectedMap, combinedMap);
 	}
 
+	/**
+	 * Tests the normal operation of the combineUniqueMaps() method
+	 */
 	@Test
 	public void testCombineUniqueMaps() {
 		Map<String, Set<String>> inputMap1 = new HashMap<String, Set<String>>();
@@ -200,6 +221,9 @@ public class CollectionsUtilTest {
 		assertEquals(String.format("Expected map not the same as combined."), expectedMap, combinedMap);
 	}
 
+	/**
+	 * Tests the normal operation of the initMap() method
+	 */
 	@Test
 	public void testInitHashMap() {
 		String key = "1";
@@ -209,6 +233,9 @@ public class CollectionsUtilTest {
 		assertEquals(value, map.get(key));
 	}
 
+	/**
+	 * Tests the normal operation of the createDelimitedString() method
+	 */
 	@Test
 	public void testCreateDelimitedString() {
 		List<String> list = CollectionsUtil.createList("1", "2", "3");
@@ -221,14 +248,20 @@ public class CollectionsUtilTest {
 		assertEquals(String.format("output or createDelimitedString not as expected."), expectedStr, delimitedStr);
 	}
 
+	/**
+	 * Tests the normal operation of the toString() method
+	 */
 	@Test
 	public void testToString() {
 		Set<Integer> integerSet = CollectionsUtil.createSet(1, 2, 3, 4, 5);
 		Set<String> strings = new HashSet<String>(CollectionsUtil.toString(integerSet));
-		assertEquals(String.format("Set should now contain strings."), CollectionsUtil.createSet("1", "2", "3", "4",
-				"5"), strings);
+		assertEquals(String.format("Set should now contain strings."),
+				CollectionsUtil.createSet("1", "2", "3", "4", "5"), strings);
 	}
 
+	/**
+	 * Tests the normal operation of the consolidateSets() method.
+	 */
 	@Test
 	public void testConsolidateSets() {
 		Collection<Set<String>> sets = new ArrayList<Set<String>>();
