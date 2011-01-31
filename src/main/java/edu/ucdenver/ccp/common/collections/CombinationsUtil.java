@@ -8,6 +8,12 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+/**
+ * Utility class for producing various combinations given one (or multiple) collections as input
+ * 
+ * @author bill
+ * 
+ */
 public class CombinationsUtil {
 
 	/**
@@ -68,7 +74,16 @@ public class CombinationsUtil {
 	 * 
 	 */
 	public enum SelfPairing {
-		ALLOW, PROHIBIT;
+		/**
+		 * ALLOW specifies that combinations (particularly pairwise combinations) should allow
+		 * pairings between identical objects
+		 */
+		ALLOW,
+		/**
+		 * PROHIBIT specifies that combinations (particularly pairwise combinates) between identical
+		 * objects should be prohibited
+		 */
+		PROHIBIT;
 	}
 
 	/**
@@ -114,7 +129,7 @@ public class CombinationsUtil {
 						}
 						return true;
 					}
-					
+
 					return false;
 				}
 				return true;
@@ -206,35 +221,51 @@ public class CombinationsUtil {
 	 * @param <T>
 	 */
 	public static class Pair<T> {
-		private T member1;
-		private T member2;
+		/**
+		 * A member of the pair
+		 */
+		private final T member1;
+		/**
+		 * The other member of the pair
+		 */
+		private final T member2;
 
+		/**
+		 * Constructor for creating a <code>Pair</code> of two objects of the same type
+		 * 
+		 * @param member1
+		 * @param member2
+		 */
 		public Pair(T member1, T member2) {
 			super();
 			this.member1 = member1;
 			this.member2 = member2;
 		}
 
+		/**
+		 * @return true if the <code>Pair</code> is composed of two objects who are equivalent
+		 */
 		public boolean isSelfPair() {
 			return member1.equals(member2);
 		}
 
+		/**
+		 * @return one member of the pair
+		 */
 		public T getMember1() {
 			return member1;
 		}
 
-		public void setMember1(T member1) {
-			this.member1 = member1;
-		}
-
+		/**
+		 * @return the other member of the pair
+		 */
 		public T getMember2() {
 			return member2;
 		}
 
-		public void setMember2(T member2) {
-			this.member2 = member2;
-		}
-
+		/**
+		 * @see java.lang.Object#hashCode()
+		 */
 		@Override
 		public int hashCode() {
 			final int prime = 31;
@@ -243,6 +274,9 @@ public class CombinationsUtil {
 			return result;
 		}
 
+		/**
+		 * @see java.lang.Object#equals(java.lang.Object)
+		 */
 		@Override
 		public boolean equals(Object obj) {
 			if (this == obj)
@@ -251,7 +285,7 @@ public class CombinationsUtil {
 				return false;
 			if (getClass() != obj.getClass())
 				return false;
-			Pair other = (Pair) obj;
+			Pair<?> other = (Pair<?>) obj;
 
 			if (member1 == null || member2 == null)
 				throw new IllegalStateException("Pair.equals() is not equipped to handle null member values.");
@@ -263,6 +297,9 @@ public class CombinationsUtil {
 			return false;
 		}
 
+		/**
+		 * @see java.lang.Object#toString()
+		 */
 		@Override
 		public String toString() {
 			return "Pair[" + member1 + ", " + member2 + "]";
