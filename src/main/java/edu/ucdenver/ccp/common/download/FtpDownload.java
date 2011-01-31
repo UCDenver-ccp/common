@@ -26,21 +26,65 @@ import java.lang.annotation.Target;
 
 import edu.ucdenver.ccp.common.ftp.FTPUtil.FileType;
 
+/**
+ * Definition for the @FtpDownload annotation. This annotation facilitates the download of a
+ * particular file via FTP and the reference of that file to a File member variable in a class. The @FtpDownload
+ * annotation is "activated" by calling the DownloadUtil.download() method.
+ * 
+ * @author bill
+ * 
+ */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface FtpDownload {
+	/**
+	 * The FTP server address, e.g. ftp.ncbi.nih.gov
+	 * 
+	 * @return
+	 */
 	String server();
 
+	/**
+	 * The FTP port. This option is useful for setting up unit tests using mock ftp servers
+	 * 
+	 * @return
+	 */
 	int port() default -1;
 
+	/**
+	 * The path (not including the file) where the file to be downloaded can be found on the FTP
+	 * server
+	 * 
+	 * @return
+	 */
 	String path();
 
+	/**
+	 * The name of the file to be downloaded
+	 * 
+	 * @return
+	 */
 	String filename();
 
+	/**
+	 * Specifies the download mode: ASCII or BINARY
+	 * 
+	 * @return
+	 */
 	FileType filetype();
 
+	/**
+	 * Specifies the user name to use when logging into the FTP server. Default="anonymous"
+	 * 
+	 * @return
+	 */
 	String username() default "anonymous";
 
+	/**
+	 * Specifies the password to use when logging into the FTP server. Default="anonymous"
+	 * 
+	 * @return
+	 */
 	String password() default "anonymous";
 }
