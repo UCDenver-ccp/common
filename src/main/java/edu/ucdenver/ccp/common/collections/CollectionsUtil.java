@@ -27,13 +27,23 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 
 import edu.ucdenver.ccp.common.string.StringUtil;
 
+/**
+ * Utility class for working with the Java <code>Collection</code> family
+ * 
+ * @author bill
+ * 
+ */
 public class CollectionsUtil {
+	/**
+	 * logger used primarily for debug output in this class
+	 */
 	private static final Logger logger = Logger.getLogger(CollectionsUtil.class);
 
 	/**
@@ -314,13 +324,20 @@ public class CollectionsUtil {
 		return combinedMap;
 	}
 
+	/**
+	 * Combines the set of input maps into a single <code>Map</code>
+	 * 
+	 * @param <K>
+	 * @param <V>
+	 * @param maps
+	 * @return the consolidation of all input maps as a Map<K, Set<V>>
+	 */
 	public static <K, V> Map<K, Set<V>> combineUniqueMaps(Map<K, Set<V>>... maps) {
 		Map<K, Set<V>> combinedMap = new HashMap<K, Set<V>>();
 		for (Map<K, Set<V>> inputMap : maps) {
-			for (K key : inputMap.keySet()) {
-				Set<V> values = inputMap.get(key);
-				for (V value : values)
-					addToOne2ManyUniqueMap(key, value, combinedMap);
+			for (Entry<K, Set<V>> entry : inputMap.entrySet()) {
+				for (V value : entry.getValue())
+					addToOne2ManyUniqueMap(entry.getKey(), value, combinedMap);
 			}
 		}
 		return combinedMap;
@@ -366,7 +383,9 @@ public class CollectionsUtil {
 	public static <K, V> void addToOne2ManyUniqueMap(K key, V value, Map<K, Set<V>> one2ManyMap) {
 		if (one2ManyMap.containsKey(key)) {
 			if (one2ManyMap.get(key).contains(value)) {
-				logger.debug(String.format("Duplicate key/value pair detected: %s/%s", key, value));
+				logger.debug(String.format(
+						"Adding value to Map<K, Set<V>>. Value (%s) for key (%s) is already present in the map.",
+						value, key));
 			} else
 				one2ManyMap.get(key).add(value);
 		} else {
@@ -376,6 +395,16 @@ public class CollectionsUtil {
 		}
 	}
 
+	/**
+	 * Adds the specified key-value pair to the input Map<K, Collection<V>>
+	 * 
+	 * @param <K>
+	 * @param <V>
+	 * @param key
+	 * @param value
+	 * @param one2ManyMap
+	 *            this Map<K, Collection<V>> is updated by adding the specified key-value pair
+	 */
 	public static <K, V> void addToOne2ManyMap(K key, V value, Map<K, Collection<V>> one2ManyMap) {
 		if (one2ManyMap.containsKey(key)) {
 			one2ManyMap.get(key).add(value);
@@ -383,57 +412,6 @@ public class CollectionsUtil {
 			Collection<V> newCollection = new ArrayList<V>();
 			newCollection.add(value);
 			one2ManyMap.put(key, newCollection);
-		}
-	}
-
-	/**
-	 * This method produces combinations by taking a single entry for each input list. For example,
-	 * if the input lists were: list0=[A,B], list1=[Q], list2=[Y,Z] <br>
-	 * The resulting output would be Lists of length 3 containing the following tuples:<br>
-	 * A Q Y<br>
-	 * A Q Z<br>
-	 * B Q Y<br>
-	 * B Q Z<br>
-	 * 
-	 * @param <T>
-	 * @param lists
-	 * @return
-	 */
-	public static <T> Iterator<List<T>> computeCombinations(List<Collection<T>> lists) {
-		if (lists.size() > 1) {
-			List<List<T>> tuples = new ArrayList<List<T>>();
-			for (T t : lists.get(0)) {
-				List<T> entries = new ArrayList<T>();
-				entries.add(t);
-				createTuple(tuples, entries, lists);
-			}
-			return tuples.iterator();
-		}
-		throw new RuntimeException("Cannot compute combinations with less than two lists.");
-	}
-
-	/**
-	 * This recursive method is used by the computeCombinations() method. It recursively adds tuples
-	 * to the input tuples list as they are formed.
-	 * 
-	 * @param <T>
-	 * @param tuples
-	 * @param entries
-	 * @param lists
-	 */
-	private static <T> void createTuple(List<List<T>> tuples, List<T> entries, List<Collection<T>> lists) {
-		if (entries.size() == lists.size() - 1) {
-			for (T t : lists.get(entries.size())) {
-				List<T> tuple = new ArrayList<T>(entries);
-				tuple.add(t);
-				tuples.add(tuple);
-			}
-		} else {
-			for (T t : lists.get(entries.size())) {
-				List<T> updatedEntries = new ArrayList<T>(entries);
-				updatedEntries.add(t);
-				createTuple(tuples, updatedEntries, lists);
-			}
 		}
 	}
 
