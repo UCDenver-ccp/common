@@ -3,20 +3,18 @@ package edu.ucdenver.ccp.common.io;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import org.apache.log4j.Logger;
 
 import edu.ucdenver.ccp.common.file.CharacterEncoding;
 import edu.ucdenver.ccp.common.file.FileUtil;
 import edu.ucdenver.ccp.common.string.StringUtil;
 
 /**
- * 
+ * Utility class for working with files/resources on the classpath
  * 
  * @author bill
  * 
  */
 public class ClassPathUtil {
-	private static final Logger logger = Logger.getLogger(ClassPathUtil.class);
 
 	/**
 	 * Helper method for grabbing a file from the classpath and returning an InputStream
@@ -28,10 +26,10 @@ public class ClassPathUtil {
 	public static InputStream getResourceStreamFromClasspath(Class<?> clazz, String resourceName) {
 		InputStream is = clazz.getResourceAsStream(resourceName);
 		if (is == null) {
-			logger.error("resource not found in classpath: " + resourceName + " class is: " + clazz.getCanonicalName());
+			throw new RuntimeException("resource not found in classpath: " + resourceName + " class is: "
+					+ clazz.getCanonicalName());
 		}
 		return is;
-		// return new ReaderInputStream(new InputStreamReader(is, encoding.getDecoder()));
 	}
 
 	/**
