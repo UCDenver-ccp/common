@@ -18,27 +18,63 @@
 
 package edu.ucdenver.ccp.common.file.reader;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
-import edu.ucdenver.ccp.common.file.*;
+import edu.ucdenver.ccp.common.file.CharacterEncoding;
+import edu.ucdenver.ccp.common.file.FileReaderUtil;
 
+/**
+ * This class reads lines from an input stream
+ * 
+ * @author bill
+ * 
+ */
 public class StreamLineReader extends LineReader {
 
+	/**
+	 * A BufferedReader is used to read the lines from the input <code>InputStream</code>
+	 */
 	private final BufferedReader reader;
+	/**
+	 * Used to store the line number
+	 */
 	private int lineNumber = 0;
 
+	/**
+	 * Initializes a new <code>StreamLineReader</code> to read from the input
+	 * <code>InputStream</code>
+	 * 
+	 * @param inputStream
+	 * @param encoding
+	 * @param skipLinePrefix
+	 */
 	public StreamLineReader(InputStream inputStream, CharacterEncoding encoding, String skipLinePrefix) {
 		super(skipLinePrefix);
 		lineNumber = 0;
 		reader = FileReaderUtil.initBufferedReader(inputStream, encoding);
 	}
 
+	/**
+	 * Use FileLineReader instead
+	 * 
+	 * @param inputFile
+	 * @param encoding
+	 * @param skipLinePrefix
+	 * @throws IOException
+	 */
+	@Deprecated
 	public StreamLineReader(File inputFile, CharacterEncoding encoding, String skipLinePrefix) throws IOException {
 		super(skipLinePrefix);
 		lineNumber = 0;
 		reader = FileReaderUtil.initBufferedReader(inputFile, encoding);
 	}
 
+	/**
+	 * @see edu.ucdenver.ccp.common.file.reader.LineReader#readLine()
+	 */
 	@Override
 	public Line readLine() throws IOException {
 		String lineText = reader.readLine();
@@ -49,6 +85,9 @@ public class StreamLineReader extends LineReader {
 		return new Line(lineText, lineNumber++);
 	}
 
+	/**
+	 * @see java.io.Closeable#close()
+	 */
 	@Override
 	public void close() throws IOException {
 		if (reader != null)
