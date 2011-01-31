@@ -23,18 +23,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.zip.GZIPInputStream;
 
-import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import edu.ucdenver.ccp.common.collections.CollectionsUtil;
 import edu.ucdenver.ccp.common.file.FileArchiveUtil.IncludeBaseDirectoryInPackage;
-import edu.ucdenver.ccp.common.file.FileComparisonUtil.ColumnOrder;
-import edu.ucdenver.ccp.common.file.FileComparisonUtil.LineOrder;
 import edu.ucdenver.ccp.common.file.FileWriterUtil.FileSuffixEnforcement;
 import edu.ucdenver.ccp.common.file.FileWriterUtil.WriteMode;
 import edu.ucdenver.ccp.common.io.ClassPathUtil;
@@ -42,21 +38,22 @@ import edu.ucdenver.ccp.common.test.DefaultTestCase;
 
 public class FileArchiveUtilTest extends DefaultTestCase {
 
-	private final List<String> expectedLinesInFile = CollectionsUtil.createList("This is line 1.", "This is line 2.");
-	private final Set<String> expectedFileNamesOnFirstLevel = CollectionsUtil.createSet("file1.txt", "file2.txt",
-			"file3.txt", "dir1");
-	private final Set<String> expectedFileNamesOnSecondLevel = CollectionsUtil.createSet("file4.txt", "file5.txt",
-			"file6.txt");
+	private static final List<String> expectedLinesInFile = CollectionsUtil.createList("This is line 1.",
+			"This is line 2.");
+	private static final Set<String> expectedFileNamesOnFirstLevel = CollectionsUtil.createSet("file1.txt",
+			"file2.txt", "file3.txt", "dir1");
+	private static final Set<String> expectedFileNamesOnSecondLevel = CollectionsUtil.createSet("file4.txt",
+			"file5.txt", "file6.txt");
 
-	private final String SAMPLE_FILE_6_NAME = "file6.txt";
-	private final String SAMPLE_DIRECTORY_NAME = "dir1";
+	private static final String SAMPLE_FILE_6_NAME = "file6.txt";
+	private static final String SAMPLE_DIRECTORY_NAME = "dir1";
 
-	private final String SAMPLE_GZIPPED_FILE_NAME = "sampleFile.txt.gz";
-	private final String SAMPLE_TARBALL_FILE_NAME = "sampleTarball.tar";
-	private final String SAMPLE_ZIPPED_TARBALL_FILE_NAME = "sampleTarball.tgz";
-	private final String SAMPLE_ZIP_FILE_NAME = "sampleZipFile.zip";
-	private final String SAMPLE_UNIX_COMPRESS_FILE_NAME = "sampleUnixCompressFile.txt.Z";
-	private final String SAMPLE_JAR_FILE = "sample.jar";
+	private static final String SAMPLE_GZIPPED_FILE_NAME = "sampleFile.txt.gz";
+	private static final String SAMPLE_TARBALL_FILE_NAME = "sampleTarball.tar";
+	private static final String SAMPLE_ZIPPED_TARBALL_FILE_NAME = "sampleTarball.tgz";
+	private static final String SAMPLE_ZIP_FILE_NAME = "sampleZipFile.zip";
+	private static final String SAMPLE_UNIX_COMPRESS_FILE_NAME = "sampleUnixCompressFile.txt.Z";
+	private static final String SAMPLE_JAR_FILE = "sample.jar";
 
 	@Test
 	public void testUnzipGzFile() throws Exception {
@@ -108,7 +105,7 @@ public class FileArchiveUtilTest extends DefaultTestCase {
 		FileArchiveUtil.unpackTarFile(tarFile, unpackedDirectory);
 		validateUnpackedDirectoryStructure(unpackedDirectory);
 	}
-	
+
 	@Test
 	public void testCreateJarFromDirectory() throws IOException {
 		File jarFile = FileUtil.appendPathElementsToDirectory(folder.newFolder("work"), "sample.jar");
@@ -119,6 +116,7 @@ public class FileArchiveUtilTest extends DefaultTestCase {
 		FileArchiveUtil.unpackJarFile(jarFile, unpackedDirectory);
 		validateUnpackedDirectoryStructure(unpackedDirectory);
 	}
+
 	/**
 	 * Initializes a directory to use when testing "packing" methods, e.g. tar, jar, zip
 	 * 
