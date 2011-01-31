@@ -25,14 +25,30 @@ import java.util.Calendar;
 
 import org.junit.Test;
 
-import edu.ucdenver.ccp.common.calendar.CalendarUtil;
 import edu.ucdenver.ccp.common.reflection.PrivateAccessor;
 import edu.ucdenver.ccp.common.test.DefaultTestCase;
 
+/**
+ * This class contains tests for the CalendarUtil class
+ * 
+ * @author bill
+ * 
+ */
 public class CalendarUtilTest extends DefaultTestCase {
 
+	/**
+	 * Tests the normal operation of the getDateStamp() method.
+	 * 
+	 * @throws NoSuchMethodException
+	 * @throws InvocationTargetException
+	 * @throws IllegalAccessException
+	 * @throws
+	 * @throws IllegalArgumentException
+	 * @throws Exception
+	 */
 	@Test
-	public void test() throws Exception {
+	public void testGetDateStamp() throws IllegalArgumentException, IllegalAccessException, InvocationTargetException,
+			NoSuchMethodException {
 		Calendar c = Calendar.getInstance();
 		c.set(Calendar.MONTH, Calendar.JULY);
 		c.set(Calendar.DAY_OF_MONTH, 16);
@@ -42,8 +58,19 @@ public class CalendarUtilTest extends DefaultTestCase {
 		assertEquals(String.format("Date stamp should match expected."), expectedDateStamp, callGetDateStamp(c, "/"));
 	}
 
+	/**
+	 * Helper method for calling the private static getDateStamp() method in CalendarUtil
+	 * 
+	 * @param calendar
+	 * @param delimiter
+	 * @return
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 * @throws NoSuchMethodException
+	 */
 	private String callGetDateStamp(Calendar calendar, String delimiter) throws IllegalArgumentException,
-			SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+			IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		return (String) PrivateAccessor.invokeStaticPrivateMethod(CalendarUtil.class, "getDateStamp", calendar,
 				delimiter);
 	}
