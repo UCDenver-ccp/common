@@ -38,22 +38,64 @@ import org.apache.log4j.Logger;
 
 import edu.ucdenver.ccp.common.file.FileUtil;
 
+/**
+ * Utility method for downloading files via FTP
+ * 
+ * @author bill
+ * 
+ */
 public class FTPUtil {
+	/**
+	 * Used to log FTP progress/status
+	 */
 	private static final Logger logger = Logger.getLogger(FTPUtil.class);
+	/**
+	 * This value is used to set the FTP buffer size
+	 */
 	private static final int BUFFER_SIZE = 32768000;
+	/**
+	 * Used for username and password if none are provided
+	 */
 	private static final String ANONYMOUS = "anonymous";
 
+	/**
+	 * This enum allows the user to specify the FTP download mode. TODO: Consider renaming
+	 * FtpDownloadMode
+	 * 
+	 * @author bill
+	 * 
+	 */
 	public static enum FileType {
-		ASCII(FTPClient.ASCII_FILE_TYPE), BINARY(FTPClient.BINARY_FILE_TYPE);
+		/**
+		 * Indicates that the file should be downloaded using the ASCII mode
+		 */
+		ASCII(FTPClient.ASCII_FILE_TYPE),
+		/**
+		 * Indicates that the file should be downloaded using the BINARY mode
+		 */
+		BINARY(FTPClient.BINARY_FILE_TYPE);
+		/**
+		 * Integer constant indicating the download mode (either FTPClient.ASCII_FILE_TYPE or
+		 * FTPClient.BINARY_FILE_TYPE)
+		 */
 		private final int type;
 
+		/**
+		 * Private constructor for the FileType enum
+		 * 
+		 * @param type
+		 */
+		private FileType(int type) {
+			this.type = type;
+		}
+
+		/**
+		 * @return the FTP file type (download mode) to use
+		 */
 		public int type() {
 			return type;
 		}
 
-		private FileType(int type) {
-			this.type = type;
-		}
 	}
 
 	/**
@@ -89,6 +131,14 @@ public class FTPUtil {
 		return login(ftpServer, ftpUsername, ftpPassword, ftpClient);
 	}
 
+	/**
+	 * Initializes an <code>FTPClient</code> to access the server at the input location
+	 * 
+	 * @param ftpServer
+	 * @return
+	 * @throws SocketException
+	 * @throws IOException
+	 */
 	public static FTPClient initializeFtpClient(String ftpServer) throws SocketException, IOException {
 		FTPClient ftpClient = connect(ftpServer, -1);
 		return login(ftpServer, ANONYMOUS, ANONYMOUS, ftpClient);
@@ -166,6 +216,20 @@ public class FTPUtil {
 		}
 	}
 
+	/**
+	 * Downloads the requested file via FTP
+	 * 
+	 * @param ftpServer
+	 * @param port
+	 * @param remotePath
+	 * @param fileName
+	 * @param fileType
+	 * @param workDirectory
+	 * @param username
+	 * @param password
+	 * @return
+	 * @throws IOException
+	 */
 	public static File downloadFile(String ftpServer, int port, String remotePath, String fileName, FileType fileType,
 			File workDirectory, String username, String password) throws IOException {
 		FTPClient ftpClient = FTPUtil.initializeFtpClient(ftpServer, port, username, password);
@@ -175,9 +239,20 @@ public class FTPUtil {
 		return downloadedFile;
 	}
 
+	/**
+	 * Downloads the requested file via FTP using the anonymous user
+	 * 
+	 * @param ftpServer
+	 * @param remotePath
+	 * @param fileName
+	 * @param fileType
+	 * @param workDirectory
+	 * @return
+	 * @throws IOException
+	 */
 	public static File downloadFile(String ftpServer, String remotePath, String fileName, FileType fileType,
 			File workDirectory) throws IOException {
-		FTPClient ftpClient = FTPUtil.initializeFtpClient(ftpServer, -1, "anonymous", "anonymous");
+		FTPClient ftpClient = FTPUtil.initializeFtpClient(ftpServer, -1, ANONYMOUS, ANONYMOUS);
 		FTPUtil.navigateToFtpDirectory(ftpClient, remotePath);
 		File downloadedFile = FTPUtil.downloadFile(ftpClient, fileName, fileType, workDirectory);
 		FTPUtil.closeFtpClient(ftpClient);
@@ -343,7 +418,7 @@ public class FTPUtil {
 			throws IOException {
 		if (fileSuffix == null)
 			return Arrays.asList(ftpClient.listFiles());
-		
+
 		return Arrays.asList(ftpClient.listFiles(String.format("*%s", fileSuffix)));
 	}
 
