@@ -21,10 +21,8 @@ package edu.ucdenver.ccp.common.file.reader;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.log4j.Logger;
-
 import edu.ucdenver.ccp.common.file.CharacterEncoding;
-import edu.ucdenver.ccp.common.file.reader.LineReader.FileLine;
+import edu.ucdenver.ccp.common.file.reader.FileLineReader.FileLine;
 
 /**
  * A simple utility for providing an iterator over the lines from a file. The Line data structure
@@ -35,13 +33,27 @@ import edu.ucdenver.ccp.common.file.reader.LineReader.FileLine;
  * 
  */
 public class FileLineIterator extends LineIterator<FileLine> {
-	private static final Logger logger = Logger.getLogger(FileLineIterator.class);
 
+	/**
+	 * Initializes a new FileLineIterator using the specified input file and character encoding.
+	 * 
+	 * @param inputFile
+	 * @param encoding
+	 * @param skipLinePrefix
+	 *            lines that begin with this specified prefix are skipped (not returned by the
+	 *            iterator)
+	 * @throws IOException
+	 */
 	public FileLineIterator(File inputFile, CharacterEncoding encoding, String skipLinePrefix) throws IOException {
 		super(inputFile, encoding, skipLinePrefix);
-		logger.info(String.format("Iterating through lines for file: %s", inputFile.getAbsolutePath()));
 	}
 
+	/**
+	 * Initializes a FileLineReader for reading the lines of the input file
+	 * 
+	 * @see edu.ucdenver.ccp.common.file.reader.LineIterator#initLineReader(java.lang.Object,
+	 *      edu.ucdenver.ccp.common.file.CharacterEncoding, java.lang.String)
+	 */
 	@Override
 	public FileLineReader initLineReader(Object inputFile, CharacterEncoding encoding, String skipLinePrefix)
 			throws IOException {
