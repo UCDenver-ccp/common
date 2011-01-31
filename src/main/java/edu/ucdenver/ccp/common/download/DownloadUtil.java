@@ -29,6 +29,14 @@ import edu.ucdenver.ccp.common.file.FileUtil;
 import edu.ucdenver.ccp.common.ftp.FTPUtil;
 import edu.ucdenver.ccp.common.http.HttpUtil;
 
+/**
+ * This class works in conjunction with the <code>FtpDownload</code> and <code>HttpDownload</code>
+ * annotations to facilitate download of files and referencing (via the annotations) of those files
+ * to member variables of a class.
+ * 
+ * @author bill
+ * 
+ */
 public class DownloadUtil {
 
 	/**
@@ -54,6 +62,18 @@ public class DownloadUtil {
 		}
 	}
 
+	/**
+	 * This method works in conjunction with the HttpDownload annotation to automatically download
+	 * via HTTP the specified file
+	 * 
+	 * @param object
+	 * @param workDirectory
+	 * @param field
+	 * @param clean
+	 * @throws IOException
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 */
 	private static void handleHttpDownload(Object object, File workDirectory, Field field, boolean clean)
 			throws IOException, IllegalArgumentException, IllegalAccessException {
 		HttpDownload httpd = field.getAnnotation(HttpDownload.class);
@@ -68,34 +88,65 @@ public class DownloadUtil {
 		unpackFileAndAssignField(object, workDirectory, field, clean, downloadedFile);
 	}
 
+	/**
+	 * Unpacks (unzips) the downloaded file and assigns it to the specified File field
+	 * 
+	 * @param object
+	 * @param workDirectory
+	 * @param field
+	 * @param clean
+	 * @param downloadedFile
+	 * @throws IOException
+	 * @throws IllegalAccessException
+	 */
 	private static void unpackFileAndAssignField(Object object, File workDirectory, Field field, boolean clean,
 			File downloadedFile) throws IOException, IllegalAccessException {
-		downloadedFile = unpackDownloadedFile(workDirectory, clean, downloadedFile);
-
+		File unpackedDownloadedFile = unpackDownloadedFile(workDirectory, clean, downloadedFile);
 		field.setAccessible(true);
-		field.set(object, downloadedFile);
+		field.set(object, unpackedDownloadedFile);
 	}
 
+	/**
+	 * Unpacks the specified file if necessary
+	 * 
+	 * @param workDirectory
+	 * @param clean
+	 * @param downloadedFile
+	 * @return a reference to the unpacked File
+	 * @throws IOException
+	 */
 	public static File unpackDownloadedFile(File workDirectory, boolean clean, File downloadedFile) throws IOException {
+		File unpackedFile = downloadedFile;
 		if (fileNeedsUnzipping(downloadedFile, clean))
-			downloadedFile = FileArchiveUtil.unzip(downloadedFile, workDirectory);
+			unpackedFile = FileArchiveUtil.unzip(downloadedFile, workDirectory);
 		else if (FileArchiveUtil.isZippedFile(downloadedFile))
 			// File has already been downloaded and unzipped
-			downloadedFile = FileArchiveUtil.getUnzippedFileReference(downloadedFile);
-		return downloadedFile;
+			unpackedFile = FileArchiveUtil.getUnzippedFileReference(downloadedFile);
+		return unpackedFile;
 	}
 
+	/**
+	 * Downloads the specified file via FTP, places the file in the work directory
+	 * 
+	 * @param object
+	 * @param workDirectory
+	 * @param field
+	 * @param userName
+	 * @param password
+	 * @param clean
+	 * @throws IOException
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 */
 	private static void handleFtpDownload(Object object, File workDirectory, Field field, String userName,
 			String password, boolean clean) throws IOException, IllegalArgumentException, IllegalAccessException {
 		FtpDownload ftpd = field.getAnnotation(FtpDownload.class);
-		if (userName == null)
-			userName = ftpd.username();
-		if (password == null)
-			password = ftpd.password();
+		String uName = (userName == null) ? ftpd.username() : userName;
+		String pWord = (password == null) ? ftpd.password() : password;
 		File downloadedFile = FileUtil.appendPathElementsToDirectory(workDirectory, ftpd.filename());
 		if (!fileExists(downloadedFile, clean)) {
 			downloadedFile = FTPUtil.downloadFile(ftpd.server(), ftpd.port(), ftpd.path(), ftpd.filename(),
-					ftpd.filetype(), workDirectory, userName, password);
+					ftpd.filetype(), workDirectory, uName, pWord);
 		}
 		unpackFileAndAssignField(object, workDirectory, field, clean, downloadedFile);
 	}
@@ -113,9 +164,9 @@ public class DownloadUtil {
 		if (FileArchiveUtil.isZippedFile(downloadedFile))
 			unzippedFile = FileArchiveUtil.getUnzippedFileReference(downloadedFile);
 		if (clean) {
-			downloadedFile.delete();
+			FileUtil.deleteFile(downloadedFile);
 			if (unzippedFile != null)
-				unzippedFile.delete();
+				FileUtil.deleteFile(unzippedFile);
 			return false;
 		}
 		return downloadedFile.exists() || (unzippedFile != null && unzippedFile.exists());
@@ -136,11 +187,10 @@ public class DownloadUtil {
 			return false;
 		File unzippedFile = FileArchiveUtil.getUnzippedFileReference(zippedFile);
 		if (clean) {
-			unzippedFile.delete();
+			FileUtil.deleteFile(unzippedFile);
 			return true;
 		}
 		return !unzippedFile.exists();
 	}
 
-	
 }
