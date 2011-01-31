@@ -30,8 +30,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
@@ -39,18 +41,24 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
-import org.apache.log4j.Logger;
 
+import edu.ucdenver.ccp.common.collections.CollectionsUtil;
 import edu.ucdenver.ccp.common.io.StreamUtil;
 
+/**
+ * Utility class for working with files and directories
+ * 
+ * @author bill
+ * 
+ */
 public class FileUtil {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(FileUtil.class);
-
-	private FileUtil() {
-		// do not instantiate
-	}
+	/**
+	 * Private constructor; do not instantiate this utility class
+	 */
+	/* @formatter:off */
+	private FileUtil() {/* do not instantiate */}
+	/* @formatter:on */
 
 	/**
 	 * Simple utility method that checks whether the input directory exists (and is a directory).
@@ -147,11 +155,24 @@ public class FileUtil {
 				if (f.isDirectory()) {
 					deleteDirectory(f);
 				} else {
-					success = success & f.delete();
+					success = success && f.delete();
 				}
 			}
 		}
-		return success & directory.delete();
+		return success && directory.delete();
+	}
+
+	/**
+	 * Deletes the specified file
+	 * 
+	 * @param file
+	 * @throws RuntimeException
+	 *             if the file.delete() operation fails
+	 */
+	public static void deleteFile(File file) {
+		if (file.exists())
+			if (!file.delete())
+				throw new RuntimeException(String.format("Error while deleting file: %s", file.getAbsolutePath()));
 	}
 
 	/**
@@ -231,6 +252,15 @@ public class FileUtil {
 		validateFile(toFile);
 	}
 
+	/**
+	 * Copies the contents of the specified file to a <code>String</code> using the specified
+	 * character encoding
+	 * 
+	 * @param fromFile
+	 * @param fromFileEncoding
+	 * @return
+	 * @throws IOException
+	 */
 	public static String copyToString(File fromFile, CharacterEncoding fromFileEncoding) throws IOException {
 		validateFile(fromFile);
 		return StreamUtil.toString(new InputStreamReader(new FileInputStream(fromFile), fromFileEncoding.getDecoder()));
@@ -258,7 +288,8 @@ public class FileUtil {
 	 */
 	public static FilenameFilter createFilenameSuffixFilter(final String... fileSuffixes) {
 		FilenameFilter filter = new FilenameFilter() {
-			public boolean accept(File dir, String name) {
+			@Override
+			public boolean accept(@SuppressWarnings("unused") File dir, String name) {
 				for (String fileSuffix : fileSuffixes) {
 					if (name.endsWith(fileSuffix)) {
 						return true;
@@ -294,11 +325,11 @@ public class FileUtil {
 	 * @return
 	 */
 	public static File appendPathElementsToDirectory(File directory, String... pathElements) {
-		String path = directory.getPath();
+		StringBuffer sb = new StringBuffer(directory.getPath());
 		for (String pathElement : pathElements) {
-			path += (File.separator + pathElement);
+			sb.append(File.separator + pathElement);
 		}
-		return new File(path);
+		return new File(sb.toString());
 	}
 
 	/**
@@ -316,12 +347,29 @@ public class FileUtil {
 		if (FileUtil.isFileValid(fileOrDirectory) == null) {
 			return createSingleFileIterator(fileOrDirectory, fileSuffixes);
 		} else if (FileUtil.isDirectoryValid(fileOrDirectory) == null) {
-			fileSuffixes = removeLeadingPeriods(fileSuffixes);
-			return FileUtils.iterateFiles(fileOrDirectory, createFileFilter(fileSuffixes),
+			return FileUtils.iterateFiles(fileOrDirectory, createFileFilter(removeLeadingPeriods(fileSuffixes)),
 					createDirectoryFilter(recurse));
 		} else
 			throw new IOException(String.format("Input is not a valid file or directory: %s",
 					fileOrDirectory.getAbsolutePath()));
+	}
+
+	/**
+	 * Returns a List<File> over the files in the input directory. Only visible (i.e. not hidden)
+	 * files and directories will be processed. The list is sorted using the
+	 * java.util.Collections.sort() method.
+	 * 
+	 * @param fileOrDirectory
+	 * @param recurse
+	 * @param fileSuffixes
+	 * @return
+	 * @throws IOException
+	 */
+	public static List<File> getFileListing(File fileOrDirectory, boolean recurse, String... fileSuffixes)
+			throws IOException {
+		List<File> list = CollectionsUtil.createList(getFileIterator(fileOrDirectory, recurse, fileSuffixes));
+		Collections.sort(list);
+		return list;
 	}
 
 	/**
@@ -343,6 +391,11 @@ public class FileUtil {
 		return fileFilter;
 	}
 
+	/**
+	 * Creates a file filter that ignores hidden files
+	 * 
+	 * @return
+	 */
 	private static IOFileFilter createVisibleFileFilter() {
 		return FileFilterUtils.notFileFilter(FileFilterUtils.prefixFileFilter("."));
 	}
@@ -433,14 +486,16 @@ public class FileUtil {
 	 * @return
 	 */
 	private static Iterator<File> createSingleFileIterator(File file, String... fileSuffixes) {
+		File inputFile = file;
 		if (file.getName().startsWith("."))
-			file = null;
+			inputFile = null;
 
-		if (file != null && fileSuffixes != null)
-			if (!FileUtil.createFilenameSuffixFilter(fileSuffixes).accept(file.getParentFile(), file.getName()))
-				file = null;
+		if (inputFile != null && fileSuffixes != null)
+			if (!FileUtil.createFilenameSuffixFilter(fileSuffixes).accept(inputFile.getParentFile(),
+					inputFile.getName()))
+				inputFile = null;
 
-		final File singleFile = file;
+		final File singleFile = inputFile;
 
 		return new Iterator<File>() {
 			private File nextFile = singleFile;
