@@ -37,6 +37,14 @@ public class StreamUtil {
 		return new ReaderInputStream(new InputStreamReader(is, encoding.getDecoder()));
 	}
 
+	/**
+	 * Returns an <code>InputStream</code> from a file that properly enforces character encoding
+	 * 
+	 * @param file
+	 * @param encoding
+	 * @return
+	 * @throws FileNotFoundException
+	 */
 	public static InputStream getEncodingSafeInputStream(File file, CharacterEncoding encoding)
 			throws FileNotFoundException {
 		return getEncodingSafeInputStream(new FileInputStream(file), encoding);
@@ -53,6 +61,14 @@ public class StreamUtil {
 		return new WriterOutputStream(new OutputStreamWriter(os, encoding.getEncoder()));
 	}
 
+	/**
+	 * Returns an <code>OutputStream</code> from a file that properly enforces character encoding
+	 * 
+	 * @param file
+	 * @param encoding
+	 * @return
+	 * @throws FileNotFoundException
+	 */
 	public static OutputStream getEncodingSafeOutputStream(File file, CharacterEncoding encoding)
 			throws FileNotFoundException {
 		return getEncodingSafeOutputStream(new FileOutputStream(file), encoding);
@@ -60,6 +76,7 @@ public class StreamUtil {
 
 	/**
 	 * Returns the input <code>InputStreamReader</code> to a <code>String</code>
+	 * 
 	 * @param isr
 	 * @return
 	 * @throws IOException
@@ -70,7 +87,7 @@ public class StreamUtil {
 			Reader reader = new BufferedReader(isr);
 			int ch;
 			while ((ch = reader.read()) > -1)
-				sb.append((char)ch);
+				sb.append((char) ch);
 			return sb.toString();
 		} finally {
 			if (isr != null)
