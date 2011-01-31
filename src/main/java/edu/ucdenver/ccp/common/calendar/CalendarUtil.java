@@ -21,6 +21,12 @@ package edu.ucdenver.ccp.common.calendar;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+/**
+ * Utility class for handling Calendar operations
+ * 
+ * @author bill
+ * 
+ */
 public class CalendarUtil {
 	/**
 	 * Returns a String containing the month day and year with user-specified delimiter
@@ -33,6 +39,14 @@ public class CalendarUtil {
 		return getDateStamp(c, delimiter);
 	}
 
+	/**
+	 * Returns a String containing the month day and year with user-specified delimiter
+	 * 
+	 * @param c
+	 *            <code>Calendar</code> used to obtain date
+	 * @param delimiter
+	 * @return a <code>String</code> containing the month day and year with user-specified delimiter
+	 */
 	private static String getDateStamp(GregorianCalendar c, String delimiter) {
 		return String.format("%s%s%s%s%s", c.get(Calendar.MONTH) + 1, delimiter, c.get(Calendar.DAY_OF_MONTH),
 				delimiter, c.get(Calendar.YEAR));
