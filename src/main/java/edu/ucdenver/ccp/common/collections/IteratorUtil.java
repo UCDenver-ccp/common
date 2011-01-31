@@ -3,6 +3,16 @@ package edu.ucdenver.ccp.common.collections;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+/**
+ * Utility class for working with Iterators
+ * 
+ * @author bill
+ * 
+ */
+/**
+ * @author bill
+ * 
+ */
 public class IteratorUtil {
 
 	/**
@@ -13,24 +23,24 @@ public class IteratorUtil {
 	 */
 	public static <T> Iterator<T> getEmptyIterator() {
 		return new Iterator<T>() {
-	
+
 			@Override
 			public boolean hasNext() {
 				return false;
 			}
-	
+
 			@Override
 			public T next() {
 				if (!hasNext())
 					throw new NoSuchElementException();
 				return null;
 			}
-	
+
 			@Override
 			public void remove() {
 				throw new UnsupportedOperationException("The remove operation is not supported by this iterator.");
 			}
-	
+
 		};
 	}
 
@@ -46,7 +56,7 @@ public class IteratorUtil {
 		return new Iterator<T>() {
 			private T nextT = null;
 			private Iterator<T> currentIterator = null;
-	
+
 			@Override
 			public boolean hasNext() {
 				if (nextT == null) {
@@ -60,31 +70,39 @@ public class IteratorUtil {
 						nextT = currentIterator.next();
 						return true;
 					}
-					
+
 					currentIterator = null;
 					return hasNext();
 				}
 				return true;
 			}
-	
+
 			@Override
 			public T next() {
 				if (!hasNext()) {
 					throw new NoSuchElementException();
 				}
-	
+
 				T thingToReturn = nextT;
 				nextT = null;
 				return thingToReturn;
 			}
-	
+
 			@Override
 			public void remove() {
 				throw new UnsupportedOperationException("The remove() method is not supported for this iterator.");
 			}
 		};
 	}
-	
+
+	/**
+	 * Convenience method for consolidating two Iterators
+	 * 
+	 * @param <T>
+	 * @param iterator1
+	 * @param iterator2
+	 * @return
+	 */
 	public static <T> Iterator<T> consolidate(Iterator<T> iterator1, Iterator<T> iterator2) {
 		return consolidate(CollectionsUtil.createList(iterator1, iterator2));
 	}
