@@ -24,11 +24,31 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Definition for the @HttpDownload annotation. This annotation facilitates the download of a
+ * particular file via HTTP and the referencing of that file to a File member variable in a class.
+ * The @HttpDownload annotation is "activated" by calling the DownloadUtil.download() method.
+ * 
+ * @author bill
+ * 
+ */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface HttpDownload {
+	/**
+	 * The URL where the file to download is located
+	 * 
+	 * @return
+	 */
 	String url();
 
+	/**
+	 * Optional parameter allowing the user to specify the name of the file once it is downloaded
+	 * and saved locally. If not used an attempt to infer the file name is made by looking at the
+	 * contents of the URL after the final forward slash.
+	 * 
+	 * @return
+	 */
 	String fileName() default "";
 }
