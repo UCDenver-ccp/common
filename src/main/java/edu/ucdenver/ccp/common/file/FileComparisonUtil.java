@@ -34,14 +34,46 @@ import edu.ucdenver.ccp.common.collections.CollectionsUtil;
  * 
  */
 public class FileComparisonUtil {
+	/**
+	 * This logger is used to log differences among the files being compared
+	 */
 	private static final Logger logger = Logger.getLogger(FileComparisonUtil.class);
 
+	/**
+	 * File comparisons can specify whether or not line ordering should be considered when comparing
+	 * files.
+	 * 
+	 * @author bill
+	 * 
+	 */
 	public enum LineOrder {
-		ANY_ORDER, AS_IN_FILE
+		/**
+		 * Signifies that when comparing two files the lines can appear in any order
+		 */
+		ANY_ORDER,
+		/**
+		 * Signifies that when comparing two files the appearance of lines in one file must match
+		 * the order of appearance in the other file exactly.
+		 */
+		AS_IN_FILE
 	}
 
+	/**
+	 * File comparisons can specify whether or not column ordering should be considered when
+	 * comparing files.
+	 * 
+	 * @author bill
+	 * 
+	 */
 	public enum ColumnOrder {
-		ANY_ORDER, AS_IN_FILE
+		/**
+		 * Signifies that columns can appear in any order when comparing two files
+		 */
+		ANY_ORDER,
+		/**
+		 * Signifies that columns must appear in the same order for files to match
+		 */
+		AS_IN_FILE
 	}
 
 	/**
@@ -150,7 +182,7 @@ public class FileComparisonUtil {
 			if (lineToks.length == expectedLineToks.length) {
 				return CollectionsUtil.array2Set(lineToks).equals(CollectionsUtil.array2Set(expectedLineToks));
 			}
-			
+
 			return false;
 		} else
 			throw new RuntimeException(String.format("Unknown ColumnOrder: %s", columnOrder.toString()));
