@@ -28,24 +28,54 @@ import org.apache.log4j.Logger;
 import edu.ucdenver.ccp.common.file.CharacterEncoding;
 import edu.ucdenver.ccp.common.file.reader.LineReader.Line;
 
+/**
+ * This class is used to iterate over lines obtained from a Stream.
+ * 
+ * @author bill
+ * 
+ */
 public class StreamLineIterator extends LineIterator<Line> {
 
+	/**
+	 * Logger used to output name of file being iterated over
+	 */
 	private static final Logger logger = Logger.getLogger(StreamLineIterator.class);
 
-	public StreamLineIterator(InputStream inputStream, CharacterEncoding encoding, String skipLinePrefix) throws IOException {
+	/**
+	 * Initializes a <code>StreamLineReader</code> to read from the input <code>InputStream</code>
+	 * 
+	 * @param inputStream
+	 * @param encoding
+	 * @param skipLinePrefix
+	 * @throws IOException
+	 */
+	public StreamLineIterator(InputStream inputStream, CharacterEncoding encoding, String skipLinePrefix)
+			throws IOException {
 		super(inputStream, encoding, skipLinePrefix);
-		logger.info(String.format("Iterating through lines of InputStream"));
 	}
 
+	/**
+	 * Initializes a <code>StreamLineReader</code> to read from the input <code>File</code>. TODO:
+	 * This constructor belongs in the FileLineIterator class and FileLineIterator should be a
+	 * subclass of StreamLineIterator
+	 * 
+	 * @param inputFile
+	 * @param encoding
+	 * @param skipLinePrefix
+	 * @throws IOException
+	 */
 	public StreamLineIterator(File inputFile, CharacterEncoding encoding, String skipLinePrefix) throws IOException {
 		super(new FileInputStream(inputFile), encoding, skipLinePrefix);
-		logger.info(String.format("Iterating through lines for file: %s", inputFile.getAbsolutePath()));
+		logger.debug(String.format("Iterating through lines for file: %s", inputFile.getAbsolutePath()));
 	}
 
+	/**
+	 * Initializes a new <code>StreamLineReader</code> to be used by the
+	 * <code>StreamLineIterator</code>
+	 */
 	@Override
-	public StreamLineReader initLineReader(Object inputStream, CharacterEncoding encoding, String skipLinePrefix)
-			throws IOException {
+	public StreamLineReader initLineReader(Object inputStream, CharacterEncoding encoding, String skipLinePrefix) {
 		return new StreamLineReader((InputStream) inputStream, encoding, skipLinePrefix);
 	}
-	
+
 }
