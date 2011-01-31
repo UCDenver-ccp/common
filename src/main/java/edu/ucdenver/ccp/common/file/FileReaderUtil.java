@@ -29,15 +29,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.ucdenver.ccp.common.collections.CollectionsUtil;
-import edu.ucdenver.ccp.common.file.reader.StreamLineIterator;
 import edu.ucdenver.ccp.common.file.reader.LineReader.Line;
+import edu.ucdenver.ccp.common.file.reader.StreamLineIterator;
 import edu.ucdenver.ccp.common.string.StringUtil;
 
+/**
+ * Utility method helpful when reading the content of a file
+ * 
+ * @author bill
+ * 
+ */
 public class FileReaderUtil {
 
-	private FileReaderUtil() {
-		// do not instantiate
-	}
+	/**
+	 * Private constructor; this class should not be instantiated
+	 */
+	/* @formatter:off */
+	private FileReaderUtil() {/* do not instantiate */}
+	/* @formatter:on */
 
 	/**
 	 * Returns a BufferedReader initialized to read the input character encoding from the input File
@@ -116,19 +125,31 @@ public class FileReaderUtil {
 		return getColumnsFromLine(line, delimiterRegex, null, columnIndexes);
 	}
 
+	/**
+	 * Returns the columns extracted from the input line using a regular expression delimiter. If
+	 * the field enclosure regex is also set, then any delimiters inside a field are not treated as
+	 * column delimiters.
+	 * 
+	 * @param line
+	 * @param delimiterRegex
+	 * @param fieldEnclosingRegex
+	 * @param columnIndexes
+	 * @return
+	 */
 	public static String[] getColumnsFromLine(String line, String delimiterRegex, String fieldEnclosingRegex,
 			int... columnIndexes) {
 		if (delimiterRegex == null) {
 			return new String[] { line };
 		}
-		
+
 		String[] lineTokens = StringUtil.splitWithFieldEnclosure(line, delimiterRegex, fieldEnclosingRegex);
+		int[] cIndexes = columnIndexes;
 		if (columnIndexes == null || columnIndexes.length == 0) {
-			columnIndexes = CollectionsUtil.createZeroBasedSequence(lineTokens.length);
+			cIndexes = CollectionsUtil.createZeroBasedSequence(lineTokens.length);
 		}
-		String[] outputColumns = new String[columnIndexes.length];
+		String[] outputColumns = new String[cIndexes.length];
 		int outputIndex = 0;
-		for (int columnIndex : columnIndexes) {
+		for (int columnIndex : cIndexes) {
 			ensureColumnIndexIsValid(columnIndex, line, lineTokens);
 			outputColumns[outputIndex++] = lineTokens[columnIndex];
 		}
