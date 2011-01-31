@@ -29,57 +29,58 @@ import org.apache.commons.io.DirectoryWalker;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.HiddenFileFilter;
 import org.apache.commons.io.filefilter.IOFileFilter;
-
 import org.apache.log4j.Logger;
 
-
-
+/**
+ * Use FileUtil.getFileListing() instead.
+ * 
+ * @author bill
+ * 
+ */
+@Deprecated
 public class DirectoryListing {
-	
+
 	static Logger logger = Logger.getLogger(DirectoryListing.class);
 
-	public static List<File> getFiles(String dirPath, String suffix, Boolean recurse)
-	throws IOException {
-	    /* Find all nxml files in the directory and place in List nxmlFiles */
-	    
+	public static List<File> getFiles(String dirPath, String suffix, Boolean recurse) throws IOException {
+		/* Find all nxml files in the directory and place in List nxmlFiles */
+
 		IOFileFilter dirFilter = FileFilterUtils.and(FileFilterUtils.directoryFileFilter(), HiddenFileFilter.VISIBLE);
-		IOFileFilter nxmlFileFilter = FileFilterUtils.and(FileFilterUtils.fileFileFilter(), FileFilterUtils.suffixFileFilter(suffix));
-	    
-	    FileFilter filter = FileFilterUtils.or(dirFilter, nxmlFileFilter);
-	    CollectFilesWalker dirWalker=null;
-	    if (recurse) {
-	    	dirWalker = new CollectFilesWalker(filter,-1);
-	    }
-	    else {
-			dirWalker = new CollectFilesWalker(filter,1);
-	    }
-	    
-	    List<File> files = null;
-	    File dirFile=null;
-    	dirFile = new File(dirPath);
-    	files = dirWalker.getFiles(dirFile);
-    	java.util.Collections.sort(files);
-    	logger.debug(" returning " + files.size() + " list from " + dirPath);
-    	return files;
+		IOFileFilter nxmlFileFilter = FileFilterUtils.and(FileFilterUtils.fileFileFilter(),
+				FileFilterUtils.suffixFileFilter(suffix));
+
+		FileFilter filter = FileFilterUtils.or(dirFilter, nxmlFileFilter);
+		CollectFilesWalker dirWalker = null;
+		if (recurse) {
+			dirWalker = new CollectFilesWalker(filter, -1);
+		} else {
+			dirWalker = new CollectFilesWalker(filter, 1);
+		}
+
+		List<File> files = null;
+		File dirFile = null;
+		dirFile = new File(dirPath);
+		files = dirWalker.getFiles(dirFile);
+		java.util.Collections.sort(files);
+		logger.debug(" returning " + files.size() + " list from " + dirPath);
+		return files;
 	}
 }
 
 // nearly trivial extension required by abstract DirectoryWalker used below
 class CollectFilesWalker extends DirectoryWalker<File> {
-	public CollectFilesWalker(FileFilter filter,int levels) {
-			super(filter, levels);
+	public CollectFilesWalker(FileFilter filter, int levels) {
+		super(filter, levels);
 	}
-	
+
 	@Override
 	protected void handleFile(File file, int depth, Collection<File> results) throws IOException {
 		results.add(file);
 	}
-	
+
 	public List<File> getFiles(File dir) throws IOException {
 		List<File> files = new ArrayList<File>();
 		walk(dir, files);
 		return files;
 	}
 }
-
-
