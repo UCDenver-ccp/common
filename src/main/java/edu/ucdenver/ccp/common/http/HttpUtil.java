@@ -30,8 +30,17 @@ import org.apache.log4j.Logger;
 import edu.ucdenver.ccp.common.file.FileUtil;
 import edu.ucdenver.ccp.common.string.StringConstants;
 
+/**
+ * Utility method for working with HTTP requests
+ * 
+ * @author bill
+ * 
+ */
 public class HttpUtil {
 
+	/**
+	 * Used to log the download of a file via HTTP
+	 */
 	private static final Logger logger = Logger.getLogger(HttpUtil.class);
 
 	/**
