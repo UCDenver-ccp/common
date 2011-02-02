@@ -578,16 +578,22 @@ public class FileUtil {
 	 */
 	public static long getLineCount(File file, CharacterEncoding encoding) throws IOException {
 		long lineCount = 0;
-		BufferedReader reader = FileReaderUtil.initBufferedReader(file, encoding);
-		/*
-		 * The 'line' variable is unnecessary here, however if (reader.readLine() == null) is used,
-		 * a FindBugs warning is generated.
-		 */
-		@SuppressWarnings("unused")
-		String line;
-		while ((line = reader.readLine()) != null)
-			lineCount++;
-		return lineCount;
+		BufferedReader reader = null;
+		try {
+			reader = FileReaderUtil.initBufferedReader(file, encoding);
+			/*
+			 * The 'line' variable is unnecessary here, however if (reader.readLine() == null) is
+			 * used, a FindBugs warning is generated.
+			 */
+			@SuppressWarnings("unused")
+			String line;
+			while ((line = reader.readLine()) != null)
+				lineCount++;
+			return lineCount;
+		} finally {
+			if (reader != null)
+				reader.close();
+		}
 	}
 
 }
