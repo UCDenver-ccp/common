@@ -320,4 +320,18 @@ public class FileUtilTest extends DefaultTestCase {
 		txtFile = folder.newFile("test");
 		assertEquals(String.format("Expected no file suffix"), "", FileUtil.getFileSuffix(txtFile));
 	}
+
+	/**
+	 * Tests that the expected number of lines in a file is returned
+	 * 
+	 * @throws IOException
+	 */
+	@Test
+	public void testGetLineCount() throws IOException {
+		File file = folder.newFile("file.ascii");
+		FileWriterUtil.printLines(CollectionsUtil.createList("1", "2", "3", "4", "5", "6", "7", "8", "9"), file,
+				CharacterEncoding.US_ASCII);
+		assertEquals(String.format("getLineCount() should return the expected number of lines"), 9L,
+				FileUtil.getLineCount(file, CharacterEncoding.US_ASCII));
+	}
 }

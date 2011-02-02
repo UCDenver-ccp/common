@@ -19,6 +19,7 @@
 package edu.ucdenver.ccp.common.file;
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
@@ -563,6 +564,30 @@ public class FileUtil {
 		if (lastIndexOfPeriod == -1)
 			return "";
 		return fileName.substring(lastIndexOfPeriod);
+	}
+
+	/**
+	 * Returns the number of lines in the input file
+	 * 
+	 * @param file
+	 *            the number of lines in this file will be returned
+	 * @param encoding
+	 *            the character encoding used in the file
+	 * @return the number of lines in the input file
+	 * @throws IOException
+	 */
+	public static long getLineCount(File file, CharacterEncoding encoding) throws IOException {
+		long lineCount = 0;
+		BufferedReader reader = FileReaderUtil.initBufferedReader(file, encoding);
+		/*
+		 * The 'line' variable is unnecessary here, however if (reader.readLine() == null) is used,
+		 * a FindBugs warning is generated.
+		 */
+		@SuppressWarnings("unused")
+		String line;
+		while ((line = reader.readLine()) != null)
+			lineCount++;
+		return lineCount;
 	}
 
 }
