@@ -477,7 +477,8 @@ public class CollectionsUtil {
 	public static <T> T getSingleElement(Collection<T> collection) {
 		if (collection.size() != 1)
 			throw new IndexOutOfBoundsException(String.format(
-					"Expected collection to contain a single element, but observed %d elements.", collection.size()));
+					"Expected collection to contain a single element, but observed %d elements: %s", collection.size(),
+					collection.toString()));
 		return collection.iterator().next();
 	}
 
