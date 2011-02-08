@@ -9,13 +9,13 @@
 
 	<property name="test-resources.jar.name" value="${project.name}-test-resources.jar" />
 
-	
+
 	<path id="ant.contrib.classpath">
 		<fileset dir="${ant.external.lib.dir}">
 			<include name="**/ant-contrib*.jar" />
 		</fileset>
 	</path>
-	
+
 	<!-- The compile classpath contains jars necessary for compile- and run-time. -->
 	<path id="classpath.compile">
 		<fileset dir="${lib.dir}">
@@ -35,16 +35,16 @@
 	<!-- Convenience properties for re-use in other invoked scripts -->
 	<property name="classpath.compile.property" refid="classpath.compile"/>
 	<property name="classpath.compile.test.property" refid="classpath.compile.test"/>
-	
+
 	<!-- Deletes compiled and generated code -->
 	<target name="clean" description="Deletes compiled and generated code">
 		<delete dir="${build.dir}" />
 	</target>
-	
+
 	<target name="init" depends="clean">
 		<!--taskdef resource="net/sf/antcontrib/antcontrib.properties" classpathref="ant.contrib.classpath" /-->
 		<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
-		
+
 		<mkdir dir="${build.dir}"/>
 		<mkdir dir="${build.classes.dir}"/>
 		<mkdir dir="${build.distribution.dir}"/>
@@ -66,10 +66,10 @@
 
 		<mkdir dir="${build.dir}" />
 		<mkdir dir="${build.classes.dir}" />
-		
+
 		<echo message="Compilation classpath : ${classpath.compile.property}"/>
 		<echo message="Test Compilation classpath : ${classpath.compile.test.property}"/>
-		
+
 		<javac srcdir="${source.dir}" destdir="${build.classes.dir}" 
 			debug="on" deprecation="off">
 			<classpath refid="classpath.compile" />
@@ -104,13 +104,28 @@
 			</fileset>
 		</jar>
 
+		<available file="META-INF/MANIFEST.MF" type="file" property="create.osgi.bundle" />
+		<antcall target="dist-bundle"/>
 		<antcall target="copy-dependencies"/>
-		
+
 		<copy todir="${build.distribution.dir}" overwrite="true" >
 			<fileset dir="${lib.dir}">
 				<include name="**/*" />
-			</fileset>			
+			</fileset>
 		</copy>
+	</target>
+	
+	<target name="dist-bundle" depends="compile" description="Packages the files into an OSGI bundle JAR file" if="create.osgi.bundle">
+		<jar destFile="${build.distribution.dir}/${project.name}-bundle.jar" description="build osgi bundle" manifest="META-INF/MANIFEST.MF">
+			<fileset dir="${build.classes.dir}">
+				<include name="**/*.*" />
+				<exclude name="**/*Test.*" />
+				<exclude name="**/*TestFn.*" />
+			</fileset>
+			<fileset dir="${lib.dir}">
+				<include name="**/*.*" />
+			</fileset>
+		</jar>
 	</target>
 
 	<!-- Builds the Javadocs -->
