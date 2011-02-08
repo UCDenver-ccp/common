@@ -28,6 +28,15 @@ import java.util.GregorianCalendar;
  * 
  */
 public class CalendarUtil {
+
+	/**
+	 * Protected constructor allows for subclasses, but prevents general instantiation of this
+	 * utility class.
+	 */
+	protected CalendarUtil() {
+		throw new UnsupportedOperationException(); /* prevents calls from subclass */
+	}
+
 	/**
 	 * Returns a String containing the month day and year with user-specified delimiter
 	 * 
