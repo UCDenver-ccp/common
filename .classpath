@@ -17,6 +17,6 @@
 	<classpathentry kind="lib" path="src/main/resources/ant-1.8.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="src/main/resources/commons-io-2.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="src/test/resources/hamcrest-all-1.2.jar"/>
-	<classpathentry kind="lib" path="src/test/resources/MockFtpServer-2.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="src/test/resources/MockFtpServer-2.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
