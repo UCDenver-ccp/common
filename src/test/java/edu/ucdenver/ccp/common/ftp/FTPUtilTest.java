@@ -19,10 +19,14 @@
 package edu.ucdenver.ccp.common.ftp;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.SocketException;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Set;
 
 import org.apache.commons.net.ftp.FTPClient;
@@ -31,7 +35,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import edu.ucdenver.ccp.common.collections.CollectionsUtil;
-import edu.ucdenver.ccp.common.ftp.FTPUtil;
 import edu.ucdenver.ccp.common.ftp.FTPUtil.FileType;
 import edu.ucdenver.ccp.common.test.DefaultTestCase;
 import edu.ucdenver.ccp.common.test.MockFtpServer;
@@ -103,9 +106,17 @@ public class FTPUtilTest extends DefaultTestCase {
 	@Test
 	public void testPause() {
 		long before = System.currentTimeMillis();
-		FTPUtil.pause(4);
+		FTPUtil.pause(1);
 		long after = System.currentTimeMillis();
-		assertEquals(String.format("At least 4000 ms should have elapsed (%d)", after - before), 4000, after - before,
+		assertEquals(String.format("At least 1000 ms should have elapsed (%d)", after - before), 1000, after - before,
 				100);
+	}
+	
+	@Test
+	public void testRemoteFilePresence() throws SocketException, IOException {
+		FTPClient ftpClient = FTPUtil.initializeFtpClient(FTP_HOST, FTP_PORT, MockFtpServer.USER_NAME, MockFtpServer.PASSWORD);
+		Collection<String> fileNames = Arrays.asList(ftpClient.listNames());
+		assertFalse(fileNames.contains("missing file"));
+		assertTrue(fileNames.contains("file3"));
 	}
 }

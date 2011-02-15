@@ -300,6 +300,10 @@ public class FTPUtil {
 		ftpClient.enterLocalPassiveMode();
 		ftpClient.setBufferSize(BUFFER_SIZE);
 
+		Collection<String> remoteFiles = Arrays.asList(ftpClient.listNames());
+		if (!remoteFiles.contains(ftpFileName)) 
+			throw new IOException(String.format("File %s is not available on ftp server %s. Ftp download failed...", ftpFileName, ftpClient.getRemoteAddress()));
+		
 		if (!ftpClient.retrieveFile(ftpFileName, localOutputStream)) {
 			throw new IOException(String.format("Download failed for file: %s", ftpFileName));
 		}
