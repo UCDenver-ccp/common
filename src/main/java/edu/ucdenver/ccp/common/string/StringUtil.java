@@ -65,6 +65,9 @@ public class StringUtil {
 	 * @return
 	 */
 	public static boolean isNonNegativeInteger(String inputStr) {
+		if (inputStr == null || inputStr.trim().length() == 0)
+			return false;
+		
 		int value = -1;
 
 		try {
