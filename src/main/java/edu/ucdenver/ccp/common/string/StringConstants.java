@@ -47,6 +47,7 @@ public class StringConstants {
 	public static final String COMMA = "\u002C";
 	public static final String HYPHEN_MINUS = "\u002D";
 	public static final String FULL_STOP = "\u002E";
+	public static final String PERIOD = FULL_STOP;
 	public static final String SOLIDUS = "\u002F";
 	public static final String FORWARD_SLASH = "\u002F";
 	public static final String DIGIT_ZERO = "\u0030";
