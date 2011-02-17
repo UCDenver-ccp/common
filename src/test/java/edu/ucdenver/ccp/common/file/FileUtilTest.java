@@ -350,5 +350,14 @@ public class FileUtilTest extends DefaultTestCase {
 		assertEquals(String.format("File that doesn't have a suffix should be returned as is."), expectedFile, FileUtil
 				.removeFileSuffixes(expectedFile));
 	}
+	
+	@Test
+	public void testAppendFileSuffix() throws IOException {
+		File expectedFile = folder.newFile("test.txt");
+		File file = folder.newFile("test");
+		
+		assertEquals(String.format(".txt suffix should have been added to the file"), expectedFile, FileUtil.appendFileSuffix(file, ".txt"));
+		assertEquals(String.format(".txt suffix should have been added to the file"), expectedFile, FileUtil.appendFileSuffix(file, "txt"));
+	}
 
 }

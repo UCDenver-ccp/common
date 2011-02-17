@@ -45,6 +45,7 @@ import org.apache.commons.io.filefilter.IOFileFilter;
 
 import edu.ucdenver.ccp.common.collections.CollectionsUtil;
 import edu.ucdenver.ccp.common.io.StreamUtil;
+import edu.ucdenver.ccp.common.string.StringConstants;
 import edu.ucdenver.ccp.common.string.StringUtil;
 
 /**
@@ -582,7 +583,9 @@ public class FileUtil {
 
 	/**
 	 * Returns a reference to the input file with all file suffixes removed
-	 * @param file the file to process
+	 * 
+	 * @param file
+	 *            the file to process
 	 * @return a reference to the input file with all file suffixes removed
 	 */
 	public static File removeFileSuffixes(File file) {
@@ -591,6 +594,24 @@ public class FileUtil {
 		while (!(fileSuffix = getFileSuffix(suffixlessFile)).isEmpty())
 			suffixlessFile = new File(StringUtil.removeSuffix(suffixlessFile.getAbsolutePath(), fileSuffix));
 		return suffixlessFile;
+	}
+
+	/**
+	 * Appends the specified file suffix to the end of the file name referenced by the input File
+	 * object
+	 * 
+	 * @param file
+	 *            the file to add the suffix to
+	 * @param suffix
+	 *            the suffix to add
+	 * @return a reference to a file that is the input file appended with the input suffix
+	 */
+	public static File appendFileSuffix(File file, String suffix) {
+		File path = file.getParentFile();
+		String fileName = file.getName();
+		if (suffix.startsWith(StringConstants.PERIOD))
+			suffix = suffix.substring(1);
+		return new File(path, String.format("%s.%s", fileName, suffix));
 	}
 
 	/**
