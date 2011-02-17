@@ -45,11 +45,12 @@ import org.apache.commons.io.filefilter.IOFileFilter;
 
 import edu.ucdenver.ccp.common.collections.CollectionsUtil;
 import edu.ucdenver.ccp.common.io.StreamUtil;
+import edu.ucdenver.ccp.common.string.StringUtil;
 
 /**
  * Utility class for working with files and directories
  * 
- * @author bill
+ * @author Center for Computational Pharmacology; ccp-support@ucdenver.edu
  * 
  */
 public class FileUtil {
@@ -58,7 +59,9 @@ public class FileUtil {
 	 * Private constructor; do not instantiate this utility class
 	 */
 	/* @formatter:off */
-	private FileUtil() {/* do not instantiate */}
+	private FileUtil() {/* do not instantiate */
+	}
+
 	/* @formatter:on */
 
 	/**
@@ -136,8 +139,8 @@ public class FileUtil {
 		if (!directory.exists()) {
 			boolean succeeded = directory.mkdirs();
 			if (!succeeded) {
-				throw new IllegalStateException(String.format("Error while creating directory: %s",
-						directory.getAbsolutePath()));
+				throw new IllegalStateException(String.format("Error while creating directory: %s", directory
+						.getAbsolutePath()));
 			}
 		}
 	}
@@ -351,8 +354,8 @@ public class FileUtil {
 			return FileUtils.iterateFiles(fileOrDirectory, createFileFilter(removeLeadingPeriods(fileSuffixes)),
 					createDirectoryFilter(recurse));
 		} else
-			throw new IOException(String.format("Input is not a valid file or directory: %s",
-					fileOrDirectory.getAbsolutePath()));
+			throw new IOException(String.format("Input is not a valid file or directory: %s", fileOrDirectory
+					.getAbsolutePath()));
 	}
 
 	/**
@@ -560,10 +563,34 @@ public class FileUtil {
 	 */
 	public static String getFileSuffix(File file) {
 		String fileName = file.getName();
+		return getFileSuffix(fileName);
+	}
+
+	/**
+	 * Returns the terminal file suffix for the input file name
+	 * 
+	 * @param fileName
+	 *            the name of the file to process
+	 * @return the last file suffix that is part of the input file name
+	 */
+	private static String getFileSuffix(String fileName) {
 		int lastIndexOfPeriod = fileName.lastIndexOf(".");
 		if (lastIndexOfPeriod == -1)
 			return "";
 		return fileName.substring(lastIndexOfPeriod);
+	}
+
+	/**
+	 * Returns a reference to the input file with all file suffixes removed
+	 * @param file the file to process
+	 * @return a reference to the input file with all file suffixes removed
+	 */
+	public static File removeFileSuffixes(File file) {
+		File suffixlessFile = new File(file.getAbsolutePath());
+		String fileSuffix = null;
+		while (!(fileSuffix = getFileSuffix(suffixlessFile)).isEmpty())
+			suffixlessFile = new File(StringUtil.removeSuffix(suffixlessFile.getAbsolutePath(), fileSuffix));
+		return suffixlessFile;
 	}
 
 	/**

@@ -61,8 +61,8 @@ public class FileUtilTest extends DefaultTestCase {
 		File file = folder.newFile("file");
 		String errorMessage = FileUtil.isDirectoryValid(file);
 		assertNotNull(errorMessage);
-		assertTrue(String.format("Error message should indicate that the input is not a directory."),
-				errorMessage.startsWith("Input directory is not a directory"));
+		assertTrue(String.format("Error message should indicate that the input is not a directory."), errorMessage
+				.startsWith("Input directory is not a directory"));
 	}
 
 	@Test
@@ -173,15 +173,15 @@ public class FileUtilTest extends DefaultTestCase {
 	@Test
 	public void testFileListingOverDirectory() throws IOException {
 		List<File> expectedFileListing = setUpSampleDirectoryStructure();
-		assertEquals(String.format("Files should be as expected (and sorted)"), expectedFileListing,
-				FileUtil.getFileListing(folder.getRoot(), true));
+		assertEquals(String.format("Files should be as expected (and sorted)"), expectedFileListing, FileUtil
+				.getFileListing(folder.getRoot(), true));
 	}
 
 	@Test
 	public void testFileListingOverDirectory_UsingFileSuffixFilter() throws IOException {
 		List<File> expectedTxtFileListing = keepTxtFiles(setUpSampleDirectoryStructure());
-		assertEquals(String.format("Files should be as expected (and sorted)"), expectedTxtFileListing,
-				FileUtil.getFileListing(folder.getRoot(), true, "txt"));
+		assertEquals(String.format("Files should be as expected (and sorted)"), expectedTxtFileListing, FileUtil
+				.getFileListing(folder.getRoot(), true, "txt"));
 		// assertEquals(String.format("Files should be as expected (and sorted) - DL"),
 		// expectedTxtFileListing,
 		// DirectoryListing.getFiles(folder.getRoot().getAbsolutePath(), "txt", true));
@@ -240,13 +240,12 @@ public class FileUtilTest extends DefaultTestCase {
 		int count = 0;
 		while (fileIter.hasNext()) {
 			File file = fileIter.next();
-			assertTrue(String.format("File name (%s) should be in expected set.", file.getName()),
-					expectedFileNames.contains(file.getName()));
+			assertTrue(String.format("File name (%s) should be in expected set.", file.getName()), expectedFileNames
+					.contains(file.getName()));
 			count++;
 		}
-		assertEquals(
-				String.format("Expected %d files to be returned by iterator, but only observed %d",
-						expectedFileNames.size(), count), expectedFileNames.size(), count);
+		assertEquals(String.format("Expected %d files to be returned by iterator, but only observed %d",
+				expectedFileNames.size(), count), expectedFileNames.size(), count);
 
 	}
 
@@ -331,7 +330,25 @@ public class FileUtilTest extends DefaultTestCase {
 		File file = folder.newFile("file.ascii");
 		FileWriterUtil.printLines(CollectionsUtil.createList("1", "2", "3", "4", "5", "6", "7", "8", "9"), file,
 				CharacterEncoding.US_ASCII);
-		assertEquals(String.format("getLineCount() should return the expected number of lines"), 9L,
-				FileUtil.getLineCount(file, CharacterEncoding.US_ASCII));
+		assertEquals(String.format("getLineCount() should return the expected number of lines"), 9L, FileUtil
+				.getLineCount(file, CharacterEncoding.US_ASCII));
 	}
+
+	/**
+	 * Tests that all file suffixes are removed when using the FileUtil.removeFileSuffixes() method.
+	 * 
+	 * @throws IOException
+	 *             if an error occurs while creating the test files.
+	 */
+	@Test
+	public void testRemoveFileSuffixes() throws IOException {
+		File expectedFile = folder.newFile("test");
+		File file = folder.newFile("test.txt");
+		assertEquals(String.format("Single suffix should be removed."), expectedFile, FileUtil.removeFileSuffixes(file));
+		file = folder.newFile("test.txt.1.2.3.4.5.6.7.8");
+		assertEquals(String.format("All suffixes should be removed."), expectedFile, FileUtil.removeFileSuffixes(file));
+		assertEquals(String.format("File that doesn't have a suffix should be returned as is."), expectedFile, FileUtil
+				.removeFileSuffixes(expectedFile));
+	}
+
 }
