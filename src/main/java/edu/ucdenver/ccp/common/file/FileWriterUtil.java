@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Iterator;
 import java.util.List;
@@ -150,6 +151,20 @@ public class FileWriterUtil {
 	public static BufferedWriter initBufferedWriter(File outputFile, CharacterEncoding encoding)
 			throws FileNotFoundException {
 		return initBufferedWriter(outputFile, encoding, WriteMode.OVERWRITE, FileSuffixEnforcement.ON);
+	}
+	
+	/**
+	 * Creates a BufferedWriter that uses proper character encoding validation. By default this
+	 * BufferedWriter will overwrite the specified output file and character encoding-specific file
+	 * suffix enforcement is active.
+	 * 
+	 * @param outputStream
+	 * @param encoding
+	 *            the CharacterEncoding to use when writing to the output file
+	 * @return
+	 */
+	public static BufferedWriter initBufferedWriter(OutputStream outputStream, CharacterEncoding encoding) {
+		return new BufferedWriter(new OutputStreamWriter(outputStream,encoding.getEncoder()));
 	}
 
 	/**
