@@ -124,8 +124,8 @@
 				<exclude name="**/*Test.*" />
 				<exclude name="**/*TestFn.*" />
 			</fileset>
-			<fileset dir="${lib.dir}">
-				<include name="**/*.*" />
+			<fileset dir="${basedir}">
+				<include name="${lib.dir}/*.*" />
 			</fileset>
 		</jar>
 	</target>
