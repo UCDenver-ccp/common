@@ -91,7 +91,31 @@ public class FileReaderUtil {
 	 * @throws IllegalArgumentException
 	 *             - if a delimiter is specified, but no column indexes are requested
 	 */
-	public static List<String[]> loadColumnsFromDelimitedFile(File inputFile, CharacterEncoding encoding,
+	public static List<String[]> loadColumnsFromDelimitedFile(File inputFile, CharacterEncoding encoding, String delimiter, String commentIndicator, int... columnIndexes) throws IOException,
+			ArrayIndexOutOfBoundsException, IllegalArgumentException {
+		return loadColumnsFromDelimitedFile(new FileInputStream(inputFile), encoding, delimiter, commentIndicator, columnIndexes);
+	}
+	
+	/**
+	 * Returns a List<String[]> containing the column values for the input file. One String[] per
+	 * line of the file. If you want the entire line, set the delimiter to be null. If there is a
+	 * delimiter specified, you must specify at least one column index to return. TODO: track the
+	 * number of columns that are returned. If there is a line with a different number of columns
+	 * than expected, throw an exception.
+	 * 
+	 * @param inputStream input stream
+	 * @param encoding encoding
+	 * @param delimiter delimiter
+	 * @param commentIndicator prefix indicating comment line
+	 * @param columnIndexes
+	 * @return
+	 * @throws IOException
+	 * @throws ArrayIndexOutOfBoundsException
+	 *             - if a requested column index does not exist
+	 * @throws IllegalArgumentException
+	 *             - if a delimiter is specified, but no column indexes are requested
+	 */
+	public static List<String[]> loadColumnsFromDelimitedFile(InputStream inputStream, CharacterEncoding encoding,
 			String delimiter, String commentIndicator, int... columnIndexes) throws IOException,
 			ArrayIndexOutOfBoundsException, IllegalArgumentException {
 		if (delimiter != null && (columnIndexes == null || columnIndexes.length == 0)) {
@@ -101,7 +125,7 @@ public class FileReaderUtil {
 							+ "set the delimiter to be null.", delimiter));
 		}
 		List<String[]> outputColumns = new ArrayList<String[]>();
-		for (StreamLineIterator lineIter = new StreamLineIterator(inputFile, encoding, commentIndicator); lineIter
+		for (StreamLineIterator lineIter = new StreamLineIterator(inputStream, encoding, commentIndicator); lineIter
 				.hasNext();) {
 			Line line = lineIter.next();
 			outputColumns.add(getColumnsFromLine(line.getText(), delimiter, columnIndexes));
@@ -161,14 +185,33 @@ public class FileReaderUtil {
 	 * assuming the file contains columns delimited by the delimiter String.
 	 * 
 	 * @param inputFile
+	 * @param encoding 
 	 * @param delimiter
+	 * @param commentIndicator 
 	 * @param columnIndex
 	 * @return
 	 * @throws IOException
 	 */
 	public static List<String> loadColumnFromDelimitedFile(File inputFile, CharacterEncoding encoding,
 			String delimiter, String commentIndicator, int columnIndex) throws IOException {
-		List<String[]> singleColumnAsArrayList = loadColumnsFromDelimitedFile(inputFile, encoding, delimiter,
+		return loadColumnFromDelimitedFile(new FileInputStream(inputFile), encoding, delimiter, commentIndicator, columnIndex);
+	}
+	
+	/**
+	 * Returns a List<String> containing the contents of the requested column in the input file,
+	 * assuming the file contains columns delimited by the delimiter String.
+	 * 
+	 * @param inputStream
+	 * @param encoding 
+	 * @param delimiter
+	 * @param commentIndicator 
+	 * @param columnIndex
+	 * @return
+	 * @throws IOException
+	 */
+	public static List<String> loadColumnFromDelimitedFile(InputStream inputStream, CharacterEncoding encoding,
+			String delimiter, String commentIndicator, int columnIndex) throws IOException {
+		List<String[]> singleColumnAsArrayList = loadColumnsFromDelimitedFile(inputStream, encoding, delimiter,
 				commentIndicator, columnIndex);
 		List<String> outputList = new ArrayList<String>(singleColumnAsArrayList.size());
 		while (!singleColumnAsArrayList.isEmpty()) {
@@ -176,7 +219,7 @@ public class FileReaderUtil {
 			singleColumnAsArrayList.remove(0);
 		}
 		return outputList;
-	}
+	}	
 
 	/**
 	 * Returns a List<String> containing the lines loaded from the input File
@@ -200,6 +243,16 @@ public class FileReaderUtil {
 	public static List<String> loadLinesFromFile(File inputFile, CharacterEncoding encoding) throws IOException {
 		return loadColumnFromDelimitedFile(inputFile, encoding, null, null, 0);
 	}
+	
+	/**
+	 * 
+	 * @param inputStream
+	 * @return
+	 * @throws IOException
+	 */
+	public static List<String> loadLinesFromFile(InputStream inputStream, CharacterEncoding encoding) throws IOException {
+		return loadColumnFromDelimitedFile(inputStream, encoding, null, null, 0);
+	}	
 
 	/**
 	 * Returns true if the input String[] contains a column for the input column Index, false
