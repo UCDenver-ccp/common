@@ -109,41 +109,8 @@
 					</excludes>
 				</configuration>
 			</execution>
+        </executions>
 
-			<!--  lucene main jar: common-lucene-1.0-SNAPSHOT-main.jar -->
-			<execution>
-				<id>exe3</id>
-				<phase>package</phase>
-				<goals>
-					<goal>jar</goal>
-				</goals>
-				<configuration>
-					<finalName>common-lucene-${version}</finalName>
-					<classifier>main</classifier>
-					<classesDirectory>target/classes</classesDirectory>
-					<includes>
-						<include>**</include>
-					</includes>
-				</configuration>
-			</execution>
-
-			<!--  lucene test jar: common-lucene-1.0-SNAPSHOT-tests.jar -->
-			<execution>
-				<id>exe4</id>
-				<phase>package</phase>
-				<goals>
-					<goal>test-jar</goal>
-				</goals>
-				<configuration>
-					<finalName>common-lucene-${version}</finalName>
-					<classifier>lucene-test</classifier>
-					<classesDirectory>target/classes</classesDirectory>
-					<includes>
-						<include>**</include>
-					</includes>
-				</configuration>
-			</execution>
-		</executions>
 	</plugin>
 	
 	    <!--
@@ -251,6 +218,13 @@
       <version>4.8.1</version>
       <scope>test</scope>
     </dependency>
+    
+    <dependency>
+    <groupId>commons-io</groupId>
+    <artifactId>commons-io</artifactId>
+    <version>2.0</version>
+</dependency>
+    
 
   </dependencies>
 
