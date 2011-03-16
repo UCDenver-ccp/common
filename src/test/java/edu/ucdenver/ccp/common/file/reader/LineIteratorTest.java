@@ -204,12 +204,12 @@ public class LineIteratorTest extends DefaultTestCase {
 		LINE10(7, 7, LineTerminator.CRLF);
 
 		/**
-		 * The number of characters on the line
+		 * The number of characters on the line (excluding the line terminator)
 		 */
 		private final int characterCount;
 
 		/**
-		 * The number of grapheme's on the line
+		 * The number of Unicode characters on the line (excluding the line terminator)
 		 */
 		private final int codePointCount;
 
@@ -262,8 +262,8 @@ public class LineIteratorTest extends DefaultTestCase {
 		}
 
 		/**
-		 * @return the code point for this line (the count of all graphemes that occur before this
-		 *         line)
+		 * @return the code point for this line (the count of all Unicode characters that occur
+		 *         before this line)
 		 */
 		public int getCodePointOffset() {
 			int offset = 0;
@@ -325,8 +325,8 @@ public class LineIteratorTest extends DefaultTestCase {
 				.getCodePointOffset());
 		assertTrue(sli.hasNext());
 		nextLine = sli.next();
-		assertEquals("Code point offset for line 10 is incorrect.", SampleFileLine.LINE10.getCodePointOffset(), nextLine
-				.getCodePointOffset());
+		assertEquals("Code point offset for line 10 is incorrect.", SampleFileLine.LINE10.getCodePointOffset(),
+				nextLine.getCodePointOffset());
 		assertFalse(sli.hasNext());
 	}
 

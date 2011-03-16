@@ -42,7 +42,10 @@ public abstract class LineReader<T extends Line> implements Closeable {
 	private long cumulativeCharacterOffset;
 
 	/**
-	 * Tracks the code point offset for each line (the number of graphemes to appear before a line)
+	 * Tracks the code point offset for each line (the number of Unicode characters that appear
+	 * before a line). Unicode characters are not restricted to 16 bits (size of the Java char
+	 * class) so they will often be represented as 2 (or perhaps more) chars. The
+	 * cumulativeCodePointOffset will differ from the cumulativeCsharacterOffset in this case.
 	 */
 	private long cumulativeCodePointOffset;
 
@@ -84,7 +87,7 @@ public abstract class LineReader<T extends Line> implements Closeable {
 		if (line != null) {
 			cumulativeCharacterOffset += (line.getText().toCharArray().length + line.getLineTerminator().length());
 			cumulativeCodePointOffset += (line.getText().codePointCount(0, line.getText().length()) + line
-					.getLineTerminator().length());
+					.getLineTerminator().terminator().codePointCount(0, line.getLineTerminator().terminator().length()));
 		}
 	}
 

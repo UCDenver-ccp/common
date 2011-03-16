@@ -70,9 +70,10 @@ public class Line {
 	private final long characterOffset;
 
 	/**
-	 * Stores the code point offset for this line. This can be thought of as the "grapheme" offset,
-	 * or the number of visible characters seen prior to this line. Unicode characters that require
-	 * more than 16 bits to represent are treated as a single code point.
+	 * Stores the code point offset for this line. This is a count of the number of Unicode
+	 * characters observed prior to this line. Unicode characters are not restricted to 16 bits
+	 * (size of the Java char class) so they will often be represented as 2 (or perhaps more) chars.
+	 * The codePointOffset will differ from the characterOffset in this case.
 	 */
 	private final long codePointOffset;
 
@@ -97,10 +98,11 @@ public class Line {
 	 *            Stores the character offset for the line. The offset is likely relative to a
 	 *            larger file from where the line is being read.
 	 * @param codePointOffset
-	 *            Stores the code point offset for this line. This can be thought of as the
-	 *            "grapheme" offset, or the number of visible characters seen prior to this line.
-	 *            Unicode characters that require more than 16 bits to represent are treated as a
-	 *            single code point.
+	 *            Stores the code point offset for this line. This is a count of the number of
+	 *            Unicode characters observed prior to this line. Unicode characters are not
+	 *            restricted to 16 bits (size of the Java char class) so they will often be
+	 *            represented as 2 (or perhaps more) chars. The codePointOffset will differ from the
+	 *            characterOffset in this case.
 	 * @param lineNumber
 	 *            Stores the line number (relative to the specific collection from where the line
 	 *            was read)
