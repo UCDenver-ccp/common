@@ -84,8 +84,10 @@ public class FileLineReader extends LineReader {
 		String line = reader.readBufferedLine();
 		if (line == null)
 			return null;
-		if (skipLine(line))
+		if (skipLine(line)) {
+			lineNumber++;
 			return readLine();
+		}
 		return new FileLine(line, lineNumber++, byteOffset);
 	}
 
