@@ -23,6 +23,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.nio.charset.UnmappableCharacterException;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
@@ -104,9 +105,10 @@ public class FileWriterUtilTest extends DefaultTestCase {
 		writer.close();
 		List<String> lines = CollectionsUtil.createList(line1, line2);
 		List<String> linesWritten = FileReaderUtil.loadLinesFromFile(outputFile, encoding);
+		
 		assertEquals(String.format("Lines read from the output file should equal the lines written to it."),
 				lines, linesWritten);
+		
 	}
 	
-
 }

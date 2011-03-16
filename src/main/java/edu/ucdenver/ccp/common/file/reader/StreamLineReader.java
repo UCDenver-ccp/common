@@ -35,13 +35,20 @@ import edu.ucdenver.ccp.common.file.FileReaderUtil;
 public class StreamLineReader extends LineReader {
 
 	/**
-	 * A BufferedReader is used to read the lines from the input <code>InputStream</code>
+	 * A BufferedReader is used to read the lines from the input
+	 * <code>InputStream</code>
 	 */
 	private final BufferedReader reader;
+	
 	/**
 	 * Used to store the line number
 	 */
 	private int lineNumber = 0;
+
+	/**
+	 * Stores the line terminators found on the last line read
+	 */
+	private String lineTerminator;
 
 	/**
 	 * Initializes a new <code>StreamLineReader</code> to read from the input
@@ -51,7 +58,8 @@ public class StreamLineReader extends LineReader {
 	 * @param encoding
 	 * @param skipLinePrefix
 	 */
-	public StreamLineReader(InputStream inputStream, CharacterEncoding encoding, String skipLinePrefix) {
+	public StreamLineReader(InputStream inputStream,
+			CharacterEncoding encoding, String skipLinePrefix) {
 		super(skipLinePrefix);
 		lineNumber = 0;
 		reader = FileReaderUtil.initBufferedReader(inputStream, encoding);
@@ -66,7 +74,8 @@ public class StreamLineReader extends LineReader {
 	 * @throws IOException
 	 */
 	@Deprecated
-	public StreamLineReader(File inputFile, CharacterEncoding encoding, String skipLinePrefix) throws IOException {
+	public StreamLineReader(File inputFile, CharacterEncoding encoding,
+			String skipLinePrefix) throws IOException {
 		super(skipLinePrefix);
 		lineNumber = 0;
 		reader = FileReaderUtil.initBufferedReader(inputFile, encoding);
@@ -77,11 +86,40 @@ public class StreamLineReader extends LineReader {
 	 */
 	@Override
 	public Line readLine() throws IOException {
-		String lineText = reader.readLine();
-		if (lineText == null)
+		StringBuffer buffer = new StringBuffer();
+		int c = -1;
+		boolean eol = false;
+		while (!eol) {
+			switch (c = reader.read()) {
+			case -1:
+			case '\n':
+				eol = true;
+				lineTerminator = Character.toString('\n');
+				break;
+			case '\r':
+				eol = true;
+				lineTerminator = Character.toString('\r');
+				reader.mark(1);
+				if ((reader.read()) != '\n')
+					reader.reset();
+				else
+					lineTerminator += Character.toString('\n');
+				break;
+			default:
+				buffer.append((char) c);
+				break;
+			}
+		}
+
+		if ((c == -1) && (buffer.length() == 0)) {
 			return null;
-		if (skipLine(lineText))
+		}
+		String lineText = buffer.toString();
+
+		if (skipLine(lineText)) {
+			lineNumber++;
 			return readLine();
+		}
 		return new Line(lineText, lineNumber++);
 	}
 

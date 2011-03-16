@@ -48,13 +48,34 @@ public class FileLineReaderTest extends DefaultTestCase {
 	}
 
 	/**
+	 * Tests that the correct line terminators are returned
+	 * 
+	 * @throws IOException
+	 */
+	@Test
+	public void testGetLineTerminator() throws IOException {
+		File sampleFile = populateSampleFile();
+		FileLineReader flr = new FileLineReader(sampleFile, ENCODING,
+				SKIP_LINE_PREFIX);
+		flr.readLine();
+		assertEquals("Terminator on first line returned should be \\n", "\n",
+				flr.getLineTerminator());
+		flr.readLine();
+		assertEquals("Terminator on second line returned should be \\r\\n",
+				"\r\n", flr.getLineTerminator());
+		flr.readLine();
+		assertEquals("Terminator on third line returned should be \\n", "\n",
+				flr.getLineTerminator());
+	}
+
+	/**
 	 * @return a sample file containing 5 lines, lines 1 and 3 are commented out
 	 * @throws IOException
 	 *             if an error occurs while creating the sample file
 	 */
 	private File populateSampleFile() throws IOException {
 		List<String> lines = CollectionsUtil.createList(SKIP_LINE_PREFIX
-				+ "line1", "line2", SKIP_LINE_PREFIX + "line3", "line4",
+				+ "line1", "line2", SKIP_LINE_PREFIX + "line3\r", "line4\r",
 				"line5");
 		File file = folder.newFile("sample.utf8");
 		FileWriterUtil.printLines(lines, file, ENCODING);
