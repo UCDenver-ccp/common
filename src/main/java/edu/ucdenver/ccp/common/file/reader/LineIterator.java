@@ -23,10 +23,9 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import edu.ucdenver.ccp.common.file.CharacterEncoding;
-import edu.ucdenver.ccp.common.file.reader.LineReader.Line;
 
 /**
- * Abstract class for creating an iterator over the lines from some collecion (e.g. a file)
+ * Abstract class for creating an iterator over the lines from some collection (e.g. a file)
  * 
  * @author bill
  * 
@@ -42,7 +41,7 @@ public abstract class LineIterator<T extends Line> implements Iterator<T> {
 	 * Stores the <code>LineReader</code> used to extract the lines returned by this
 	 * <code>Iterator</code> implementation
 	 */
-	protected final LineReader reader;
+	protected final LineReader<T> reader;
 
 	/**
 	 * Initializes a new <code>LineIterator</code> to the input object (typically a file or stream)
@@ -66,7 +65,7 @@ public abstract class LineIterator<T extends Line> implements Iterator<T> {
 	 * @return
 	 * @throws IOException
 	 */
-	public abstract LineReader initLineReader(Object fileOrStream, CharacterEncoding encoding, String skipLinePrefix)
+	public abstract LineReader<T> initLineReader(Object fileOrStream, CharacterEncoding encoding, String skipLinePrefix)
 			throws IOException;
 
 	/**
@@ -77,8 +76,7 @@ public abstract class LineIterator<T extends Line> implements Iterator<T> {
 		if (nextLine != null)
 			return true;
 		try {
-			@SuppressWarnings("unchecked")
-			T line = (T) reader.readLine();
+			T line = reader.readLine();
 			if (line == null)
 				return false;
 			nextLine = line;

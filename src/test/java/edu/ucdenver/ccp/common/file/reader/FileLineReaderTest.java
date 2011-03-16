@@ -12,18 +12,24 @@ import org.junit.Test;
 import edu.ucdenver.ccp.common.collections.CollectionsUtil;
 import edu.ucdenver.ccp.common.file.CharacterEncoding;
 import edu.ucdenver.ccp.common.file.FileWriterUtil;
-import edu.ucdenver.ccp.common.file.reader.FileLineReader.FileLine;
+import edu.ucdenver.ccp.common.file.reader.Line.LineTerminator;
 import edu.ucdenver.ccp.common.string.StringConstants;
 import edu.ucdenver.ccp.common.test.DefaultTestCase;
 
 public class FileLineReaderTest extends DefaultTestCase {
 
+	/**
+	 * Character encoding to use when creating/reading sample files in this test
+	 */
 	private static final CharacterEncoding ENCODING = CharacterEncoding.UTF_8;
+
+	/**
+	 * String to use to indicate a line-to-be-skipped in the sample files used in this test
+	 */
 	private static final String SKIP_LINE_PREFIX = StringConstants.POUND_SIGN;
 
 	/**
-	 * Tests that the FileLine line number gets set properly when some lines are
-	 * skipped.
+	 * Tests that the FileLine line number gets set properly when some lines are skipped.
 	 * 
 	 * @throws IOException
 	 *             if an error occurs reading or writing the sample file
@@ -31,19 +37,15 @@ public class FileLineReaderTest extends DefaultTestCase {
 	@Test
 	public void testLineNumbersWhenSkippingLines() throws IOException {
 		File sampleFile = populateSampleFile();
-		FileLineReader flr = new FileLineReader(sampleFile, ENCODING,
-				SKIP_LINE_PREFIX);
+		FileLineReader flr = new FileLineReader(sampleFile, ENCODING, SKIP_LINE_PREFIX);
 		FileLine line = flr.readLine();
-		assertEquals(
-				"first line should have been skipped, so this line should be line number 1 (zero offset)",
-				1, line.getLineNumber());
-		line = flr.readLine();
-		assertEquals(
-				"third line should have been skipped, so this line should be line number 3 (zero offset)",
-				3, line.getLineNumber());
-		line = flr.readLine();
-		assertEquals("this line should be line number 4 (zero offset)", 4, line
+		assertEquals("first line should have been skipped, so this line should be line number 1 (zero offset)", 1, line
 				.getLineNumber());
+		line = flr.readLine();
+		assertEquals("third line should have been skipped, so this line should be line number 3 (zero offset)", 3, line
+				.getLineNumber());
+		line = flr.readLine();
+		assertEquals("this line should be line number 4 (zero offset)", 4, line.getLineNumber());
 		assertNull(flr.readLine());
 	}
 
@@ -55,17 +57,13 @@ public class FileLineReaderTest extends DefaultTestCase {
 	@Test
 	public void testGetLineTerminator() throws IOException {
 		File sampleFile = populateSampleFile();
-		FileLineReader flr = new FileLineReader(sampleFile, ENCODING,
-				SKIP_LINE_PREFIX);
-		flr.readLine();
-		assertEquals("Terminator on first line returned should be \\n", "\n",
-				flr.getLineTerminator());
-		flr.readLine();
-		assertEquals("Terminator on second line returned should be \\r\\n",
-				"\r\n", flr.getLineTerminator());
-		flr.readLine();
-		assertEquals("Terminator on third line returned should be \\n", "\n",
-				flr.getLineTerminator());
+		FileLineReader flr = new FileLineReader(sampleFile, ENCODING, SKIP_LINE_PREFIX);
+		FileLine line = flr.readLine();
+		assertEquals("Terminator on first line returned should be LF", LineTerminator.LF, line.getLineTerminator());
+		line = flr.readLine();
+		assertEquals("Terminator on second line returned should be CRLF", LineTerminator.CRLF, line.getLineTerminator());
+		line = flr.readLine();
+		assertEquals("Terminator on third line returned should be LF", LineTerminator.LF, line.getLineTerminator());
 	}
 
 	/**
@@ -74,9 +72,8 @@ public class FileLineReaderTest extends DefaultTestCase {
 	 *             if an error occurs while creating the sample file
 	 */
 	private File populateSampleFile() throws IOException {
-		List<String> lines = CollectionsUtil.createList(SKIP_LINE_PREFIX
-				+ "line1", "line2", SKIP_LINE_PREFIX + "line3\r", "line4\r",
-				"line5");
+		List<String> lines = CollectionsUtil.createList(SKIP_LINE_PREFIX + "line1", "line2", SKIP_LINE_PREFIX
+				+ "line3\r", "line4\r", "line5");
 		File file = folder.newFile("sample.utf8");
 		FileWriterUtil.printLines(lines, file, ENCODING);
 		return file;

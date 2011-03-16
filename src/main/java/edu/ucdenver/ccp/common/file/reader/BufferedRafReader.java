@@ -25,19 +25,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.ucdenver.ccp.common.file.CharacterEncoding;
+import edu.ucdenver.ccp.common.file.reader.Line.LineTerminator;
 import edu.ucdenver.ccp.common.string.StringUtil;
 
 /**
- * Original code downloaded from
- * http://minddumped.blogspot.com/search/label/buffered. The original class was
- * called BufferedRaf. It has since been renamed BufferedRafReader because it
- * does not implement any buffered writer functionality.
+ * Original code downloaded from http://minddumped.blogspot.com/search/label/buffered. The original
+ * class was called BufferedRaf. It has since been renamed BufferedRafReader because it does not
+ * implement any buffered writer functionality.
  * 
  * Changes: <br>
  * 1) Renamed class from BufferedRaf to BufferedRafReader <br>
- * 2) Implemented character encoding handling by adding the ByteList class and
- * updating readLine2() 3) Changed readLine2() to readBufferedLine() 4) Added
- * storage of the line break character(s) found on the line
+ * 2) Implemented character encoding handling by adding the ByteList class and updating readLine2()<br>
+ * 3) Changed readLine2() to readBufferedLine()<br>
+ * 4) Added storage of the line break character(s) found on the line <br>
+ * 5) Added tracking of the line terminators used on each line
  * 
  * @author minddumped.blogspot.com
  * @author Center for Computational Pharmacology
@@ -49,10 +50,9 @@ public class BufferedRafReader extends RandomAccessFile {
 	private int maxread;
 	private int buffpos;
 	private ByteList byteList;
-	private String lineTerminator;
+	private LineTerminator lineTerminator = null;
 
-	public BufferedRafReader(File file, CharacterEncoding encoding)
-			throws FileNotFoundException {
+	public BufferedRafReader(File file, CharacterEncoding encoding) throws FileNotFoundException {
 		super(file, "r");
 		bufferlength = 65536;
 		bytebuffer = new byte[bufferlength];
@@ -86,21 +86,20 @@ public class BufferedRafReader extends RandomAccessFile {
 			case -1:
 			case '\n':
 				eol = true;
-				lineTerminator = Character.toString('\n');
+				lineTerminator = LineTerminator.LF;
 				break;
 			case '\r':
 				eol = true;
-				lineTerminator = Character.toString('\r');
+				lineTerminator = LineTerminator.CR;
 				long cur = getFilePointer();
 				if ((read()) != '\n') {
 					seek(cur);
 				} else
-					lineTerminator += Character.toString('\n');
+					lineTerminator = LineTerminator.CRLF;
 				break;
 			default:
 				if (c < -128 || c > 127)
-					throw new RuntimeException(
-							"Cast from int to byte will overflow!!");
+					throw new RuntimeException("Cast from int to byte will overflow!!");
 				byteList.add((byte) c);
 				break;
 			}
@@ -113,10 +112,13 @@ public class BufferedRafReader extends RandomAccessFile {
 	}
 
 	/**
-	 * @return a {@link String} representing the terminator found on the line
-	 *         most recently read by readBufferedLine()
+	 * @return a {@link LineTerminator} representing the terminator found on the line most recently
+	 *         read by readBufferedLine()
 	 */
-	public String getLineTerminator() {
+	public LineTerminator getLineTerminator() {
+		if (lineTerminator == null)
+			throw new IllegalStateException(
+					"The line terminator has not been set. A call to readBufferedLine() must precede calls to getLineTerminator().");
 		return lineTerminator;
 	}
 
@@ -127,8 +129,7 @@ public class BufferedRafReader extends RandomAccessFile {
 
 	@Override
 	public void seek(long pos) throws IOException {
-		if (maxread != -1 && pos < (super.getFilePointer() + maxread)
-				&& pos > super.getFilePointer()) {
+		if (maxread != -1 && pos < (super.getFilePointer() + maxread) && pos > super.getFilePointer()) {
 			Long diff = (pos - super.getFilePointer());
 			if (diff < Integer.MAX_VALUE) {
 				buffpos = diff.intValue();
@@ -152,9 +153,8 @@ public class BufferedRafReader extends RandomAccessFile {
 	}
 
 	/**
-	 * Utility class for incrementally storing a list of bytes. This class also
-	 * handles conversion from the byte array to a String using a particular
-	 * character encoding.
+	 * Utility class for incrementally storing a list of bytes. This class also handles conversion
+	 * from the byte array to a String using a particular character encoding.
 	 * 
 	 * @author Center for Computational Pharmacology
 	 * 
@@ -178,8 +178,7 @@ public class BufferedRafReader extends RandomAccessFile {
 			try {
 				return StringUtil.decode(byteArray, encoding);
 			} catch (IOException e) {
-				throw new RuntimeException(
-						"Error converting ByteList to String.", e);
+				throw new RuntimeException("Error converting ByteList to String.", e);
 			}
 		}
 

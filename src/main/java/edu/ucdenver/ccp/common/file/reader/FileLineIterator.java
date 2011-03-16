@@ -22,7 +22,6 @@ import java.io.File;
 import java.io.IOException;
 
 import edu.ucdenver.ccp.common.file.CharacterEncoding;
-import edu.ucdenver.ccp.common.file.reader.FileLineReader.FileLine;
 
 /**
  * A simple utility for providing an iterator over the lines from a file. The Line data structure
@@ -46,6 +45,18 @@ public class FileLineIterator extends LineIterator<FileLine> {
 	 */
 	public FileLineIterator(File inputFile, CharacterEncoding encoding, String skipLinePrefix) throws IOException {
 		super(inputFile, encoding, skipLinePrefix);
+	}
+
+	/**
+	 * Initializes a new FileLineIterator using the specified input file and character encoding. The
+	 * skip line prefix is set to null.
+	 * 
+	 * @param inputFile
+	 * @param encoding
+	 * @throws IOException
+	 */
+	public FileLineIterator(File inputFile, CharacterEncoding encoding) throws IOException {
+		super(inputFile, encoding, null);
 	}
 
 	/**

@@ -22,12 +22,12 @@ import java.io.Closeable;
 import java.io.IOException;
 
 /**
- * Abstract class for reading a collection of <code>Line</code> objects.
+ * Abstract class for reading a collection of {@link Line} objects.
  * 
  * @author bill
  * 
  */
-public abstract class LineReader implements Closeable {
+public abstract class LineReader<T extends Line> implements Closeable {
 
 	/**
 	 * The skipLinePrefix member variable is used as an indication that a line should be skipped
@@ -37,6 +37,16 @@ public abstract class LineReader implements Closeable {
 	protected final String skipLinePrefix;
 
 	/**
+	 * Tracks the character offset for each line (the number of characters to appear before a line)
+	 */
+	private long cumulativeCharacterOffset;
+
+	/**
+	 * Tracks the code point offset for each line (the number of graphemes to appear before a line)
+	 */
+	private long cumulativeCodePointOffset;
+
+	/**
 	 * Constructor for the abstract LineReader
 	 * 
 	 * @param skipLinePrefix
@@ -44,7 +54,38 @@ public abstract class LineReader implements Closeable {
 	 *            by the LineReader)
 	 */
 	public LineReader(String skipLinePrefix) {
+		this.cumulativeCharacterOffset = 0;
+		this.cumulativeCodePointOffset = 0;
 		this.skipLinePrefix = skipLinePrefix;
+	}
+
+	/**
+	 * Public method for reading the next line from the collection
+	 * 
+	 * @return the next {@link Line} instance
+	 * @throws IOException
+	 *             if there's an error while reading the next line
+	 */
+	public final T readLine() throws IOException {
+		T line = getNextLine();
+		updateCharacterOffset(line);
+		return line;
+	}
+
+	/**
+	 * Updates the character offset by adding the number of characters in the current line to the
+	 * cumulative count plus the length of the line terminator used
+	 * 
+	 * @param line
+	 *            the line whose characters must be counted and added to the cumulative character
+	 *            offset count (plus the length of the line terminator used)
+	 */
+	private void updateCharacterOffset(Line line) {
+		if (line != null) {
+			cumulativeCharacterOffset += (line.getText().toCharArray().length + line.getLineTerminator().length());
+			cumulativeCodePointOffset += (line.getText().codePointCount(0, line.getText().length()) + line
+					.getLineTerminator().length());
+		}
 	}
 
 	/**
@@ -53,7 +94,7 @@ public abstract class LineReader implements Closeable {
 	 * @return the most recently read Line
 	 * @throws IOException
 	 */
-	public abstract Line readLine() throws IOException;
+	protected abstract T getNextLine() throws IOException;
 
 	/**
 	 * This method checks to see if a line should be skipped. It returns true if the line starts
@@ -69,55 +110,18 @@ public abstract class LineReader implements Closeable {
 	}
 
 	/**
-	 * Simple class for defining a line
-	 * 
-	 * @author bill
-	 * 
+	 * @return the cumulative character offset up to the current point in the collection of lines
+	 *         being read
 	 */
-	public static class Line {
-		/**
-		 * The text contained on this Line
-		 */
-		protected final String text;
-		/**
-		 * Stores the line number (relative to the specific collection from where the line was read)
-		 */
-		protected final int lineNumber;
+	protected long getCharacterOffset() {
+		return cumulativeCharacterOffset;
+	}
 
-		/**
-		 * Initializes a new <code>Line</code>
-		 * 
-		 * @param text
-		 * @param lineNumber
-		 */
-		public Line(String text, int lineNumber) {
-			super();
-			this.text = text;
-			this.lineNumber = lineNumber;
-		}
-
-		/**
-		 * @return the text of this particular line
-		 */
-		public String getText() {
-			return text;
-		}
-
-		/**
-		 * @return the line number for this particular line
-		 */
-		public int getLineNumber() {
-			return lineNumber;
-		}
-
-		/**
-		 * Returns a string representation of this line including the line number
-		 */
-		@Override
-		public String toString() {
-			return String.format("(Line:%d) %s", lineNumber, text);
-		}
-
+	/**
+	 * @return the cumulative code point offset up to the current line
+	 */
+	protected long getCodePointOffset() {
+		return cumulativeCodePointOffset;
 	}
 
 }

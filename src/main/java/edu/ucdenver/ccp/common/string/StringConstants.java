@@ -28,6 +28,12 @@ package edu.ucdenver.ccp.common.string;
 public class StringConstants {
 	public static final String BLANK = "";
 	public static final String NEW_LINE = "\n";
+	
+	private static final char LINE_FEED_CHAR = 0x0A;
+	public static final String LINE_FEED = Character.toString(LINE_FEED_CHAR);
+	private static final char CARRIAGE_RETURN_CHAR = 0x0D;
+	public static final String CARRIAGE_RETURN = Character.toString(CARRIAGE_RETURN_CHAR);
+	
 	public static final String TAB = "\u0009";
 
 	public static final String SPACE = "\u0020";

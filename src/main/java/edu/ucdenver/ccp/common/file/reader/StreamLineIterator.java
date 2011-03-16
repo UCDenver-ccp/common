@@ -26,7 +26,6 @@ import java.io.InputStream;
 import org.apache.log4j.Logger;
 
 import edu.ucdenver.ccp.common.file.CharacterEncoding;
-import edu.ucdenver.ccp.common.file.reader.LineReader.Line;
 
 /**
  * This class is used to iterate over lines obtained from a Stream.

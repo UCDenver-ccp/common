@@ -25,6 +25,7 @@ import java.io.InputStream;
 
 import edu.ucdenver.ccp.common.file.CharacterEncoding;
 import edu.ucdenver.ccp.common.file.FileReaderUtil;
+import edu.ucdenver.ccp.common.file.reader.Line.LineTerminator;
 
 /**
  * This class reads lines from an input stream
@@ -32,23 +33,17 @@ import edu.ucdenver.ccp.common.file.FileReaderUtil;
  * @author bill
  * 
  */
-public class StreamLineReader extends LineReader {
+public class StreamLineReader extends LineReader<Line> {
 
 	/**
-	 * A BufferedReader is used to read the lines from the input
-	 * <code>InputStream</code>
+	 * A BufferedReader is used to read the lines from the input <code>InputStream</code>
 	 */
 	private final BufferedReader reader;
-	
+
 	/**
 	 * Used to store the line number
 	 */
 	private int lineNumber = 0;
-
-	/**
-	 * Stores the line terminators found on the last line read
-	 */
-	private String lineTerminator;
 
 	/**
 	 * Initializes a new <code>StreamLineReader</code> to read from the input
@@ -58,8 +53,7 @@ public class StreamLineReader extends LineReader {
 	 * @param encoding
 	 * @param skipLinePrefix
 	 */
-	public StreamLineReader(InputStream inputStream,
-			CharacterEncoding encoding, String skipLinePrefix) {
+	public StreamLineReader(InputStream inputStream, CharacterEncoding encoding, String skipLinePrefix) {
 		super(skipLinePrefix);
 		lineNumber = 0;
 		reader = FileReaderUtil.initBufferedReader(inputStream, encoding);
@@ -74,8 +68,7 @@ public class StreamLineReader extends LineReader {
 	 * @throws IOException
 	 */
 	@Deprecated
-	public StreamLineReader(File inputFile, CharacterEncoding encoding,
-			String skipLinePrefix) throws IOException {
+	public StreamLineReader(File inputFile, CharacterEncoding encoding, String skipLinePrefix) throws IOException {
 		super(skipLinePrefix);
 		lineNumber = 0;
 		reader = FileReaderUtil.initBufferedReader(inputFile, encoding);
@@ -85,7 +78,8 @@ public class StreamLineReader extends LineReader {
 	 * @see edu.ucdenver.ccp.common.file.reader.LineReader#readLine()
 	 */
 	@Override
-	public Line readLine() throws IOException {
+	public Line getNextLine() throws IOException {
+		LineTerminator lineTerminator = null;
 		StringBuffer buffer = new StringBuffer();
 		int c = -1;
 		boolean eol = false;
@@ -94,16 +88,16 @@ public class StreamLineReader extends LineReader {
 			case -1:
 			case '\n':
 				eol = true;
-				lineTerminator = Character.toString('\n');
+				lineTerminator = LineTerminator.LF;
 				break;
 			case '\r':
 				eol = true;
-				lineTerminator = Character.toString('\r');
+				lineTerminator = LineTerminator.CR;
 				reader.mark(1);
 				if ((reader.read()) != '\n')
 					reader.reset();
 				else
-					lineTerminator += Character.toString('\n');
+					lineTerminator = LineTerminator.CRLF;
 				break;
 			default:
 				buffer.append((char) c);
@@ -120,7 +114,7 @@ public class StreamLineReader extends LineReader {
 			lineNumber++;
 			return readLine();
 		}
-		return new Line(lineText, lineNumber++);
+		return new Line(lineText, lineTerminator, getCharacterOffset(), getCodePointOffset(), lineNumber++);
 	}
 
 	/**
