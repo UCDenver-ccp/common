@@ -122,7 +122,7 @@
 	<!-- SvnStats Target -->
 	<target name="run.statsvn" depends="init.typedefs">
 		<svn username="${svn.user}" password="${svn.pass}" svnkit="true" failonerror="true">
-			<log path="${basedir}" destFile="${statsvn.reports.dir}/svn.log" firstRevision="HEAD" lastRevision="20110310" xml="true" />
+			<log path="${basedir}" destFile="${statsvn.reports.dir}/svn.log" xml="true" />
 		</svn>
 		<!--		<exec executable="svn" dir="${project.SrcDir}" output="${project.StatSVNReportDir}/svn-log.xml" searchpath="true">
 			<arg line="log - -xml - -verbose" /> remove spaces from between hyphens if this code is uncommented
