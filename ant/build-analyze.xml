@@ -121,13 +121,13 @@
 
 	<!-- SvnStats Target -->
 	<target name="run.statsvn" depends="init.typedefs">
-		<svn username="${svn.user}" password="${svn.pass}" svnkit="true" failonerror="true">
+		<!--<svn username="${svn.user}" password="${svn.pass}" svnkit="true" failonerror="true">
 			<log path="${basedir}" destFile="${statsvn.reports.dir}/svn.log" asXml="true" />
-		</svn>
-		<!--		<exec executable="svn" dir="${project.SrcDir}" output="${project.StatSVNReportDir}/svn-log.xml" searchpath="true">
-			<arg line="log - -xml - -verbose" /> remove spaces from between hyphens if this code is uncommented
+		</svn> -->
+		<exec executable="svn" dir="${basedir}" output="${statsvn.reports.dir}/svn.log" searchpath="true">
+			<arg line="--username build --password build log --xml --verbose" />
 		</exec>
-		-->
+		
 		<statsvn path="${source.dir}" log="${statsvn.reports.dir}/svn.log" outputDir="${statsvn.reports.dir}" title="StatSVN" />
 	</target>
 
