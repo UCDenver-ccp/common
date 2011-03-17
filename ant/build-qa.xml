@@ -44,6 +44,13 @@
 		</antcall>
 	</target>
 
+	<target name="run-svnstats">
+		<antcall target="call.code.analysis.target">
+			<param name="target.name" value="run.svnstats" />
+		</antcall>
+	</target>
+
+
 	<target name="run.full.analysis">
 		<antcall target="call.code.analysis.target">
 			<param name="target.name" value="run.full.analysis" />
@@ -57,6 +64,9 @@
 	<target name="call.code.test.target">
 		<ant antfile="${basedir}/../common/${ant.dir}/build-testing.xml" inheritall="true" inheritrefs="true" target="${target.name}" />
 	</target>
+
+
+
 
 	<target name="complete.code.analysis" description="Conducts an analysis of the code in this project as defined by the settings in the code-analysis project (available in SVN).">
 		<antcall target="compute.test.coverage" />
