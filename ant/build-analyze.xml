@@ -60,7 +60,7 @@
 	</target>
 
 	<target name="run.full.analysis" depends="init.typedefs" description="">
-		<antcall target="run.statsvn"/>
+		<antcall target="run.statsvn" />
 		<antcall target="run.findbugs.analysis" />
 		<antcall target="run.pmd.analysis" />
 		<antcall target="run.duplicate.code.analysis" />
@@ -121,13 +121,16 @@
 
 	<!-- SvnStats Target -->
 	<target name="run.statsvn" depends="init.typedefs">
+		<delete dir="${statsvn.reports.dir}" />
+		<mkdir dir="${statsvn.reports.dir}" />
+
 		<!--<svn username="${svn.user}" password="${svn.pass}" svnkit="true" failonerror="true">
 			<log path="${basedir}" destFile="${statsvn.reports.dir}/svn.log" asXml="true" />
 		</svn> -->
 		<exec executable="svn" dir="${basedir}" output="${statsvn.reports.dir}/svn.log" searchpath="true">
 			<arg line="--username build --password build log --xml --verbose" />
 		</exec>
-		
+
 		<statsvn path="${source.dir}" log="${statsvn.reports.dir}/svn.log" outputDir="${statsvn.reports.dir}" title="StatSVN" />
 	</target>
 
