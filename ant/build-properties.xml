@@ -9,6 +9,7 @@
 	<path id="classpath.test.dependency" />
 
 	<!-- Source Tree Properties -->
+	<property name="source.root.dir" value="src" />
 	<property name="source.dir" value="src/main/java" />
 	<property name="source.test.dir" value="src/test/java" />
 
