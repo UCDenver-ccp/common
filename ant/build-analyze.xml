@@ -129,7 +129,7 @@
 		</tstamp>
 
 		<exec executable="svn" dir="${basedir}" output="${statsvn.reports.dir}/svn.log.xml" searchpath="true">
-			<arg line="--username build --password build --xml --verbose -r {$weekAgo}:&quot;HEAD&quot; log" />
+			<arg line="--username build --password build --xml --verbose -r {${weekAgo}}:&quot;HEAD&quot; log" />
 		</exec>
 
 		<exec executable="java" dir="${basedir}" searchpath="true" output="${statsvn.reports.dir}/statsvn.log">
