@@ -124,14 +124,18 @@
 		<delete dir="${statsvn.reports.dir}" />
 		<mkdir dir="${statsvn.reports.dir}" />
 
-		<!--<svn username="${svn.user}" password="${svn.pass}" svnkit="true" failonerror="true">
-			<log path="${basedir}" destFile="${statsvn.reports.dir}/svn.log" asXml="true" />
-		</svn> -->
+		<tstamp>
+			<format property="weekAgo" pattern="yyyyMMdd" offset="-1" unit="week" />
+		</tstamp>
+
 		<exec executable="svn" dir="${basedir}" output="${statsvn.reports.dir}/svn.log.xml" searchpath="true">
-			<arg line="--username build --password build --xml --verbose log" />
+			<arg line="--username build --password build --xml --verbose -r {$weekAgo}:&quot;HEAD&quot; log" />
 		</exec>
 
-		<statsvn path="${source.dir}" log="${statsvn.reports.dir}/svn.log.xml" outputDir="${statsvn.reports.dir}" title="StatSVN" />
+		<exec executable="java" dir="${basedir}" searchpath="true" output="${statsvn.reports.dir}/statsvn.log">
+			<arg line="-jar /home/hudson/codeqa/lib-analysis/statsvn.jar -username build -password build -output-dir ${statsvn.reports.dir} ${statsvn.reports.dir}/svn.log.xml ${source.root.dir}" />
+		</exec>
+		<!--		<statsvn path="${source.dir}" log="${statsvn.reports.dir}/svn.log.xml" outputDir="${statsvn.reports.dir}" title="StatSVN" /> -->
 	</target>
 
 
