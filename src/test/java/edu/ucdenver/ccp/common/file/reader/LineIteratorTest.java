@@ -16,7 +16,7 @@ import edu.ucdenver.ccp.common.collections.CollectionsUtil;
 import edu.ucdenver.ccp.common.file.CharacterEncoding;
 import edu.ucdenver.ccp.common.file.FileReaderUtil;
 import edu.ucdenver.ccp.common.file.FileWriterUtil;
-import edu.ucdenver.ccp.common.file.reader.Line.LineTerminator;
+import edu.ucdenver.ccp.common.file.SampleUtf8File;
 import edu.ucdenver.ccp.common.io.ClassPathUtil;
 import edu.ucdenver.ccp.common.test.DefaultTestCase;
 
@@ -29,13 +29,7 @@ import edu.ucdenver.ccp.common.test.DefaultTestCase;
 public class LineIteratorTest extends DefaultTestCase {
 
 	/**
-	 * Name of a sample UTF-8 file with CRLF line breaks. File is on the classpath in the same
-	 * package as this test class.
-	 */
-	private static final String SAMPLE_FILE_NAME = "astral-combine-CRLF.utf8";
-
-	/**
-	 * Sample file uses UTF_8 character encoding
+	 * Encoding to use when generating sample files to be used by tests in this class
 	 */
 	private static final CharacterEncoding SAMPLE_ENCODING = CharacterEncoding.UTF_8;
 
@@ -119,8 +113,8 @@ public class LineIteratorTest extends DefaultTestCase {
 	 */
 	@Test
 	public void testLineIteratorOnFileWithCRLFLineTerminators() throws IOException {
-		InputStream sampleFileStream = ClassPathUtil.getResourceStreamFromClasspath(getClass(), SAMPLE_FILE_NAME);
-		StreamLineIterator sli = new StreamLineIterator(sampleFileStream, SAMPLE_ENCODING, null);
+		InputStream sampleFileStream = ClassPathUtil.getResourceStreamFromClasspath(SampleUtf8File.class, SampleUtf8File.FILE_NAME);
+		StreamLineIterator sli = new StreamLineIterator(sampleFileStream, SampleUtf8File.ENCODING, null);
 		long lineNumber = -1;
 		while (sli.hasNext()) {
 			Line nextLine = sli.next();
@@ -140,8 +134,8 @@ public class LineIteratorTest extends DefaultTestCase {
 	 */
 	@Test
 	public void testBufferedReaderOnFileWithCRLFLineTerminators() throws IOException {
-		InputStream sampleFileStream = ClassPathUtil.getResourceStreamFromClasspath(getClass(), SAMPLE_FILE_NAME);
-		BufferedReader br = FileReaderUtil.initBufferedReader(sampleFileStream, SAMPLE_ENCODING);
+		InputStream sampleFileStream = ClassPathUtil.getResourceStreamFromClasspath(SampleUtf8File.class, SampleUtf8File.FILE_NAME);
+		BufferedReader br = FileReaderUtil.initBufferedReader(sampleFileStream, SampleUtf8File.ENCODING);
 		try {
 			@SuppressWarnings("unused")
 			String line;
@@ -155,127 +149,7 @@ public class LineIteratorTest extends DefaultTestCase {
 		}
 	}
 
-	/**
-	 * Enum representing lines in the astral-combine-CRLF.utf8 file used in this test
-	 * 
-	 * @author bill
-	 * 
-	 */
-	private enum SampleFileLine {
-		/**
-		 * Line 1: Line#1\r
-		 */
-		LINE1(6, 6, LineTerminator.CRLF),
-		/**
-		 * Line 2: \x{1D49C}\x{212C}\x{1D49E}\x{1D49F} is ABCD\r
-		 */
-		LINE2(12, 15, LineTerminator.CRLF),
-		/**
-		 * Line 3: let \x{1D49E}\x{304} = sqrt(\x{1D49C}\x{B2} + \x{212C}\x{B2})\r
-		 */
-		LINE3(22, 24, LineTerminator.CRLF),
-		/**
-		 * Line 4: let \x{1D4B1}\x{305} = 4/3 \x{B7} \x{3C0} \x{B7} \x{1D4C7}\x{B3}\r
-		 */
-		LINE4(21, 23, LineTerminator.CRLF),
-		/**
-		 * Line 5: let \x{1D4B1}\x{305} = 4\x{2044}3\x{2062}\x{3C0}\x{2062}\x{1D4C7}\x{B3}\r
-		 */
-		LINE5(17, 19, LineTerminator.CRLF),
-		/**
-		 * Line 6: let \x{2133}\x{304} = 60 * \x{1D4AE}\x{305}\r
-		 */
-		LINE6(16, 17, LineTerminator.CRLF),
-		/**
-		 * Line 7: let \x{210B} = 60 * \x{2133}\r
-		 */
-		LINE7(14, 14, LineTerminator.CRLF),
-		/**
-		 * Line 8: let \x{1D49F}\x{305} = 24 * \x{210B}\r
-		 */
-		LINE8(15, 16, LineTerminator.CRLF),
-		/**
-		 * Line 9: let \x{1D4B4} = 365.2425 * \x{210B}\r
-		 */
-		LINE9(20, 21, LineTerminator.CRLF),
-		/**
-		 * Line 10: Line#10\r
-		 */
-		LINE10(7, 7, LineTerminator.CRLF);
-
-		/**
-		 * The number of characters on the line (excluding the line terminator)
-		 */
-		private final int characterCount;
-
-		/**
-		 * The number of Unicode characters on the line (excluding the line terminator)
-		 */
-		private final int codePointCount;
-
-		/**
-		 * The line terminator used at the end of the line
-		 */
-		private final LineTerminator terminator;
-
-		/**
-		 * private constructor used by enum
-		 * 
-		 * @param characterCount
-		 *            the number of characters on the line
-		 * @param terminator
-		 *            the line terminator used at the end of the line
-		 */
-		private SampleFileLine(int codePointCount, int characterCount, LineTerminator terminator) {
-			this.codePointCount = codePointCount;
-			this.characterCount = characterCount;
-			this.terminator = terminator;
-		}
-
-		/**
-		 * @return the length of this line in terms of characters (character count + line terminator
-		 *         length)
-		 */
-		public int getCharacterLineLength() {
-			return characterCount + terminator.length();
-		}
-
-		/**
-		 * @return the length of this line in terms of code points
-		 */
-		public int getCodePointLineLength() {
-			return codePointCount + terminator.length();
-		}
-
-		/**
-		 * @return the character offset for this line (the count of all character that occur before
-		 *         this line)
-		 */
-		public int getCharacterOffset() {
-			int offset = 0;
-			for (SampleFileLine line : SampleFileLine.values()) {
-				if (this.equals(line))
-					break;
-				offset += line.getCharacterLineLength();
-			}
-			return offset;
-		}
-
-		/**
-		 * @return the code point for this line (the count of all Unicode characters that occur
-		 *         before this line)
-		 */
-		public int getCodePointOffset() {
-			int offset = 0;
-			for (SampleFileLine line : SampleFileLine.values()) {
-				if (this.equals(line))
-					break;
-				offset += line.getCodePointLineLength();
-			}
-			return offset;
-		}
-
-	}
+	
 
 	/**
 	 * Checks that the code point offsets are valid when reading a line with CRLF line breaks
@@ -285,47 +159,47 @@ public class LineIteratorTest extends DefaultTestCase {
 	 */
 	@Test
 	public void testLineIteratorOnFileWithCRLFLineTerminators_checkCodePointOffsets() throws IOException {
-		InputStream sampleFileStream = ClassPathUtil.getResourceStreamFromClasspath(getClass(), SAMPLE_FILE_NAME);
-		StreamLineIterator sli = new StreamLineIterator(sampleFileStream, SAMPLE_ENCODING, null);
+		InputStream sampleFileStream = ClassPathUtil.getResourceStreamFromClasspath(SampleUtf8File.class,SampleUtf8File.FILE_NAME);
+		StreamLineIterator sli = new StreamLineIterator(sampleFileStream, SampleUtf8File.ENCODING, null);
 		assertTrue(sli.hasNext());
 		Line nextLine = sli.next();
-		assertEquals("Code point offset for first line is incorrect.", SampleFileLine.LINE1.getCodePointOffset(),
+		assertEquals("Code point offset for first line is incorrect.", SampleUtf8File.LINE1.getCodePointOffset(),
 				nextLine.getCodePointOffset());
 		assertTrue(sli.hasNext());
 		nextLine = sli.next();
-		assertEquals("Code point offset for line 2 is incorrect.", SampleFileLine.LINE2.getCodePointOffset(), nextLine
+		assertEquals("Code point offset for line 2 is incorrect.", SampleUtf8File.LINE2.getCodePointOffset(), nextLine
 				.getCodePointOffset());
 		assertTrue(sli.hasNext());
 		nextLine = sli.next();
-		assertEquals("Code point offset for line 3 is incorrect.", SampleFileLine.LINE3.getCodePointOffset(), nextLine
+		assertEquals("Code point offset for line 3 is incorrect.", SampleUtf8File.LINE3.getCodePointOffset(), nextLine
 				.getCodePointOffset());
 		assertTrue(sli.hasNext());
 		nextLine = sli.next();
-		assertEquals("Code point offset for line 4 is incorrect.", SampleFileLine.LINE4.getCodePointOffset(), nextLine
+		assertEquals("Code point offset for line 4 is incorrect.", SampleUtf8File.LINE4.getCodePointOffset(), nextLine
 				.getCodePointOffset());
 		assertTrue(sli.hasNext());
 		nextLine = sli.next();
-		assertEquals("Code point offset for line 5 is incorrect.", SampleFileLine.LINE5.getCodePointOffset(), nextLine
+		assertEquals("Code point offset for line 5 is incorrect.", SampleUtf8File.LINE5.getCodePointOffset(), nextLine
 				.getCodePointOffset());
 		assertTrue(sli.hasNext());
 		nextLine = sli.next();
-		assertEquals("Code point offset for line 6 is incorrect.", SampleFileLine.LINE6.getCodePointOffset(), nextLine
+		assertEquals("Code point offset for line 6 is incorrect.", SampleUtf8File.LINE6.getCodePointOffset(), nextLine
 				.getCodePointOffset());
 		assertTrue(sli.hasNext());
 		nextLine = sli.next();
-		assertEquals("Code point offset for line 7 is incorrect.", SampleFileLine.LINE7.getCodePointOffset(), nextLine
+		assertEquals("Code point offset for line 7 is incorrect.", SampleUtf8File.LINE7.getCodePointOffset(), nextLine
 				.getCodePointOffset());
 		assertTrue(sli.hasNext());
 		nextLine = sli.next();
-		assertEquals("Code point offset for line 8 is incorrect.", SampleFileLine.LINE8.getCodePointOffset(), nextLine
+		assertEquals("Code point offset for line 8 is incorrect.", SampleUtf8File.LINE8.getCodePointOffset(), nextLine
 				.getCodePointOffset());
 		assertTrue(sli.hasNext());
 		nextLine = sli.next();
-		assertEquals("Code point offset for line 9 is incorrect.", SampleFileLine.LINE9.getCodePointOffset(), nextLine
+		assertEquals("Code point offset for line 9 is incorrect.", SampleUtf8File.LINE9.getCodePointOffset(), nextLine
 				.getCodePointOffset());
 		assertTrue(sli.hasNext());
 		nextLine = sli.next();
-		assertEquals("Code point offset for line 10 is incorrect.", SampleFileLine.LINE10.getCodePointOffset(),
+		assertEquals("Code point offset for line 10 is incorrect.", SampleUtf8File.LINE10.getCodePointOffset(),
 				nextLine.getCodePointOffset());
 		assertFalse(sli.hasNext());
 	}
@@ -338,47 +212,47 @@ public class LineIteratorTest extends DefaultTestCase {
 	 */
 	@Test
 	public void testLineIteratorOnFileWithCRLFLineTerminators_checkCharacterOffsets() throws IOException {
-		InputStream sampleFileStream = ClassPathUtil.getResourceStreamFromClasspath(getClass(), SAMPLE_FILE_NAME);
-		StreamLineIterator sli = new StreamLineIterator(sampleFileStream, SAMPLE_ENCODING, null);
+		InputStream sampleFileStream = ClassPathUtil.getResourceStreamFromClasspath(SampleUtf8File.class, SampleUtf8File.FILE_NAME);
+		StreamLineIterator sli = new StreamLineIterator(sampleFileStream, SampleUtf8File.ENCODING, null);
 		assertTrue(sli.hasNext());
 		Line nextLine = sli.next();
-		assertEquals("Character offset for first line is incorrect.", SampleFileLine.LINE1.getCharacterOffset(),
+		assertEquals("Character offset for first line is incorrect.", SampleUtf8File.LINE1.getCharacterOffset(),
 				nextLine.getCharacterOffset());
 		assertTrue(sli.hasNext());
 		nextLine = sli.next();
-		assertEquals("Character offset for line 2 is incorrect.", SampleFileLine.LINE2.getCharacterOffset(), nextLine
+		assertEquals("Character offset for line 2 is incorrect.", SampleUtf8File.LINE2.getCharacterOffset(), nextLine
 				.getCharacterOffset());
 		assertTrue(sli.hasNext());
 		nextLine = sli.next();
-		assertEquals("Character offset for line 3 is incorrect.", SampleFileLine.LINE3.getCharacterOffset(), nextLine
+		assertEquals("Character offset for line 3 is incorrect.", SampleUtf8File.LINE3.getCharacterOffset(), nextLine
 				.getCharacterOffset());
 		assertTrue(sli.hasNext());
 		nextLine = sli.next();
-		assertEquals("Character offset for line 4 is incorrect.", SampleFileLine.LINE4.getCharacterOffset(), nextLine
+		assertEquals("Character offset for line 4 is incorrect.", SampleUtf8File.LINE4.getCharacterOffset(), nextLine
 				.getCharacterOffset());
 		assertTrue(sli.hasNext());
 		nextLine = sli.next();
-		assertEquals("Character offset for line 5 is incorrect.", SampleFileLine.LINE5.getCharacterOffset(), nextLine
+		assertEquals("Character offset for line 5 is incorrect.", SampleUtf8File.LINE5.getCharacterOffset(), nextLine
 				.getCharacterOffset());
 		assertTrue(sli.hasNext());
 		nextLine = sli.next();
-		assertEquals("Character offset for line 6 is incorrect.", SampleFileLine.LINE6.getCharacterOffset(), nextLine
+		assertEquals("Character offset for line 6 is incorrect.", SampleUtf8File.LINE6.getCharacterOffset(), nextLine
 				.getCharacterOffset());
 		assertTrue(sli.hasNext());
 		nextLine = sli.next();
-		assertEquals("Character offset for line 7 is incorrect.", SampleFileLine.LINE7.getCharacterOffset(), nextLine
+		assertEquals("Character offset for line 7 is incorrect.", SampleUtf8File.LINE7.getCharacterOffset(), nextLine
 				.getCharacterOffset());
 		assertTrue(sli.hasNext());
 		nextLine = sli.next();
-		assertEquals("Character offset for line 8 is incorrect.", SampleFileLine.LINE8.getCharacterOffset(), nextLine
+		assertEquals("Character offset for line 8 is incorrect.", SampleUtf8File.LINE8.getCharacterOffset(), nextLine
 				.getCharacterOffset());
 		assertTrue(sli.hasNext());
 		nextLine = sli.next();
-		assertEquals("Character offset for line 9 is incorrect.", SampleFileLine.LINE9.getCharacterOffset(), nextLine
+		assertEquals("Character offset for line 9 is incorrect.", SampleUtf8File.LINE9.getCharacterOffset(), nextLine
 				.getCharacterOffset());
 		assertTrue(sli.hasNext());
 		nextLine = sli.next();
-		assertEquals("Character offset for line 10 is incorrect.", SampleFileLine.LINE10.getCharacterOffset(), nextLine
+		assertEquals("Character offset for line 10 is incorrect.", SampleUtf8File.LINE10.getCharacterOffset(), nextLine
 				.getCharacterOffset());
 		assertFalse(sli.hasNext());
 	}
