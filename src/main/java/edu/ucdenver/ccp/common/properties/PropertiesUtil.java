@@ -35,7 +35,7 @@ import org.apache.commons.io.IOUtils;
  * @author bill
  * 
  */
-public abstract class PropertiesUtil {
+public class PropertiesUtil {
 
 	/**
 	 * Loads a properties file from the specified path
@@ -76,7 +76,7 @@ public abstract class PropertiesUtil {
 	 * @param propertyName
 	 * @return
 	 */
-	public boolean hasProperty(Properties properties, String propertyName) {
+	public static boolean hasProperty(Properties properties, String propertyName) {
 		return (properties.getProperty(propertyName) != null);
 	}
 
