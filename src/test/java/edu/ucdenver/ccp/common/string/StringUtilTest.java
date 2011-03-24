@@ -427,25 +427,35 @@ public class StringUtilTest extends DefaultTestCase {
 	 */
 	@Test
 	public void testRemoveLastCharacter_validInput() {
+		String expectedstr = "xy";
 		String inputStr = "xyz";
-		String actual = StringUtil.removeLastCharacter(inputStr);
+		String actualValue = StringUtil.removeLastCharacter(inputStr);
+		assertEquals("Expected str to be xy", expectedstr, actualValue);
 	}
 	
 	
 	/**
 	 * Tests that removeLastCharacter(null) behaves as expected
+	 * @return 
 	 */
-	@Test
+	@Test(expected=NullPointerException.class)
 	public void testRemoveLastCharacter_nullInput() {
+		String inputStr = null;
+		String actualValue = StringUtil.removeLastCharacter(inputStr);
 		
 	}
 	
 	
+	
 	/**
 	 * Tests that removeLastCharacter("") behaves as expected
+	 * @return 
 	 */
-	@Test
+	@Test(expected=StringIndexOutOfBoundsException.class)
 	public void testRemoveLastCharacter_emptyInput() {
+		String inputStr = "";
+		String actualValue = StringUtil.removeLastCharacter(inputStr);
+		
 		
 	}
 	
@@ -455,6 +465,10 @@ public class StringUtilTest extends DefaultTestCase {
 	 */
 	@Test
 	public void testRemoveLastCharacter_singleCharacterInput() {
+		String expectedstr = "";
+		String inputStr = "a";
+		String actualValue = StringUtil.removeLastCharacter(inputStr);
+		assertEquals("Expected str to be Empty space", expectedstr, actualValue);
 		
 	}
 	
