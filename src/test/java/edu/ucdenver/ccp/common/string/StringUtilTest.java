@@ -122,15 +122,7 @@ public class StringUtilTest extends DefaultTestCase {
 				.removeSuffixRegex("myFile.tgz", ""));
 	}
 
-	@Test
-	public void testRemoveRegexPrefix_ValidInput() {
-		assertEquals("Suffix should be stripped.", "e.txt.txt.txt.txt.txt",
-				StringUtil.removePrefixRegex("myFile.txt.txt.txt.txt.txt",
-						"(m?y?Fil)"));
-		assertEquals("Suffix should be stripped.", "gz", StringUtil
-				.removePrefixRegex("myFile.tgz", "my.*?t"));
-	}
-
+	
 	/**
 	 * Checks that StringUtil.removeSuffix() works correctly when valid input is
 	 * used
@@ -182,6 +174,41 @@ public class StringUtilTest extends DefaultTestCase {
 	public void testRemoveSuffix_InputStringDoesNotHaveSuffix() {
 		StringUtil.removeSuffix("File.txt.zip", ".gz");
 	}
+	
+	/**
+	 * Checks for proper exception if the input string is Empty space when calling
+	 * StringUtil.removeSuffix()
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testRemoveSuffix_EmptySpace() {
+		StringUtil.removeSuffix("", ".gz");
+	}
+	
+	/**
+	 * Checks that StringUtil.Prefix() works correctly when valid input is
+	 * used
+	 */
+	
+	@Test
+	public void testRemoveRegexPrefix_ValidInput() {
+		assertEquals("Suffix should be stripped.", "e.txt.txt.txt.txt.txt",
+				StringUtil.removePrefixRegex("myFile.txt.txt.txt.txt.txt",
+						"(m?y?Fil)"));
+		assertEquals("Suffix should be stripped.", "gz", StringUtil
+				.removePrefixRegex("myFile.tgz", "my.*?t"));
+	}
+
+	
+	@Test
+	public void testRemoveRegexPrefix_EmptyInput() {
+		assertEquals("Prefix should be stripped.",
+				"myFile.txt.txt.txt.txt.txt", StringUtil.removePrefixRegex(
+						"myFile.txt.txt.txt.txt.txt", ""));
+		assertEquals("Prefix should be stripped.", "myFile.tgz", StringUtil
+				.removePrefixRegex("myFile.tgz", ""));
+	}
+	
+	
 
 	@Test
 	public void testReplaceSuffix_ValidInput() {
@@ -472,8 +499,7 @@ public class StringUtilTest extends DefaultTestCase {
 		
 	}
 	
-	
-	
+
 	
 	
 	
