@@ -198,7 +198,10 @@ public class StringUtilTest extends DefaultTestCase {
 				.removePrefixRegex("myFile.tgz", "my.*?t"));
 	}
 
-	
+	/**
+	 * Checks for expected behavior of StringUtil.removePrefix() if the Prefix
+	 * string is empty
+	 */
 	@Test
 	public void testRemoveRegexPrefix_EmptyInput() {
 		assertEquals("Prefix should be stripped.",
@@ -208,8 +211,46 @@ public class StringUtilTest extends DefaultTestCase {
 				.removePrefixRegex("myFile.tgz", ""));
 	}
 	
-	
+	/**
+	 * Checks for proper exception if the input string is null when calling
+	 * StringUtil.removePrefix()
+	 */
+	@Test(expected = NullPointerException.class)
+	public void testRemovePrefix_NullInputString() {
+		StringUtil.removePrefixRegex(null, ".gz");
+	}
 
+	
+	/**
+	 * Checks for proper exception if the suffix string is null when calling
+	 * StringUtil.removePrefix()
+	 */
+	@Test(expected = NullPointerException.class)
+	public void testRemovePrefix_NullSuffix() {
+		StringUtil.removePrefixRegex("File.txt", null);
+	}
+
+	/**
+	 * Checks for proper exception if the input string does not end with the
+	 * Prefix requested to be removed when calling StringUtil.removePrefix()
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testRemovePrefix_InputStringDoesNotHaveSuffix() {
+		StringUtil.removePrefixRegex("File.txt.zip", ".gz");
+	}
+	
+	
+	/**
+	 * Checks for proper exception if the input string is Empty space when calling
+	 * StringUtil.removePrefix()
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void testRemovePrefix_EmptySpace() {
+		StringUtil.removePrefixRegex("", ".gz");
+	}
+
+	
+	
 	@Test
 	public void testReplaceSuffix_ValidInput() {
 		assertEquals("Suffix should be replaced with .tar", "myTarball.tar",
