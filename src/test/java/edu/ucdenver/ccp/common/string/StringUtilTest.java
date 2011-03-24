@@ -403,5 +403,73 @@ public class StringUtilTest extends DefaultTestCase {
 		StringUtil.decode(utf8String.getBytes(CharacterEncoding.UTF_8
 				.getCharacterSetName()), CharacterEncoding.US_ASCII);
 	}
+	
+	
+	
+	
+	
+	/*
+	 * JUnit recipe
+	 * 
+	 *  1. Set up 
+	 *  2. Declare the expected results 
+	 *  3. Exercise the unit under test 
+	 *  4. Get the actual results 
+	 *  5. Assert that the actual results match the expected results
+	 */
+	
+	
+	
+	
+	
+	/**
+	 * Tests that removeLastCharacter(String) works as expected with valid input
+	 */
+	@Test
+	public void testRemoveLastCharacter_validInput() {
+		String inputStr = "xyz";
+		String actual = StringUtil.removeLastCharacter(inputStr);
+	}
+	
+	
+	/**
+	 * Tests that removeLastCharacter(null) behaves as expected
+	 */
+	@Test
+	public void testRemoveLastCharacter_nullInput() {
+		
+	}
+	
+	
+	/**
+	 * Tests that removeLastCharacter("") behaves as expected
+	 */
+	@Test
+	public void testRemoveLastCharacter_emptyInput() {
+		
+	}
+	
+	
+	/**
+	 * Tests that removeLastCharacter("a") behaves as expected
+	 */
+	@Test
+	public void testRemoveLastCharacter_singleCharacterInput() {
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 }
