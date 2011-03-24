@@ -350,14 +350,36 @@ public class FileUtilTest extends DefaultTestCase {
 		assertEquals(String.format("File that doesn't have a suffix should be returned as is."), expectedFile, FileUtil
 				.removeFileSuffixes(expectedFile));
 	}
-	
+
 	@Test
 	public void testAppendFileSuffix() throws IOException {
 		File expectedFile = folder.newFile("test.txt");
 		File file = folder.newFile("test");
-		
-		assertEquals(String.format(".txt suffix should have been added to the file"), expectedFile, FileUtil.appendFileSuffix(file, ".txt"));
-		assertEquals(String.format(".txt suffix should have been added to the file"), expectedFile, FileUtil.appendFileSuffix(file, "txt"));
+
+		assertEquals(String.format(".txt suffix should have been added to the file"), expectedFile, FileUtil
+				.appendFileSuffix(file, ".txt"));
+		assertEquals(String.format(".txt suffix should have been added to the file"), expectedFile, FileUtil
+				.appendFileSuffix(file, "txt"));
+	}
+
+	/**
+	 * Tests that the cleanFile() method works properly
+	 * 
+	 * @throws IOException
+	 *             if an error occurs
+	 */
+	@Test
+	public void testCleanFile() throws IOException {
+		File testFile = folder.newFile("fileToClean.utf8");
+		FileWriterUtil.printLines(CollectionsUtil.createList("line 1", "line 2"), testFile, CharacterEncoding.UTF_8);
+
+		List<String> lines = FileReaderUtil.loadLinesFromFile(testFile, CharacterEncoding.UTF_8);
+		assertTrue("File should contain some lines", lines.size() > 0);
+
+		FileUtil.cleanFile(testFile);
+
+		lines = FileReaderUtil.loadLinesFromFile(testFile, CharacterEncoding.UTF_8);
+		assertTrue("File should now be empty", lines.size() == 0);
 	}
 
 }

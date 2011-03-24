@@ -210,6 +210,22 @@ public class FileUtil {
 		deleteDirectory(directory);
 		return directory.mkdirs();
 	}
+	
+	
+	/**
+	 * Deletes the input file and replaces it with a new empty file of the same name
+	 * 
+	 * @param file
+	 *            the file to clean
+	 * @throws IOException
+	 *             if an error occurs during the cleaning process
+	 */
+	public static void cleanFile(File file) throws IOException {
+		deleteFile(file);
+		if (!file.createNewFile())
+			throw new IOException("File could not be re-created during clean: " + file.getAbsolutePath());
+	}
+	
 
 	/**
 	 * Copies the contents of the InputStream to the specified File
