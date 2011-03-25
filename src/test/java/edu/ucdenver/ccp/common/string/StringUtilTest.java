@@ -112,7 +112,32 @@ public class StringUtilTest extends DefaultTestCase {
 		assertEquals("Suffix should be stripped.", "myFile", StringUtil
 				.removeSuffixRegex("myFile.tgz", "\\..gz"));
 	}
-
+	
+	/**
+	 * Checks that StringUtil.removeRegexSuffix() works correctly with $ symbol and removes 
+	 * the last suffix pattern when valid input is used
+	 */
+	
+	@Test
+	public void testRemoveRegexSuffix_ValidInput2() {
+		assertEquals("Suffix should be stripped.", "myFile", StringUtil
+				.removeSuffixRegex("myFile.txt.txt.txt.txt.txt", "(\\.txt)+$"));
+		assertEquals("Suffix should be stripped.", "myFile", StringUtil
+				.removeSuffixRegex("myFile.tgz", "\\..gz"));
+	}
+	
+	/**
+	 * Checks that StringUtil.removeRegexSuffix() throws an exception when invalid input is used.
+	 */
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testRemoveRegexSuffix_InValidInput() {
+		 StringUtil.removeSuffixRegex("myFile.txt.txt.txt.txt.txt", "(\\.abc)+$");
+	
+	}
+	
+	
+	
 	@Test
 	public void testRemoveRegexSuffix_EmptyInput() {
 		assertEquals("Suffix should be stripped.",
