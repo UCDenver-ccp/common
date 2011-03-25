@@ -261,7 +261,7 @@ public class StringUtil {
 	 * @param regexStr
 	 * @return
 	 */
-	private static boolean startsAndEndsWithRegex(String inputStr,
+	public static boolean startsAndEndsWithRegex(String inputStr,
 			String regexStr) {
 		return startsWithRegex(inputStr, regexStr)
 				&& endsWithRegex(inputStr, regexStr);
@@ -342,6 +342,7 @@ public class StringUtil {
 			RemoveFieldEnclosures removeOptionalFieldEnclosure) {
 		String[] tokens = splitWithFieldEnclosure(inputStr, delimiterRegex,
 				optionalFieldEnclosureRegex);
+		
 		if (removeOptionalFieldEnclosure.equals(RemoveFieldEnclosures.TRUE))
 			for (int i = 0; i < tokens.length; i++)
 				if (StringUtil.startsAndEndsWithRegex(tokens[i],
@@ -372,6 +373,8 @@ public class StringUtil {
 			RemoveFieldEnclosures removeOptionalFieldEnclosure) {
 		String[] tokens = splitWithFieldEnclosure(inputStr, delimiterRegex,
 				optionalFieldEnclosureRegex, removeOptionalFieldEnclosure);
+		
+		// " foo ", " bar", "baz " ---> "foo", "bar", "baz"
 		List<String> nonEmptyTokens = new ArrayList<String>();
 		for (String token : tokens)
 			if (!token.trim().isEmpty())
