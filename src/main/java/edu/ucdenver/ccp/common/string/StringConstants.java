@@ -38,14 +38,16 @@ public class StringConstants {
 
 	public static final String SPACE = "\u0020";
 	public static final String EXCLAMATION_MARK = "\u0021";
-	private static final char QUOTATION_MARK_CHAR = 0x22;
+	public static final char QUOTATION_MARK_CHAR = 0x22;
 	public static final String QUOTATION_MARK = Character.toString(QUOTATION_MARK_CHAR);
 
 	public static final String NUMBER_SIGN = "\u0023";
 	public static final String DOLLAR_SIGN = "\u0024";
 	public static final String PERCENT_SIGN = "\u0025";
 	public static final String AMPERSAND = "\u0026";
+	public static final char AMPERSAND_CHAR = 0x26;
 	public static final String APOSTROPHE = "\u0027";
+	public static final char APOSTROPHE_CHAR = 0x27;
 	public static final String LEFT_PARENTHESIS = "\u0028";
 	public static final String RIGHT_PARENTHESIS = "\u0029";
 	public static final String ASTERISK = "\u002A";
@@ -69,8 +71,10 @@ public class StringConstants {
 	public static final String COLON = "\u003A";
 	public static final String SEMICOLON = "\u003B";
 	public static final String LESS_THAN_SIGN = "\u003C";
+	public static final char LESS_THAN_SIGN_CHAR = 0x3C;
 	public static final String EQUALS_SIGN = "\u003D";
 	public static final String GREATER_THAN_SIGN = "\u003E";
+	public static final char GREATER_THAN_SIGN_CHAR = 0x3E;
 	public static final String QUESTION_MARK = "\u003F";
 	public static final String COMMERCIAL_AT = "\u0040";
 	public static final String LATIN_CAPITAL_LETTER_A = "\u0041";
