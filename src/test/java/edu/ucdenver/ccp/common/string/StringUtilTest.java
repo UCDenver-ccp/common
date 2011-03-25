@@ -123,7 +123,7 @@ public class StringUtilTest extends DefaultTestCase {
 		assertEquals("Suffix should be stripped.", "myFile", StringUtil
 				.removeSuffixRegex("myFile.txt.txt.txt.txt.txt", "(\\.txt)+$"));
 		assertEquals("Suffix should be stripped.", "myFile", StringUtil
-				.removeSuffixRegex("myFile.tgz", "\\..gz"));
+				.removeSuffixRegex("myFile.tgz", "\\..gz$"));
 	}
 	
 	/**
@@ -274,6 +274,7 @@ public class StringUtilTest extends DefaultTestCase {
 		StringUtil.removePrefixRegex("", ".gz");
 	}
 
+
 	
 	
 	@Test
@@ -282,10 +283,18 @@ public class StringUtilTest extends DefaultTestCase {
 				StringUtil.replaceSuffix("myTarball.tgz", ".tgz", ".tar"));
 	}
 
+	
+	/**
+	 * Returns true if the beginning of the inputStr matches the regular
+	 * expression, false otherwise.
+	 */
+	
 	@Test
 	public void testStartsWithRegex() {
-		assertTrue(StringUtil.startsWithRegex("2010-04-06", RegExPatterns
-				.getNDigitsPattern(4)));
+		assertTrue(StringUtil.startsWithRegex("2010-04-06", 
+				RegExPatterns.getNDigitsPattern(4)));
+		
+		
 		assertTrue(StringUtil.startsWithRegex("2010-04-06", RegExPatterns
 				.getNDigitsPattern(3)));
 		assertTrue(StringUtil.startsWithRegex("2010-04-06", RegExPatterns
@@ -299,6 +308,65 @@ public class StringUtilTest extends DefaultTestCase {
 				.getNDigitsPattern(5)));
 	}
 
+	@Test(expected = NullPointerException.class)
+	public void testStartsWithRegex_NullInputString() {
+		StringUtil.startsWithRegex(null, RegExPatterns
+				.getNDigitsPattern(1));
+	}
+	
+	/**
+	@Test(expected = AssertionError.class)
+	public void testStartsWithRegex_EmptySpaceInputString() {
+		StringUtil.startsWithRegex("", RegExPatterns
+				.getNDigitsPattern(1));
+	}
+	*/
+	
+	
+	
+	/**
+	 * Returns true if the end of the inputStr matches the regular expression,
+	 * false otherwise
+	 */
+	
+	
+	@Test
+	public void testendsWithRegex() {
+		assertTrue(StringUtil.endsWithRegex("2010-04-0655", 
+				RegExPatterns.getNDigitsPattern(4)));
+		
+		
+		assertTrue(StringUtil.endsWithRegex("2010-04-06", RegExPatterns
+				.getNDigitsPattern(2)));
+		assertTrue(StringUtil.endsWithRegex("2010-04-063", RegExPatterns
+				.getNDigitsPattern(3)));
+		assertTrue(StringUtil.endsWithRegex("2010-04-06", RegExPatterns
+				.getNDigitsPattern(1)));
+
+
+		assertFalse(StringUtil.endsWithRegex("2010-04-06", RegExPatterns
+				.getNDigitsPattern(5)));
+	}
+
+	
+	@Test
+	public void teststartsAndEndsWithRegex() {
+
+		
+		assertTrue(StringUtil.startsAndEndsWithRegex("2010-04-0633", RegExPatterns
+				.getNDigitsPattern(3)));
+		assertTrue(StringUtil.startsAndEndsWithRegex("2010-04-06", RegExPatterns
+				.getNDigitsPattern(2)));
+		assertTrue(StringUtil.startsAndEndsWithRegex("2010-04-06", RegExPatterns
+				.getNDigitsPattern(1)));
+	
+
+		assertFalse(StringUtil.startsAndEndsWithRegex("2010-04-06", RegExPatterns
+				.getNDigitsPattern(5)));
+	}
+
+	
+	
 	@Test
 	public void testContainsRegex() {
 		assertTrue(StringUtil.containsRegex("2010-04-06", RegExPatterns
@@ -457,7 +525,8 @@ public class StringUtilTest extends DefaultTestCase {
 		String inputStr = "\"D015430\",";
 		List<String> expectedTokens = CollectionsUtil.createList("\"D015430\"");
 		assertEquals(String.format("One token should be returned"),
-				expectedTokens, StringUtil.delimitAndTrim(inputStr,
+				expectedTokens, 
+				StringUtil.delimitAndTrim(inputStr,
 						StringConstants.COMMA, StringConstants.QUOTATION_MARK,
 						RemoveFieldEnclosures.FALSE));
 	}
