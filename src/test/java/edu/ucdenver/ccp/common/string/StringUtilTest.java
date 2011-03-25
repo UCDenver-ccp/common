@@ -304,6 +304,7 @@ public class StringUtilTest extends DefaultTestCase {
 		assertTrue(StringUtil.endsWithRegex("2010-04-06", RegExPatterns.getNDigitsPattern(1)));
 
 		assertFalse(StringUtil.endsWithRegex("2010-04-06", RegExPatterns.getNDigitsPattern(5)));
+		
 	}
 
 	@Test
@@ -314,8 +315,24 @@ public class StringUtilTest extends DefaultTestCase {
 		assertTrue(StringUtil.startsAndEndsWithRegex("2010-04-06", RegExPatterns.getNDigitsPattern(1)));
 
 		assertFalse(StringUtil.startsAndEndsWithRegex("2010-04-06", RegExPatterns.getNDigitsPattern(5)));
+		assertFalse(StringUtil.startsAndEndsWithRegex("2010-04-06", RegExPatterns.getNDigitsPattern(4)));
+		assertFalse(StringUtil.startsAndEndsWithRegex("20-04-0610", RegExPatterns.getNDigitsPattern(4)));
+
 	}
 
+	
+	@Test(expected = NullPointerException.class)
+	public void teststartsAndEndsWithRegex_NullInputString() {
+		StringUtil.startsAndEndsWithRegex(null, RegExPatterns.getNDigitsPattern(1));
+	}
+	
+	@Test
+	public void teststartsAndEndsWithRegex_EmptySpaceInputString() {
+		assertFalse(StringUtil.startsAndEndsWithRegex("", RegExPatterns.getNDigitsPattern(1)));
+		assertTrue(StringUtil.startsAndEndsWithRegex("", ""));
+	}
+
+	
 	@Test
 	public void testContainsRegex() {
 		assertTrue(StringUtil.containsRegex("2010-04-06", RegExPatterns.getNDigitsPattern(4)));
