@@ -334,6 +334,57 @@ public class StringUtilTest extends DefaultTestCase {
 
 	
 	@Test
+    public void testDelmitAndTrim_ValidInput() {
+            
+		StringUtil.delimitAndTrim(":1:,:2:,:3:", ",", ":",RemoveFieldEnclosures.TRUE);
+		
+    }
+	
+	@Test
+    public void testDelmitAndTrim_WithoutOptionalFieldEnclosure() {
+            
+		StringUtil.delimitAndTrim(":1:,:2:,:3:", ",", ":",RemoveFieldEnclosures.FALSE);
+		
+    }
+	
+	@Test
+    public void testDelmitAndTrim_WithoutInputData() {
+            
+		StringUtil.delimitAndTrim("", ",", ":",RemoveFieldEnclosures.TRUE);
+		
+    }
+	
+	@Test(expected = NullPointerException.class)
+    public void testDelmitAndTrim_WithnullData() {
+            
+		StringUtil.delimitAndTrim(null, ",", ":",RemoveFieldEnclosures.TRUE);
+		
+    }
+	
+	@Test
+    public void testDelmitAndTrim_WithInvalidData() {
+            
+		StringUtil.delimitAndTrim(":1:,:2:,:3:", ";", "-",RemoveFieldEnclosures.TRUE);
+		
+    }
+	
+	
+	@Test
+    public void testDelmitAndTrim_WithEmptyoptionalFieldEnclosure() {
+            
+		StringUtil.delimitAndTrim(":1:,:2:,:3:", ",", "",RemoveFieldEnclosures.TRUE);
+		
+    }
+	
+	
+	@Test
+    public void testDelmitAndTrim_WithvalidData() {
+            
+		StringUtil.delimitAndTrim(StringConstants.DIGIT_ZERO, ",", "",RemoveFieldEnclosures.TRUE);
+		
+    }
+	
+	@Test
 	public void testContainsRegex() {
 		assertTrue(StringUtil.containsRegex("2010-04-06", RegExPatterns.getNDigitsPattern(4)));
 		assertFalse(StringUtil.containsRegex("2010-04-06", RegExPatterns.getNDigitsPattern(5)));
@@ -344,6 +395,8 @@ public class StringUtilTest extends DefaultTestCase {
 		assertFalse(StringUtil.containsRegex("", RegExPatterns.getNDigitsPattern(4)));
 	}
 
+	
+	
 	@Test
 	public void testCreateRepeatingString() {
 		String expectedStr = StringConstants.AMPERSAND + StringConstants.AMPERSAND + StringConstants.AMPERSAND;
