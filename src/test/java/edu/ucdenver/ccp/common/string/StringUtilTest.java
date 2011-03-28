@@ -362,7 +362,7 @@ public class StringUtilTest extends DefaultTestCase {
     }
 	
 	@Test
-    public void testDelmitAndTrim_WithInvalidData() {
+    public void testDelmitAndTrim_WithdelimiterRegex() {
             
 		StringUtil.delimitAndTrim(":1:,:2:,:3:", ";", "-",RemoveFieldEnclosures.TRUE);
 		
