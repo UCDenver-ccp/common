@@ -306,6 +306,10 @@ public class StringUtilTest extends DefaultTestCase {
 		assertFalse(StringUtil.endsWithRegex("2010-04-06", RegExPatterns.getNDigitsPattern(5)));
 		
 	}
+	
+	/**
+	 * Returns true if start and the end of the inputStr matches the regular expression, false otherwise
+	 */
 
 	@Test
 	public void teststartsAndEndsWithRegex() {
@@ -320,17 +324,30 @@ public class StringUtilTest extends DefaultTestCase {
 
 	}
 
+	/**
+	 * Tests that StringUtil.startsAndEndsWithRegex throws a null pointer exception if the input string is null
+	 */
 	
 	@Test(expected = NullPointerException.class)
 	public void teststartsAndEndsWithRegex_NullInputString() {
 		StringUtil.startsAndEndsWithRegex(null, RegExPatterns.getNDigitsPattern(1));
 	}
 	
+	/**
+	 * Tests that StringUtil.startsAndEndsWithRegex properly returns false if the input string is empty,
+	 * regardless of the pattern used (unless the pattern is also empty).
+	 */
+	
 	@Test
 	public void teststartsAndEndsWithRegex_EmptySpaceInputString() {
 		assertFalse(StringUtil.startsAndEndsWithRegex("", RegExPatterns.getNDigitsPattern(1)));
 		assertTrue(StringUtil.startsAndEndsWithRegex("", ""));
 	}
+
+	/**
+	 * Returns [1, 2, 3] as expected result if RemoveFieldEnclosures property is set to TRUE) 
+	 * 
+	 */
 
 	
 	@Test
@@ -340,12 +357,22 @@ public class StringUtilTest extends DefaultTestCase {
 		
     }
 	
+	/**
+	 * Returns [:1:,:2:,:3:] as expected result if RemoveFieldEnclosures property is set to FALSE) 
+	 * 
+	 */
+	
 	@Test
     public void testDelmitAndTrim_WithoutOptionalFieldEnclosure() {
             
 		StringUtil.delimitAndTrim(":1:,:2:,:3:", ",", ":",RemoveFieldEnclosures.FALSE);
 		
     }
+	
+	/**
+	 * Returns [] as expected result if the input parameter is given as Empty space) 
+	 * 
+	 */
 	
 	@Test
     public void testDelmitAndTrim_WithoutInputData() {
@@ -361,13 +388,25 @@ public class StringUtilTest extends DefaultTestCase {
 		
     }
 	
+	/**
+	 * Returns [:1:,:2:,:3:] as expected result if invalid delimiterRegex and optionalFieldEnclosureRegex are given
+		It will try to match the delimiterRegex and optionalFieldEnclosureRegex in the input string given, when the delimiterRegex and optionalFieldEnclosureRegex differs from the
+		input string, it will just ignore the delimiterRegex and optionalFieldEnclosureRegex and will just print the actual input string
+	 */
+	
+
+	
 	@Test
-    public void testDelmitAndTrim_WithdelimiterRegex() {
+    public void testDelmitAndTrim_WithInvaliddelimiterRegex() {
             
 		StringUtil.delimitAndTrim(":1:,:2:,:3:", ";", "-",RemoveFieldEnclosures.TRUE);
 		
     }
 	
+	/**
+	 * Returns [:1:, :2:, :3:] as expected result if optionalFieldEnclosureRegex property has a invalid data from actual input string) 
+	 * 
+	 */
 	
 	@Test
     public void testDelmitAndTrim_WithEmptyoptionalFieldEnclosure() {
@@ -376,11 +415,15 @@ public class StringUtilTest extends DefaultTestCase {
 		
     }
 	
+	/**
+	 * Returns [0] as expected result if String delimiterRegex and optionalFieldEnclosureRegex property has a invalid data from actual input string) 
+	 * 
+	 */
 	
 	@Test
-    public void testDelmitAndTrim_WithvalidData() {
+    public void testDelmitAndTrim_WithDigit() {
             
-		StringUtil.delimitAndTrim(StringConstants.DIGIT_ZERO, ",", "",RemoveFieldEnclosures.TRUE);
+		System.out.println(StringUtil.delimitAndTrim(StringConstants.DIGIT_ZERO, ",", "",RemoveFieldEnclosures.TRUE));
 		
     }
 	
