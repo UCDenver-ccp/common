@@ -59,17 +59,17 @@ public class PropertiesUtilTest extends DefaultTestCase {
 		
 		Properties properties = PropertiesUtil.loadProperties(samplePropertiesFile);
 		String propertyName = "PROPERTY_1";
-		String actualValue = PropertiesUtil.getPropertyValue(properties, propertyName);
-		assertTrue(properties.contains((actualValue)));
+		assertTrue(PropertiesUtil.hasProperty(properties, propertyName));
+		
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testhasProperty_EmptySpace() {
 		
 		Properties properties = PropertiesUtil.loadProperties(samplePropertiesFile);
 		String propertyName = "";
-		String actualValue = PropertiesUtil.getPropertyValue(properties, propertyName);
-		assertTrue(properties.contains(actualValue));
+		assertFalse(PropertiesUtil.hasProperty(properties, propertyName));
+		
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -77,15 +77,17 @@ public class PropertiesUtilTest extends DefaultTestCase {
 		
 		Properties properties = PropertiesUtil.loadProperties(samplePropertiesFile);
 		String propertyName = null;
-		String actualValue = PropertiesUtil.getPropertyValue(properties, propertyName);
-		assertFalse(properties.contains(actualValue));
+		assertTrue(PropertiesUtil.hasProperty(properties, propertyName));
+		
 	}
 
 	@Test
 	public void testhasProperty_InvalidInput() {
 		
 		Properties properties = PropertiesUtil.loadProperties(samplePropertiesFile);
-		assertFalse(properties.isEmpty());
+		String propertyName = "Invalid Input";
+		assertFalse(PropertiesUtil.hasProperty(properties, propertyName));
+		
 	}
 
 	
