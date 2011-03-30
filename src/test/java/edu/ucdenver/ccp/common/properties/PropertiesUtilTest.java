@@ -1,6 +1,8 @@
 package edu.ucdenver.ccp.common.properties;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -17,6 +19,7 @@ import edu.ucdenver.ccp.common.file.CharacterEncoding;
 import edu.ucdenver.ccp.common.file.FileWriterUtil;
 import edu.ucdenver.ccp.common.file.FileWriterUtil.FileSuffixEnforcement;
 import edu.ucdenver.ccp.common.file.FileWriterUtil.WriteMode;
+import edu.ucdenver.ccp.common.string.StringUtil;
 import edu.ucdenver.ccp.common.test.DefaultTestCase;
 
 public class PropertiesUtilTest extends DefaultTestCase {
@@ -50,12 +53,41 @@ public class PropertiesUtilTest extends DefaultTestCase {
 		fail("Not yet implemented");
 	}
 
-	@Ignore("Not implemented yet")
+
 	@Test
 	public void testHasProperty() {
-		fail("Not yet implemented");
+		
+		Properties properties = PropertiesUtil.loadProperties(samplePropertiesFile);
+		String propertyName = "PROPERTY_1";
+		String actualValue = PropertiesUtil.getPropertyValue(properties, propertyName);
+		assertTrue(properties.contains((actualValue)));
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void testHasProperty_EmptySpace() {
+		
+		Properties properties = PropertiesUtil.loadProperties(samplePropertiesFile);
+		String propertyName = "";
+		String actualValue = PropertiesUtil.getPropertyValue(properties, propertyName);
+		assertTrue(properties.contains(actualValue));
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testHasPropert_WithNullInput() {
+		
+		Properties properties = PropertiesUtil.loadProperties(samplePropertiesFile);
+		String propertyName = null;
+		String actualValue = PropertiesUtil.getPropertyValue(properties, propertyName);
+		assertFalse(properties.contains(actualValue));
+	}
+	
+	public void testHasProperty_InvalidInput() {
+		
+		Properties properties = PropertiesUtil.loadProperties(samplePropertiesFile);
+		assertFalse(properties.isEmpty());
+	}
+
+	
 	@Test
 	public void testGetPropertyValue() {
 		Properties properties = PropertiesUtil.loadProperties(samplePropertiesFile);
