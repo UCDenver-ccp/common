@@ -55,7 +55,7 @@ public class PropertiesUtilTest extends DefaultTestCase {
 
 
 	@Test
-	public void testHasProperty() {
+	public void testhasProperty() {
 		
 		Properties properties = PropertiesUtil.loadProperties(samplePropertiesFile);
 		String propertyName = "PROPERTY_1";
@@ -64,7 +64,7 @@ public class PropertiesUtilTest extends DefaultTestCase {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testHasProperty_EmptySpace() {
+	public void testhasProperty_EmptySpace() {
 		
 		Properties properties = PropertiesUtil.loadProperties(samplePropertiesFile);
 		String propertyName = "";
@@ -73,20 +73,22 @@ public class PropertiesUtilTest extends DefaultTestCase {
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void testHasPropert_WithNullInput() {
+	public void testhasProperty_WithNullInput() {
 		
 		Properties properties = PropertiesUtil.loadProperties(samplePropertiesFile);
 		String propertyName = null;
 		String actualValue = PropertiesUtil.getPropertyValue(properties, propertyName);
 		assertFalse(properties.contains(actualValue));
 	}
-	
-	public void testHasProperty_InvalidInput() {
+
+	@Test
+	public void testhasProperty_InvalidInput() {
 		
 		Properties properties = PropertiesUtil.loadProperties(samplePropertiesFile);
 		assertFalse(properties.isEmpty());
 	}
 
+	
 	
 	@Test
 	public void testGetPropertyValue() {
@@ -96,6 +98,7 @@ public class PropertiesUtilTest extends DefaultTestCase {
 		String actualValue = PropertiesUtil.getPropertyValue(properties, propertyName);
 		assertEquals("Expected property value to be value1", expectedValue, actualValue);
 	}
+
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testGetPropertyValue_propertyNameDoesNotExist() {
@@ -110,6 +113,7 @@ public class PropertiesUtilTest extends DefaultTestCase {
 		String propertyName = "";
 		PropertiesUtil.getPropertyValue(properties, propertyName);
 	}
+	
 	
 	@Test(expected=NullPointerException.class)
 	public void testGetPropertyValue_propertyNameIsNull() {
