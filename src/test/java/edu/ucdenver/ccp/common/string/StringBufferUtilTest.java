@@ -38,4 +38,43 @@ public class StringBufferUtilTest {
 				+ originalText);
 	}
 
+
+
+@Test
+public void testappendLine() {
+
+	String originalText = "This is some text.";
+	StringBuffer sb = new StringBuffer();
+	sb.append(originalText);
+	StringBufferUtil.appendLine(sb, sb + StringConstants.NEW_LINE);
+	
 }
+
+@Test
+public void testappendLine_EmptySpace() {
+
+	String originalText = "";
+	StringBuffer sb = new StringBuffer();
+	sb.append(originalText);
+	StringBufferUtil.appendLine(sb, sb + StringConstants.NEW_LINE);
+	
+}
+
+@Test
+public void testappendLine_NullInput() {
+
+	String originalText = null;
+	StringBuffer sb = new StringBuffer();
+	sb.append(originalText);
+	StringBufferUtil.appendLine(sb, sb + StringConstants.NEW_LINE);
+	
+}
+
+
+}
+
+
+
+
+
+
