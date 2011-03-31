@@ -45,18 +45,29 @@ public void testappendLine() {
 
 	String originalText = "This is some text.";
 	StringBuffer sb = new StringBuffer();
-	sb.append(originalText);
-	StringBufferUtil.appendLine(sb, sb + StringConstants.NEW_LINE);
+	StringBufferUtil.appendLine(sb, originalText);
+	System.out.println(";;" + sb.toString() + ";;");
+	String expectedText = originalText + StringConstants.NEW_LINE;
+	assertEquals(expectedText, sb.toString());
+	
+	
+	String anotherLine = "This is another line.";
+	StringBufferUtil.appendLine(sb, anotherLine);
+	System.out.println(";;" + sb.toString() + ";;");
+	expectedText = originalText + StringConstants.NEW_LINE + anotherLine + StringConstants.NEW_LINE;
+	assertEquals(expectedText, sb.toString());
+	
 	
 }
 
 @Test
 public void testappendLine_EmptySpace() {
 
-	String originalText = "";
+	String originalText = "some text";
 	StringBuffer sb = new StringBuffer();
 	sb.append(originalText);
 	StringBufferUtil.appendLine(sb, sb + StringConstants.NEW_LINE);
+	System.out.println(sb.toString());
 	
 }
 
