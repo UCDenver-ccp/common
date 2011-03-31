@@ -41,18 +41,24 @@ public class PropertiesUtilTest extends DefaultTestCase {
 		FileWriterUtil.printLines(lines, samplePropertiesFile, CharacterEncoding.UTF_8, WriteMode.OVERWRITE, FileSuffixEnforcement.OFF);
 	}
 
-	@Ignore("Not implemented yet")
-	@Test
-	public void testLoadPropertiesString() {
-		fail("Not yet implemented");
-	}
 
-	@Ignore("Not implemented yet")
-	@Test
+
+	@Test(expected = NullPointerException.class)
 	public void testLoadPropertiesFile() {
-		fail("Not yet implemented");
+		
+		PropertiesUtil.loadProperties(null);
+		
 	}
+	
 
+	@Test(expected = RuntimeException.class)
+	
+	public void testLoadPropertiesFile_InvalidData() {
+		
+	
+		
+		
+	}
 
 	@Test
 	public void testhasProperty() {
