@@ -35,16 +35,6 @@ import org.apache.commons.io.IOUtils;
 public class PropertiesUtil {
 
 	/**
-	 * Loads a properties file from the specified path
-	 * 
-	 * @param path
-	 * @return
-	 */
-	public static Properties loadProperties(String propertiesFileName) {
-		return loadProperties(new File(propertiesFileName));
-	}
-
-	/**
 	 * Loads a properties from a File object
 	 * 
 	 * @param file
