@@ -43,21 +43,17 @@ public class PropertiesUtilTest extends DefaultTestCase {
 
 
 
-	@Test(expected = NullPointerException.class)
-	public void testLoadPropertiesFile() {
-		
-		PropertiesUtil.loadProperties(null);
-		
+	public void testLoadPropertiesString() {
+		String s = null;
+		PropertiesUtil.loadProperties(s);
+		//TODO: add assert statement
 	}
 	
 
 	@Test(expected = RuntimeException.class)
-	
 	public void testLoadPropertiesFile_InvalidData() {
-		
-	
-		
-		
+		File f = new File("this file does not exist");
+		PropertiesUtil.loadProperties(f);
 	}
 
 	@Test
