@@ -2,7 +2,7 @@
 <project basedir=".." default="help" name="build-osgi">
 	<import file="build-properties.xml" />
 
-	<property name="code.analysis.dir" value="../codeqa" />
+	<property name="code.analysis.dir" value="/home/hudson/codeqa" description="home of all analysis libraries"/>
 	<!--
 	<property name="plugin.dir" location="${basedir}"  />
 	<property name="projects.dir" location="${basedir}/.." />
