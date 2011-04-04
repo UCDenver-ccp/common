@@ -100,7 +100,7 @@
 		<delete dir="${xml.dir}"/>
 		<mkdir dir="${xml.dir}"/>
 		<java classname="pde.test.utils.PDETestResultsCollector" 
-			  classpathref="pde.test.listener.class.path" fork="yes" dir="${build.dir}/test/unit/xml">
+			  classpathref="pde.test.listener.class.path" fork="yes" dir="${xml.dir}">
 			<arg line="${plugin.name} ${pde.test.port}" />
 		</java>
 	</target>
