@@ -65,7 +65,7 @@
 
 	<!-- Runs JUnit. Requires input parameters for ${includes.unit.regex}, ${includes.fn.regex}, and ${classpath.junit}. 
 	     If the unit.regex or fn.regex are not included, then those particular tests are not run. -->
-	<target name="run.junit" depends="init-test-dirs" unless="build.osgi">
+	<target name="run.junit" unless="build.osgi">
 		<junit fork="yes" errorProperty="test.failed" failureProperty="test.failed" dir="${basedir}" maxmemory="1024m">
 			<classpath path="${classpath.junit}"/>
 			<sysproperty key="net.sourceforge.cobertura.datafile" file="${cobertura.dir}/cobertura.ser" />
@@ -86,7 +86,7 @@
 		<fail message="***** Test(s) failed. Check reports for details." if="test.failed" />
 	</target>
 
-	<target name="run.junit.osgi" depends="init-test-dirs" if="build.osgi">
+	<target name="run.junit.osgi" if="build.osgi">
 		
 		<fileset id="test.class.names.unit" dir="${build.classes.dir}">
 			<include name="edu/**/*Test.class" />
@@ -179,7 +179,7 @@
 		
 	</target>
 
-	<target name="run.coverage.analysis" description="Computes test code coverage using Cobertura">
+	<target name="run.coverage.analysis" depends="init-test-dirs" description="Computes test code coverage using Cobertura">
 
 		<path id="classpath.tests.instrumented" description="instrumented classpath to run unit tests">
 			<pathelement path="${build.classes.instrumented.dir}"/>
