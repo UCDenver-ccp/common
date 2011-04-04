@@ -126,6 +126,18 @@
 			</fileset>
 			<fileset dir="${basedir}">
 				<include name="${lib.dir}/*.*" />
+				<exclude name="${lib.dir}/felix*.jar" />
+			</fileset>
+		</jar>
+		
+		<jar destFile="${build.distribution.dir}/${project.name}-bundle-test.jar" description="build osgi test bundle" manifest="META-INF/MANIFEST.MF">
+			<fileset dir="${build.classes.dir}">
+				<include name="**/*.*" />
+			</fileset>
+			<fileset dir="${basedir}">
+				<include name="${lib.dir}/*.*" />
+				<exclude name="${lib.dir}/felix*.jar" />
+				<include name="${lib.test.dir}/*.*" />
 			</fileset>
 		</jar>
 	</target>

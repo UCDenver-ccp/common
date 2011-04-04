@@ -96,4 +96,5 @@ Export-Package: edu.ucdenver.ccp.common.calendar,
  org.hamcrest.object,
  org.hamcrest.text,
  org.hamcrest.xml
-Require-Bundle: org.junit4;bundle-version="4.8.1";visibility:=reexport
+Require-Bundle: org.junit4;bundle-version="4.8.1";visibility:=reexport,
+ ccp-cobertura;bundle-version="1.9.3";resolution:=optional;visibility:=reexport

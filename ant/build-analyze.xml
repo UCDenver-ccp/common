@@ -1,4 +1,6 @@
 <project name="build-analysis" default="run.full.analysis" basedir="..">
+	<import file="build-properties.xml" />
+	
 	<property name="build.reports.dir" value="${build.dir}/reports" />
 
 	<property name="code.analysis.dir" value="/home/hudson/codeqa" />
