@@ -29,7 +29,7 @@
 	<property name="cobertura.dir" value="${build.dir}/cobertura" />
 	<property name="build.classes.instrumented.dir" value="${cobertura.dir}/instrumented-classes" />
 	
-	<taskdef classpathref="classpath.cobertura" resource="tasks.properties" />
+
 
 	<!-- Cleans the base analysis directory -->
 	<target name="clean.analysis.output.directories">
@@ -162,6 +162,7 @@
 	</target>
 
 	<target name="cobertura-init" description="Initializes resources needed for coverage analysis">
+		<taskdef classpathref="classpath.cobertura" resource="tasks.properties" />
 		<delete dir="${cobertura.dir}"/>
 		<mkdir dir="${cobertura.dir}"/>
 		<mkdir dir="${build.classes.instrumented.dir}"/>
@@ -205,6 +206,7 @@
 	</target>
 
 	<target name="create.cobertura.reports">
+		<taskdef classpathref="classpath.cobertura" resource="tasks.properties" />
 		<cobertura-report datafile="${build.dir}/cobertura.ser" srcdir="${source.dir}" destdir="${cobertura.dir}/report"/>
 		<cobertura-report format="xml" datafile="${build.dir}/cobertura.ser" srcdir="${source.dir}" destdir="${cobertura.dir}/report"/>
 	</target>
