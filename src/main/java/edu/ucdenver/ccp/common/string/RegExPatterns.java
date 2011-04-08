@@ -54,6 +54,11 @@ public class RegExPatterns {
 	 */
 	public static final String IS_LETTER_OR_NUMBER = "[a-zA-Z0-9]";
 
+	/**
+	 * Matches the pipe character
+	 */
+	public static final String PIPE = "\\|";
+
 	private RegExPatterns() {
 		// this class should not be instantiated
 	}

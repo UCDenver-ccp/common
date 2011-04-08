@@ -23,13 +23,15 @@ import static edu.ucdenver.ccp.common.string.RegExPatterns.HAS_NUMBERS_ONLY;
 import static edu.ucdenver.ccp.common.string.RegExPatterns.HAS_NUMBERS_ONLY_OPT_NEG;
 import static edu.ucdenver.ccp.common.string.RegExPatterns.HAS_NUMBERS_ONLY_OPT_NEG_ZERO_START;
 import static edu.ucdenver.ccp.common.string.RegExPatterns.IS_LETTER_OR_NUMBER;
+import static edu.ucdenver.ccp.common.string.RegExPatterns.IS_NUMBER_OR_HYPHEN;
+import static edu.ucdenver.ccp.common.string.RegExPatterns.PIPE;
 import static edu.ucdenver.ccp.common.string.RegExPatterns.getNDigitsPattern;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.regex.Pattern;
 
 import org.junit.Test;
-import static edu.ucdenver.ccp.common.string.RegExPatterns.IS_NUMBER_OR_HYPHEN;
 
 public class RegExPatternsTest {
 
@@ -129,6 +131,11 @@ public class RegExPatternsTest {
 		assertTrue(matchesEntireInput("a", IS_LETTER_OR_NUMBER));
 		assertTrue(matchesEntireInput("0", IS_LETTER_OR_NUMBER));
 		assertFalse(matchesEntireInput("_", IS_LETTER_OR_NUMBER));
+	}
+	
+	@Test
+	public void testMatchesPipe() {
+		assertTrue(StringConstants.VERTICAL_LINE.matches(PIPE));
 	}
 
 }
