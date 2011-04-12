@@ -89,6 +89,7 @@
 				<include name="**/*.nt" />
 				<include name="**/*.sql" />
 				<include name="**/*.html" />
+				<include name="**/*.template" />
 			</fileset>
 		</copy>
 	</target>
