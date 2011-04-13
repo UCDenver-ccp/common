@@ -8,12 +8,23 @@
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
+  
   <groupId>edu.ucdenver.ccp</groupId>
   <artifactId>common</artifactId>
   <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
+  
   <name>${project.artifactId}</name>
   <description>ccp common code</description>
+  
+<distributionManagement>
+    <snapshotRepository>
+        <id>amc-bakeoff.ucdenver.pvt</id>
+        <name>amc-bakeoff.ucdenver.pvt-snapshots</name>
+        <url>http://amc-bakeoff.ucdenver.pvt:8081/artifactory/libs-snapshot-local</url>
+    </snapshotRepository>
+</distributionManagement>
+
   
   <!-- 
   	set this in your environment to give Maven enough memory:
@@ -46,9 +57,15 @@
 				<!-- these are not tests -->
 	            <exclude>**/DefaultTestCase*</exclude>
 	            <exclude>**/TestUtil*</exclude>
+	            
 				<!-- these have classpath issues in maven -->
 	            <exclude>**/DownloadViaAnnotationsTest*</exclude>
 	            <exclude>**/FileArchiveUtilTest*</exclude>
+	            
+	            <exclude>**/LineIteratorTest*</exclude> 
+	            <exclude>**/FileLoaderUtilTest*</exclude>
+	            <exclude>**/CodePointUtilTest*</exclude>             
+	                           
 	          </excludes>
 	        <!-- attempts at fixing faulty test cases mentioned above -->
     		<additionalClasspathElements>
@@ -65,53 +82,7 @@
 	    </configuration>
 	</plugin>
 
-  	  <!-- don't inlcude the lucene code in the main jar -->
-	<plugin>
-		<groupId>org.apache.maven.plugins</groupId>
-		<artifactId>maven-jar-plugin</artifactId>
-		<version>2.3.1</version>
-		<executions>
-
-			<!-- created by default: common-1.0-SNAPSHOT.jar -->
-
-			<!--  lucene-free main jar: common-1.0-SNAPSHOT-main.jar -->
-			<execution>
-				<id>exe1</id>
-				<phase>package</phase>
-				<goals>
-					<goal>jar</goal>
-				</goals>
-				<configuration>
-					<finalName>common-${version}</finalName>
-					<classifier>main</classifier>
-					<classesDirectory>target/classes</classesDirectory>
-					<excludes>
-						<exclude>**/lucene/*</exclude>
-						<exclude>**/lucene*.jar</exclude>
-					</excludes>
-				</configuration>
-			</execution>
-
-			<!--  lucene-free test jar: common-1.0-SNAPSHOT-tests.jar -->
-			<execution>
-				<id>exe2</id>
-				<phase>package</phase>
-				<goals>
-					<goal>test-jar</goal>
-				</goals>
-				<configuration>
-					<finalName>common-${version}</finalName>
-					<classifier>test</classifier>
-					<classesDirectory>target/classes</classesDirectory>
-					<excludes>
-						<exclude>**/lucene/*</exclude>
-						<exclude>**/lucene*.jar</exclude>
-					</excludes>
-				</configuration>
-			</execution>
-        </executions>
-
-	</plugin>
+  
 	
 	    <!--
       <plugin>
@@ -187,12 +158,6 @@
       <artifactId>ant</artifactId>
       <version>1.8.0</version>
     </dependency>
-
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <version>1.4</version>
-    </dependency>
     
     <dependency>
       <groupId>commons-net</groupId>
@@ -218,12 +183,12 @@
       <version>4.8.1</version>
       <scope>test</scope>
     </dependency>
-    
     <dependency>
-    <groupId>commons-io</groupId>
-    <artifactId>commons-io</artifactId>
-    <version>2.0</version>
-</dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>2.0</version>
+    </dependency>
+
     
 
   </dependencies>
