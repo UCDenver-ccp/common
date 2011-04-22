@@ -66,6 +66,19 @@ public class FileUtil {
 	/* @formatter:on */
 
 	/**
+	 * Returns a temporary directory based on the File.createTempFile() method
+	 * @param directoryName
+	 * @return
+	 * @throws IOException	if an error occurs while creating the temporary directory
+	 */
+	public static File createTemporaryDirectory(String directoryName) throws IOException {
+		File tempFile = File.createTempFile("tmp","tmp");
+		File directory = new File(tempFile.getParentFile(), directoryName);
+		FileUtil.mkdir(directory);
+		return directory;
+	}
+	
+	/**
 	 * Simple utility method that checks whether the input directory exists (and is a directory).
 	 * Returns an error message if the directory does not exist or is not a directory. Returns null
 	 * if the directory exists as expected.
