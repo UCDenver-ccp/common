@@ -34,6 +34,31 @@
 
   <build>
    <plugins>
+   
+        <!-- build the test jar -->
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <version>2.3.1</version>
+            <executions>
+                <execution>
+                    <id>exe2</id>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>test-jar</goal>
+                    </goals>
+                    <configuration>
+                        <finalName>common-${version}</finalName>
+                        <classifier>test</classifier>
+                        <classesDirectory>target/classes</classesDirectory>
+                        <excludes>
+                            <exclude>**/lucene/*</exclude>
+                            <exclude>**/lucene*.jar</exclude>
+                        </excludes>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
 
 	<!-- specify the java version -->
   	<plugin>
