@@ -9,6 +9,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   
+  <!-- coordinates -->
   <groupId>edu.ucdenver.ccp</groupId>
   <artifactId>common</artifactId>
   <packaging>jar</packaging>
@@ -17,23 +18,21 @@
   <name>${project.artifactId}</name>
   <description>ccp common code</description>
   
-<distributionManagement>
+  <distributionManagement>
     <snapshotRepository>
         <id>amc-bakeoff.ucdenver.pvt</id>
         <name>amc-bakeoff.ucdenver.pvt-snapshots</name>
         <url>http://amc-bakeoff.ucdenver.pvt:8081/artifactory/libs-snapshot-local</url>
     </snapshotRepository>
-</distributionManagement>
+  </distributionManagement>
 
-  
   <!-- 
   	set this in your environment to give Maven enough memory:
   	export MAVEN_OPTS="-Xms256m -Xmx1024m" 
   -->
 
-
   <build>
-   <plugins>
+    <plugins>
    
         <!-- build the test jar -->
         <plugin>
@@ -60,55 +59,53 @@
             </executions>
         </plugin>
 
-	<!-- specify the java version -->
-  	<plugin>
-    	<groupId>org.apache.maven.plugins</groupId>
-    	<artifactId>maven-compiler-plugin</artifactId>
-    	<version>2.0.2</version>
-    	<configuration>
-        	<source>1.6</source>
+        <!-- specify the java version -->
+        <plugin>
+    	   <groupId>org.apache.maven.plugins</groupId>
+    	   <artifactId>maven-compiler-plugin</artifactId>
+    	   <version>2.0.2</version>
+    	   <configuration>
+            <source>1.6</source>
         	<target>1.6</target>
-    	</configuration>
-    </plugin>
+    	   </configuration>
+        </plugin>
 
-	<!-- don't run broken tests -->
-    <plugin>
-	    <groupId>org.apache.maven.plugins</groupId>
-	    <artifactId>maven-surefire-plugin</artifactId>
-	    <version>2.5</version>
-	    <configuration>
-	        <argLine>-Xms512m -Xmx2g</argLine>
-	          <excludes>
-				<!-- these are not tests -->
-	            <exclude>**/DefaultTestCase*</exclude>
-	            <exclude>**/TestUtil*</exclude>
+	   <!-- don't run broken tests -->
+        <plugin>
+	       <groupId>org.apache.maven.plugins</groupId>
+	       <artifactId>maven-surefire-plugin</artifactId>
+	       <version>2.5</version>
+	       <configuration>
+	           <argLine>-Xms512m -Xmx2g</argLine>
+	           <excludes>
+                   <!-- these are not tests -->
+	               <exclude>**/DefaultTestCase*</exclude>
+	               <exclude>**/TestUtil*</exclude>
 	            
-				<!-- these have classpath issues in maven -->
-	            <exclude>**/DownloadViaAnnotationsTest*</exclude>
-	            <exclude>**/FileArchiveUtilTest*</exclude>
+				   <!-- these have classpath issues in maven -->
+	               <exclude>**/DownloadViaAnnotationsTest*</exclude>
+	               <exclude>**/FileArchiveUtilTest*</exclude>
 	            
-	            <exclude>**/LineIteratorTest*</exclude> 
-	            <exclude>**/FileLoaderUtilTest*</exclude>
-	            <exclude>**/CodePointUtilTest*</exclude>             
+	               <exclude>**/LineIteratorTest*</exclude> 
+	               <exclude>**/FileLoaderUtilTest*</exclude>
+	               <exclude>**/CodePointUtilTest*</exclude>             
 	                           
 	          </excludes>
-	        <!-- attempts at fixing faulty test cases mentioned above -->
-    		<additionalClasspathElements>
-      			<additionalClasspathElement>
+	           <!-- attempts at fixing faulty test cases mentioned above -->
+    		  <additionalClasspathElements>
+      			   <additionalClasspathElement>
 					src/test/java/edu/ucdenver/ccp/common/file
-				</additionalClasspathElement>
-      			<additionalClasspathElement>
+				    </additionalClasspathElement>
+      			   <additionalClasspathElement>
 					/src/test/java/edu/ucdenver/ccp/common/file
-				</additionalClasspathElement>
-      			<additionalClasspathElement>
+				    </additionalClasspathElement>
+      			   <additionalClasspathElement>
 					/Users/roederc/subversion_workspace/common//src/test/java/edu/ucdenver/ccp/common/file
-				</additionalClasspathElement>
-    		</additionalClasspathElements>
-	    </configuration>
-	</plugin>
-
-  
-	
+				    </additionalClasspathElement>
+    		  </additionalClasspathElements>
+	       </configuration>
+	   </plugin>
+	   
 	    <!--
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -130,22 +127,14 @@
  
   <reporting>
     <plugins>
-
-	  <!-- 
-	  	Run these reports with "mvn site". 
-	  	The reports end up in the target/site directory. 
-	  -->
-	  
 	  <!-- findbugs --> 
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>findbugs-maven-plugin</artifactId>
         <version>2.0.1</version>
       </plugin>
-  
       
      <!-- checkstyle --> 
-     <!--
      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
@@ -155,7 +144,6 @@
           <headerLocation>copyright_header.txt</headerLocation>
         </configuration>
       </plugin>
-      -->
       
       <!-- PMD -->
       <plugin>
@@ -163,55 +151,43 @@
         <artifactId>maven-pmd-plugin</artifactId>
         <version>2.5</version>
       </plugin>
-      
-
     </plugins>
   </reporting>
   
   
   <dependencies>
-
     <dependency>
       <groupId>org.mockftpserver</groupId>
       <artifactId>MockFtpServer</artifactId>
       <version>2.1</version>
       <!--<scope>test</scope>-->
     </dependency>
-
     <dependency>
       <groupId>org.apache.ant</groupId>
       <artifactId>ant</artifactId>
       <version>1.8.0</version>
     </dependency>
-    
     <dependency>
       <groupId>commons-net</groupId>
       <artifactId>commons-net</artifactId>
       <version>2.0</version>
     </dependency>
-
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
       <version>1.2.12</version>
     </dependency>
-
-    
 	<dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.8.2</version>
       <scope>test</scope>
     </dependency>
-    
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
       <version>2.0</version>
     </dependency>
-
-    
-
   </dependencies>
 
 </project>
