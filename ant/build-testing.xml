@@ -11,6 +11,7 @@
 
 	<path id="classpath.tests" description="classpath to run unit tests">
 		<pathelement path="${build.classes.dir}" />
+		<pathelement path="${lib.test.dir}"/>
 		<path refid="classpath.compile"/>
 		<path refid="classpath.compile.test"/>
 		<path refid="classpath.compile.dependency"/>
