@@ -1,8 +1,18 @@
 package edu.ucdenver.ccp.common.io;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLDecoder;
 
 import edu.ucdenver.ccp.common.file.CharacterEncoding;
 import edu.ucdenver.ccp.common.file.FileUtil;
@@ -55,6 +65,63 @@ public class ClassPathUtil {
 	 */
 	public static void copyClasspathResourceToFile(Class<?> clazz, String resourceName, File file) throws IOException {
 		FileUtil.copy(getResourceStreamFromClasspath(clazz, resourceName), file);
+	}
+	
+	/**
+	 * This function digs through the classpath to find either a file or the contents of a directory,
+	 * whether the file/dir is in a directory or a jar.
+	 * adapted from http://www.uofr.net/~greg/java/get-resource-listing.html
+	 * 
+	 * @param clazz
+	 * @param resourceName
+	 * @return a list of Strings which are paths you would search the classpath with.
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 */
+	public static List<String> listResourceDirectory(Class clazz, String resourceName) 
+	throws IOException, URISyntaxException {
+		List<String> list = new ArrayList<String>();
+		
+		URL dirUrl = clazz.getClassLoader().getResource(resourceName);
+		URI uri=null;
+		if (dirUrl != null && dirUrl.getProtocol().equals("file")) {
+			uri = dirUrl.toURI();
+			String[] strings = new File(uri.toString()).list();
+			// input: foo/bar
+			// output: /Users/roederc/foo/bar/baz/f1, /Users/roederc/foo/bar/baz/f2, etc.
+			// should be: foo/bar/baz/f1, foo/bar/baz/f2
+			// find that first part, remove as you iterate
+			String uriString = uri.getPath();
+			String firstPart = uriString.substring(0,uriString.indexOf(resourceName));
+			File dirFile = new File(uri.getPath());
+			if (dirFile.isDirectory()) {
+				// directory
+				for (File f : dirFile.listFiles()) {
+					list.add(f.getPath().substring(firstPart.length()));
+				}
+				return list;
+			}
+			else {
+				// single file
+				list.add(dirFile.getPath().substring(firstPart.length()));
+			}
+		}
+		
+		if (dirUrl != null && dirUrl.getProtocol().equals("jar")) {
+			String jarPath = dirUrl.getPath();
+			// looks like: file:/Users/roederc/junit-4.8.2.jar!/org/junit
+			jarPath = jarPath.substring(5,jarPath.indexOf("!"));
+			JarFile jar = new JarFile(URLDecoder.decode(jarPath, "UTF-8"));
+			Enumeration<JarEntry> entries = jar.entries();
+			while (entries.hasMoreElements()) {
+				String name = entries.nextElement().getName();
+				if (name.startsWith(resourceName) && !name.endsWith("/")) {
+					list.add(name);
+				}
+			}
+		}
+
+		return list;
 	}
 
 }
