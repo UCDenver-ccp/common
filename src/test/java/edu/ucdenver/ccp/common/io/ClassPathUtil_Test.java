@@ -12,6 +12,8 @@ import org.apache.log4j.BasicConfigurator;
 public class ClassPathUtil_Test {
 	
 	static String OSGI_CLASSLOADER_PREFIX="org.eclipse.osgi";
+	static boolean testOSGI=false; // TODO make this work in OSGI
+	
 	// org.osgi didn't work
 	Logger logger = Logger.getLogger(ClassPathUtil_Test.class);
 	@Before	
@@ -26,11 +28,13 @@ public class ClassPathUtil_Test {
 		// in Hudson OSGI test:  org.eclipse.osgi.internal.baseadaptor.DefaultClassLoader
 
 		
-		if (!this.getClass().getClassLoader().getClass().getName().startsWith(OSGI_CLASSLOADER_PREFIX)) {
+		if (!this.getClass().getClassLoader().getClass().getName().startsWith(OSGI_CLASSLOADER_PREFIX)
+				|| testOSGI) {
 			//org.osgi.framework.BundleReference
 
 			List<String> list = ClassPathUtil.listResourceDirectory(
 				this.getClass(), "test_dir/test_file.txt");
+			Assert.assertTrue(list.size() > 0);
 			Assert.assertTrue(list.get(0).endsWith("test_dir/test_file.txt"));
 		}
 
@@ -43,7 +47,8 @@ public class ClassPathUtil_Test {
 	 */
 	@Test
 	public void testDir() throws Exception {
-		if (!this.getClass().getClassLoader().getClass().getName().startsWith(OSGI_CLASSLOADER_PREFIX)) {
+		if (!this.getClass().getClassLoader().getClass().getName().startsWith(OSGI_CLASSLOADER_PREFIX)
+				|| testOSGI) {
 			List<String> list = ClassPathUtil.listResourceDirectory(
 					this.getClass(), "test_dir");
 			String[] classes = { "test_dir/test_file.txt",
@@ -61,7 +66,8 @@ public class ClassPathUtil_Test {
 	 */
 	@Test
 	public void testJarAsFile() throws Exception {
-		if (!this.getClass().getClassLoader().getClass().getName().startsWith(OSGI_CLASSLOADER_PREFIX)) {
+		if (!this.getClass().getClassLoader().getClass().getName().startsWith(OSGI_CLASSLOADER_PREFIX)
+				|| testOSGI) {
 		List<String> list = ClassPathUtil.listResourceDirectory(
 				this.getClass(), "junit-4.8.2.jar");
 		Assert.assertTrue(list.get(0).endsWith("junit-4.8.2.jar"));
@@ -76,7 +82,8 @@ public class ClassPathUtil_Test {
 	 */
 	@Test
 	public void testDirInJar() throws Exception {
-		if (!this.getClass().getClassLoader().getClass().getName().startsWith(OSGI_CLASSLOADER_PREFIX)) {
+		if (!this.getClass().getClassLoader().getClass().getName().startsWith(OSGI_CLASSLOADER_PREFIX)
+				|| testOSGI) {
 		List<String> list = ClassPathUtil.listResourceDirectory(
 				this.getClass(), "org/junit");
 		
@@ -97,7 +104,8 @@ public class ClassPathUtil_Test {
 	 */
 	@Test
 	public void testFileInJar() throws Exception {
-		if (!this.getClass().getClassLoader().getClass().getName().startsWith(OSGI_CLASSLOADER_PREFIX)) {
+		if (!this.getClass().getClassLoader().getClass().getName().startsWith(OSGI_CLASSLOADER_PREFIX)
+				|| testOSGI) {
 	
 		List<String> list = ClassPathUtil.listResourceDirectory(
 				this.getClass(), "org/junit/runner/Runner.class");
