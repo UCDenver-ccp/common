@@ -1,14 +1,19 @@
 package edu.ucdenver.ccp.common.io;
 
-import java.io.File;
+
+import org.apache.log4j.Logger;
+
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.File;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -25,6 +30,7 @@ import edu.ucdenver.ccp.common.string.StringUtil;
  * 
  */
 public class ClassPathUtil {
+	static Logger logger = Logger.getLogger(ClassPathUtil.class);
 
 	/**
 	 * Helper method for grabbing a file from the classpath and returning an InputStream
@@ -83,6 +89,13 @@ public class ClassPathUtil {
 		List<String> list = new ArrayList<String>();
 		
 		URL dirUrl = clazz.getClassLoader().getResource(resourceName);
+		logger.debug("" + dirUrl);
+		
+		// with OSGI this comes back as: 
+		// bundleresource://2.fwk1520314875/test_dir/test_file.txt
+		// without:
+		// file:/Users/roederc/subversion_workspace/common/src/test/resources/test_dir/test_file.txt
+		
 		URI uri=null;
 		if (dirUrl != null && dirUrl.getProtocol().equals("file")) {
 			uri = dirUrl.toURI();
@@ -98,12 +111,14 @@ public class ClassPathUtil {
 				// directory
 				for (File f : dirFile.listFiles()) {
 					list.add(f.getPath().substring(firstPart.length()));
+					logger.debug("ClassPathUtil adding from directory:" +f.getPath().substring(firstPart.length()));
 				}
 				return list;
 			}
 			else {
 				// single file
 				list.add(dirFile.getPath().substring(firstPart.length()));
+				logger.debug("ClassPathUtil adding from single file:" + dirFile.getPath().substring(firstPart.length()));
 			}
 		}
 		
@@ -116,6 +131,7 @@ public class ClassPathUtil {
 			while (entries.hasMoreElements()) {
 				String name = entries.nextElement().getName();
 				if (name.startsWith(resourceName) && !name.endsWith("/")) {
+					logger.debug("ClassPathUtil adding from jar:" + name);
 					list.add(name);
 				}
 			}
