@@ -13,7 +13,7 @@ public class ClassPathUtil_Test {
 	@Test
 	public  void testFile() throws Exception {
 
-			if (!this.getClass().getClassLoader().getClass().getName().startsWith("OSGI_CLASSLOADER_PREFIX")) {
+			if (!this.getClass().getClassLoader().getClass().getName().startsWith(OSGI_CLASSLOADER_PREFIX)) {
 			//org.osgi.framework.BundleReference
 
 			List<String> list = ClassPathUtil.listResourceDirectory(
@@ -29,7 +29,7 @@ public class ClassPathUtil_Test {
 	 */
 	@Test
 	public void testDir() throws Exception {
-		if (!this.getClass().getClassLoader().getClass().getName().startsWith("OSGI_CLASSLOADER_PREFIX")) {
+		if (!this.getClass().getClassLoader().getClass().getName().startsWith(OSGI_CLASSLOADER_PREFIX)) {
 		List<String> list = ClassPathUtil.listResourceDirectory(
 				this.getClass(), "test_dir");
 		String[] classes = { "test_dir/test_file.txt",
@@ -47,7 +47,7 @@ public class ClassPathUtil_Test {
 	 */
 	@Test
 	public void testJarAsFile() throws Exception {
-		if (!this.getClass().getClassLoader().getClass().getName().startsWith("OSGI_CLASSLOADER_PREFIX")) {
+		if (!this.getClass().getClassLoader().getClass().getName().startsWith(OSGI_CLASSLOADER_PREFIX)) {
 		List<String> list = ClassPathUtil.listResourceDirectory(
 				this.getClass(), "junit-4.8.2.jar");
 		Assert.assertTrue(list.get(0).endsWith("junit-4.8.2.jar"));
@@ -62,7 +62,7 @@ public class ClassPathUtil_Test {
 	 */
 	@Test
 	public void testDirInJar() throws Exception {
-		if (!this.getClass().getClassLoader().getClass().getName().startsWith("OSGI_CLASSLOADER_PREFIX")) {
+		if (!this.getClass().getClassLoader().getClass().getName().startsWith(OSGI_CLASSLOADER_PREFIX)) {
 		List<String> list = ClassPathUtil.listResourceDirectory(
 				this.getClass(), "org/junit");
 		
@@ -81,7 +81,7 @@ public class ClassPathUtil_Test {
 	 */
 	@Test
 	public void testFileInJar() throws Exception {
-		if (!this.getClass().getClassLoader().getClass().getName().startsWith("OSGI_CLASSLOADER_PREFIX")) {
+		if (!this.getClass().getClassLoader().getClass().getName().startsWith(OSGI_CLASSLOADER_PREFIX)) {
 	
 		List<String> list = ClassPathUtil.listResourceDirectory(
 				this.getClass(), "org/junit/runner/Runner.class");
