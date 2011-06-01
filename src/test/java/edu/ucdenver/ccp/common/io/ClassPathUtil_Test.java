@@ -1,19 +1,25 @@
 package edu.ucdenver.ccp.common.io;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.jar.JarFile;
 
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
+
 
 public class ClassPathUtil_Test {
 	
+	static String OSGI_CLASSLOADER_PREFIX="org.osgi";
+	
 	@Test
-	public  void test_file() throws Exception {
-		List<String> list = ClassPathUtil.listResourceDirectory(
+	public  void testFile() throws Exception {
+
+			if (!this.getClass().getClassLoader().getClass().getName().startsWith("OSGI_CLASSLOADER_PREFIX")) {
+			//org.osgi.framework.BundleReference
+
+			List<String> list = ClassPathUtil.listResourceDirectory(
 				this.getClass(), "test_dir/test_file.txt");
-		Assert.assertTrue(list.get(0).endsWith("test_dir/test_file.txt"));
+			Assert.assertTrue(list.get(0).endsWith("test_dir/test_file.txt"));
+			}
 	}
 	
 	/**
@@ -22,18 +28,16 @@ public class ClassPathUtil_Test {
 	 * @throws Exception
 	 */
 	@Test
-	public void test_dir() throws Exception {
+	public void testDir() throws Exception {
+		if (!this.getClass().getClassLoader().getClass().getName().startsWith("OSGI_CLASSLOADER_PREFIX")) {
 		List<String> list = ClassPathUtil.listResourceDirectory(
 				this.getClass(), "test_dir");
-		// incomplete
-		for (String s : list) {
-			System.out.println("-->" + s);
-		}
 		String[] classes = { "test_dir/test_file.txt",
 		"test_dir/other_test_file.txt" };
 	
 		for (String c : classes ) {
 			Assert.assertTrue(list.contains(c));
+		}
 		}
 	}
 	
@@ -42,10 +46,12 @@ public class ClassPathUtil_Test {
 	 * @throws Exception
 	 */
 	@Test
-	public void test_jar_as_file() throws Exception {
+	public void testJarAsFile() throws Exception {
+		if (!this.getClass().getClassLoader().getClass().getName().startsWith("OSGI_CLASSLOADER_PREFIX")) {
 		List<String> list = ClassPathUtil.listResourceDirectory(
 				this.getClass(), "junit-4.8.2.jar");
 		Assert.assertTrue(list.get(0).endsWith("junit-4.8.2.jar"));
+		}
 	}
 	
 	/**
@@ -55,7 +61,8 @@ public class ClassPathUtil_Test {
 	 * @throws Exception
 	 */
 	@Test
-	public void test_dir_in_jar() throws Exception {
+	public void testDirInJar() throws Exception {
+		if (!this.getClass().getClassLoader().getClass().getName().startsWith("OSGI_CLASSLOADER_PREFIX")) {
 		List<String> list = ClassPathUtil.listResourceDirectory(
 				this.getClass(), "org/junit");
 		
@@ -65,7 +72,7 @@ public class ClassPathUtil_Test {
 		for (String c : classes ) {
 			Assert.assertTrue(list.contains(c));
 		}
-		
+		}
 	}
 	
 	/**
@@ -73,10 +80,13 @@ public class ClassPathUtil_Test {
 	 *  you get it's path within that jar.
 	 */
 	@Test
-	public void test_file_in_jar() throws Exception {
+	public void testFileInJar() throws Exception {
+		if (!this.getClass().getClassLoader().getClass().getName().startsWith("OSGI_CLASSLOADER_PREFIX")) {
+	
 		List<String> list = ClassPathUtil.listResourceDirectory(
 				this.getClass(), "org/junit/runner/Runner.class");
 		Assert.assertTrue(list.get(0).endsWith("Runner.class"));
+		}
 	}
 
 }
