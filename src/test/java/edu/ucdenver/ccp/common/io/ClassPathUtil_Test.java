@@ -11,7 +11,8 @@ import org.apache.log4j.BasicConfigurator;
 
 public class ClassPathUtil_Test {
 	
-	static String OSGI_CLASSLOADER_PREFIX="org.osgi";
+	static String OSGI_CLASSLOADER_PREFIX="org.eclipse.osgi";
+	// org.osgi didn't work
 	Logger logger = Logger.getLogger(ClassPathUtil_Test.class);
 	@Before	
 	public void before() {
@@ -22,7 +23,8 @@ public class ClassPathUtil_Test {
 	public  void testFile() throws Exception {
 		logger.error(this.getClass().getClassLoader().getClass().getName());
 		// in IDE test: sun.misc.Launcher$AppClassLoader
-		// in Hudson OSGI test:
+		// in Hudson OSGI test:  org.eclipse.osgi.internal.baseadaptor.DefaultClassLoader
+
 		
 		if (!this.getClass().getClassLoader().getClass().getName().startsWith(OSGI_CLASSLOADER_PREFIX)) {
 			//org.osgi.framework.BundleReference
