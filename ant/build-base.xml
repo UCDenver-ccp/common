@@ -127,7 +127,7 @@
 			</fileset>
 			<fileset dir="${basedir}">
 				<include name="${lib.dir}/*.*" />
-				<exclude name="${lib.dir}/felix*.jar" />
+				<exclude name="${lib.dir}/osgi*.jar" />
 			</fileset>
 		</jar>
 		
@@ -137,7 +137,7 @@
 			</fileset>
 			<fileset dir="${basedir}">
 				<include name="${lib.dir}/*.*" />
-				<exclude name="${lib.dir}/felix*.jar" />
+				<exclude name="${lib.dir}/osgi*.jar" />
 				<include name="${lib.test.dir}/*.*" />
 			</fileset>
 		</jar>
