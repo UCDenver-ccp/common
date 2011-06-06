@@ -101,17 +101,17 @@ public class OsgiLauncher {
 					Method main = klass.getMethod("main", String[].class);
 					main.invoke(null, (Object) args);
 				} catch (SecurityException e) {
-					throw new org.mockftpserver.core.IllegalStateException(errorMessage, e);
+					throw new IllegalStateException(errorMessage, e);
 				} catch (IllegalArgumentException e) {
-					throw new org.mockftpserver.core.IllegalStateException(errorMessage, e);
+					throw new IllegalStateException(errorMessage, e);
 				} catch (ClassNotFoundException e) {
-					throw new org.mockftpserver.core.IllegalStateException(errorMessage, e);
+					throw new IllegalStateException(errorMessage, e);
 				} catch (NoSuchMethodException e) {
-					throw new org.mockftpserver.core.IllegalStateException(errorMessage, e);
+					throw new IllegalStateException(errorMessage, e);
 				} catch (IllegalAccessException e) {
-					throw new org.mockftpserver.core.IllegalStateException(errorMessage, e);
+					throw new IllegalStateException(errorMessage, e);
 				} catch (InvocationTargetException e) {
-					throw new org.mockftpserver.core.IllegalStateException(errorMessage, e);
+					throw new IllegalStateException(errorMessage, e);
 				}
 			}
 		}
