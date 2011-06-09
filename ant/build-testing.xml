@@ -221,7 +221,7 @@
 				<exclude name="**/*.java" />
 			</fileset>
 			<fileset dir="${lib.test.dir}">
-				<include name="**/*.*" />
+				<include name="**/*" />
 			</fileset>
 			<fileset dir="${build.classes.instrumented.dir}">
 				<include name="**/*.*" />
