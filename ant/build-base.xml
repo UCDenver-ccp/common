@@ -29,7 +29,6 @@
 			<include name="**/*.jar" />
 		</fileset>
 		<pathelement path="${source.test.dir}" />
-		<pathelement path="${lib.test.dir}" />
 		<path refid="classpath.test.dependency"/>
 	</path>
 
