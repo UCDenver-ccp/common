@@ -3,6 +3,8 @@ package edu.ucdenver.ccp.common.test;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import edu.ucdenver.ccp.common.test.DefaultTestCase;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 

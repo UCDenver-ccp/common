@@ -31,6 +31,7 @@ import org.junit.rules.TemporaryFolder;
 import edu.ucdenver.ccp.common.collections.CollectionsUtil;
 import edu.ucdenver.ccp.common.file.CharacterEncoding;
 import edu.ucdenver.ccp.common.file.FileReaderUtil;
+import edu.ucdenver.ccp.common.test.TestUtil;
 
 public class TestUtilTest {
 
