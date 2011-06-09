@@ -1,13 +1,15 @@
 package edu.ucdenver.ccp.common.io;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.Before;
-
-import org.apache.log4j.Logger;
 import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 public class ClassPathUtil_Test {
 	
@@ -69,8 +71,9 @@ public class ClassPathUtil_Test {
 		if (!this.getClass().getClassLoader().getClass().getName().startsWith(OSGI_CLASSLOADER_PREFIX)
 				|| testOSGI) {
 		List<String> list = ClassPathUtil.listResourceDirectory(
-				this.getClass(), "junit-4.8.2.jar");
-		Assert.assertTrue(list.get(0).endsWith("junit-4.8.2.jar"));
+				this.getClass(), "MockFtpServer-2.1.jar");
+		assertTrue("returned list must have an entry", list.size()>0);
+		Assert.assertTrue(String.format("Ending not as expected. Expected %s at end, but observed: %s", "MockFtpServer-2.1.jar",list.get(0)),list.get(0).endsWith("MockFtpServer-2.1.jar"));
 		}
 	}
 	
