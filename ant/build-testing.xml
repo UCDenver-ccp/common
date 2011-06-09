@@ -220,11 +220,9 @@
 			<fileset dir="${source.test.dir}">
 				<exclude name="**/*.java" />
 			</fileset>
-			<!--
-			<fileset dir="${build.classes.dir}">
+			<fileset dir="${lib.test.dir}">
 				<include name="**/*.*" />
 			</fileset>
-			-->
 			<fileset dir="${build.classes.instrumented.dir}">
 				<include name="**/*.*" />
 			</fileset>
