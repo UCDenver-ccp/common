@@ -62,16 +62,31 @@ public class ClassPathUtil {
 	}
 
 	/**
-	 * Copies a resource (file on the classpath) to the specified directory
+	 * Copies a resource (file on the classpath) to the specified file
 	 * 
 	 * @param resourceName
 	 * @param directory
 	 * @return
 	 * @throws IOException
 	 */
-	public static void copyClasspathResourceToFile(Class<?> clazz, String resourceName, File file) throws IOException {
+	public static File copyClasspathResourceToFile(Class<?> clazz, String resourceName, File file) throws IOException {
 		FileUtil.copy(getResourceStreamFromClasspath(clazz, resourceName), file);
+		return file;
 	}
+
+	
+	/**
+	 * Copies a resource (file on the classpath) to the specified directory
+	 * 
+	 * @param clazz
+	 * @param resourceName
+	 * @param directory
+	 * @throws IOException
+	 */
+	public static File copyClasspathResourceToDirectory(Class<?> clazz, String resourceName, File directory) throws IOException {
+		return copyClasspathResourceToFile(clazz, resourceName, new File(directory, resourceName));
+	}
+	
 	
 	/**
 	 * This function digs through the classpath to find either a file or the contents of a directory,
