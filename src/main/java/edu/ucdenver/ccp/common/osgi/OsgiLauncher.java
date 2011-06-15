@@ -1,6 +1,7 @@
 package edu.ucdenver.ccp.common.osgi;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -170,7 +171,7 @@ public class OsgiLauncher {
 	}
 	
 	/**
-	 * Install bundle from directory into framework.
+	 * Install bundles from directory into framework while updating as necessary (if already installed).
 	 * 
 	 * @param srcBundleDirectory
 	 * @throws IllegalArgumentException if {@code srcBundleDirectory} isn't a directory or doesn't exist
@@ -183,10 +184,13 @@ public class OsgiLauncher {
 		
 		for (File f : bundleDir.listFiles()) {
 			try {
-				getFramework().getBundleContext().installBundle(f.toURI().toURL().toExternalForm());
+				Bundle bundle = getFramework().getBundleContext().installBundle(f.toURI().toURL().toExternalForm());
+				bundle.update(new FileInputStream(f));
 			} catch (BundleException e) {
 				throw new RuntimeException(e);
 			} catch (MalformedURLException e) {
+				throw new RuntimeException(e);
+			} catch (FileNotFoundException e) {
 				throw new RuntimeException(e);
 			}
 		}
