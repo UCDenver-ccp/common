@@ -2,9 +2,12 @@ package edu.ucdenver.ccp.common.io;
 
 import java.io.PrintStream;
 
+import junit.framework.Assert;
+
 import org.apache.log4j.Category;
 import org.apache.log4j.Priority;
 import org.apache.log4j.BasicConfigurator;
+import org.junit.Test;
 
 public class LoggingOutputStreamTest {
 	
@@ -23,6 +26,11 @@ public class LoggingOutputStreamTest {
 	    System.setOut(oldOut);
 	    System.setErr(oldErr);
 		System.out.println("you should see this 3");
+	}
+	
+	@Test
+	public void masqueradeAsRealJUnitTest() {
+		Assert.assertTrue(true);
 	}
 
 }
