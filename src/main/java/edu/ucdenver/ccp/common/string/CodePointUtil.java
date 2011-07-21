@@ -61,6 +61,21 @@ public class CodePointUtil {
 	}
 	
 	
+	/**
+	 * Returns a substring of the input string based on the input code points
+	 * 
+	 * @param inputStr
+	 * @param codePointStart
+	 * @param codePointEnd
+	 * @return
+	 */
+	public static String substringByCodePoint(String inputStr, int codePointStart, int codePointEnd) {
+		int charOffsetStart = convertCodePointOffsetToCharOffset(inputStr, codePointStart);
+		int charOffsetEnd = convertCodePointOffsetToCharOffset(inputStr, codePointEnd);
+		return inputStr.substring(charOffsetStart, charOffsetEnd);
+	}
+	
+	
 //	public static int[] convertCodePointSpanToCharacterSpan(String inputStr, int codePointSpanStart, int codePointSpanEnd) {
 //		
 //	}
