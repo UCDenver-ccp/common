@@ -59,8 +59,7 @@ public class StringUtil {
 	}
 
 	/**
-	 * Returns true if the input string is a non-negative integer, false
-	 * otherwise.
+	 * Returns true if the input string is a non-negative integer, false otherwise.
 	 * 
 	 * @param inputStr
 	 * @return
@@ -81,22 +80,19 @@ public class StringUtil {
 	}
 
 	/**
-	 * Returns true if the input string is a non-negative integer and is not
-	 * zero
+	 * Returns true if the input string is a non-negative integer and is not zero
 	 * 
 	 * @param inputStr
 	 * @return
 	 */
 	public static boolean isIntegerGreaterThanZero(String inputStr) {
 		inputStr = inputStr.trim();
-		return isNonNegativeInteger(inputStr)
-				&& !inputStr.equals(StringConstants.DIGIT_ZERO);
+		return isNonNegativeInteger(inputStr) && !inputStr.equals(StringConstants.DIGIT_ZERO);
 	}
 
 	/**
-	 * Returns a {@link String} consisting of the input String with specified
-	 * suffix removed. If the input String does not end with the specified
-	 * suffix, an IllegalArgumentException is thrown.
+	 * Returns a {@link String} consisting of the input String with specified suffix removed. If the
+	 * input String does not end with the specified suffix, an IllegalArgumentException is thrown.
 	 * 
 	 * @param inputStr
 	 *            a {@link String} ending in the suffix to be removed
@@ -104,27 +100,41 @@ public class StringUtil {
 	 *            the suffix to be removed from the input {@link String}
 	 * @return the input {@link String} with the specified suffix removed
 	 * @throws IllegalArgumentException
-	 *             if the input {@link String} does end with the specified
-	 *             suffix or if either the input {@link String} or suffix are
-	 *             null
+	 *             if the input {@link String} does end with the specified suffix or if either the
+	 *             input {@link String} or suffix are null
 	 */
-	public static String removeSuffix(String inputStr, String suffix)
-			throws IllegalArgumentException {
+	public static String removeSuffix(String inputStr, String suffix) throws IllegalArgumentException {
 		if (inputStr != null && suffix != null) {
 			if (inputStr.endsWith(suffix)) {
 				return removeNTrailingCharacters(inputStr, suffix.length());
 			}
 		}
-		throw new IllegalArgumentException(
-				String
-						.format(
-								"Invalid input. Cannot remove suffix. Input String \"%s\" does not end with suffix \"%s\"",
-								inputStr, suffix));
+		throw new IllegalArgumentException(String.format(
+				"Invalid input. Cannot remove suffix. Input String \"%s\" does not end with suffix \"%s\"", inputStr,
+				suffix));
 	}
 
 	/**
-	 * Returns a String after removing n characters at the end of the input
-	 * String
+	 * Returns the input string with the specified prefix removed
+	 * 
+	 * @param inputStr
+	 * @param prefix
+	 * @return
+	 * @throws IllegalArgumentException
+	 */
+	public static String removePrefix(String inputStr, String prefix) throws IllegalArgumentException {
+		if (inputStr != null && prefix != null) {
+			if (inputStr.startsWith(prefix)) {
+				return inputStr.substring(prefix.length());
+			}
+		}
+		throw new IllegalArgumentException(String.format(
+				"Invalid input. Cannot remove prefix. Input String \"%s\" does not start with prefix \"%s\"", inputStr,
+				prefix));
+	}
+
+	/**
+	 * Returns a String after removing n characters at the end of the input String
 	 * 
 	 * @param inputStr
 	 * @param n
@@ -152,14 +162,12 @@ public class StringUtil {
 	 * @param replacementSuffix
 	 * @return
 	 */
-	public static String replaceSuffix(String inputStr, String suffix,
-			String replacementSuffix) {
+	public static String replaceSuffix(String inputStr, String suffix, String replacementSuffix) {
 		return removeSuffix(inputStr, suffix) + replacementSuffix;
 	}
 
 	/**
-	 * Removes a suffix from the input String if the specified regular
-	 * expression matches
+	 * Removes a suffix from the input String if the specified regular expression matches
 	 * 
 	 * @param inputStr
 	 * @param regexStr
@@ -171,11 +179,9 @@ public class StringUtil {
 			Pattern p = Pattern.compile(regexStr);
 			Matcher m = p.matcher(inputStr);
 			if (m.find())
-				return inputStr.substring(0, inputStr.length()
-						- m.group().length());
+				return inputStr.substring(0, inputStr.length() - m.group().length());
 		}
-		throw new IllegalArgumentException(String.format(
-				"Cannot remove suffix regex \"%s\" from String \"%s\".",
+		throw new IllegalArgumentException(String.format("Cannot remove suffix regex \"%s\" from String \"%s\".",
 				regexStr, inputStr));
 	}
 
@@ -187,8 +193,7 @@ public class StringUtil {
 	}
 
 	/**
-	 * Removes a prefix from the input String if the specified regular
-	 * expression matches
+	 * Removes a prefix from the input String if the specified regular expression matches
 	 * 
 	 * @param inputStr
 	 * @param regexStr
@@ -202,8 +207,7 @@ public class StringUtil {
 			if (m.find())
 				return inputStr.substring(m.group().length());
 		}
-		throw new IllegalArgumentException(String.format(
-				"Cannot remove prefix regex \"%s\" from String \"%s\".",
+		throw new IllegalArgumentException(String.format("Cannot remove prefix regex \"%s\" from String \"%s\".",
 				regexStr, inputStr));
 	}
 
@@ -215,8 +219,8 @@ public class StringUtil {
 	}
 
 	/**
-	 * Returns true if the beginning of the inputStr matches the regular
-	 * expression, false otherwise.
+	 * Returns true if the beginning of the inputStr matches the regular expression, false
+	 * otherwise.
 	 * 
 	 * @param inputStr
 	 * @param regexStr
@@ -228,8 +232,7 @@ public class StringUtil {
 	}
 
 	/**
-	 * Returns true if the end of the inputStr matches the regular expression,
-	 * false otherwise
+	 * Returns true if the end of the inputStr matches the regular expression, false otherwise
 	 * 
 	 * @param inputStr
 	 * @param regexStr
@@ -241,8 +244,7 @@ public class StringUtil {
 	}
 
 	/**
-	 * Returns true if the input String contains a match to the specified
-	 * regular expression
+	 * Returns true if the input String contains a match to the specified regular expression
 	 * 
 	 * @param inputStr
 	 * @param regexStr
@@ -254,17 +256,15 @@ public class StringUtil {
 	}
 
 	/**
-	 * Returns true if the input string both starts and ends with the specified
-	 * regex, false otherwise
+	 * Returns true if the input string both starts and ends with the specified regex, false
+	 * otherwise
 	 * 
 	 * @param inputStr
 	 * @param regexStr
 	 * @return
 	 */
-	public static boolean startsAndEndsWithRegex(String inputStr,
-			String regexStr) {
-		return startsWithRegex(inputStr, regexStr)
-				&& endsWithRegex(inputStr, regexStr);
+	public static boolean startsAndEndsWithRegex(String inputStr, String regexStr) {
+		return startsWithRegex(inputStr, regexStr) && endsWithRegex(inputStr, regexStr);
 	}
 
 	/**
@@ -275,8 +275,7 @@ public class StringUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public static String convertStream(InputStream is,
-			CharacterEncoding encoding) throws IOException {
+	public static String convertStream(InputStream is, CharacterEncoding encoding) throws IOException {
 		StringWriter sw = new StringWriter();
 		try {
 			IOUtils.copy(is, sw, encoding.getCharacterSetName());
@@ -288,31 +287,26 @@ public class StringUtil {
 	}
 
 	/**
-	 * Splits the input string, but ignores any delimiters inside a field. For
-	 * example, you might be splitting a comma-delimited line but have a field
-	 * indicated by quotation marks that can contain a comma. e.g. token 1,token
-	 * 2,"token, 3 has a comma",token 4
+	 * Splits the input string, but ignores any delimiters inside a field. For example, you might be
+	 * splitting a comma-delimited line but have a field indicated by quotation marks that can
+	 * contain a comma. e.g. token 1,token 2,"token, 3 has a comma",token 4
 	 * 
 	 * @param inputStr
 	 * @param delimiters
 	 * @return
 	 */
-	public static String[] splitWithFieldEnclosure(String inputStr,
-			String delimiterRegex, String optionalFieldEnclosureRegex) {
-		if (optionalFieldEnclosureRegex == null
-				|| !containsRegex(inputStr, optionalFieldEnclosureRegex))
+	public static String[] splitWithFieldEnclosure(String inputStr, String delimiterRegex,
+			String optionalFieldEnclosureRegex) {
+		if (optionalFieldEnclosureRegex == null || !containsRegex(inputStr, optionalFieldEnclosureRegex))
 			return inputStr.split(delimiterRegex, -1);
-		String copyOfInputStr = normalizeInputFields(inputStr, delimiterRegex,
-				optionalFieldEnclosureRegex);
+		String copyOfInputStr = normalizeInputFields(inputStr, delimiterRegex, optionalFieldEnclosureRegex);
 		List<String> tokens = new ArrayList<String>();
 		int previousDelimiterEndIndex = 0;
-		Matcher matcher = Pattern.compile(delimiterRegex).matcher(
-				copyOfInputStr);
+		Matcher matcher = Pattern.compile(delimiterRegex).matcher(copyOfInputStr);
 		while (matcher.find()) {
 			int delimiterStartIndex = matcher.start();
 			int delimiterEndIndex = matcher.end();
-			tokens.add(inputStr.substring(previousDelimiterEndIndex,
-					delimiterStartIndex));
+			tokens.add(inputStr.substring(previousDelimiterEndIndex, delimiterStartIndex));
 			previousDelimiterEndIndex = delimiterEndIndex;
 		}
 		if (previousDelimiterEndIndex == 0)
@@ -323,13 +317,11 @@ public class StringUtil {
 	}
 
 	/**
-	 * The version of splitWithFieldEnclosure provides a boolean flag which
-	 * allows the field enclosures to be optionally removed. If
-	 * removeOptionalFieldEnclosure is set to true then the field enclosures are
-	 * removed. For example, if the following comma-delimited String is split
-	 * using a colon field enclosure: ":1:,:2:,:3:" this method will output
-	 * [":1:",":2:",":3:"] if removeOptionalFieldEnclosure = false or
-	 * ["1","2","3"] if removeOptionalFieldEnclosure = true
+	 * The version of splitWithFieldEnclosure provides a boolean flag which allows the field
+	 * enclosures to be optionally removed. If removeOptionalFieldEnclosure is set to true then the
+	 * field enclosures are removed. For example, if the following comma-delimited String is split
+	 * using a colon field enclosure: ":1:,:2:,:3:" this method will output [":1:",":2:",":3:"] if
+	 * removeOptionalFieldEnclosure = false or ["1","2","3"] if removeOptionalFieldEnclosure = true
 	 * 
 	 * @param inputStr
 	 * @param delimiterRegex
@@ -337,43 +329,38 @@ public class StringUtil {
 	 * @param removeOptionalFieldEnclosure
 	 * @return
 	 */
-	public static String[] splitWithFieldEnclosure(String inputStr,
-			String delimiterRegex, String optionalFieldEnclosureRegex,
-			RemoveFieldEnclosures removeOptionalFieldEnclosure) {
-		String[] tokens = splitWithFieldEnclosure(inputStr, delimiterRegex,
-				optionalFieldEnclosureRegex);
-		
+	public static String[] splitWithFieldEnclosure(String inputStr, String delimiterRegex,
+			String optionalFieldEnclosureRegex, RemoveFieldEnclosures removeOptionalFieldEnclosure) {
+		String[] tokens = splitWithFieldEnclosure(inputStr, delimiterRegex, optionalFieldEnclosureRegex);
+
 		if (removeOptionalFieldEnclosure.equals(RemoveFieldEnclosures.TRUE))
 			for (int i = 0; i < tokens.length; i++)
-				if (StringUtil.startsAndEndsWithRegex(tokens[i],
-						optionalFieldEnclosureRegex)) {
-					tokens[i] = StringUtil.removePrefixRegex(tokens[i],
-							optionalFieldEnclosureRegex);
-					tokens[i] = StringUtil.removeSuffixRegex(tokens[i],
-							optionalFieldEnclosureRegex);
+				if (StringUtil.startsAndEndsWithRegex(tokens[i], optionalFieldEnclosureRegex)) {
+					tokens[i] = StringUtil.removePrefixRegex(tokens[i], optionalFieldEnclosureRegex);
+					tokens[i] = StringUtil.removeSuffixRegex(tokens[i], optionalFieldEnclosureRegex);
 				}
 		return tokens;
 	}
 
 	public enum RemoveFieldEnclosures {
-		TRUE, FALSE;
+		TRUE,
+		FALSE;
 	}
 
 	/**
-	 * Delimits the input String as described in splitWithFieldEnclosure, but
-	 * returns only non-empty tokens
+	 * Delimits the input String as described in splitWithFieldEnclosure, but returns only non-empty
+	 * tokens
 	 * 
 	 * @param inputStr
 	 * @param delimiterRegex
 	 * @param optionalFieldEnclosureRegex
 	 * @return
 	 */
-	public static List<String> delimitAndTrim(String inputStr,
-			String delimiterRegex, String optionalFieldEnclosureRegex,
-			RemoveFieldEnclosures removeOptionalFieldEnclosure) {
-		String[] tokens = splitWithFieldEnclosure(inputStr, delimiterRegex,
-				optionalFieldEnclosureRegex, removeOptionalFieldEnclosure);
-		
+	public static List<String> delimitAndTrim(String inputStr, String delimiterRegex,
+			String optionalFieldEnclosureRegex, RemoveFieldEnclosures removeOptionalFieldEnclosure) {
+		String[] tokens = splitWithFieldEnclosure(inputStr, delimiterRegex, optionalFieldEnclosureRegex,
+				removeOptionalFieldEnclosure);
+
 		// " foo ", " bar", "baz " ---> "foo", "bar", "baz"
 		List<String> nonEmptyTokens = new ArrayList<String>();
 		for (String token : tokens)
@@ -383,17 +370,16 @@ public class StringUtil {
 	}
 
 	/**
-	 * Given an inputStr with possible delimiters hidden inside fields, this
-	 * method returns a String where the fields have been normalized (turned
-	 * into a string of zero's)
+	 * Given an inputStr with possible delimiters hidden inside fields, this method returns a String
+	 * where the fields have been normalized (turned into a string of zero's)
 	 * 
 	 * @param inputStr
 	 * @param delimiterRegex
 	 * @param optionalFieldEnclosureCharacter
 	 * @return
 	 */
-	private static String normalizeInputFields(String inputStr,
-			String delimiterRegex, String optionalFieldEnclosureRegex) {
+	private static String normalizeInputFields(String inputStr, String delimiterRegex,
+			String optionalFieldEnclosureRegex) {
 		String tempReplacementStr = StringConstants.DIGIT_ZERO;
 		if (delimiterRegex.contains(tempReplacementStr))
 			throw new IllegalArgumentException(
@@ -402,13 +388,11 @@ public class StringUtil {
 							+ "input delimiter contains the character '%s'. Therefore there is a potential conflict. "
 							+ "Please use a different delimiter. Exiting...");
 		String copyOfInputStr = inputStr;
-		Pattern fieldPattern = Pattern.compile(optionalFieldEnclosureRegex
-				+ ".*?" + optionalFieldEnclosureRegex);
+		Pattern fieldPattern = Pattern.compile(optionalFieldEnclosureRegex + ".*?" + optionalFieldEnclosureRegex);
 		Matcher matcher = fieldPattern.matcher(inputStr);
 		while (matcher.find()) {
 			copyOfInputStr = copyOfInputStr.replace(matcher.group(),
-					createRepeatingString(StringConstants.DIGIT_ZERO, matcher
-							.group().length()));
+					createRepeatingString(StringConstants.DIGIT_ZERO, matcher.group().length()));
 		}
 		return copyOfInputStr;
 	}
@@ -429,8 +413,8 @@ public class StringUtil {
 	}
 
 	/**
-	 * Delimit values with provided delimiter and strip surrounding single
-	 * characters (ex: double-quotes) .
+	 * Delimit values with provided delimiter and strip surrounding single characters (ex:
+	 * double-quotes) .
 	 * 
 	 * @param values
 	 *            to delimit
@@ -451,21 +435,17 @@ public class StringUtil {
 				char firstChar = v.charAt(0);
 				char lastChar = v.charAt(v.length() - 1);
 				if (firstChar != lastChar)
-					logger
-							.warn(String
-									.format(
-											"The StringUtil.delimitAndTrim(values,delim) method may not be behaving as you expect. "
-													+ "This method trims the first and last characters of each element after delimiting the "
-													+ "input String (useful for removing things like surrounding quotation marks). This "
-													+ "warning is being displayed because the first and last characters being trimmed "
-													+ "do not match (first='%s'; last='%s').",
-											firstChar, lastChar));
+					logger.warn(String
+							.format("The StringUtil.delimitAndTrim(values,delim) method may not be behaving as you expect. "
+									+ "This method trims the first and last characters of each element after delimiting the "
+									+ "input String (useful for removing things like surrounding quotation marks). This "
+									+ "warning is being displayed because the first and last characters being trimmed "
+									+ "do not match (first='%s'; last='%s').", firstChar, lastChar));
 			}
 		return trimmed;
 	}
 
-	public static String stripNonAscii(String input)
-			throws UnsupportedEncodingException {
+	public static String stripNonAscii(String input) throws UnsupportedEncodingException {
 		// In UTF-8, you can look at the bit pattern of a byte to tell
 		// if it is part of a
 		// single byte character, a two-byte character, or more.
@@ -495,14 +475,12 @@ public class StringUtil {
 				index += 2; // consume this byte and its continuation byte
 			}
 			// 1110 xxxx: 3 byte
-			else if (cleanByte >= 128 + 64 + 32
-					&& cleanByte < 128 + 64 + 32 + 16) {
+			else if (cleanByte >= 128 + 64 + 32 && cleanByte < 128 + 64 + 32 + 16) {
 				buf.append('?');
 				index += 3; // consume this byte and its continuation bytes
 			}
 			// 1111 0xxx: 4 byte
-			else if (cleanByte >= 128 + 64 + 32 + 16
-					&& cleanByte < 128 + 64 + 32 + 16 + 8) {
+			else if (cleanByte >= 128 + 64 + 32 + 16 && cleanByte < 128 + 64 + 32 + 16 + 8) {
 				buf.append('?');
 				index += 4; // consume this byte and its continuation bytes
 			} else {
@@ -514,18 +492,16 @@ public class StringUtil {
 	}
 
 	/**
-	 * Converts a byteArray to a <code>String</code> in a character-encoding
-	 * safe manner by decoding it using specified character set.
+	 * Converts a byteArray to a <code>String</code> in a character-encoding safe manner by decoding
+	 * it using specified character set.
 	 * 
 	 * @param byteArray
 	 * @param encoding
 	 * @return
 	 * @throws IOException
 	 */
-	public static String decode(byte[] byteArray, CharacterEncoding encoding)
-			throws IOException {
-		InputStreamReader isr = new InputStreamReader(new ByteArrayInputStream(
-				byteArray), encoding.getDecoder());
+	public static String decode(byte[] byteArray, CharacterEncoding encoding) throws IOException {
+		InputStreamReader isr = new InputStreamReader(new ByteArrayInputStream(byteArray), encoding.getDecoder());
 		return StreamUtil.toString(isr);
 	}
 
