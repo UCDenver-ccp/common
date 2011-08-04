@@ -219,9 +219,10 @@ public class FileUtil {
 	 * @param directory
 	 * @return
 	 */
-	public static boolean cleanDirectory(File directory) {
+	public static void cleanDirectory(File directory) throws IOException {
 		deleteDirectory(directory);
-		return directory.mkdirs();
+		if (! directory.mkdirs())
+			throw new IOException("Directory could not be re-created during clean: " + directory.getAbsolutePath());
 	}
 	
 	
