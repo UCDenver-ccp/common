@@ -344,6 +344,26 @@ public class CollectionsUtil {
 	}
 
 	/**
+	 * Returns a filtered version of the input map by returning a map containing only the specified
+	 * keys
+	 * 
+	 * @param inputMap
+	 * @param keysToReturn
+	 * @return
+	 * @throws IllegalArgumentException
+	 *             if a key to return is not present in the input map
+	 */
+	public static <K, V> Map<K, V> filterMap(Map<K, V> inputMap, Set<K> keysToReturn) {
+		Map<K, V> returnMap = new HashMap<K, V>();
+		for (K key : keysToReturn) {
+		if (!inputMap.containsKey(key))
+			throw new IllegalArgumentException("Filter map failed. Expected key not in input map: " + key.toString());
+			returnMap.put(key, inputMap.get(key));
+		}
+		return returnMap;
+	}
+
+	/**
 	 * Converts a list of Strings to a list of Integers. Assumes the Strings are all integers.
 	 * 
 	 * @param intsAsStrings
