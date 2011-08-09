@@ -28,6 +28,8 @@ import java.io.OutputStreamWriter;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 /**
  * Utility class for writing files
  * 
@@ -35,6 +37,12 @@ import java.util.List;
  * 
  */
 public class FileWriterUtil {
+
+	/**
+	 * Logs statements, such as when a directory is automatically created during
+	 * {@link BufferedWriter} initialization
+	 */
+	private static final Logger logger = Logger.getLogger(FileWriterUtil.class);
 
 	/**
 	 * The WriteMode enum is closely tied to the boolean "append" argument that is found in the
@@ -99,7 +107,9 @@ public class FileWriterUtil {
 	}
 
 	/**
-	 * Creates a BufferedWriter that uses proper character encoding validation.
+	 * Creates a BufferedWriter that uses proper character encoding validation. If the directory for
+	 * the specified output file does not exist it is created and a log message is generated stating
+	 * that it was created.
 	 * 
 	 * @param outputFile
 	 * @param encoding
@@ -112,14 +122,20 @@ public class FileWriterUtil {
 	 *            character encoding-specific file suffix to avoid an IllegalArgumentException. If
 	 *            FileSuffixEnforcement.OFF then the file name suffix is not checked. (any suffix
 	 *            will be permitted).
-	 * @return
+	 * @return an initialized {@link BufferedWriter}
 	 * @throws FileNotFoundException
 	 * @throws IllegalArgumentException
 	 *             thrown if file suffix enforcement is active and the specified output file name
 	 *             suffix does not match the expected character encoding-specific suffix
+	 * 
 	 */
 	public static BufferedWriter initBufferedWriter(File outputFile, CharacterEncoding encoding, WriteMode writeMode,
 			FileSuffixEnforcement suffixEnforcement) throws FileNotFoundException {
+		if (!outputFile.getParentFile().exists()) {
+			FileUtil.mkdir(outputFile.getParentFile());
+			logger.info("Directory for output file does not exist so it has been created: "
+					+ outputFile.getAbsolutePath());
+		}
 		if (suffixEnforcement.equals(FileSuffixEnforcement.ON))
 			if (!CharacterEncoding.hasEncodingSpecificFileName(outputFile, encoding)) {
 				String errorMessage = String
@@ -142,7 +158,7 @@ public class FileWriterUtil {
 	 * @param outputFile
 	 * @param encoding
 	 *            the CharacterEncoding to use when writing to the output file
-	 * @return
+	 * @return an initialized {@link BufferedWriter}
 	 * @throws FileNotFoundException
 	 * @throws IllegalArgumentException
 	 *             thrown if file suffix enforcement is active and the specified output file name
@@ -152,7 +168,7 @@ public class FileWriterUtil {
 			throws FileNotFoundException {
 		return initBufferedWriter(outputFile, encoding, WriteMode.OVERWRITE, FileSuffixEnforcement.ON);
 	}
-	
+
 	/**
 	 * Creates a BufferedWriter that uses proper character encoding validation. By default this
 	 * BufferedWriter will overwrite the specified output file and character encoding-specific file
@@ -161,17 +177,17 @@ public class FileWriterUtil {
 	 * @param outputStream
 	 * @param encoding
 	 *            the CharacterEncoding to use when writing to the output file
-	 * @return
+	 * @return an initialized {@link BufferedWriter}
 	 */
 	public static BufferedWriter initBufferedWriter(OutputStream outputStream, CharacterEncoding encoding) {
-		return new BufferedWriter(new OutputStreamWriter(outputStream,encoding.getEncoder()));
+		return new BufferedWriter(new OutputStreamWriter(outputStream, encoding.getEncoder()));
 	}
 
 	/**
 	 * Prints the input list of lines to the input PrintStream
 	 * 
 	 * @param lines
-	 * @param ps
+	 * @param writer
 	 * @throws IOException
 	 */
 	public static void printLines(List<?> lines, BufferedWriter writer) throws IOException {
@@ -187,6 +203,7 @@ public class FileWriterUtil {
 	 * 
 	 * @param lines
 	 * @param file
+	 * @param encoding
 	 * @throws IOException
 	 */
 	public static void printLines(List<?> lines, File file, CharacterEncoding encoding) throws IOException {
@@ -200,6 +217,9 @@ public class FileWriterUtil {
 	 * 
 	 * @param lines
 	 * @param file
+	 * @param encoding
+	 * @param writeMode
+	 * @param suffixEnforementPolicy
 	 * @throws IOException
 	 */
 	public static void printLines(List<?> lines, File file, CharacterEncoding encoding, WriteMode writeMode,
