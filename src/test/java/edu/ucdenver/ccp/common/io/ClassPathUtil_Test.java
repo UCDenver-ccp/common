@@ -3,7 +3,7 @@ package edu.ucdenver.ccp.common.io;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
-
+import java.io.InputStream;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
@@ -22,6 +22,17 @@ public class ClassPathUtil_Test {
 	public void before() {
 		BasicConfigurator.configure();
 	}
+	
+	@Ignore
+	@Test
+	public void testGetResourceStreamFromClasspath() {
+		InputStream is = ClassPathUtil.getResourceStreamFromClasspath(this.getClass(),
+				"test_dir/test_file.txt");
+		
+		Assert.assertNotNull(is);
+		
+	}
+	
 	
 	@Test
 	public  void testFile() throws Exception {
