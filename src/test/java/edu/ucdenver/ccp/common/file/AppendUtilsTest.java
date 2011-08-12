@@ -39,5 +39,25 @@ public class AppendUtilsTest extends DefaultTestCase {
 		Assert.assertEquals(one, fString + gString);
 		br.close();
 	}
+	
+	@Test
+	public void test2() throws Exception {
+		File f = folder.newFile("junk.utf8");
+		
+		final String fString = "Some basic text.";
+		final String gString = "Some more text.";
+	
+		BufferedWriter fbw = FileWriterUtil.initBufferedWriter(f, CharacterEncoding.UTF_8);
+		fbw.write(fString);
+		fbw.close();
+	
+		AppendUtils.appendToFile(gString,  f);
+		
+		
+		BufferedReader br = new BufferedReader(new FileReader(f));
+		String one = br.readLine();
+		Assert.assertEquals(one, fString + gString);
+		br.close();
+	}
 
 }
