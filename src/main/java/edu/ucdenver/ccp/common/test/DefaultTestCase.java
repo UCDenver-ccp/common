@@ -54,35 +54,6 @@ public class DefaultTestCase {
 	public TemporaryFolder folder = new TemporaryFolder();
 
 
-//	/**
-//	 * Helper method for grabbing a file from the classpath and returning an InputStream
-//	 * 
-//	 * @param clazz
-//	 * @param resourceName
-//	 * @return
-//	 */
-//	protected InputStream getResourceFromClasspath(Class<?> clazz, String resourceName) {
-//		InputStream is = clazz.getResourceAsStream(resourceName);
-//		if (is == null) {
-//			logger.error("resource not found in classpath: " + resourceName 
-//					+ " class is: " + clazz.getCanonicalName());
-//		}
-//		Assert.assertNotNull("Resource not found: " + resourceName, is);
-//		return is;
-//	}
-//
-//	/**
-//	 * Extracts the contents of a resource on the classpath and returns them as a String
-//	 * 
-//	 * @param clazz
-//	 * @param resourceName
-//	 * @return
-//	 * @throws IOException
-//	 */
-//	protected String getContentsFromClasspathResource(Class<?> clazz, String resourceName, CharacterEncoding encoding) throws IOException {
-//		return StringUtil.convertStream(getResourceFromClasspath(clazz, resourceName), encoding);
-//	}
-
 	/**
 	 *Helper method for grabbing a file from the classpath and copying it to the temporary folder.
 	 * This method can be used for testing applications that require File input, but are incapable
