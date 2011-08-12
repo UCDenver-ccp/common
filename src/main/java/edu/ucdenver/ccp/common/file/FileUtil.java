@@ -37,6 +37,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.ArrayList;
+import java.util.TreeSet;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -384,6 +388,62 @@ public class FileUtil {
 		} else if (FileUtil.isDirectoryValid(fileOrDirectory) == null) {
 			return FileUtils.iterateFiles(fileOrDirectory, createFileFilter(removeLeadingPeriods(fileSuffixes)),
 					createDirectoryFilter(recurse));
+		} else
+			throw new IOException(String.format("Input is not a valid file or directory: %s", fileOrDirectory
+					.getAbsolutePath()));
+	}
+	
+	/**
+	 * Returns an Iterator<File> over the files in the input directory that returns only files
+	 * listed in the files listed. Only visible (i.e. not hidden unix-style with leading periods) 
+	 * files and directories will be processed.
+	 * 
+	 * @param fileOrDirectory
+	 * @param recurse
+	 * @param fileSuffixes
+	 * @return
+	 * @throws IOException
+	 */
+	public static Iterator<File> getFileIterator(File fileOrDirectory, boolean recurse, 
+			Collection<String> filenames, String... fileSuffixes)
+	throws IOException {
+		Set<String> filenameSet = new TreeSet<String>();
+		filenameSet.addAll(filenames);
+		if (FileUtil.isFileValid(fileOrDirectory) == null && filenameSet.contains(fileOrDirectory)) {
+			return createSingleFileIterator(fileOrDirectory, fileSuffixes);
+		} else if (FileUtil.isDirectoryValid(fileOrDirectory) == null) {
+			IOFileFilter visible = createFileFilter(removeLeadingPeriods(fileSuffixes));
+			IOFileFilter inList = new FileListFilter(filenames);
+			return FileUtils.iterateFiles(fileOrDirectory,  
+						FileFilterUtils.and(visible, inList),
+						createDirectoryFilter(recurse) );
+		} else
+			throw new IOException(String.format("Input is not a valid file or directory: %s", fileOrDirectory
+					.getAbsolutePath()));
+	}
+	
+	/**
+	 * Returns an Iterator<File> over the files in the input directory. Only visible (i.e. not
+	 * hidden) files and directories will be processed.
+	 * 
+	 * @param fileOrDirectory
+	 * @param recurse
+	 * @param fileSuffixes
+	 * @return
+	 * @throws IOException
+	 */
+	@SuppressWarnings("unchecked")
+	public static Iterator<File> getSortedFileIterator(File fileOrDirectory, boolean recurse, String... fileSuffixes)
+			throws IOException {
+		if (FileUtil.isFileValid(fileOrDirectory) == null) {
+			return createSingleFileIterator(fileOrDirectory, fileSuffixes);
+		} else if (FileUtil.isDirectoryValid(fileOrDirectory) == null) {
+			fileSuffixes = removeLeadingPeriods(fileSuffixes);
+			Collection<File> c = FileUtils.listFiles(fileOrDirectory, createFileFilter(fileSuffixes),
+					createDirectoryFilter(recurse));
+			ArrayList<File> list = new ArrayList<File>(c);
+			Collections.sort(list);
+			return list.iterator();
 		} else
 			throw new IOException(String.format("Input is not a valid file or directory: %s", fileOrDirectory
 					.getAbsolutePath()));
