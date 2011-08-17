@@ -1,9 +1,16 @@
 package edu.ucdenver.ccp.common.collections.tree;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Ignore;
 import org.junit.Test;
+
 import edu.ucdenver.ccp.common.test.DefaultTestCase;
 
+@Ignore("trying to see if these test a responsible for the stall that occurs during the Hudson build")
 public class TreeNodeTest extends DefaultTestCase {
 
 	/**

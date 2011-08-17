@@ -11,6 +11,7 @@ import edu.ucdenver.ccp.common.test.DefaultTestCase;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+@Ignore("trying to see if these test a responsible for the stall that occurs during the Hudson build")
 public class TreeTest extends DefaultTestCase {
 
 	/**
