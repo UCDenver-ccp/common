@@ -396,7 +396,9 @@ public class FileUtil {
 	/**
 	 * Returns an Iterator<File> over the files in the input directory that returns only files
 	 * listed in the files listed. Only visible (i.e. not hidden unix-style with leading periods) 
-	 * files and directories will be processed.
+	 * files and directories will be processed. The list of filenames is the file.getName() of the
+	 * file...without any path. So the assumption is that the filenames are unique or equivalent
+	 * when not considering the path.
 	 * 
 	 * @param fileOrDirectory
 	 * @param recurse
@@ -409,7 +411,8 @@ public class FileUtil {
 	throws IOException {
 		Set<String> filenameSet = new TreeSet<String>();
 		filenameSet.addAll(filenames);
-		if (FileUtil.isFileValid(fileOrDirectory) == null && filenameSet.contains(fileOrDirectory)) {
+		if (FileUtil.isFileValid(fileOrDirectory) == null 
+				&& filenameSet.contains(fileOrDirectory.getName())) {
 			return createSingleFileIterator(fileOrDirectory, fileSuffixes);
 		} else if (FileUtil.isDirectoryValid(fileOrDirectory) == null) {
 			IOFileFilter visible = createFileFilter(removeLeadingPeriods(fileSuffixes));
