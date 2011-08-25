@@ -131,7 +131,7 @@ public class FileWriterUtil {
 	 */
 	public static BufferedWriter initBufferedWriter(File outputFile, CharacterEncoding encoding, WriteMode writeMode,
 			FileSuffixEnforcement suffixEnforcement) throws FileNotFoundException {
-		if (!outputFile.getParentFile().exists()) {
+		if (outputFile.isAbsolute() && !outputFile.getParentFile().exists()) {
 			FileUtil.mkdir(outputFile.getParentFile());
 			logger.info("Directory for output file does not exist so it has been created: "
 					+ outputFile.getAbsolutePath());
