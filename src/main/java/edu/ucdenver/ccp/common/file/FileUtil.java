@@ -71,17 +71,19 @@ public class FileUtil {
 
 	/**
 	 * Returns a temporary directory based on the File.createTempFile() method
+	 * 
 	 * @param directoryName
 	 * @return
-	 * @throws IOException	if an error occurs while creating the temporary directory
+	 * @throws IOException
+	 *             if an error occurs while creating the temporary directory
 	 */
 	public static File createTemporaryDirectory(String directoryName) throws IOException {
-		File tempFile = File.createTempFile("tmp","tmp");
+		File tempFile = File.createTempFile("tmp", "tmp");
 		File directory = new File(tempFile.getParentFile(), directoryName);
 		FileUtil.mkdir(directory);
 		return directory;
 	}
-	
+
 	/**
 	 * Simple utility method that checks whether the input directory exists (and is a directory).
 	 * Returns an error message if the directory does not exist or is not a directory. Returns null
@@ -157,8 +159,8 @@ public class FileUtil {
 		if (!directory.exists()) {
 			boolean succeeded = directory.mkdirs();
 			if (!succeeded) {
-				throw new IllegalStateException(String.format("Error while creating directory: %s", directory
-						.getAbsolutePath()));
+				throw new IllegalStateException(String.format("Error while creating directory: %s",
+						directory.getAbsolutePath()));
 			}
 		}
 	}
@@ -225,11 +227,10 @@ public class FileUtil {
 	 */
 	public static void cleanDirectory(File directory) throws IOException {
 		deleteDirectory(directory);
-		if (! directory.mkdirs())
+		if (!directory.mkdirs())
 			throw new IOException("Directory could not be re-created during clean: " + directory.getAbsolutePath());
 	}
-	
-	
+
 	/**
 	 * Deletes the input file and replaces it with a new empty file of the same name
 	 * 
@@ -243,7 +244,6 @@ public class FileUtil {
 		if (!file.createNewFile())
 			throw new IOException("File could not be re-created during clean: " + file.getAbsolutePath());
 	}
-	
 
 	/**
 	 * Copies the contents of the InputStream to the specified File
@@ -289,6 +289,31 @@ public class FileUtil {
 		fis.close();
 		fos.close();
 		validateFile(toFile);
+	}
+
+	/**
+	 * Copies the contents of one directory to another. The target directory must not exist prior to
+	 * this method being invoked.
+	 * 
+	 * @param fromDirectory
+	 * @param toDirectory
+	 * @throws IOException
+	 */
+	public static void copyDirectory(File fromDirectory, File toDirectory) throws IOException {
+		if (toDirectory.exists())
+			throw new IllegalArgumentException(
+					"Target directory already exists. Please delete and re-try copy command.");
+		FileUtil.mkdir(toDirectory);
+		File[] directoryContent = fromDirectory.listFiles();
+		for (File file : directoryContent) {
+			if (file.isFile())
+				copy(file, toDirectory);
+			else if (file.isDirectory())
+				copyDirectory(file, new File(toDirectory, file.getName()));
+			else
+				throw new IOException("Unknown file type for file: " + file.getAbsolutePath());
+		}
+
 	}
 
 	/**
@@ -389,13 +414,13 @@ public class FileUtil {
 			return FileUtils.iterateFiles(fileOrDirectory, createFileFilter(removeLeadingPeriods(fileSuffixes)),
 					createDirectoryFilter(recurse));
 		} else
-			throw new IOException(String.format("Input is not a valid file or directory: %s", fileOrDirectory
-					.getAbsolutePath()));
+			throw new IOException(String.format("Input is not a valid file or directory: %s",
+					fileOrDirectory.getAbsolutePath()));
 	}
-	
+
 	/**
 	 * Returns an Iterator<File> over the files in the input directory that returns only files
-	 * listed in the files listed. Only visible (i.e. not hidden unix-style with leading periods) 
+	 * listed in the files listed. Only visible (i.e. not hidden unix-style with leading periods)
 	 * files and directories will be processed. The list of filenames is the file.getName() of the
 	 * file...without any path. So the assumption is that the filenames are unique or equivalent
 	 * when not considering the path.
@@ -406,25 +431,22 @@ public class FileUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public static Iterator<File> getFileIterator(File fileOrDirectory, boolean recurse, 
-			Collection<String> filenames, String... fileSuffixes)
-	throws IOException {
+	public static Iterator<File> getFileIterator(File fileOrDirectory, boolean recurse, Collection<String> filenames,
+			String... fileSuffixes) throws IOException {
 		Set<String> filenameSet = new TreeSet<String>();
 		filenameSet.addAll(filenames);
-		if (FileUtil.isFileValid(fileOrDirectory) == null 
-				&& filenameSet.contains(fileOrDirectory.getName())) {
+		if (FileUtil.isFileValid(fileOrDirectory) == null && filenameSet.contains(fileOrDirectory.getName())) {
 			return createSingleFileIterator(fileOrDirectory, fileSuffixes);
 		} else if (FileUtil.isDirectoryValid(fileOrDirectory) == null) {
 			IOFileFilter visible = createFileFilter(removeLeadingPeriods(fileSuffixes));
 			IOFileFilter inList = new FileListFilter(filenames);
-			return FileUtils.iterateFiles(fileOrDirectory,  
-						FileFilterUtils.and(visible, inList),
-						createDirectoryFilter(recurse) );
+			return FileUtils.iterateFiles(fileOrDirectory, FileFilterUtils.and(visible, inList),
+					createDirectoryFilter(recurse));
 		} else
-			throw new IOException(String.format("Input is not a valid file or directory: %s", fileOrDirectory
-					.getAbsolutePath()));
+			throw new IOException(String.format("Input is not a valid file or directory: %s",
+					fileOrDirectory.getAbsolutePath()));
 	}
-	
+
 	/**
 	 * Returns an Iterator<File> over the files in the input directory. Only visible (i.e. not
 	 * hidden) files and directories will be processed.
@@ -448,8 +470,8 @@ public class FileUtil {
 			Collections.sort(list);
 			return list.iterator();
 		} else
-			throw new IOException(String.format("Input is not a valid file or directory: %s", fileOrDirectory
-					.getAbsolutePath()));
+			throw new IOException(String.format("Input is not a valid file or directory: %s",
+					fileOrDirectory.getAbsolutePath()));
 	}
 
 	/**
