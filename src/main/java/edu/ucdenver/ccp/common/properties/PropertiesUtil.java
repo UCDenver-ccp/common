@@ -22,10 +22,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.ResourceBundle;
 
 import org.apache.commons.io.IOUtils;
 
@@ -128,5 +131,83 @@ public class PropertiesUtil {
 			inputStream.close();
 		}
 	}
+	
+
+	    /**
+	     * Looks up a resource named 'name' in the classpath. The resource must map
+	     * to a file with .properties extention. The name is assumed to be absolute
+	     * and can use either "/" or "." for package segment separation with an
+	     * optional leading "/" and optional ".properties" suffix. Thus, the
+	     * following names refer to the same resource:
+	     * <pre>
+	     * some.pkg.Resource
+	     * some.pkg.Resource.properties
+	     * some/pkg/Resource
+	     * some/pkg/Resource.properties
+	     * /some/pkg/Resource
+	     * /some/pkg/Resource.properties
+	     * </pre>
+	     * 
+	     * @param name classpath resource name [may not be null]
+	     * @param loader classloader through which to load the resource [null
+	     * is equivalent to the application loader]
+	     * 
+	     * @return resource converted to java.util.Properties [may be null if the
+	     * resource was not found and THROW_ON_LOAD_FAILURE is false]
+	     * @throws IllegalArgumentException if the resource was not found
+	     */
+	    public static Properties loadPropertiesFromClassLoader(String name, ClassLoader loader)
+	    {
+	        if (name == null)
+	            throw new IllegalArgumentException ("null input: name");
+	        
+	        if (name.startsWith ("/"))
+	            name = name.substring (1);
+	        
+	        Properties result = null;
+	        InputStream in = null;
+	        
+	        try {
+	            if (loader == null)  loader = ClassLoader.getSystemClassLoader ();
+                name = name.replace ('.', '/');
+                
+                if (! name.endsWith (SUFFIX))
+                    name = name.concat (SUFFIX);
+                                
+                // Returns null on lookup failures:
+                in = loader.getResourceAsStream (name);
+                if (in != null) {
+                    result = new Properties ();
+                    result.load (in); // Can throw IOException
+                }
+                // else, throw is below
+	        }
+	        catch (Exception e) {
+	            result = null;
+	        }
+	        finally {
+	            if (in != null) try { in.close (); } catch (Throwable ignore) {}
+	        }
+	        
+	        if (result == null) {
+	            throw new IllegalArgumentException ("could not load [" + name + "]"+
+	                " as a classloader resource");
+	        }
+	        
+	        return result;
+	    }
+	    
+	    /**
+	     * A convenience overload of {@link #loadProperties(String, ClassLoader)}
+	     * that uses the current thread's context classloader.
+	     */
+	    public static Properties loadPropertiesFromCurrentClassLoader (final String name)
+	    {
+	        return loadPropertiesFromClassLoader(name,
+	            Thread.currentThread ().getContextClassLoader ());
+	    }
+	        
+	    private static final String SUFFIX = ".properties";
+
 
 }
