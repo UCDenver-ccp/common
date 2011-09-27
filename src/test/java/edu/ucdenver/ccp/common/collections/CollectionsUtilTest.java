@@ -75,19 +75,19 @@ public class CollectionsUtilTest {
 
 	@Test
 	public void testCreateSetIterableWithValidInput() {
-		Set<Integer> ActualSet = new HashSet<Integer>();
-		ActualSet.add(1);
-		ActualSet.add(2);
-		ActualSet.add(3);
-		ActualSet.add(4);
-		Set<Integer> ExpectedSet = new HashSet<Integer>();
-		ExpectedSet.add(1);
-		ExpectedSet.add(2);
-		ExpectedSet.add(3);
-		ExpectedSet.add(4);
+		Set<Integer> actualSet = new HashSet<Integer>();
+		actualSet.add(1);
+		actualSet.add(2);
+		actualSet.add(3);
+		actualSet.add(4);
+		Set<Integer> expectedSet = new HashSet<Integer>();
+		expectedSet.add(1);
+		expectedSet.add(2);
+		expectedSet.add(3);
+		expectedSet.add(4);
 
-		assertEquals("Set should get added", ExpectedSet,
-				CollectionsUtil.createSet(ActualSet));
+		assertEquals("Set should get added", expectedSet,
+				CollectionsUtil.createSet(actualSet));
 
 	}
 
@@ -113,12 +113,12 @@ public class CollectionsUtilTest {
 		expectedList.add("2");
 		expectedList.add("3");
 
-		List<String> ActualList = new ArrayList<String>();
-		ActualList.add("2");
-		ActualList.add("2");
-		ActualList.add("3");
+		List<String> actualList = new ArrayList<String>();
+		actualList.add("2");
+		actualList.add("2");
+		actualList.add("3");
 
-		Iterator<String> iter = ActualList.iterator();
+		Iterator<String> iter = actualList.iterator();
 		List<String> observedList = CollectionsUtil.createList(iter);
 		assertEquals(String.format("Lists should be equal."), expectedList,
 				observedList);
@@ -630,6 +630,50 @@ public class CollectionsUtilTest {
 		String expectedCollection = null;
 		assertEquals(String.format("Maps should get added."),
 				expectedCollection, map);
+	}
+
+	/**
+	 * Tests the filterMap() method with valid test input
+	 */
+	@Test
+	public void testfilterMap_ValidInput() {
+		Map<String, String> actualMap = CollectionsUtil.createMap("1", "blue",
+				"2", "red", "3", "green");
+
+		Map<String, String> expectedMap = CollectionsUtil.createMap("1",
+				"blue", "2", "red", "3", "green");
+
+		Set<String> actualSet = new HashSet<String>();
+		actualSet.add("1");
+		actualSet.add("2");
+		actualSet.add("3");
+
+		assertEquals(String.format("Expected Key should be in the map."),
+				expectedMap, CollectionsUtil.filterMap(actualMap, actualSet));
+
+	}
+
+	/**
+	 * Tests the filterMap() method with Invalid test input. This is a negative
+	 * test case
+	 */
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testfilterMap_InValidInput() {
+		Map<String, String> actualMap = CollectionsUtil.createMap("1", "blue",
+				"7", "red", "3", "green");
+
+		Map<String, String> expectedMap = CollectionsUtil.createMap("1",
+				"blue", "2", "red", "3", "green");
+
+		Set<String> actualSet = new HashSet<String>();
+		actualSet.add("1");
+		actualSet.add("2");
+		actualSet.add("3");
+
+		assertEquals(String.format("Expected Key should be in the map."),
+				expectedMap, CollectionsUtil.filterMap(actualMap, actualSet));
+
 	}
 
 }
