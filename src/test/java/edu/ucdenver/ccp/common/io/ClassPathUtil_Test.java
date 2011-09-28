@@ -4,6 +4,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import java.io.InputStream;
+import java.net.URL;
+import java.net.URLClassLoader;
+
+
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
@@ -18,19 +22,34 @@ public class ClassPathUtil_Test {
 	
 	// org.osgi didn't work
 	Logger logger = Logger.getLogger(ClassPathUtil_Test.class);
+	
+	
 	@Before	
 	public void before() {
 		BasicConfigurator.configure();
 	}
 	
-	@Ignore
+
 	@Test
 	public void testGetResourceStreamFromClasspath() {
+		/* test_dir is in 
+			src/test/resources/test_dir
+			target/test-classes/test_dir
+		...and should be on the classpath.
+		 */
+        doCL(ClassLoader.getSystemClassLoader(), "sys");
+        //doCL(ClassPathUtil_Test.class.getClassLoader(), "ShowClasspath");
+
 		InputStream is = ClassPathUtil.getResourceStreamFromClasspath(this.getClass(),
-				"test_dir/test_file.txt");
+			"/test_dir/test_file.txt");
 		
+		// some pain to get there:
+			//"/src/test/resources/test_dir/test_file.txt");
+			//"src/test/resources/test_dir/test_file.txt");
+			//"/test_dir.test_file.txt");
+			//"test_dir.test_file.txt");
+			//"test_dir/test_file.txt");
 		Assert.assertNotNull(is);
-		
 	}
 	
 	
@@ -126,5 +145,23 @@ public class ClassPathUtil_Test {
 		Assert.assertTrue(list.get(0).endsWith("Runner.class"));
 		}
 	}
+	
+	
+	
+    public static void doCL(ClassLoader classLoader, String name) {
+        //Get the URLs
+        URL[] urls = ((URLClassLoader)classLoader).getURLs();
+
+        System.out.println("Showing classpath..."  + name);
+        for(int i=0; i< urls.length; i++)
+        {
+            System.out.println(urls[i].getFile());
+        }
+        System.out.println("...that's all folks.");
+
+        System.out.println("CWD:" + System.getProperty("user.dir"));
+
+    }
+
 
 }
