@@ -356,8 +356,9 @@ public class CollectionsUtil {
 	public static <K, V> Map<K, V> filterMap(Map<K, V> inputMap, Set<K> keysToReturn) {
 		Map<K, V> returnMap = new HashMap<K, V>();
 		for (K key : keysToReturn) {
-		if (!inputMap.containsKey(key))
-			throw new IllegalArgumentException("Filter map failed. Expected key not in input map: " + key.toString());
+			if (!inputMap.containsKey(key))
+				throw new IllegalArgumentException("Filter map failed. Expected key not in input map: "
+						+ key.toString());
 			returnMap.put(key, inputMap.get(key));
 		}
 		return returnMap;
@@ -432,6 +433,22 @@ public class CollectionsUtil {
 			Collection<V> newCollection = new ArrayList<V>();
 			newCollection.add(value);
 			one2ManyMap.put(key, newCollection);
+		}
+	}
+
+	/**
+	 * Updates the input key-to-count map by incrementing the count for the specified key
+	 * 
+	 * @param key
+	 * @param keyToCountMap
+	 */
+	public static <K> void addToCountMap(K key, Map<K, Integer> keyToCountMap) {
+		if (keyToCountMap.containsKey(key)) {
+			int count = keyToCountMap.get(key) + 1;
+			keyToCountMap.remove(key);
+			keyToCountMap.put(key, count);
+		} else {
+			keyToCountMap.put(key, 1);
 		}
 	}
 
