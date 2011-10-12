@@ -144,7 +144,7 @@ public class PropertiesUtil {
 	     * resource was not found and THROW_ON_LOAD_FAILURE is false]
 	     * @throws IllegalArgumentException if the resource was not found
 	     */
-	    public static Properties loadPropertiesFromClassLoader(String name, Class<?> clazz)
+	    public static Properties loadPropertiesFromClassPath(String name, Class<?> clazz)
 	    {
     		InputStream in = null;
     		Properties result = null;
