@@ -32,6 +32,8 @@ import java.util.ResourceBundle;
 
 import org.apache.commons.io.IOUtils;
 
+import edu.ucdenver.ccp.common.io.ClassPathUtil;
+
 /**
  * Utility class for dealing with Java Properties objects
  * 
@@ -116,7 +118,7 @@ public class PropertiesUtil {
 
 	/**
 	 * Loads a <code>Properties</code> object from the <code>InputStream</code> and returns a
-	 * <code>Map<String, String></code> contains the property key and values
+	 * <code>Map<String, String></code> contains the property key and values. Closes the stream.
 	 * 
 	 * @param inputStream
 	 * @return
@@ -128,86 +130,34 @@ public class PropertiesUtil {
 			properties.load(inputStream);
 			return getPropertiesMap(properties);
 		} finally {
-			inputStream.close();
+			IOUtils.closeQuietly(inputStream);
 		}
 	}
 	
 
 	    /**
-	     * Looks up a resource named 'name' in the classpath. The resource must map
-	     * to a file with .properties extention. The name is assumed to be absolute
-	     * and can use either "/" or "." for package segment separation with an
-	     * optional leading "/" and optional ".properties" suffix. Thus, the
-	     * following names refer to the same resource:
-	     * <pre>
-	     * some.pkg.Resource
-	     * some.pkg.Resource.properties
-	     * some/pkg/Resource
-	     * some/pkg/Resource.properties
-	     * /some/pkg/Resource
-	     * /some/pkg/Resource.properties
-	     * </pre>
+	     * Looks up a resource named 'name' in the classpath. 
 	     * 
-	     * @param name classpath resource name [may not be null]
-	     * @param loader classloader through which to load the resource [null
-	     * is equivalent to the application loader]
+	     * @param name classpath resource name
 	     * 
 	     * @return resource converted to java.util.Properties [may be null if the
 	     * resource was not found and THROW_ON_LOAD_FAILURE is false]
 	     * @throws IllegalArgumentException if the resource was not found
 	     */
-	    public static Properties loadPropertiesFromClassLoader(String name, ClassLoader loader)
+	    public static Properties loadPropertiesFromClassLoader(String name, Class<?> clazz)
 	    {
-	        if (name == null)
-	            throw new IllegalArgumentException ("null input: name");
-	        
-	        if (name.startsWith ("/"))
-	            name = name.substring (1);
-	        
-	        Properties result = null;
-	        InputStream in = null;
-	        
-	        try {
-	            if (loader == null)  loader = ClassLoader.getSystemClassLoader ();
-                name = name.replace ('.', '/');
-                
-                if (! name.endsWith (SUFFIX))
-                    name = name.concat (SUFFIX);
-                                
-                // Returns null on lookup failures:
-                in = loader.getResourceAsStream (name);
-                if (in != null) {
-                    result = new Properties ();
-                    result.load (in); // Can throw IOException
-                }
-                // else, throw is below
-	        }
-	        catch (Exception e) {
-	            result = null;
-	        }
-	        finally {
-	            if (in != null) try { in.close (); } catch (Throwable ignore) {}
-	        }
-	        
-	        if (result == null) {
-	            throw new IllegalArgumentException ("could not load [" + name + "]"+
-	                " as a classloader resource");
-	        }
-	        
-	        return result;
+    		InputStream in = null;
+    		Properties result = null;
+	    	try {
+	    		result = new Properties ();
+	    		in = ClassPathUtil.getResourceStreamFromClasspath(clazz, name);
+	    		result.load (in); // Can throw IOException
+	    	} catch (IOException ex) {
+				String message = "Problem loading properties stream.";
+				throw new RuntimeException(message, ex);
+			} finally {
+	    		IOUtils.closeQuietly(in);
+	    	}
+            return result;
 	    }
-	    
-	    /**
-	     * A convenience overload of {@link #loadProperties(String, ClassLoader)}
-	     * that uses the current thread's context classloader.
-	     */
-	    public static Properties loadPropertiesFromCurrentClassLoader (final String name)
-	    {
-	        return loadPropertiesFromClassLoader(name,
-	            Thread.currentThread ().getContextClassLoader ());
-	    }
-	        
-	    private static final String SUFFIX = ".properties";
-
-
 }
