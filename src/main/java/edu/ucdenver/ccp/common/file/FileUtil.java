@@ -253,8 +253,14 @@ public class FileUtil {
 	 * @throws IOException
 	 */
 	public static void copy(InputStream is, File file) throws IOException {
-		BufferedOutputStream outStream = new BufferedOutputStream(new FileOutputStream(file));
-		copy(is, outStream);
+		BufferedOutputStream outStream=null;
+		try {
+			outStream = new BufferedOutputStream(new FileOutputStream(file));
+			copy(is, outStream);
+		}
+		finally {
+			IOUtils.closeQuietly(outStream);
+		}
 	}
 
 	/**
@@ -265,9 +271,14 @@ public class FileUtil {
 	 * @throws IOException
 	 */
 	public static void copy(File file, OutputStream os) throws IOException {
-		FileInputStream fis = new FileInputStream(file);
-		copy(fis, os);
-		fis.close();
+		FileInputStream fis = null;
+		try {
+			fis = new FileInputStream(file);
+			copy(fis, os);
+		}
+		finally {
+			IOUtils.closeQuietly(fis);
+		}
 	}
 
 	/**
@@ -275,19 +286,35 @@ public class FileUtil {
 	 * 
 	 * @param fromFile
 	 * @param toFile
-	 * @throws IOException
+	 * @throws IOException, The exception is always wrapped. Look at 
+	 * the embedded exception to see what it was that caused it.
 	 */
 	public static void copy(File fromFile, File toFileOrDirectory) throws IOException {
 		validateFile(fromFile);
-		FileInputStream fis = new FileInputStream(fromFile);
-		File toFile = toFileOrDirectory;
-		if (toFileOrDirectory.isDirectory()) {
-			toFile = FileUtil.appendPathElementsToDirectory(toFileOrDirectory, fromFile.getName());
+		
+		if (!toFileOrDirectory.canWrite()) {
+			//throw ...
 		}
-		FileOutputStream fos = new FileOutputStream(toFile);
-		copy(fis, fos);
-		fis.close();
-		fos.close();
+		
+		FileInputStream fis=null;
+		FileOutputStream fos=null;
+		File toFile = toFileOrDirectory;
+		try {
+			fis = new FileInputStream(fromFile);
+
+			if (toFileOrDirectory.isDirectory()) {
+				toFile = FileUtil.appendPathElementsToDirectory(toFileOrDirectory, fromFile.getName());
+			}
+			fos = new FileOutputStream(toFile);
+			copy(fis, fos);
+		}
+		catch (IOException x) {
+			throw new IOException(x);
+		}
+		finally {
+			IOUtils.closeQuietly(fis);
+			IOUtils.closeQuietly(fos);
+		}
 		validateFile(toFile);
 	}
 
@@ -326,8 +353,15 @@ public class FileUtil {
 	 * @throws IOException
 	 */
 	public static String copyToString(File fromFile, CharacterEncoding fromFileEncoding) throws IOException {
-		validateFile(fromFile);
-		return StreamUtil.toString(new InputStreamReader(new FileInputStream(fromFile), fromFileEncoding.getDecoder()));
+		InputStreamReader isr=null;
+		try {
+			validateFile(fromFile);
+			isr = new InputStreamReader(new FileInputStream(fromFile), fromFileEncoding.getDecoder());
+			return StreamUtil.toString(isr);
+		}
+		finally {
+			IOUtils.closeQuietly(isr);
+		}
 	}
 
 	/**
@@ -374,10 +408,16 @@ public class FileUtil {
 	 * @throws IOException
 	 */
 	public static byte[] toByteArray(File file) throws IOException {
-		FileInputStream fis = new FileInputStream(file);
-		byte[] bytes = IOUtils.toByteArray(fis);
-		fis.close();
-		return bytes;
+		FileInputStream fis = null;
+		try {
+			fis = new FileInputStream(file);
+			byte[] bytes = IOUtils.toByteArray(fis);
+			return bytes;
+		}
+		finally {
+			IOUtils.closeQuietly(fis);
+		}
+
 	}
 
 	/**
@@ -754,8 +794,7 @@ public class FileUtil {
 				lineCount++;
 			return lineCount;
 		} finally {
-			if (reader != null)
-				reader.close();
+			IOUtils.closeQuietly(reader);
 		}
 	}
 
