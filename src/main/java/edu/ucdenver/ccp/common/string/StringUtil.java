@@ -38,10 +38,18 @@ import org.apache.log4j.Logger;
 import edu.ucdenver.ccp.common.file.CharacterEncoding;
 import edu.ucdenver.ccp.common.io.StreamUtil;
 
+/**
+ * String utilities 
+ */
 public class StringUtil {
 
 	private static final Logger logger = Logger.getLogger(StringUtil.class);
-
+	
+	/**
+	 * Private constructor to prevent instantiation.
+	 */
+	private StringUtil () { }
+	
 	/**
 	 * Returns true if the input string is an integer, false otherwise.
 	 * 
@@ -504,5 +512,19 @@ public class StringUtil {
 		InputStreamReader isr = new InputStreamReader(new ByteArrayInputStream(byteArray), encoding.getDecoder());
 		return StreamUtil.toString(isr);
 	}
-
+	
+	/**
+	 * Determine if argument contains astral characters - those outside BMP plane.
+	 * 
+	 * @param s non-null value to parse 
+	 * @return true if characters were found in planes other then BMP; otherwise, false.
+	 */
+	public static boolean containsAstralChars(String s) {
+		for (int i = 0, length = s.length(); i < length; i++) {
+			if (Character.isHighSurrogate(s.charAt(i)))
+					return true;
+		}
+		
+		return false;
+	}
 }

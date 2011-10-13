@@ -18,11 +18,11 @@
 
 package edu.ucdenver.ccp.common.string;
 
+import static edu.ucdenver.ccp.common.string.StringUtil.decode;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static edu.ucdenver.ccp.common.string.StringUtil.*;
 
 import java.nio.charset.MalformedInputException;
 import java.util.List;
@@ -652,4 +652,13 @@ public class StringUtilTest extends DefaultTestCase {
 
 	}
 
+	@Test
+	public void containsAstralCharsFalse() {
+		assertFalse(StringUtil.containsAstralChars("a"));
+	}
+	
+	@Test
+	public void containsAstralCharsTrue() {
+		assertTrue(StringUtil.containsAstralChars(String.valueOf(Character.toChars(0x10000))));
+	}
 }

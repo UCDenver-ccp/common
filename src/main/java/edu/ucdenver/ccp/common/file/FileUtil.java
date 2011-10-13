@@ -30,16 +30,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.ArrayList;
 import java.util.TreeSet;
 
 import org.apache.commons.io.FileUtils;
@@ -364,6 +363,10 @@ public class FileUtil {
 		}
 	}
 
+	public static boolean fileContainsAstralCharacters(File fromFile, CharacterEncoding fromFileEncoding) throws IOException {
+		return StringUtil.containsAstralChars(copyToString(fromFile, fromFileEncoding));
+	}
+	
 	/**
 	 * Copies the specified InputStream to the specified OutputStream
 	 * 
