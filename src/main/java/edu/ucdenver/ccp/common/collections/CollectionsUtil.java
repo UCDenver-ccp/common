@@ -518,6 +518,22 @@ public class CollectionsUtil {
 					collection.toString()));
 		return collection.iterator().next();
 	}
+	
+	
+	/**
+	 * Returns the single element contained by the input Iterable<T>
+	 * 
+	 * @throws IndexOutOfBoundsException
+	 *             if the iterable contains either zerso or >1 elements
+	 * @param <T>
+	 * @param collection
+	 * @return
+	 */
+	public static <T> T getSingleElement(Iterable<T> iterable) {
+		List<T> list = createList(iterable.iterator());
+		return getSingleElement(list);
+	}
+	
 
 	/**
 	 * Returns a String representation of the input collection by calling each element's toString()
