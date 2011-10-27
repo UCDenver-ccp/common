@@ -21,6 +21,7 @@ package edu.ucdenver.ccp.common.reflection;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -49,6 +50,27 @@ public class PrivateAccessor {
 	public static Object getPrivateFieldValue(Object o, String fieldName) throws NoSuchFieldException,
 			IllegalArgumentException, IllegalAccessException {
 		return getPrivateField(o, fieldName).get(o);
+	}
+
+	/**
+	 * Uses the Reflection API to set the value of a private member variable for the input Object.
+	 * 
+	 * @param o
+	 * @param fieldName
+	 * @param value
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 * @throws NoSuchFieldException
+	 */
+	public static void setPrivateFinalFieldValue(Object o, String fieldName, Object value) throws IllegalArgumentException,
+			IllegalAccessException, NoSuchFieldException {
+		Field field = getPrivateField(o, fieldName);
+		field.setAccessible(true);
+		/* The following removes the final modifier from the field */
+		Field modifiersField = Field.class.getDeclaredField("modifiers");
+		modifiersField.setAccessible(true);
+		modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+		field.set(o, value);
 	}
 
 	/**
