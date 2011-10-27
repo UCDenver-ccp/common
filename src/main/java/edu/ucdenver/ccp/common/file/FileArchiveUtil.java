@@ -129,6 +129,26 @@ public class FileArchiveUtil {
 			return new FileInputStream(file);
 		}
 	}
+	
+	
+	/**
+	 * GZIPs the input file and places the output file as specified by the zippedFile parameter
+	 * 
+	 * @param inputFile
+	 * @param zippedFile
+	 * @throws IOException
+	 */
+	public static void gzipFile(File inputFile, File zippedFile) throws IOException {
+		GZIPOutputStream gzipStream = new GZIPOutputStream(new FileOutputStream(zippedFile));
+		FileUtil.copy(inputFile, gzipStream);
+	}
+
+	
+//	public static File gzipFile(File file, File outputDirectory) throws IOException {
+//		File gzFile = new File(outputDirectory, file.getName() + ".gz");
+//		FileUtil.copy(file,new GZIPOutputStream(new FileOutputStream(gzFile)));
+//		return gzFile;
+//	}
 
 	/**
 	 * Returns an UncompressInputStream for the given .Z file
@@ -610,16 +630,5 @@ public class FileArchiveUtil {
 		return outputFile;
 	}
 
-	/**
-	 * GZIPs the input file and places the output file as specified by the zippedFile parameter
-	 * 
-	 * @param inputFile
-	 * @param zippedFile
-	 * @throws IOException
-	 */
-	public static void gzipFile(File inputFile, File zippedFile) throws IOException {
-		GZIPOutputStream gzipStream = new GZIPOutputStream(new FileOutputStream(zippedFile));
-		FileUtil.copy(inputFile, gzipStream);
-	}
-
+	
 }
