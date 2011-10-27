@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -69,7 +70,7 @@ public class FileUtil {
 	/* @formatter:on */
 
 	/**
-	 * Returns a temporary directory based on the File.createTempFile() method
+	 * Returns a temporary directory based on the File.createTempFile() method. The directory returned will be unique as it will have a UUID appended to it.
 	 * 
 	 * @param directoryName
 	 * @return
@@ -78,7 +79,7 @@ public class FileUtil {
 	 */
 	public static File createTemporaryDirectory(String directoryName) throws IOException {
 		File tempFile = File.createTempFile("tmp", "tmp");
-		File directory = new File(tempFile.getParentFile(), directoryName);
+		File directory = new File(tempFile.getParentFile(), directoryName + UUID.randomUUID().toString());
 		FileUtil.mkdir(directory);
 		return directory;
 	}
