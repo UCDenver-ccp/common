@@ -233,22 +233,22 @@ public class CollectionsUtil {
 		return new HashSet<T>(Arrays.asList(array));
 	}
 
-	/**
-	 * Returns a mapping based on the input key/value pairings. Keys and Values must be the same
-	 * type, and there must be an even number of input parameters, i.e. there must be a value for
-	 * every key.
-	 * 
-	 * @param <T>
-	 * @param mapKeyValuePairs
-	 * @return
-	 */
-	public static <T> Map<T, T> createMap(T... mapKeyValuePairs) {
-		Map<T, T> map = new HashMap<T, T>();
-		for (int i = 0; i < mapKeyValuePairs.length; i += 2) {
-			map.put(mapKeyValuePairs[i], mapKeyValuePairs[i + 1]);
-		}
-		return map;
-	}
+//	/**
+//	 * Returns a mapping based on the input key/value pairings. Keys and Values must be the same
+//	 * type, and there must be an even number of input parameters, i.e. there must be a value for
+//	 * every key.
+//	 * 
+//	 * @param <T>
+//	 * @param mapKeyValuePairs
+//	 * @return
+//	 */
+//	public static <T> Map<T, T> createMap(T... mapKeyValuePairs) {
+//		Map<T, T> map = new HashMap<T, T>();
+//		for (int i = 0; i < mapKeyValuePairs.length; i += 2) {
+//			map.put(mapKeyValuePairs[i], mapKeyValuePairs[i + 1]);
+//		}
+//		return map;
+//	}
 
 	/**
 	 * Simple utility to initialize a map with one key/value pair
@@ -262,6 +262,19 @@ public class CollectionsUtil {
 	public static <K, V> Map<K, V> createMap(K key, V value) {
 		Map<K, V> map = new HashMap<K, V>();
 		map.put(key, value);
+		return map;
+	}
+
+	/**
+	 * Initialize a map using a variable number of {@link Entry} objects as input
+	 * 
+	 * @param entries
+	 * @return
+	 */
+	public static <K, V> Map<K, V> createMap(Iterable<? extends Entry<K, V>> entries) {
+		Map<K, V> map = new HashMap<K, V>();
+		for (Entry<K, V> entry : entries)
+			map.put(entry.getKey(), entry.getValue());
 		return map;
 	}
 
@@ -518,8 +531,7 @@ public class CollectionsUtil {
 					collection.toString()));
 		return collection.iterator().next();
 	}
-	
-	
+
 	/**
 	 * Returns the single element contained by the input Iterable<T>
 	 * 
@@ -533,7 +545,6 @@ public class CollectionsUtil {
 		List<T> list = createList(iterable.iterator());
 		return getSingleElement(list);
 	}
-	
 
 	/**
 	 * Returns a String representation of the input collection by calling each element's toString()
