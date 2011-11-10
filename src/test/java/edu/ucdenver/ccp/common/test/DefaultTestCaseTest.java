@@ -1,15 +1,14 @@
 package edu.ucdenver.ccp.common.test;
 
 
-import org.junit.Before;
-import org.junit.Test;
-
-import edu.ucdenver.ccp.common.test.DefaultTestCase;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+
+import org.junit.Before;
+import org.junit.Test;
 
 
 public class DefaultTestCaseTest extends DefaultTestCase {
@@ -43,15 +42,13 @@ public class DefaultTestCaseTest extends DefaultTestCase {
 		System.out.println("file:" + dir.getAbsolutePath());
 	}
 	
+	/**
+	 * Test JUnit temp folder creation API. There was a problem with a particular junit version hence the test.
+	 */
 	@Test
 	public void test_folder_creation() {
-		long start = System.nanoTime();
-		for (int i=1; i<10000; i++)
-			folder.newFolder("folder" + i);
-		
-		long end = System.nanoTime();
-		long durationMilli = (end - start)/1000000;
-		assertTrue (durationMilli < 10000);
-
+		File f = folder.newFolder("tempfolder");
+		assertTrue(f.exists());
+		assertTrue(f.isDirectory());
 	}
 }
