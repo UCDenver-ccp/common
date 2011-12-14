@@ -563,15 +563,15 @@ public class CollectionsUtil {
 
 	/**
 	 * Splices the input lists into a single list
+	 * @param list1 
+	 * @param list2 
 	 * 
-	 * @param expectedRemoveSpanlessAnnotationsLines
-	 * @param expectedRemoveUnwantedAnnotationsLines
 	 * @return
 	 */
-	public static <T> List<T> splice(List<T>... lists) {
+	public static <T> List<T> splice(List<T> list1, List<T> list2) {
 		List<T> outputList = new ArrayList<T>();
-		for (List<T> list : lists)
-			outputList.addAll(list);
+		outputList.addAll(list1);
+		outputList.addAll(list2);
 		return outputList;
 	}
 
