@@ -233,22 +233,22 @@ public class CollectionsUtil {
 		return new HashSet<T>(Arrays.asList(array));
 	}
 
-//	/**
-//	 * Returns a mapping based on the input key/value pairings. Keys and Values must be the same
-//	 * type, and there must be an even number of input parameters, i.e. there must be a value for
-//	 * every key.
-//	 * 
-//	 * @param <T>
-//	 * @param mapKeyValuePairs
-//	 * @return
-//	 */
-//	public static <T> Map<T, T> createMap(T... mapKeyValuePairs) {
-//		Map<T, T> map = new HashMap<T, T>();
-//		for (int i = 0; i < mapKeyValuePairs.length; i += 2) {
-//			map.put(mapKeyValuePairs[i], mapKeyValuePairs[i + 1]);
-//		}
-//		return map;
-//	}
+	// /**
+	// * Returns a mapping based on the input key/value pairings. Keys and Values must be the same
+	// * type, and there must be an even number of input parameters, i.e. there must be a value for
+	// * every key.
+	// *
+	// * @param <T>
+	// * @param mapKeyValuePairs
+	// * @return
+	// */
+	// public static <T> Map<T, T> createMap(T... mapKeyValuePairs) {
+	// Map<T, T> map = new HashMap<T, T>();
+	// for (int i = 0; i < mapKeyValuePairs.length; i += 2) {
+	// map.put(mapKeyValuePairs[i], mapKeyValuePairs[i + 1]);
+	// }
+	// return map;
+	// }
 
 	/**
 	 * Simple utility to initialize a map with one key/value pair
@@ -559,6 +559,20 @@ public class CollectionsUtil {
 		for (T item : collection)
 			strings.add(item.toString());
 		return strings;
+	}
+
+	/**
+	 * Splices the input lists into a single list
+	 * 
+	 * @param expectedRemoveSpanlessAnnotationsLines
+	 * @param expectedRemoveUnwantedAnnotationsLines
+	 * @return
+	 */
+	public static <T> List<T> splice(List<T>... lists) {
+		List<T> outputList = new ArrayList<T>();
+		for (List<T> list : lists)
+			outputList.addAll(list);
+		return outputList;
 	}
 
 }
