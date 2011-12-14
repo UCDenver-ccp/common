@@ -24,10 +24,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -526,5 +529,21 @@ public class StringUtil {
 		}
 		
 		return false;
+	}
+
+	/**
+	 * Parse date with formatter. 
+	 * 
+	 * @param f formatter
+	 * @param date String date value
+	 * @return date 
+	 * @throws RuntimeException if {@link ParseException} is thrown
+	 */
+	public static Date parseDate(DateFormat f, String date) {
+		try {
+			return f.parse(date);
+		} catch (ParseException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }
