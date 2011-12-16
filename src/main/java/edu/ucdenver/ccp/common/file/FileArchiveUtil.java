@@ -214,7 +214,7 @@ public class FileArchiveUtil {
 	 * @param file
 	 * @return true if the file is a gzip file, false otherwise
 	 */
-	private static boolean isGzipFile(File file) {
+	public static boolean isGzipFile(File file) {
 		return hasCaseInsensitiveSuffix(file, gz_suffix) || hasCaseInsensitiveSuffix(file, tgz_suffix);
 	}
 
