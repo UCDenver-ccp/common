@@ -62,9 +62,14 @@ public class PrivateAccessor {
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
 	 */
-	public static Object getPrivateStaticFieldValue(Class<?> cls, String fieldName) throws IllegalArgumentException,
-			IllegalAccessException {
-		return getPrivateField(cls, fieldName).get(null);
+	public static Object getPrivateStaticFieldValue(Class<?> cls, String fieldName) {
+		try {
+			return getPrivateField(cls, fieldName).get(null);
+		} catch (IllegalArgumentException e) {
+			throw new RuntimeException(e);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
