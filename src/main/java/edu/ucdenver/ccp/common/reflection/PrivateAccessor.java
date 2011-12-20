@@ -53,6 +53,21 @@ public class PrivateAccessor {
 	}
 
 	/**
+	 * Returns a constant value from a private static field in the input class with the input field
+	 * name
+	 * 
+	 * @param cls
+	 * @param fieldName
+	 * @return
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 */
+	public static Object getPrivateStaticFieldValue(Class<?> cls, String fieldName) throws IllegalArgumentException,
+			IllegalAccessException {
+		return getPrivateField(cls, fieldName).get(null);
+	}
+
+	/**
 	 * Uses the Reflection API to set the value of a private member variable for the input Object.
 	 * 
 	 * @param o
@@ -62,8 +77,8 @@ public class PrivateAccessor {
 	 * @throws IllegalAccessException
 	 * @throws NoSuchFieldException
 	 */
-	public static void setPrivateFinalFieldValue(Object o, String fieldName, Object value) throws IllegalArgumentException,
-			IllegalAccessException, NoSuchFieldException {
+	public static void setPrivateFinalFieldValue(Object o, String fieldName, Object value)
+			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException {
 		Field field = getPrivateField(o, fieldName);
 		field.setAccessible(true);
 		/* The following removes the final modifier from the field */
