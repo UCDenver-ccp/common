@@ -36,7 +36,7 @@ import edu.ucdenver.ccp.common.ftp.FTPUtil.FileType;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
+@Target({ElementType.FIELD, ElementType.TYPE})
 public @interface FtpDownload {
 	/**
 	 * The FTP server address, e.g. ftp.ncbi.nih.gov

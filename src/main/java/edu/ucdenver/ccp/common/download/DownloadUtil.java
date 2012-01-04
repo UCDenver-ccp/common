@@ -40,11 +40,13 @@ import edu.ucdenver.ccp.common.http.HttpUtil;
 public class DownloadUtil {
 
 	/**
-	 * This method works in conjunction with the FtpDownload annotation to automatically download
-	 * via FTP a specified file.
+	 * This method works in conjunction with the {@link FtpDownload} and {@link HttpDownload} annotation to automatically download
+	 * a specified file and assign it to the annotated object field.
 	 * 
 	 * @param object
 	 * @param workDirectory
+	 * @param userName 
+	 * @param password 
 	 * @param clean
 	 * @throws SocketException
 	 * @throws IOException
@@ -54,29 +56,54 @@ public class DownloadUtil {
 	public static void download(Object object, File workDirectory, String userName, String password, boolean clean)
 			throws SocketException, IOException, IllegalArgumentException, IllegalAccessException {
 		for (Field field : object.getClass().getDeclaredFields()) {
-			if (field.isAnnotationPresent(FtpDownload.class)) {
-				handleFtpDownload(object, workDirectory, field, userName, password, clean);
-			} else if (field.isAnnotationPresent(HttpDownload.class)) {
-				handleHttpDownload(object, workDirectory, field, clean);
-			}
+			File file = null;
+			if (field.isAnnotationPresent(FtpDownload.class))
+				file = handleFtpDownload(workDirectory, field.getAnnotation(FtpDownload.class), userName, password, clean);
+			else if (field.isAnnotationPresent(HttpDownload.class))
+				file = handleHttpDownload(workDirectory, field.getAnnotation(HttpDownload.class), clean);
+			
+			if (file != null)
+				assignField(object, field, file);
 		}
 	}
+
+	/**
+	 * This method works in conjunction with the {@link FtpDownload} and {@link HttpDownload} class annotation 
+	 * to automatically download a specified file. 
+	 * @param klass on which annotation is present
+	 * @param workDirectory
+	 * @param userName
+	 * @param password
+	 * @param clean
+	 * @return downloaded File
+	 * @throws SocketException
+	 * @throws IOException
+	 * @throws IllegalArgumentException
+	 */
+	public static File download(Class<?> klass, File workDirectory, String userName, String password, boolean clean)
+			throws SocketException, IOException, IllegalArgumentException {
+		File f = null; 
+		
+		if (klass.isAnnotationPresent(HttpDownload.class))
+			f =  handleHttpDownload(workDirectory, klass.getAnnotation(HttpDownload.class), clean);
+		else if (klass.isAnnotationPresent(FtpDownload.class))
+			f =  handleFtpDownload(workDirectory, klass.getAnnotation(FtpDownload.class), userName, password, clean);		
+		
+		return f;
+	}	
 
 	/**
 	 * This method works in conjunction with the HttpDownload annotation to automatically download
 	 * via HTTP the specified file
 	 * 
-	 * @param object
 	 * @param workDirectory
 	 * @param field
 	 * @param clean
 	 * @throws IOException
 	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
 	 */
-	private static void handleHttpDownload(Object object, File workDirectory, Field field, boolean clean)
-			throws IOException, IllegalArgumentException, IllegalAccessException {
-		HttpDownload httpd = field.getAnnotation(HttpDownload.class);
+	private static File handleHttpDownload(File workDirectory, HttpDownload httpd, boolean clean)
+			throws IOException, IllegalArgumentException {
 		URL url = new URL(httpd.url());
 		String fileName = httpd.fileName();
 		if (fileName.isEmpty())
@@ -85,25 +112,34 @@ public class DownloadUtil {
 		if (!fileExists(downloadedFile, clean)) {
 			downloadedFile = HttpUtil.downloadFile(url, downloadedFile);
 		}
-		unpackFileAndAssignField(object, workDirectory, field, clean, downloadedFile);
+		return unpackFile(workDirectory, clean, downloadedFile);
 	}
 
 	/**
-	 * Unpacks (unzips) the downloaded file and assigns it to the specified File field
+	 * Unpacks (unzips) the downloaded file
 	 * 
-	 * @param object
 	 * @param workDirectory
-	 * @param field
 	 * @param clean
 	 * @param downloadedFile
 	 * @throws IOException
-	 * @throws IllegalAccessException
 	 */
-	private static void unpackFileAndAssignField(Object object, File workDirectory, Field field, boolean clean,
-			File downloadedFile) throws IOException, IllegalAccessException {
+	private static File unpackFile(File workDirectory, boolean clean,
+			File downloadedFile) throws IOException {
 		File unpackedDownloadedFile = unpackDownloadedFile(workDirectory, clean, downloadedFile);
+		return unpackedDownloadedFile;
+	}
+
+	/**
+	 * Assign file to the specified File field
+	 * 
+	 * @param object in which field exists
+	 * @param field field to assign
+	 * @param file field value to assign
+	 * @throws IllegalAccessException if errors occur while assigning field value
+	 */
+	private static void assignField(Object object, Field field, File file) throws IllegalAccessException {
 		field.setAccessible(true);
-		field.set(object, unpackedDownloadedFile);
+		field.set(object, file);
 	}
 
 	/**
@@ -128,7 +164,6 @@ public class DownloadUtil {
 	/**
 	 * Downloads the specified file via FTP, places the file in the work directory
 	 * 
-	 * @param object
 	 * @param workDirectory
 	 * @param field
 	 * @param userName
@@ -136,11 +171,9 @@ public class DownloadUtil {
 	 * @param clean
 	 * @throws IOException
 	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
 	 */
-	private static void handleFtpDownload(Object object, File workDirectory, Field field, String userName,
-			String password, boolean clean) throws IOException, IllegalArgumentException, IllegalAccessException {
-		FtpDownload ftpd = field.getAnnotation(FtpDownload.class);
+	private static File handleFtpDownload(File workDirectory, FtpDownload ftpd, String userName,
+			String password, boolean clean) throws IOException, IllegalArgumentException {
 		String uName = (userName == null) ? ftpd.username() : userName;
 		String pWord = (password == null) ? ftpd.password() : password;
 		File downloadedFile = FileUtil.appendPathElementsToDirectory(workDirectory, ftpd.filename());
@@ -148,7 +181,7 @@ public class DownloadUtil {
 			downloadedFile = FTPUtil.downloadFile(ftpd.server(), ftpd.port(), ftpd.path(), ftpd.filename(),
 					ftpd.filetype(), workDirectory, uName, pWord);
 		}
-		unpackFileAndAssignField(object, workDirectory, field, clean, downloadedFile);
+		return unpackFile(workDirectory, clean, downloadedFile);
 	}
 
 	/**
