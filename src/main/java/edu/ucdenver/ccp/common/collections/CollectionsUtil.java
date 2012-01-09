@@ -466,6 +466,24 @@ public class CollectionsUtil {
 	}
 
 	/**
+	 * Updates the input key-to-count map by incrementing the count for the specified key by the specified count amount
+	 * 
+	 * @param key
+	 * @param count 
+	 * @param keyToCountMap
+	 */
+	public static <K> void addToCountMap(K key, int inputCount, Map<K, Integer> keyToCountMap) {
+		if (keyToCountMap.containsKey(key)) {
+			int count = keyToCountMap.get(key) + inputCount;
+			keyToCountMap.remove(key);
+			keyToCountMap.put(key, count);
+		} else {
+			keyToCountMap.put(key, inputCount);
+		}
+	}
+	
+	
+	/**
 	 * Consolidates the Collection of input Collections into a single Collection
 	 * 
 	 * @param <T>
