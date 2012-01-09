@@ -380,18 +380,38 @@ public class CollectionsUtil {
 	}
 
 	/**
+	 * Simple enum for expressing the sort order to be used by a sorting operation
+	 * 
+	 * @author Center for Computational Pharmacology, UC Denver; ccpsupport@ucdenver.edu
+	 * 
+	 */
+	public enum SortOrder {
+		ASCENDING(1),
+		DESCENDING(-1);
+		private final int modifier;
+
+		private SortOrder(int modifier) {
+			this.modifier = modifier;
+		}
+
+		public int modifier() {
+			return modifier;
+		}
+	}
+
+	/**
 	 * Sorts the input map by its values and return a sorted version of the map
 	 * 
 	 * @param inputMap
 	 * @return
 	 */
-	public static <K, V extends Comparable<V>> Map<K, V> sortMapByValues(Map<K, V> inputMap) {
+	public static <K, V extends Comparable<V>> Map<K, V> sortMapByValues(Map<K, V> inputMap, final SortOrder sortOrder) {
 		ArrayList<Entry<K, V>> entryList = new ArrayList<Entry<K, V>>(inputMap.entrySet());
 		Collections.sort(entryList, new Comparator<Entry<K, V>>() {
 
 			@Override
 			public int compare(Entry<K, V> entry1, Entry<K, V> entry2) {
-				return entry1.getValue().compareTo(entry2.getValue());
+				return entry1.getValue().compareTo(entry2.getValue()) * sortOrder.modifier();
 			}
 
 		});

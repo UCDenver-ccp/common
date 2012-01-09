@@ -37,6 +37,7 @@ import java.util.Set;
 
 import org.junit.Test;
 
+import edu.ucdenver.ccp.common.collections.CollectionsUtil.SortOrder;
 import edu.ucdenver.ccp.common.test.DefaultTestCase;
 
 /**
@@ -613,7 +614,7 @@ public class CollectionsUtilTest extends DefaultTestCase {
 	}
 
 	@Test
-	public void testSortMapByValues() {
+	public void testSortMapByValues_Ascending() {
 		Map<String, Integer> inputMap = new HashMap<String, Integer>();
 		inputMap.put("B", 10);
 		inputMap.put("C", 10);
@@ -622,10 +623,10 @@ public class CollectionsUtilTest extends DefaultTestCase {
 		inputMap.put("E", 20);
 		inputMap.put("Z", -5);
 
-		Map<String, Integer> sortedMap = CollectionsUtil.sortMapByValues(inputMap);
-		
+		Map<String, Integer> sortedMap = CollectionsUtil.sortMapByValues(inputMap, SortOrder.ASCENDING);
+
 		System.out.println(sortedMap.toString());
-		
+
 		int index = 0;
 		for (Entry<String, Integer> entry : sortedMap.entrySet()) {
 			switch (index++) {
@@ -656,6 +657,58 @@ public class CollectionsUtilTest extends DefaultTestCase {
 			case 5:
 				assertEquals("E", entry.getKey());
 				assertEquals(Integer.valueOf(20), entry.getValue());
+				break;
+
+			default:
+				fail("Should not be any more values in the map");
+			}
+		}
+	}
+
+	@Test
+	public void testSortMapByValues_Descending() {
+		Map<String, Integer> inputMap = new HashMap<String, Integer>();
+		inputMap.put("B", 10);
+		inputMap.put("C", 10);
+		inputMap.put("A", 0);
+		inputMap.put("D", 15);
+		inputMap.put("E", 20);
+		inputMap.put("Z", -5);
+
+		Map<String, Integer> sortedMap = CollectionsUtil.sortMapByValues(inputMap, SortOrder.DESCENDING);
+
+		System.out.println(sortedMap.toString());
+
+		int index = 0;
+		for (Entry<String, Integer> entry : sortedMap.entrySet()) {
+			switch (index++) {
+			case 0:
+				assertEquals("E", entry.getKey());
+				assertEquals(Integer.valueOf(20), entry.getValue());
+				break;
+			case 1:
+				assertEquals("D", entry.getKey());
+				assertEquals(Integer.valueOf(15), entry.getValue());
+				break;
+
+			case 2:
+				assertTrue(entry.getKey().equals("B") || entry.getKey().equals("C"));
+				assertEquals(Integer.valueOf(10), entry.getValue());
+				break;
+
+			case 3:
+				assertTrue(entry.getKey().equals("B") || entry.getKey().equals("C"));
+				assertEquals(Integer.valueOf(10), entry.getValue());
+				break;
+
+			case 4:
+				assertEquals("A", entry.getKey());
+				assertEquals(Integer.valueOf(0), entry.getValue());
+				break;
+
+			case 5:
+				assertEquals("Z", entry.getKey());
+				assertEquals(Integer.valueOf(-5), entry.getValue());
 				break;
 
 			default:
