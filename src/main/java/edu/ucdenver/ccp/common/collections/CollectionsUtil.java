@@ -22,9 +22,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -378,6 +380,28 @@ public class CollectionsUtil {
 	}
 
 	/**
+	 * Sorts the input map by its values and return a sorted version of the map
+	 * 
+	 * @param inputMap
+	 * @return
+	 */
+	public static <K, V extends Comparable<V>> Map<K, V> sortMapByValues(Map<K, V> inputMap) {
+		ArrayList<Entry<K, V>> entryList = new ArrayList<Entry<K, V>>(inputMap.entrySet());
+		Collections.sort(entryList, new Comparator<Entry<K, V>>() {
+
+			@Override
+			public int compare(Entry<K, V> entry1, Entry<K, V> entry2) {
+				return entry1.getValue().compareTo(entry2.getValue());
+			}
+
+		});
+		Map<K, V> sortedMap = new LinkedHashMap<K, V>();
+		for (Entry<K, V> entry : entryList)
+			sortedMap.put(entry.getKey(), entry.getValue());
+		return sortedMap;
+	}
+
+	/**
 	 * Converts a list of Strings to a list of Integers. Assumes the Strings are all integers.
 	 * 
 	 * @param intsAsStrings
@@ -466,10 +490,11 @@ public class CollectionsUtil {
 	}
 
 	/**
-	 * Updates the input key-to-count map by incrementing the count for the specified key by the specified count amount
+	 * Updates the input key-to-count map by incrementing the count for the specified key by the
+	 * specified count amount
 	 * 
 	 * @param key
-	 * @param count 
+	 * @param count
 	 * @param keyToCountMap
 	 */
 	public static <K> void addToCountMap(K key, int inputCount, Map<K, Integer> keyToCountMap) {
@@ -481,8 +506,7 @@ public class CollectionsUtil {
 			keyToCountMap.put(key, inputCount);
 		}
 	}
-	
-	
+
 	/**
 	 * Consolidates the Collection of input Collections into a single Collection
 	 * 
@@ -581,8 +605,9 @@ public class CollectionsUtil {
 
 	/**
 	 * Splices the input lists into a single list
-	 * @param list1 
-	 * @param list2 
+	 * 
+	 * @param list1
+	 * @param list2
 	 * 
 	 * @return
 	 */

@@ -21,6 +21,8 @@ package edu.ucdenver.ccp.common.collections;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
@@ -30,6 +32,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.junit.Test;
@@ -606,6 +609,59 @@ public class CollectionsUtilTest extends DefaultTestCase {
 
 		assertEquals(String.format("Expected Key should be in the map."), expectedMap,
 				CollectionsUtil.filterMap(actualMap, actualSet));
+
+	}
+
+	@Test
+	public void testSortMapByValues() {
+		Map<String, Integer> inputMap = new HashMap<String, Integer>();
+		inputMap.put("B", 10);
+		inputMap.put("C", 10);
+		inputMap.put("A", 0);
+		inputMap.put("D", 15);
+		inputMap.put("E", 20);
+		inputMap.put("Z", -5);
+
+		Map<String, Integer> sortedMap = CollectionsUtil.sortMapByValues(inputMap);
+		
+		System.out.println(sortedMap.toString());
+		
+		int index = 0;
+		for (Entry<String, Integer> entry : sortedMap.entrySet()) {
+			switch (index++) {
+			case 0:
+				assertEquals("Z", entry.getKey());
+				assertEquals(Integer.valueOf(-5), entry.getValue());
+				break;
+			case 1:
+				assertEquals("A", entry.getKey());
+				assertEquals(Integer.valueOf(0), entry.getValue());
+				break;
+
+			case 2:
+				assertTrue(entry.getKey().equals("B") || entry.getKey().equals("C"));
+				assertEquals(Integer.valueOf(10), entry.getValue());
+				break;
+
+			case 3:
+				assertTrue(entry.getKey().equals("B") || entry.getKey().equals("C"));
+				assertEquals(Integer.valueOf(10), entry.getValue());
+				break;
+
+			case 4:
+				assertEquals("D", entry.getKey());
+				assertEquals(Integer.valueOf(15), entry.getValue());
+				break;
+
+			case 5:
+				assertEquals("E", entry.getKey());
+				assertEquals(Integer.valueOf(20), entry.getValue());
+				break;
+
+			default:
+				fail("Should not be any more values in the map");
+			}
+		}
 
 	}
 
