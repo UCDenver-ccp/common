@@ -597,11 +597,11 @@ public class CollectionsUtilTest extends DefaultTestCase {
 	 * Tests the filterMap() method with Invalid test input. This is a negative test case
 	 */
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testfilterMap_InValidInput() {
+	@Test()
+	public void testfilterMap_keyNotPresentInMapIsIgnored() {
 		Map<String, String> actualMap = CollectionsUtil.createMap("1", "blue", "7", "red", "3", "green");
 
-		Map<String, String> expectedMap = CollectionsUtil.createMap("1", "blue", "2", "red", "3", "green");
+		Map<String, String> expectedMap = CollectionsUtil.createMap("1", "blue", "3", "green");
 
 		Set<String> actualSet = new HashSet<String>();
 		actualSet.add("1");

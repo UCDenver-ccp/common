@@ -371,10 +371,8 @@ public class CollectionsUtil {
 	public static <K, V> Map<K, V> filterMap(Map<K, V> inputMap, Set<K> keysToReturn) {
 		Map<K, V> returnMap = new HashMap<K, V>();
 		for (K key : keysToReturn) {
-			if (!inputMap.containsKey(key))
-				throw new IllegalArgumentException("Filter map failed. Expected key not in input map: "
-						+ key.toString());
-			returnMap.put(key, inputMap.get(key));
+			if (inputMap.containsKey(key))
+				returnMap.put(key, inputMap.get(key));
 		}
 		return returnMap;
 	}
