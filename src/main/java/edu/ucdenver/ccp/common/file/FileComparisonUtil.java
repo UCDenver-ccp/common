@@ -97,7 +97,7 @@ public class FileComparisonUtil {
 		boolean allLinesAsExpected = true;
 		for (String line : lines) {
 			if (!isAnExpectedLine(line, expectedLinesInFile, lineIndex, lineOrder, columnOrder, columnDelimiterRegex)) {
-				logger.info(String.format("Line in file not in expected list: '%s'", line));
+				logger.info(String.format("Line (%d) in file not in expected list: '%s'", lineIndex, line));
 				allLinesAsExpected = false;
 			}
 			lineIndex++;
