@@ -155,15 +155,153 @@ public class CollectionsUtil {
 	 * @param item2
 	 * @param item3
 	 * @param item4
-	 * @param otherItems
+	 * @param item5
 	 * @return
 	 */
-	public static <T> List<T> createList(T item1, T item2, T item3, T item4, T... otherItems) {
+	public static <T> List<T> createList(T item1, T item2, T item3, T item4, T item5) {
 		List<T> list = new ArrayList<T>();
 		list.add(item1);
 		list.add(item2);
 		list.add(item3);
 		list.add(item4);
+		list.add(item5);
+		return list;
+	}
+
+	/**
+	 * Returns a List<T> containing the input arguments.
+	 * 
+	 * @param <T>
+	 * @param item1
+	 * @param item2
+	 * @param item3
+	 * @param item4
+	 * @param item5
+	 * @param item6
+	 * @return
+	 */
+	public static <T> List<T> createList(T item1, T item2, T item3, T item4, T item5, T item6) {
+		List<T> list = new ArrayList<T>();
+		list.add(item1);
+		list.add(item2);
+		list.add(item3);
+		list.add(item4);
+		list.add(item5);
+		list.add(item6);
+		return list;
+	}
+
+	/**
+	 * Returns a List<T> containing the input arguments.
+	 * 
+	 * @param <T>
+	 * @param item1
+	 * @param item2
+	 * @param item3
+	 * @param item4
+	 * @param item5
+	 * @param item6
+	 * @param item7
+	 * @return
+	 */
+	public static <T> List<T> createList(T item1, T item2, T item3, T item4, T item5, T item6, T item7) {
+		List<T> list = new ArrayList<T>();
+		list.add(item1);
+		list.add(item2);
+		list.add(item3);
+		list.add(item4);
+		list.add(item5);
+		list.add(item6);
+		list.add(item7);
+		return list;
+	}
+
+	/**
+	 * Returns a List<T> containing the input arguments.
+	 * 
+	 * @param <T>
+	 * @param item1
+	 * @param item2
+	 * @param item3
+	 * @param item4
+	 * @param item5
+	 * @param item6
+	 * @param item7
+	 * @param item8
+	 * @return
+	 */
+	public static <T> List<T> createList(T item1, T item2, T item3, T item4, T item5, T item6, T item7, T item8) {
+		List<T> list = new ArrayList<T>();
+		list.add(item1);
+		list.add(item2);
+		list.add(item3);
+		list.add(item4);
+		list.add(item5);
+		list.add(item6);
+		list.add(item7);
+		list.add(item8);
+		return list;
+	}
+
+	/**
+	 * Returns a List<T> containing the input arguments.
+	 * 
+	 * @param <T>
+	 * @param item1
+	 * @param item2
+	 * @param item3
+	 * @param item4
+	 * @param item5
+	 * @param item6
+	 * @param item7
+	 * @param item8
+	 * @param item9
+	 * @return
+	 */
+	public static <T> List<T> createList(T item1, T item2, T item3, T item4, T item5, T item6, T item7, T item8, T item9) {
+		List<T> list = new ArrayList<T>();
+		list.add(item1);
+		list.add(item2);
+		list.add(item3);
+		list.add(item4);
+		list.add(item5);
+		list.add(item6);
+		list.add(item7);
+		list.add(item8);
+		list.add(item9);
+		return list;
+	}
+
+	/**
+	 * Returns a List<T> containing the input arguments.
+	 * 
+	 * @param <T>
+	 * @param item1
+	 * @param item2
+	 * @param item3
+	 * @param item4
+	 * @param item5
+	 * @param item6
+	 * @param item7
+	 * @param item8
+	 * @param item9
+	 * @param item10
+	 * @param otherItems
+	 * @return
+	 */
+	public static <T> List<T> createList(T item1, T item2, T item3, T item4, T item5, T item6, T item7, T item8,
+			T item9, T item10, T... otherItems) {
+		List<T> list = new ArrayList<T>();
+		list.add(item1);
+		list.add(item2);
+		list.add(item3);
+		list.add(item4);
+		list.add(item5);
+		list.add(item6);
+		list.add(item7);
+		list.add(item8);
+		list.add(item9);
+		list.add(item10);
 		for (T item : otherItems)
 			list.add(item);
 		return list;
