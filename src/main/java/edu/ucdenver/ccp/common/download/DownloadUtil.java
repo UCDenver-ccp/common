@@ -26,8 +26,14 @@ import java.net.URL;
 
 import org.apache.log4j.Logger;
 
+import edu.ucdenver.ccp.common.calendar.CalendarUtil;
+import edu.ucdenver.ccp.common.collections.CollectionsUtil;
+import edu.ucdenver.ccp.common.file.CharacterEncoding;
 import edu.ucdenver.ccp.common.file.FileArchiveUtil;
 import edu.ucdenver.ccp.common.file.FileUtil;
+import edu.ucdenver.ccp.common.file.FileWriterUtil;
+import edu.ucdenver.ccp.common.file.FileWriterUtil.FileSuffixEnforcement;
+import edu.ucdenver.ccp.common.file.FileWriterUtil.WriteMode;
 import edu.ucdenver.ccp.common.ftp.FTPUtil;
 import edu.ucdenver.ccp.common.http.HttpUtil;
 
@@ -93,6 +99,9 @@ public class DownloadUtil {
 			if (!getReadySemaphoreFile(file).createNewFile())
 				throw new RuntimeException("Semaphore file could not be created b/c it already exists: "
 						+ getReadySemaphoreFile(file).getAbsolutePath());
+			FileWriterUtil.printLines(CollectionsUtil.createList("Downloaded on " + CalendarUtil.getDateStamp("/")),
+					getReadySemaphoreFile(file), CharacterEncoding.UTF_8, WriteMode.OVERWRITE,
+					FileSuffixEnforcement.OFF);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
