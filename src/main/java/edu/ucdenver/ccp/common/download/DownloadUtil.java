@@ -160,7 +160,10 @@ public class DownloadUtil {
 			fileName = HttpUtil.getFinalPathElement(url);
 		File downloadedFile = FileUtil.appendPathElementsToDirectory(workDirectory, fileName);
 		if (!fileExists(downloadedFile, clean)) {
+			long startTime = System.currentTimeMillis();
 			downloadedFile = HttpUtil.downloadFile(url, downloadedFile);
+			long duration = System.currentTimeMillis() - startTime;
+			logger.info("Duration of " + downloadedFile.getName() + " download: " + (duration / (1000 * 60)) + "min");
 		}
 		return unpackFile(workDirectory, clean, downloadedFile);
 	}
@@ -231,8 +234,11 @@ public class DownloadUtil {
 		String pWord = (password == null) ? ftpd.password() : password;
 		File downloadedFile = FileUtil.appendPathElementsToDirectory(workDirectory, ftpd.filename());
 		if (!fileExists(downloadedFile, clean)) {
+			long startTime = System.currentTimeMillis();
 			downloadedFile = FTPUtil.downloadFile(ftpd.server(), ftpd.port(), ftpd.path(), ftpd.filename(),
 					ftpd.filetype(), workDirectory, uName, pWord);
+			long duration = System.currentTimeMillis() - startTime;
+			logger.info("Duration of " + downloadedFile.getName() + " download: " + (duration / (1000 * 60)) + "min");
 		}
 		return unpackFile(workDirectory, clean, downloadedFile);
 	}
