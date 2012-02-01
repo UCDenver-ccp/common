@@ -114,6 +114,8 @@ public class DownloadViaAnnotationsTest extends DefaultTestCase {
 		List<String> expectedLines = CollectionsUtil
 				.createList("This file already exists and doesn't need to be downloaded again.");
 		FileWriterUtil.printLines(expectedLines, sampleFile, CharacterEncoding.US_ASCII);
+		File readySemaphoreFile = new File(workDirectory, "sampleFile.ascii.ready");
+		assertTrue(readySemaphoreFile.createNewFile());
 		MyGzFileProcessor_BAD_PORT fileProcessor = new MyGzFileProcessor_BAD_PORT(workDirectory, clean);
 		assertEquals("should be sampleFile.ascii", "sampleFile.ascii", fileProcessor.getFileToProcess().getName());
 		assertTrue("file should exist locally", fileProcessor.getFileToProcess().exists());
@@ -128,6 +130,8 @@ public class DownloadViaAnnotationsTest extends DefaultTestCase {
 		boolean clean = false;
 		ClassPathUtil.copyClasspathResourceToFile(getClass(), SAMPLE_GZ_FILE_NAME,
 				FileUtil.appendPathElementsToDirectory(workDirectory, SAMPLE_GZ_FILE_NAME));
+		File readySemaphoreFile = new File(workDirectory, "sampleFile.ascii.ready");
+		assertTrue(readySemaphoreFile.createNewFile());
 		MyGzFileProcessor_BAD_PORT fileProcessor = new MyGzFileProcessor_BAD_PORT(workDirectory, clean);
 		assertEquals("should be sampleFile.ascii", "sampleFile.ascii", fileProcessor.getFileToProcess().getName());
 		assertTrue("file should exist locally", fileProcessor.getFileToProcess().exists());

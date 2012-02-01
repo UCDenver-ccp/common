@@ -24,6 +24,8 @@ import java.lang.reflect.Field;
 import java.net.SocketException;
 import java.net.URL;
 
+import org.apache.log4j.Logger;
+
 import edu.ucdenver.ccp.common.file.FileArchiveUtil;
 import edu.ucdenver.ccp.common.file.FileUtil;
 import edu.ucdenver.ccp.common.ftp.FTPUtil;
@@ -34,19 +36,31 @@ import edu.ucdenver.ccp.common.http.HttpUtil;
  * annotations to facilitate download of files and referencing (via the annotations) of those files
  * to member variables of a class.
  * 
+ * Download completion is indicated by writing a "semaphore" file that is the file name with .ready
+ * appended to it in the same directory as the downloaded file.
+ * 
  * @author bill
  * 
  */
 public class DownloadUtil {
 
+	private static final Logger logger = Logger.getLogger(DownloadUtil.class);
+
 	/**
-	 * This method works in conjunction with the {@link FtpDownload} and {@link HttpDownload} annotation to automatically download
-	 * a specified file and assign it to the annotated object field.
+	 * File suffix used on the "ready semaphore" file that indicates that a downloaded file has been
+	 * downloaded completely and is now ready for use.
+	 */
+	private static final String READY_SEMAPHORE_SUFFIX = ".ready";
+
+	/**
+	 * This method works in conjunction with the {@link FtpDownload} and {@link HttpDownload}
+	 * annotation to automatically download a specified file and assign it to the annotated object
+	 * field.
 	 * 
 	 * @param object
 	 * @param workDirectory
-	 * @param userName 
-	 * @param password 
+	 * @param userName
+	 * @param password
 	 * @param clean
 	 * @throws SocketException
 	 * @throws IOException
@@ -58,19 +72,46 @@ public class DownloadUtil {
 		for (Field field : object.getClass().getDeclaredFields()) {
 			File file = null;
 			if (field.isAnnotationPresent(FtpDownload.class))
-				file = handleFtpDownload(workDirectory, field.getAnnotation(FtpDownload.class), userName, password, clean);
+				file = handleFtpDownload(workDirectory, field.getAnnotation(FtpDownload.class), userName, password,
+						clean);
 			else if (field.isAnnotationPresent(HttpDownload.class))
 				file = handleHttpDownload(workDirectory, field.getAnnotation(HttpDownload.class), clean);
-			
-			if (file != null)
+
+			if (file != null) {
 				assignField(object, field, file);
+				if (!readySemaphoreFileExists(file))
+					writeReadySemaphoreFile(file);
+			}
 		}
 	}
 
 	/**
-	 * This method works in conjunction with the {@link FtpDownload} and {@link HttpDownload} class annotation 
-	 * to automatically download a specified file. 
-	 * @param klass on which annotation is present
+	 * @param file
+	 */
+	private static void writeReadySemaphoreFile(File file) {
+		try {
+			if (!getReadySemaphoreFile(file).createNewFile())
+				throw new RuntimeException("Semaphore file could not be created b/c it already exists: "
+						+ getReadySemaphoreFile(file).getAbsolutePath());
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private static boolean readySemaphoreFileExists(File file) {
+		return getReadySemaphoreFile(file).exists();
+	}
+
+	private static File getReadySemaphoreFile(File file) {
+		return new File(file.getAbsolutePath() + READY_SEMAPHORE_SUFFIX);
+	}
+
+	/**
+	 * This method works in conjunction with the {@link FtpDownload} and {@link HttpDownload} class
+	 * annotation to automatically download a specified file.
+	 * 
+	 * @param klass
+	 *            on which annotation is present
 	 * @param workDirectory
 	 * @param userName
 	 * @param password
@@ -82,15 +123,15 @@ public class DownloadUtil {
 	 */
 	public static File download(Class<?> klass, File workDirectory, String userName, String password, boolean clean)
 			throws SocketException, IOException, IllegalArgumentException {
-		File f = null; 
-		
+		File f = null;
+
 		if (klass.isAnnotationPresent(HttpDownload.class))
-			f =  handleHttpDownload(workDirectory, klass.getAnnotation(HttpDownload.class), clean);
+			f = handleHttpDownload(workDirectory, klass.getAnnotation(HttpDownload.class), clean);
 		else if (klass.isAnnotationPresent(FtpDownload.class))
-			f =  handleFtpDownload(workDirectory, klass.getAnnotation(FtpDownload.class), userName, password, clean);		
-		
+			f = handleFtpDownload(workDirectory, klass.getAnnotation(FtpDownload.class), userName, password, clean);
+
 		return f;
-	}	
+	}
 
 	/**
 	 * This method works in conjunction with the HttpDownload annotation to automatically download
@@ -102,8 +143,8 @@ public class DownloadUtil {
 	 * @throws IOException
 	 * @throws IllegalArgumentException
 	 */
-	private static File handleHttpDownload(File workDirectory, HttpDownload httpd, boolean clean)
-			throws IOException, IllegalArgumentException {
+	private static File handleHttpDownload(File workDirectory, HttpDownload httpd, boolean clean) throws IOException,
+			IllegalArgumentException {
 		URL url = new URL(httpd.url());
 		String fileName = httpd.fileName();
 		if (fileName.isEmpty())
@@ -123,8 +164,7 @@ public class DownloadUtil {
 	 * @param downloadedFile
 	 * @throws IOException
 	 */
-	private static File unpackFile(File workDirectory, boolean clean,
-			File downloadedFile) throws IOException {
+	private static File unpackFile(File workDirectory, boolean clean, File downloadedFile) throws IOException {
 		File unpackedDownloadedFile = unpackDownloadedFile(workDirectory, clean, downloadedFile);
 		return unpackedDownloadedFile;
 	}
@@ -132,10 +172,14 @@ public class DownloadUtil {
 	/**
 	 * Assign file to the specified File field
 	 * 
-	 * @param object in which field exists
-	 * @param field field to assign
-	 * @param file field value to assign
-	 * @throws IllegalAccessException if errors occur while assigning field value
+	 * @param object
+	 *            in which field exists
+	 * @param field
+	 *            field to assign
+	 * @param file
+	 *            field value to assign
+	 * @throws IllegalAccessException
+	 *             if errors occur while assigning field value
 	 */
 	private static void assignField(Object object, Field field, File file) throws IllegalAccessException {
 		field.setAccessible(true);
@@ -172,8 +216,8 @@ public class DownloadUtil {
 	 * @throws IOException
 	 * @throws IllegalArgumentException
 	 */
-	private static File handleFtpDownload(File workDirectory, FtpDownload ftpd, String userName,
-			String password, boolean clean) throws IOException, IllegalArgumentException {
+	private static File handleFtpDownload(File workDirectory, FtpDownload ftpd, String userName, String password,
+			boolean clean) throws IOException, IllegalArgumentException {
 		String uName = (userName == null) ? ftpd.username() : userName;
 		String pWord = (password == null) ? ftpd.password() : password;
 		File downloadedFile = FileUtil.appendPathElementsToDirectory(workDirectory, ftpd.filename());
@@ -188,6 +232,10 @@ public class DownloadUtil {
 	 * If clean is true, then this method always returns false (and the file is deleted). If clean
 	 * is false, then this method returns downloadedFile.exists()
 	 * 
+	 * If the downloaded file is present but the ready-semaphore file is not present then this
+	 * processes waits for the semaphore file to appear. It is assumed that the downloaded file is
+	 * still in the process of being downloaded by another thread.
+	 * 
 	 * @param downloadedFile
 	 * @param clean
 	 * @return
@@ -198,11 +246,35 @@ public class DownloadUtil {
 			unzippedFile = FileArchiveUtil.getUnzippedFileReference(downloadedFile);
 		if (clean) {
 			FileUtil.deleteFile(downloadedFile);
-			if (unzippedFile != null)
+			if (unzippedFile != null) {
 				FileUtil.deleteFile(unzippedFile);
+				FileUtil.deleteFile(getReadySemaphoreFile(unzippedFile));
+			} else
+				FileUtil.deleteFile(getReadySemaphoreFile(downloadedFile));
 			return false;
 		}
-		return downloadedFile.exists() || (unzippedFile != null && unzippedFile.exists());
+		boolean fileIsPresent = downloadedFile.exists() || (unzippedFile != null && unzippedFile.exists());
+		if (fileIsPresent)
+			waitForReadySemaphoreFile((unzippedFile == null) ? downloadedFile : unzippedFile);
+		return fileIsPresent;
+	}
+
+	/**
+	 * Returns when the semaphore file is present. Checks once a minute for its existence.
+	 * 
+	 * @param file
+	 */
+	private static void waitForReadySemaphoreFile(File file) {
+		while (!readySemaphoreFileExists(file)) {
+			logger.info("Waiting for another process to finish downloading the file. Will continue when "
+					+ getReadySemaphoreFile(file) + " is present.");
+			try {
+				Thread.sleep(60000);
+			} catch (InterruptedException e) {
+				throw new RuntimeException("Error while waiting for another process to download a file: "
+						+ file.getAbsolutePath(), e);
+			}
+		}
 	}
 
 	/**
