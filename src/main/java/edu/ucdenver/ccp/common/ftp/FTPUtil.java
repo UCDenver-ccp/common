@@ -272,6 +272,7 @@ public class FTPUtil {
 			File localStorageDirectory) throws FileNotFoundException, IOException {
 		OutputStream localOutputStream = null;
 		File outputFile = FileUtil.appendPathElementsToDirectory(localStorageDirectory, ftpFileName);
+		logger.info("Downloading file via FTP: " + ftpFileName + " to " + outputFile);
 		try {
 			localOutputStream = new FileOutputStream(outputFile);
 			downloadFile(ftpClient, ftpFileName, ftpFileType, localOutputStream);
