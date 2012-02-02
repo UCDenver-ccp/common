@@ -57,6 +57,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 import org.apache.tools.tar.TarEntry;
 import org.apache.tools.tar.TarInputStream;
 import org.apache.tools.tar.TarOutputStream;
@@ -75,6 +76,8 @@ import edu.ucdenver.ccp.common.string.StringUtil;
  */
 public class FileArchiveUtil {
 
+	private static final Logger logger = Logger.getLogger(FileArchiveUtil.class);
+	
 	/**
 	 * Suffix signifying a gzipped file
 	 */
@@ -285,6 +288,7 @@ public class FileArchiveUtil {
 	 * @throws IOException
 	 */
 	public static void unpackTarFile(File tarFile, File outputDirectory) throws IllegalArgumentException, IOException {
+		logger.info("Untarring file: " + tarFile.getAbsolutePath() + " into directory: " + outputDirectory.getAbsolutePath());
 		FileUtil.validateDirectory(outputDirectory);
 		if (!isTarFile(tarFile)) {
 			throw new IllegalArgumentException(String.format("Cannot unpack. Input file is not a tarball: %s",
