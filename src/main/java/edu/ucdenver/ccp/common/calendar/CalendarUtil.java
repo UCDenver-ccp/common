@@ -24,6 +24,8 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.ucdenver.ccp.common.string.StringConstants;
+
 /**
  * Utility class for handling Calendar operations
  * 
@@ -49,6 +51,15 @@ public class CalendarUtil {
 	public static String getDateStamp(String delimiter) {
 		GregorianCalendar c = new GregorianCalendar();
 		return getDateStamp(c, delimiter);
+	}
+
+	public static String getTimeStamp() {
+		GregorianCalendar c = new GregorianCalendar();
+		return getTimeStamp(c) + StringConstants.SPACE + getDateStamp(c, "/");
+	}
+
+	private static String getTimeStamp(GregorianCalendar c) {
+		return String.format("%s:%s", c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE));
 	}
 
 	/**
