@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
 
 import edu.ucdenver.ccp.common.string.StringConstants;
 
@@ -24,22 +24,22 @@ public class InputStreamLogger extends Thread {
 	private final InputStream inStream;
 	private final Logger logger;
 	private final String messagePrefix;
-	private final Priority logPriority;
+	private final Level logLevel;
 
 	/**
 	 * @param inStream
 	 *            InputStream to read
 	 * @param logger
 	 *            Logger where InputStream contents will be output
-	 * @param logPriority
+	 * @param logLevel
 	 *            Log level to use when outputting InputStream contents
 	 * @param messagePrefix
 	 *            This String will be appended to the front of each line logged
 	 */
-	public InputStreamLogger(InputStream inStream, Logger logger, Priority logPriority, String messagePrefix) {
+	public InputStreamLogger(InputStream inStream, Logger logger, Level logLevel, String messagePrefix) {
 		this.inStream = inStream;
 		this.logger = logger;
-		this.logPriority = logPriority;
+		this.logLevel = logLevel;
 		this.messagePrefix = messagePrefix;
 
 	}
@@ -52,7 +52,7 @@ public class InputStreamLogger extends Thread {
 		BufferedReader br = new BufferedReader(new InputStreamReader(inStream));
 		try {
 			while (br.ready())
-				logger.log(logPriority, messagePrefix + StringConstants.SPACE + br.readLine());
+				logger.log(logLevel, messagePrefix + StringConstants.SPACE + br.readLine());
 		} catch (IOException e) {
 			throw new RuntimeException("Exception while logging output stream...", e);
 		}
