@@ -85,8 +85,7 @@ public class DownloadUtil {
 
 			if (file != null) {
 				assignField(object, field, file);
-				if (!readySemaphoreFileExists(file))
-					writeReadySemaphoreFile(file);
+				writeReadySemaphoreFile(file);
 			}
 		}
 	}
@@ -139,6 +138,8 @@ public class DownloadUtil {
 		else if (klass.isAnnotationPresent(FtpDownload.class))
 			f = handleFtpDownload(workDirectory, klass.getAnnotation(FtpDownload.class), userName, password, clean);
 
+		if (f != null)
+			writeReadySemaphoreFile(f);
 		return f;
 	}
 
@@ -165,6 +166,8 @@ public class DownloadUtil {
 		else if (field.isAnnotationPresent(FtpDownload.class))
 			f = handleFtpDownload(workDirectory, field.getAnnotation(FtpDownload.class), userName, password, clean);
 
+		if (f != null)
+			writeReadySemaphoreFile(f);
 		return f;
 	}
 
