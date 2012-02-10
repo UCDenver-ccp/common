@@ -143,6 +143,32 @@ public class DownloadUtil {
 	}
 
 	/**
+	 * This method works in conjunction with the {@link FtpDownload} and {@link HttpDownload} class
+	 * annotation to automatically download a specified file annotated to a particular field
+	 * 
+	 * @param field
+	 * @param workDirectory
+	 * @param userName
+	 * @param password
+	 * @param clean
+	 * @return
+	 * @throws SocketException
+	 * @throws IOException
+	 * @throws IllegalArgumentException
+	 */
+	public static File download(Field field, File workDirectory, String userName, String password, boolean clean)
+			throws SocketException, IOException, IllegalArgumentException {
+		File f = null;
+
+		if (field.isAnnotationPresent(HttpDownload.class))
+			f = handleHttpDownload(workDirectory, field.getAnnotation(HttpDownload.class), clean);
+		else if (field.isAnnotationPresent(FtpDownload.class))
+			f = handleFtpDownload(workDirectory, field.getAnnotation(FtpDownload.class), userName, password, clean);
+
+		return f;
+	}
+
+	/**
 	 * This method works in conjunction with the HttpDownload annotation to automatically download
 	 * via HTTP the specified file
 	 * 
