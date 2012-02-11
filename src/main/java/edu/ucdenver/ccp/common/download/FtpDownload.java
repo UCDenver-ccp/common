@@ -36,7 +36,7 @@ import edu.ucdenver.ccp.common.ftp.FTPUtil.FileType;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.TYPE})
+@Target({ ElementType.FIELD, ElementType.TYPE })
 public @interface FtpDownload {
 	/**
 	 * The FTP server address, e.g. ftp.ncbi.nih.gov
@@ -66,6 +66,14 @@ public @interface FtpDownload {
 	 * @return
 	 */
 	String filename();
+
+	/**
+	 * The name of the file to retrieve from inside a zip archive (if the downloaded file is a zip
+	 * archive)
+	 * 
+	 * @return
+	 */
+	String targetFileName() default "";
 
 	/**
 	 * Specifies the download mode: ASCII or BINARY

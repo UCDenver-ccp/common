@@ -85,7 +85,8 @@ public class DownloadUtil {
 
 			if (file != null) {
 				assignField(object, field, file);
-				if (clean || !readySemaphoreFileExists(file)) // if clean = false then it might already exist
+				if (clean || !readySemaphoreFileExists(file)) // if clean = false then it might
+																// already exist
 					writeReadySemaphoreFile(file);
 			}
 		}
@@ -140,7 +141,8 @@ public class DownloadUtil {
 			f = handleFtpDownload(workDirectory, klass.getAnnotation(FtpDownload.class), userName, password, clean);
 
 		if (f != null)
-			if (clean || !readySemaphoreFileExists(f)) // if clean = false then it might already exist
+			if (clean || !readySemaphoreFileExists(f)) // if clean = false then it might already
+														// exist
 				writeReadySemaphoreFile(f);
 		return f;
 	}
@@ -169,7 +171,8 @@ public class DownloadUtil {
 			f = handleFtpDownload(workDirectory, field.getAnnotation(FtpDownload.class), userName, password, clean);
 
 		if (f != null)
-			if (clean || !readySemaphoreFileExists(f)) // if clean = false then it might already exist
+			if (clean || !readySemaphoreFileExists(f)) // if clean = false then it might already
+														// exist
 				writeReadySemaphoreFile(f);
 		return f;
 	}
@@ -188,16 +191,18 @@ public class DownloadUtil {
 			IllegalArgumentException {
 		URL url = new URL(httpd.url());
 		String fileName = httpd.fileName();
+		String targetFileName = (httpd.targetFileName().length() > 0) ? httpd.targetFileName() : null;
+		File targetFile = (targetFileName == null) ? null : new File(workDirectory, targetFileName);
 		if (fileName.isEmpty())
 			fileName = HttpUtil.getFinalPathElement(url);
 		File downloadedFile = FileUtil.appendPathElementsToDirectory(workDirectory, fileName);
-		if (!fileExists(downloadedFile, clean)) {
+		if (!fileExists(downloadedFile, targetFile, clean)) {
 			long startTime = System.currentTimeMillis();
 			downloadedFile = HttpUtil.downloadFile(url, downloadedFile);
 			long duration = System.currentTimeMillis() - startTime;
 			logger.info("Duration of " + downloadedFile.getName() + " download: " + (duration / (1000 * 60)) + "min");
 		}
-		return unpackFile(workDirectory, clean, downloadedFile);
+		return unpackFile(workDirectory, clean, downloadedFile, targetFileName);
 	}
 
 	/**
@@ -208,8 +213,9 @@ public class DownloadUtil {
 	 * @param downloadedFile
 	 * @throws IOException
 	 */
-	private static File unpackFile(File workDirectory, boolean clean, File downloadedFile) throws IOException {
-		File unpackedDownloadedFile = unpackDownloadedFile(workDirectory, clean, downloadedFile);
+	private static File unpackFile(File workDirectory, boolean clean, File downloadedFile, String targetFileName)
+			throws IOException {
+		File unpackedDownloadedFile = unpackDownloadedFile(workDirectory, clean, downloadedFile, targetFileName);
 		return unpackedDownloadedFile;
 	}
 
@@ -236,16 +242,21 @@ public class DownloadUtil {
 	 * @param workDirectory
 	 * @param clean
 	 * @param downloadedFile
+	 * @param targetFileName
+	 *            this input parameter indicates the name of a particular file inside a zip archive
+	 *            to retrieve. It should be set to null if the compressed file is not a zip archive
 	 * @return a reference to the unpacked File
 	 * @throws IOException
 	 */
-	public static File unpackDownloadedFile(File workDirectory, boolean clean, File downloadedFile) throws IOException {
+	public static File unpackDownloadedFile(File workDirectory, boolean clean, File downloadedFile,
+			String targetFileName) throws IOException {
 		File unpackedFile = downloadedFile;
-		if (fileNeedsUnzipping(downloadedFile, clean))
-			unpackedFile = FileArchiveUtil.unzip(downloadedFile, workDirectory);
+		File targetFile = (targetFileName == null) ? null : new File(workDirectory, targetFileName); 
+		if (fileNeedsUnzipping(downloadedFile, targetFile, clean))
+			unpackedFile = FileArchiveUtil.unzip(downloadedFile, workDirectory, targetFileName);
 		else if (FileArchiveUtil.isZippedFile(downloadedFile))
 			// File has already been downloaded and unzipped
-			unpackedFile = FileArchiveUtil.getUnzippedFileReference(downloadedFile);
+			unpackedFile = FileArchiveUtil.getUnzippedFileReference(downloadedFile, targetFile);
 		return unpackedFile;
 	}
 
@@ -264,15 +275,17 @@ public class DownloadUtil {
 			boolean clean) throws IOException, IllegalArgumentException {
 		String uName = (userName == null) ? ftpd.username() : userName;
 		String pWord = (password == null) ? ftpd.password() : password;
+		String targetFileName = (ftpd.targetFileName().length() > 0) ? ftpd.targetFileName() : null;
+		File targetFile = (targetFileName == null) ? null : new File(workDirectory, targetFileName);
 		File downloadedFile = FileUtil.appendPathElementsToDirectory(workDirectory, ftpd.filename());
-		if (!fileExists(downloadedFile, clean)) {
+		if (!fileExists(downloadedFile, targetFile, clean)) {
 			long startTime = System.currentTimeMillis();
 			downloadedFile = FTPUtil.downloadFile(ftpd.server(), ftpd.port(), ftpd.path(), ftpd.filename(),
 					ftpd.filetype(), workDirectory, uName, pWord);
 			long duration = System.currentTimeMillis() - startTime;
 			logger.info("Duration of " + downloadedFile.getName() + " download: " + (duration / (1000 * 60)) + "min");
 		}
-		return unpackFile(workDirectory, clean, downloadedFile);
+		return unpackFile(workDirectory, clean, downloadedFile, targetFileName);
 	}
 
 	/**
@@ -284,13 +297,16 @@ public class DownloadUtil {
 	 * still in the process of being downloaded by another thread.
 	 * 
 	 * @param downloadedFile
+	 * @param targetFile
+	 *            the target file is a particular file to retrieve from inside a downloaded zip
+	 *            archive.
 	 * @param clean
 	 * @return
 	 */
-	public static boolean fileExists(File downloadedFile, boolean clean) {
+	public static boolean fileExists(File downloadedFile, File targetFile, boolean clean) {
 		File unzippedFile = null;
 		if (FileArchiveUtil.isZippedFile(downloadedFile))
-			unzippedFile = FileArchiveUtil.getUnzippedFileReference(downloadedFile);
+			unzippedFile = FileArchiveUtil.getUnzippedFileReference(downloadedFile, targetFile);
 		if (clean) {
 			FileUtil.deleteFile(downloadedFile);
 			if (unzippedFile != null) {
@@ -334,10 +350,10 @@ public class DownloadUtil {
 	 * @param clean
 	 * @return
 	 */
-	private static boolean fileNeedsUnzipping(File zippedFile, boolean clean) {
+	private static boolean fileNeedsUnzipping(File zippedFile, File targetFile, boolean clean) {
 		if (!FileArchiveUtil.isZippedFile(zippedFile))
 			return false;
-		File unzippedFile = FileArchiveUtil.getUnzippedFileReference(zippedFile);
+		File unzippedFile = FileArchiveUtil.getUnzippedFileReference(zippedFile, targetFile);
 		if (clean) {
 			FileUtil.deleteFile(unzippedFile);
 			return true;

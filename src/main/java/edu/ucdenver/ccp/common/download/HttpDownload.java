@@ -51,4 +51,12 @@ public @interface HttpDownload {
 	 * @return
 	 */
 	String fileName() default "";
+	
+	/**
+	 * The name of the file to retrieve from inside a zip archive (if the downloaded file is a zip
+	 * archive)
+	 * 
+	 * @return
+	 */
+	String targetFileName() default "";
 }

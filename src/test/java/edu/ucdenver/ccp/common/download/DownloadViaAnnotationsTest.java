@@ -78,6 +78,7 @@ public class DownloadViaAnnotationsTest extends DefaultTestCase {
 		MyFileProcessor fileProcessor = new MyFileProcessor(workDirectory, clean);
 		assertEquals("should be file5.ascii", "file5.ascii", fileProcessor.getFileToProcess().getName());
 		assertTrue("file should exist locally", fileProcessor.getFileToProcess().exists());
+		assertTrue("Ready semaphore file should also exist", new File(workDirectory,"file5.ascii.ready").exists());
 	}
 
 	private static class MyFileProcessor {
@@ -102,6 +103,7 @@ public class DownloadViaAnnotationsTest extends DefaultTestCase {
 		MyGzFileProcessor fileProcessor = new MyGzFileProcessor(workDirectory, clean);
 		assertEquals("should be sampleFile.ascii", "sampleFile.ascii", fileProcessor.getFileToProcess().getName());
 		assertTrue("file should exist locally", fileProcessor.getFileToProcess().exists());
+		assertTrue("Ready semaphore file should also exist", new File(workDirectory,"sampleFile.ascii.ready").exists());
 		assertEquals(String.format("Unzipped file should have expected lines"), expectedLinesInSampleGzFile,
 				FileReaderUtil.loadLinesFromFile(fileProcessor.getFileToProcess(), CharacterEncoding.US_ASCII));
 	}

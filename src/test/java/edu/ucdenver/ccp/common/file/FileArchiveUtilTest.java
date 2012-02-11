@@ -152,7 +152,7 @@ public class FileArchiveUtilTest extends DefaultTestCase {
 	public void testUnzipTGZFile() throws Exception {
 		File zippedTarFile = copyResourceToFile(SAMPLE_ZIPPED_TARBALL_FILE_NAME);
 		File outputDirectory = folder.newFolder("unzipedTGZFile");
-		FileArchiveUtil.unzip(zippedTarFile, outputDirectory);
+		FileArchiveUtil.unzip(zippedTarFile, outputDirectory, null);
 		File expectedUnzippedTarFile = new File(outputDirectory.getAbsolutePath() + File.separator
 				+ SAMPLE_TARBALL_FILE_NAME);
 		assertTrue(String.format("The unzipped file should now exist."), expectedUnzippedTarFile.exists());
@@ -178,7 +178,7 @@ public class FileArchiveUtilTest extends DefaultTestCase {
 	public void testUnzippedFile() throws Exception {
 		File zipFile = copyResourceToFile(SAMPLE_ZIP_FILE_NAME);
 		File outputDirectory = folder.newFolder("unzippedFile");
-		FileArchiveUtil.unzip(zipFile, outputDirectory);
+		FileArchiveUtil.unzip(zipFile, outputDirectory, null);
 		validateUnpackedDirectoryStructure(outputDirectory);
 	}
 
@@ -246,7 +246,7 @@ public class FileArchiveUtilTest extends DefaultTestCase {
 		List<String> expectedLines = CollectionsUtil.createList("line1", "line2", "line3");
 		FileWriterUtil.printLines(expectedLines, testFile, CharacterEncoding.US_ASCII);
 		FileArchiveUtil.gzipFile(testFile, zippedTestFile);
-		FileArchiveUtil.unzip(zippedTestFile, unzippedFolder);
+		FileArchiveUtil.unzip(zippedTestFile, unzippedFolder, null);
 		File unzippedTestFile = new File(unzippedFolder.getAbsolutePath() + File.separator + "test.ascii");
 		assertTrue(String.format("Unzipped file must exist"), unzippedTestFile.exists());
 		List<String> lines = FileReaderUtil.loadLinesFromFile(unzippedTestFile, CharacterEncoding.US_ASCII);

@@ -77,7 +77,7 @@ import edu.ucdenver.ccp.common.string.StringUtil;
 public class FileArchiveUtil {
 
 	private static final Logger logger = Logger.getLogger(FileArchiveUtil.class);
-	
+
 	/**
 	 * Suffix signifying a gzipped file
 	 */
@@ -132,8 +132,7 @@ public class FileArchiveUtil {
 			return new FileInputStream(file);
 		}
 	}
-	
-	
+
 	/**
 	 * GZIPs the input file and places the output file as specified by the zippedFile parameter
 	 * 
@@ -146,12 +145,11 @@ public class FileArchiveUtil {
 		FileUtil.copy(inputFile, gzipStream);
 	}
 
-	
-//	public static File gzipFile(File file, File outputDirectory) throws IOException {
-//		File gzFile = new File(outputDirectory, file.getName() + ".gz");
-//		FileUtil.copy(file,new GZIPOutputStream(new FileOutputStream(gzFile)));
-//		return gzFile;
-//	}
+	// public static File gzipFile(File file, File outputDirectory) throws IOException {
+	// File gzFile = new File(outputDirectory, file.getName() + ".gz");
+	// FileUtil.copy(file,new GZIPOutputStream(new FileOutputStream(gzFile)));
+	// return gzFile;
+	// }
 
 	/**
 	 * Returns an UncompressInputStream for the given .Z file
@@ -288,7 +286,8 @@ public class FileArchiveUtil {
 	 * @throws IOException
 	 */
 	public static void unpackTarFile(File tarFile, File outputDirectory) throws IllegalArgumentException, IOException {
-		logger.info("Untarring file: " + tarFile.getAbsolutePath() + " into directory: " + outputDirectory.getAbsolutePath());
+		logger.info("Untarring file: " + tarFile.getAbsolutePath() + " into directory: "
+				+ outputDirectory.getAbsolutePath());
 		FileUtil.validateDirectory(outputDirectory);
 		if (!isTarFile(tarFile)) {
 			throw new IllegalArgumentException(String.format("Cannot unpack. Input file is not a tarball: %s",
@@ -462,15 +461,19 @@ public class FileArchiveUtil {
 	 * 
 	 * @param zippedFile
 	 * @param outputDirectory
+	 * @param targetFileName
+	 *            for compressed files that can contain multiple files, e.g. zip files, this input
+	 *            parameter lets the user specifiy a particular file inside the zip archive to
+	 *            retrieve. For gz files, this parameter is not used and can simply be set to null.
 	 * @return a reference to the unzipped file
 	 * @throws IOException
 	 */
-	public static File unzip(File zippedFile, File outputDirectory) throws IOException {
+	public static File unzip(File zippedFile, File outputDirectory, String targetFileName) throws IOException {
 		InputStream is = null;
 		try {
 			if (isZipFile(zippedFile)) {
 				is = getZipInputStream(zippedFile);
-				return unzip((ZipInputStream) is, outputDirectory);
+				return unzip((ZipInputStream) is, outputDirectory, targetFileName);
 			} else if (isGzipFile(zippedFile)) {
 				is = getGzipInputStream(zippedFile);
 				return unzip((GZIPInputStream) is, getUnzippedFileName(zippedFile.getName()), outputDirectory);
@@ -517,9 +520,13 @@ public class FileArchiveUtil {
 	 * names unzipped version of this file (typically by stripping off the zip suffix)
 	 * 
 	 * @param zippedFile
+	 * @param targetFile
+	 *            a particular file to be retrieved from a zip archive
 	 * @return
 	 */
-	public static File getUnzippedFileReference(File zippedFile) {
+	public static File getUnzippedFileReference(File zippedFile, File targetFile) {
+		if (targetFile != null)
+			return targetFile;
 		String unzippedFileName = getUnzippedFileName(zippedFile.getName());
 		File unzippedFile = FileUtil.appendPathElementsToDirectory(zippedFile.getParentFile(), unzippedFileName);
 		return unzippedFile;
@@ -546,18 +553,20 @@ public class FileArchiveUtil {
 	 * 
 	 * @param zis
 	 * @param outputDirectory
+	 * @param targetFileName
+	 *            if not null, then this targetFileName is expected to be in the zip archive. If
+	 *            found, it is the File that is returned. If not found, null is returned. If the
+	 *            targetFileName input argument is null then the returned File is also null.
+	 * @return
 	 * @throws IOException
 	 */
-	public static File unzip(ZipInputStream zis, File outputDirectory) throws IOException {
+	public static File unzip(ZipInputStream zis, File outputDirectory, String targetFileName) throws IOException {
 		ZipEntry zipEntry = null;
-		boolean isFirst = true;
 		File outputFile = null;
 		while ((zipEntry = zis.getNextEntry()) != null) {
 			File unzippedFile = copyZipEntryToFileSystem(zis, zipEntry, outputDirectory);
-			if (isFirst) {
+			if (targetFileName != null && unzippedFile.getName().equals(targetFileName))
 				outputFile = unzippedFile;
-				isFirst = false;
-			}
 		}
 		return outputFile;
 	}
@@ -634,5 +643,4 @@ public class FileArchiveUtil {
 		return outputFile;
 	}
 
-	
 }
