@@ -85,7 +85,7 @@ public class DownloadUtil {
 
 			if (file != null) {
 				assignField(object, field, file);
-				if (clean) // if clean = false then it will already exist
+				if (clean || !readySemaphoreFileExists(file)) // if clean = false then it might already exist
 					writeReadySemaphoreFile(file);
 			}
 		}
@@ -140,7 +140,7 @@ public class DownloadUtil {
 			f = handleFtpDownload(workDirectory, klass.getAnnotation(FtpDownload.class), userName, password, clean);
 
 		if (f != null)
-			if (clean) // if clean = false then it will already exist
+			if (clean || !readySemaphoreFileExists(f)) // if clean = false then it might already exist
 				writeReadySemaphoreFile(f);
 		return f;
 	}
@@ -169,7 +169,7 @@ public class DownloadUtil {
 			f = handleFtpDownload(workDirectory, field.getAnnotation(FtpDownload.class), userName, password, clean);
 
 		if (f != null)
-			if (clean) // if clean = false then it will already exist
+			if (clean || !readySemaphoreFileExists(f)) // if clean = false then it might already exist
 				writeReadySemaphoreFile(f);
 		return f;
 	}
