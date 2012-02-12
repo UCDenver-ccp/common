@@ -110,5 +110,13 @@ public abstract class LineIterator<T extends Line> implements Iterator<T> {
 		throw new UnsupportedOperationException(
 				"The remove() operation is not supported by LineIterator and its subclasses.");
 	}
+	
+	public void close() {
+		try {
+			reader.close();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 }
