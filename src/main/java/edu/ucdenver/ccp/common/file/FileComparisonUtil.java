@@ -121,7 +121,9 @@ public class FileComparisonUtil {
 	private static boolean isAnExpectedLine(String line, List<String> expectedLines, int lineIndex,
 			LineOrder lineOrder, ColumnOrder columnOrder, String delimiterRegex) {
 		if (lineOrder == LineOrder.AS_IN_FILE) {
-			return linesAreEquivalent(line, expectedLines.get(lineIndex), columnOrder, delimiterRegex);
+			if (expectedLines.size() > lineIndex)
+				return linesAreEquivalent(line, expectedLines.get(lineIndex), columnOrder, delimiterRegex);
+			return false;
 		} else if (lineOrder == LineOrder.ANY_ORDER) {
 			return lineInExpectedSet(line, expectedLines, columnOrder, delimiterRegex);
 		} else
