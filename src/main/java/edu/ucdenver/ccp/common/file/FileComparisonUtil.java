@@ -93,17 +93,30 @@ public class FileComparisonUtil {
 		List<String> lines = FileReaderUtil.loadLinesFromFile(outputFile, encoding);
 		List<String> expectedLinesInFile = new ArrayList<String>(expectedLines);
 
+		if (lines.size() == 0 && expectedLinesInFile.size() > 0)
+			logger.info("File contains no output.");
+
 		int lineIndex = 0;
 		boolean allLinesAsExpected = true;
 		for (String line : lines) {
-			if (!isAnExpectedLine(line, expectedLinesInFile, lineIndex, lineOrder, columnOrder, columnDelimiterRegex)) {
+			if (isAnExpectedLine(line, expectedLinesInFile, lineIndex, lineOrder, columnOrder, columnDelimiterRegex)) {
+				expectedLinesInFile.remove(line);
+			} else {
 				logger.info(String.format("Line (%d) in file not in expected list: '%s'", lineIndex, line));
 				allLinesAsExpected = false;
 			}
 			lineIndex++;
 		}
-
-		return (lines.size() == expectedLines.size() && allLinesAsExpected);
+		boolean hasExpectedLines = (lines.size() == expectedLines.size() && allLinesAsExpected);
+		if (!hasExpectedLines) {
+			logger.info("File does not contain expected lines. # lines in file: " + lines.size()
+					+ " # expected lines: " + expectedLines.size() + " Expected lines matched those in file: "
+					+ allLinesAsExpected);
+			for (String line : expectedLinesInFile) {
+				logger.info(String.format("EXPECTED LINE not in file: %s", line));
+			}
+		}
+		return hasExpectedLines;
 	}
 
 	/**
