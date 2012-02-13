@@ -58,6 +58,11 @@ public class RegExPatterns {
 	 * Matches the pipe character
 	 */
 	public static final String PIPE = "\\|";
+	
+	
+	public static final String SPACE = "\\s";
+	
+	public static final String IS_PUNCTUATION = "\\p{Punct}";
 
 	private RegExPatterns() {
 		// this class should not be instantiated
