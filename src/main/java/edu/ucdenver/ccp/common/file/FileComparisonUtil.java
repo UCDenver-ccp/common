@@ -113,15 +113,18 @@ public class FileComparisonUtil {
 			String columnDelimiterRegex, LineOrder lineOrder, ColumnOrder columnOrder, LineTrim lineTrim)
 			throws IOException {
 		List<String> lines = FileReaderUtil.loadLinesFromFile(outputFile, encoding);
-
+		List<String> remainingExpectedLines = new ArrayList<String>(expectedLines);
 		if (lines.size() == 0 && expectedLines.size() > 0)
 			logger.info("File contains no output.");
 
 		List<String> trimmedExpectedLines = new ArrayList<String>(expectedLines);
 		if (lineTrim.equals(LineTrim.ON)) {
+			remainingExpectedLines = new ArrayList<String>();
 			trimmedExpectedLines = new ArrayList<String>();
-			for (String line : expectedLines)
+			for (String line : expectedLines) {
 				trimmedExpectedLines.add(line.trim());
+				remainingExpectedLines.add(line.trim());
+			}
 		}
 
 		int lineIndex = 0;
@@ -130,7 +133,7 @@ public class FileComparisonUtil {
 			if (lineTrim.equals(LineTrim.ON))
 				line = line.trim();
 			if (isAnExpectedLine(line, trimmedExpectedLines, lineIndex, lineOrder, columnOrder, columnDelimiterRegex)) {
-				trimmedExpectedLines.remove(line);
+				remainingExpectedLines.remove(line);
 			} else {
 				logger.info(String.format("Line (%d) in file not in expected list: '%s'", lineIndex, line));
 				allLinesAsExpected = false;
@@ -142,7 +145,7 @@ public class FileComparisonUtil {
 			logger.info("File does not contain expected lines. # lines in file: " + lines.size()
 					+ " # expected lines: " + expectedLines.size() + " Expected lines matched those in file: "
 					+ allLinesAsExpected);
-			for (String line : trimmedExpectedLines) {
+			for (String line : remainingExpectedLines) {
 				logger.info(String.format("EXPECTED LINE not in file: '%s'", line));
 			}
 		}

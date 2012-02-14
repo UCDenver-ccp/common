@@ -40,6 +40,7 @@ import edu.ucdenver.ccp.common.test.DefaultTestCase;
 public class FileComparisonUtilTest extends DefaultTestCase {
 	private static final String COLUMN_DELIMITER_REGEX = RegExPatterns.TAB;
 
+	private static final CharacterEncoding ENCODING = CharacterEncoding.UTF_8;
 	private File baseFile;
 	private File baseFileLinesInOrderColumnsInOrder;
 	private File baseFileLinesMixedOrderColumnsInOrder;
@@ -62,24 +63,25 @@ public class FileComparisonUtilTest extends DefaultTestCase {
 	}
 
 	private void initializeBaseFile() throws IOException {
-		baseFile = folder.newFile("base.ascii");
-		FileWriterUtil.printLines(getBaseFileLines(), baseFile, CharacterEncoding.US_ASCII);
+		baseFile = folder.newFile("base.utf8");
+		FileWriterUtil.printLines(getBaseFileLines(), baseFile, ENCODING);
 	}
 
 	private List<String> getBaseFileLines() {
-		return CollectionsUtil.createList("11\t12\t13\t14\t15", "21\t22\t23\t24\t25", "31\t32\t33\t34\t35",
-				"41\t42\t43\t44\t45");
+		List<String> fileLines = CollectionsUtil.createList("11\t12\t13\t14\t15", "21\t22\t23\t24\t25",
+				"31\t32\t33\t34\t35", "41\t42\t43\t44\t45");
+		return fileLines;
 	}
 
 	private void initializeBaseFileLinesInOrderColumnsInOrder() throws IOException {
-		baseFileLinesInOrderColumnsInOrder = folder.newFile("base.order.order.ascii");
-		FileWriterUtil.printLines(getBaseFileLines(), baseFileLinesInOrderColumnsInOrder, CharacterEncoding.US_ASCII);
+		baseFileLinesInOrderColumnsInOrder = folder.newFile("base.order.order.utf8");
+		FileWriterUtil.printLines(getBaseFileLines(), baseFileLinesInOrderColumnsInOrder, ENCODING);
 	}
 
 	private void initializeBaseFileLinesMixedColumnsMixed() throws IOException {
-		baseFileLinesMixedOrderColumnsMixedOrder = folder.newFile("base.mixed.mixed.ascii");
+		baseFileLinesMixedOrderColumnsMixedOrder = folder.newFile("base.mixed.mixed.utf8");
 		FileWriterUtil.printLines(getBaseFileLinesMixedColumnsMixedLines(), baseFileLinesMixedOrderColumnsMixedOrder,
-				CharacterEncoding.US_ASCII);
+				ENCODING);
 	}
 
 	private List<String> getBaseFileLinesMixedColumnsMixedLines() {
@@ -88,9 +90,9 @@ public class FileComparisonUtilTest extends DefaultTestCase {
 	}
 
 	private void initializeBaseFileLinesInOrderColumnsMixed() throws IOException {
-		baseFileLinesInOrderColumnsMixedOrder = folder.newFile("base.order.mixed.ascii");
+		baseFileLinesInOrderColumnsMixedOrder = folder.newFile("base.order.mixed.utf8");
 		FileWriterUtil.printLines(getBaseFileLinesInOrderColumnsMixedLines(), baseFileLinesInOrderColumnsMixedOrder,
-				CharacterEncoding.US_ASCII);
+				ENCODING);
 	}
 
 	private List<String> getBaseFileLinesInOrderColumnsMixedLines() {
@@ -99,9 +101,9 @@ public class FileComparisonUtilTest extends DefaultTestCase {
 	}
 
 	private void initializeBaseFileLinesMixedColumnsInOrder() throws IOException {
-		baseFileLinesMixedOrderColumnsInOrder = folder.newFile("base.mixed.order.ascii");
+		baseFileLinesMixedOrderColumnsInOrder = folder.newFile("base.mixed.order.utf8");
 		FileWriterUtil.printLines(getBaseFileLinesMixedColumnsInOrderLines(), baseFileLinesMixedOrderColumnsInOrder,
-				CharacterEncoding.US_ASCII);
+				ENCODING);
 	}
 
 	private List<String> getBaseFileLinesMixedColumnsInOrderLines() {
@@ -110,69 +112,70 @@ public class FileComparisonUtilTest extends DefaultTestCase {
 	}
 
 	private void initializeBaseFileMissingLine() throws IOException {
-		baseFileMissingLine = folder.newFile("base.missing.ascii");
+		baseFileMissingLine = folder.newFile("base.missing.utf8");
 		ArrayList<String> lines = new ArrayList<String>(getBaseFileLines());
 		lines.remove(lines.size() - 1);
-		FileWriterUtil.printLines(lines, baseFileMissingLine, CharacterEncoding.US_ASCII);
+		FileWriterUtil.printLines(lines, baseFileMissingLine, ENCODING);
 	}
 
 	@Test
 	public void testFileComparison_basefiles() throws Exception {
-		assertTrue(FileComparisonUtil.hasExpectedLines(baseFile, CharacterEncoding.US_ASCII, getBaseFileLines(),
-				COLUMN_DELIMITER_REGEX, LineOrder.AS_IN_FILE, ColumnOrder.AS_IN_FILE));
-		assertTrue(FileComparisonUtil.hasExpectedLines(baseFile, CharacterEncoding.US_ASCII, getBaseFileLines(),
-				COLUMN_DELIMITER_REGEX, LineOrder.AS_IN_FILE, ColumnOrder.ANY_ORDER));
-		assertTrue(FileComparisonUtil.hasExpectedLines(baseFile, CharacterEncoding.US_ASCII, getBaseFileLines(),
-				COLUMN_DELIMITER_REGEX, LineOrder.ANY_ORDER, ColumnOrder.AS_IN_FILE));
-		assertTrue(FileComparisonUtil.hasExpectedLines(baseFile, CharacterEncoding.US_ASCII, getBaseFileLines(),
-				COLUMN_DELIMITER_REGEX, LineOrder.ANY_ORDER, ColumnOrder.ANY_ORDER));
+		for (String line : getBaseFileLines())
+		assertTrue(FileComparisonUtil.hasExpectedLines(baseFile, ENCODING, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
+				LineOrder.AS_IN_FILE, ColumnOrder.AS_IN_FILE));
+		assertTrue(FileComparisonUtil.hasExpectedLines(baseFile, ENCODING, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
+				LineOrder.AS_IN_FILE, ColumnOrder.ANY_ORDER));
+		assertTrue(FileComparisonUtil.hasExpectedLines(baseFile, ENCODING, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
+				LineOrder.ANY_ORDER, ColumnOrder.AS_IN_FILE));
+		assertTrue(FileComparisonUtil.hasExpectedLines(baseFile, ENCODING, getBaseFileLines(), COLUMN_DELIMITER_REGEX,
+				LineOrder.ANY_ORDER, ColumnOrder.ANY_ORDER));
 	}
 
 	@Test
 	public void testFileComparison_basefilesLinesMixedColumnsInOrder() throws Exception {
-		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileLinesMixedOrderColumnsInOrder, CharacterEncoding.US_ASCII,
+		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileLinesMixedOrderColumnsInOrder, ENCODING,
 				getBaseFileLines(), COLUMN_DELIMITER_REGEX, LineOrder.AS_IN_FILE, ColumnOrder.AS_IN_FILE));
-		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileLinesMixedOrderColumnsInOrder, CharacterEncoding.US_ASCII,
+		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileLinesMixedOrderColumnsInOrder, ENCODING,
 				getBaseFileLines(), COLUMN_DELIMITER_REGEX, LineOrder.AS_IN_FILE, ColumnOrder.ANY_ORDER));
-		assertTrue(FileComparisonUtil.hasExpectedLines(baseFileLinesMixedOrderColumnsInOrder, CharacterEncoding.US_ASCII,
+		assertTrue(FileComparisonUtil.hasExpectedLines(baseFileLinesMixedOrderColumnsInOrder, ENCODING,
 				getBaseFileLines(), COLUMN_DELIMITER_REGEX, LineOrder.ANY_ORDER, ColumnOrder.AS_IN_FILE));
-		assertTrue(FileComparisonUtil.hasExpectedLines(baseFileLinesMixedOrderColumnsInOrder, CharacterEncoding.US_ASCII,
+		assertTrue(FileComparisonUtil.hasExpectedLines(baseFileLinesMixedOrderColumnsInOrder, ENCODING,
 				getBaseFileLines(), COLUMN_DELIMITER_REGEX, LineOrder.ANY_ORDER, ColumnOrder.ANY_ORDER));
 	}
 
 	@Test
 	public void testFileComparison_basefilesLinesMixedColumnsMixed() throws Exception {
-		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileLinesMixedOrderColumnsMixedOrder, CharacterEncoding.US_ASCII,
+		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileLinesMixedOrderColumnsMixedOrder, ENCODING,
 				getBaseFileLines(), COLUMN_DELIMITER_REGEX, LineOrder.AS_IN_FILE, ColumnOrder.AS_IN_FILE));
-		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileLinesMixedOrderColumnsMixedOrder, CharacterEncoding.US_ASCII,
+		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileLinesMixedOrderColumnsMixedOrder, ENCODING,
 				getBaseFileLines(), COLUMN_DELIMITER_REGEX, LineOrder.AS_IN_FILE, ColumnOrder.ANY_ORDER));
-		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileLinesMixedOrderColumnsMixedOrder, CharacterEncoding.US_ASCII,
+		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileLinesMixedOrderColumnsMixedOrder, ENCODING,
 				getBaseFileLines(), COLUMN_DELIMITER_REGEX, LineOrder.ANY_ORDER, ColumnOrder.AS_IN_FILE));
-		assertTrue(FileComparisonUtil.hasExpectedLines(baseFileLinesMixedOrderColumnsMixedOrder, CharacterEncoding.US_ASCII,
+		assertTrue(FileComparisonUtil.hasExpectedLines(baseFileLinesMixedOrderColumnsMixedOrder, ENCODING,
 				getBaseFileLines(), COLUMN_DELIMITER_REGEX, LineOrder.ANY_ORDER, ColumnOrder.ANY_ORDER));
 	}
 
 	@Test
 	public void testFileComparison_basefilesLinesInOrderColumnsMixed() throws Exception {
-		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileLinesInOrderColumnsMixedOrder, CharacterEncoding.US_ASCII,
+		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileLinesInOrderColumnsMixedOrder, ENCODING,
 				getBaseFileLines(), COLUMN_DELIMITER_REGEX, LineOrder.AS_IN_FILE, ColumnOrder.AS_IN_FILE));
-		assertTrue(FileComparisonUtil.hasExpectedLines(baseFileLinesInOrderColumnsMixedOrder, CharacterEncoding.US_ASCII,
+		assertTrue(FileComparisonUtil.hasExpectedLines(baseFileLinesInOrderColumnsMixedOrder, ENCODING,
 				getBaseFileLines(), COLUMN_DELIMITER_REGEX, LineOrder.AS_IN_FILE, ColumnOrder.ANY_ORDER));
-		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileLinesInOrderColumnsMixedOrder, CharacterEncoding.US_ASCII,
+		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileLinesInOrderColumnsMixedOrder, ENCODING,
 				getBaseFileLines(), COLUMN_DELIMITER_REGEX, LineOrder.ANY_ORDER, ColumnOrder.AS_IN_FILE));
-		assertTrue(FileComparisonUtil.hasExpectedLines(baseFileLinesInOrderColumnsMixedOrder, CharacterEncoding.US_ASCII,
+		assertTrue(FileComparisonUtil.hasExpectedLines(baseFileLinesInOrderColumnsMixedOrder, ENCODING,
 				getBaseFileLines(), COLUMN_DELIMITER_REGEX, LineOrder.ANY_ORDER, ColumnOrder.ANY_ORDER));
 	}
 
 	@Test
 	public void testFileComparison_basefilesMissingLine() throws Exception {
-		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileMissingLine, CharacterEncoding.US_ASCII, getBaseFileLines(),
+		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileMissingLine, ENCODING, getBaseFileLines(),
 				COLUMN_DELIMITER_REGEX, LineOrder.AS_IN_FILE, ColumnOrder.AS_IN_FILE));
-		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileMissingLine, CharacterEncoding.US_ASCII, getBaseFileLines(),
+		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileMissingLine, ENCODING, getBaseFileLines(),
 				COLUMN_DELIMITER_REGEX, LineOrder.AS_IN_FILE, ColumnOrder.ANY_ORDER));
-		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileMissingLine, CharacterEncoding.US_ASCII, getBaseFileLines(),
+		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileMissingLine, ENCODING, getBaseFileLines(),
 				COLUMN_DELIMITER_REGEX, LineOrder.ANY_ORDER, ColumnOrder.AS_IN_FILE));
-		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileMissingLine, CharacterEncoding.US_ASCII, getBaseFileLines(),
+		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileMissingLine, ENCODING, getBaseFileLines(),
 				COLUMN_DELIMITER_REGEX, LineOrder.ANY_ORDER, ColumnOrder.ANY_ORDER));
 	}
 
