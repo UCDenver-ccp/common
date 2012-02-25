@@ -19,13 +19,18 @@
 package edu.ucdenver.ccp.common.file;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
 
 import edu.ucdenver.ccp.common.collections.CollectionsUtil;
+import edu.ucdenver.ccp.common.file.FileWriterUtil.FileSuffixEnforcement;
+import edu.ucdenver.ccp.common.file.FileWriterUtil.WriteMode;
 
 /**
  * A simple utility for comparing the contents of text files.
@@ -234,6 +239,85 @@ public class FileComparisonUtil {
 			return false;
 		} else
 			throw new RuntimeException(String.format("Unknown ColumnOrder: %s", columnOrder.toString()));
+	}
+
+	/**
+	 * Computes the MD5 CheckSum for the input file and writes it to a file in the same directory
+	 * called [INPUT_FILE_NAME].md5
+	 * 
+	 * @param inputFile
+	 * @return
+	 */
+	public static File createMd5ChecksumFile(File inputFile) {
+		try {
+			String md5sum = computeMd5Checksum(inputFile) + " " + inputFile.getName();
+			File checkSumFile = getChecksumFile(inputFile);
+			FileWriterUtil.printLines(CollectionsUtil.createList(md5sum), checkSumFile, CharacterEncoding.UTF_8,
+					WriteMode.OVERWRITE, FileSuffixEnforcement.OFF);
+			return checkSumFile;
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException(e);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Simply appends .md5 to the input file name
+	 * 
+	 * @param inputFile
+	 * @return
+	 */
+	private static File getChecksumFile(File inputFile) {
+		File checkSumFile = new File(inputFile.getAbsolutePath() + ".md5");
+		return checkSumFile;
+	}
+
+	/**
+	 * @param inputFile
+	 * @param checkSumFile
+	 * @return true if the MD5 checksum in the checkSumFile equals the MD5 checksum computed on the
+	 *         inputFile, false otherwise
+	 */
+	public static boolean fileHasExpectedMd5Checksum(File inputFile, File checkSumFile) {
+		try {
+			String expectedChecksum = FileReaderUtil.loadLinesFromFile(checkSumFile, CharacterEncoding.UTF_8).get(0)
+					.split("\\s+")[0];
+			return expectedChecksum.equals(computeMd5Checksum(inputFile));
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Assumes there is a file in the same directory as the input file called [INPUT_FILE_NAME].md5
+	 * that contains the expected MD5 checksum for the input file.
+	 * 
+	 * @param inputFile
+	 * @return true if the MD5 checksum in the checkSumFile equals the MD5 checksum computed on the
+	 *         inputFile, false otherwise
+	 */
+	public static boolean fileHasExpectedMd5Checksum(File inputFile) {
+		try {
+			File checkSumFile = getChecksumFile(inputFile);
+			String expectedChecksum = FileReaderUtil.loadLinesFromFile(checkSumFile, CharacterEncoding.UTF_8).get(0)
+					.split("\\s+")[0];
+			return expectedChecksum.equals(computeMd5Checksum(inputFile));
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Computes the MD5 CheckSum for the input file
+	 * 
+	 * @param inputFile
+	 * @return the MD5 CheckSum
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	public static String computeMd5Checksum(File inputFile) throws FileNotFoundException, IOException {
+		return DigestUtils.md5Hex(new FileInputStream(inputFile));
 	}
 
 }

@@ -178,5 +178,12 @@ public class FileComparisonUtilTest extends DefaultTestCase {
 		assertFalse(FileComparisonUtil.hasExpectedLines(baseFileMissingLine, ENCODING, getBaseFileLines(),
 				COLUMN_DELIMITER_REGEX, LineOrder.ANY_ORDER, ColumnOrder.ANY_ORDER));
 	}
+	
+	@Test
+	public void testMd5Comparison() {
+		FileComparisonUtil.createMd5ChecksumFile(baseFile);
+		assertTrue(FileComparisonUtil.fileHasExpectedMd5Checksum(baseFile));
+		assertTrue(FileComparisonUtil.fileHasExpectedMd5Checksum(baseFile, new File(baseFile.getAbsolutePath() + ".md5")));
+	}
 
 }
