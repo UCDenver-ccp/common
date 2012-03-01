@@ -145,6 +145,28 @@ public class FileArchiveUtil {
 		FileUtil.copy(inputFile, gzipStream);
 	}
 
+	/**
+	 * Gzips the input file. All that remains in the directory is the gzipped file (the original
+	 * file is deleted after zipping is complete)
+	 * 
+	 * @param inputFile
+	 * @throws IOException
+	 */
+	public static void gzipFile(File inputFile) throws IOException {
+		File gzippedFile = getGzippedFileReference(inputFile);
+		gzipFile(inputFile, gzippedFile);
+		FileUtil.deleteFile(inputFile);
+	}
+
+	/**
+	 * @param inputFile
+	 * @return returns a {@link File} reference that is simple the input file appended with a .gz
+	 *         suffix
+	 */
+	private static File getGzippedFileReference(File inputFile) {
+		return new File(inputFile.getAbsolutePath() + gz_suffix);
+	}
+
 	// public static File gzipFile(File file, File outputDirectory) throws IOException {
 	// File gzFile = new File(outputDirectory, file.getName() + ".gz");
 	// FileUtil.copy(file,new GZIPOutputStream(new FileOutputStream(gzFile)));
