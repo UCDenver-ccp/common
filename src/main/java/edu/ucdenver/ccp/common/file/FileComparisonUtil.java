@@ -274,19 +274,65 @@ public class FileComparisonUtil {
 	}
 
 	/**
+	 * The format of MD5 check sum files are not always the same. This interface allows the user to
+	 * specify the check sum extraction from a line (presumably from a file)
+	 * 
+	 * @author Center for Computational Pharmacology, UC Denver; ccpsupport@ucdenver.edu
+	 * 
+	 */
+	public static interface CheckSumExtractor {
+		/**
+		 * @param line
+		 * @return the check sum extracted from the input line
+		 */
+		public String extractCheckSumFromLine(String line);
+	}
+
+	/**
+	 * Can be used for the case where the MD5 sum file format is:<br>
+	 * [CHECKSUM] [FILENAME]
+	 * 
+	 * @author Center for Computational Pharmacology, UC Denver; ccpsupport@ucdenver.edu
+	 * 
+	 */
+	public static class DefaultCheckSumExtractor implements CheckSumExtractor {
+		/**
+		 * assumes the file format consists of the checksum then a space then the file name
+		 */
+		@Override
+		public String extractCheckSumFromLine(String line) {
+			return line.split("\\s+")[0];
+		}
+	}
+
+	/**
+	 * @param inputFile
+	 * @param checkSumFile
+	 * @param checkSumExtractor
+	 * @return true if the MD5 checksum in the checkSumFile equals the MD5 checksum computed on the
+	 *         inputFile, false otherwise
+	 */
+	public static boolean fileHasExpectedMd5Checksum(File inputFile, File checkSumFile,
+			CheckSumExtractor checkSumExtractor) {
+		try {
+			String checkSumLine = FileReaderUtil.loadLinesFromFile(checkSumFile, CharacterEncoding.UTF_8).get(0);
+			String expectedChecksum = checkSumExtractor.extractCheckSumFromLine(checkSumLine);
+			return expectedChecksum.equals(computeMd5Checksum(inputFile));
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Uses the {@link DefaultCheckSumExtractor}
+	 * 
 	 * @param inputFile
 	 * @param checkSumFile
 	 * @return true if the MD5 checksum in the checkSumFile equals the MD5 checksum computed on the
 	 *         inputFile, false otherwise
 	 */
 	public static boolean fileHasExpectedMd5Checksum(File inputFile, File checkSumFile) {
-		try {
-			String expectedChecksum = FileReaderUtil.loadLinesFromFile(checkSumFile, CharacterEncoding.UTF_8).get(0)
-					.split("\\s+")[0];
-			return expectedChecksum.equals(computeMd5Checksum(inputFile));
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		return fileHasExpectedMd5Checksum(inputFile, checkSumFile, new DefaultCheckSumExtractor());
 	}
 
 	/**
@@ -298,14 +344,23 @@ public class FileComparisonUtil {
 	 *         inputFile, false otherwise
 	 */
 	public static boolean fileHasExpectedMd5Checksum(File inputFile) {
-		try {
-			File checkSumFile = getChecksumFile(inputFile);
-			String expectedChecksum = FileReaderUtil.loadLinesFromFile(checkSumFile, CharacterEncoding.UTF_8).get(0)
-					.split("\\s+")[0];
-			return expectedChecksum.equals(computeMd5Checksum(inputFile));
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		File checkSumFile = getChecksumFile(inputFile);
+		return fileHasExpectedMd5Checksum(inputFile, checkSumFile);
+	}
+
+	/**
+	 * Assumes there is a file in the same directory as the input file called [INPUT_FILE_NAME].md5
+	 * that contains the expected MD5 checksum for the input file.
+	 * 
+	 * @param inputFile
+	 * @param checkSumExtractor
+	 *            used to extract the check sum from the first line in the check sum file
+	 * @return true if the MD5 checksum in the checkSumFile equals the MD5 checksum computed on the
+	 *         inputFile, false otherwise
+	 */
+	public static boolean fileHasExpectedMd5Checksum(File inputFile, CheckSumExtractor checkSumExtractor) {
+		File checkSumFile = getChecksumFile(inputFile);
+		return fileHasExpectedMd5Checksum(inputFile, checkSumFile, checkSumExtractor);
 	}
 
 	/**
