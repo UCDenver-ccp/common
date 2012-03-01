@@ -318,10 +318,8 @@ public class FileComparisonUtil {
 			String checkSumLine = FileReaderUtil.loadLinesFromFile(checkSumFile, CharacterEncoding.UTF_8).get(0);
 			String expectedChecksum = checkSumExtractor.extractCheckSumFromLine(checkSumLine);
 			String actualCheckSum = computeMd5Checksum(inputFile);
-			logger.info("EXP MD5: " + expectedChecksum + " -- length: " + expectedChecksum.length());
-			logger.info("ACT MD5: " + actualCheckSum + " -- length: "+ actualCheckSum.length());
 			if (!expectedChecksum.equals(actualCheckSum))
-				logger.warn("MD5 check sum failure. Expected: " + expectedChecksum + " but was: " + actualCheckSum);
+				logger.warn("MD5 check sum failure. Expected: '" + expectedChecksum + "' but was: '" + actualCheckSum + "'");
 			return expectedChecksum.equals(actualCheckSum);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
