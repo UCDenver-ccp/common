@@ -29,6 +29,8 @@ import java.util.zip.GZIPInputStream;
 
 import org.junit.Test;
 
+import HTTPClient.UncompressInputStreamWrapper;
+
 import edu.ucdenver.ccp.common.collections.CollectionsUtil;
 import edu.ucdenver.ccp.common.file.FileArchiveUtil.IncludeBaseDirectoryInPackage;
 import edu.ucdenver.ccp.common.file.FileWriterUtil.FileSuffixEnforcement;
@@ -76,7 +78,7 @@ public class FileArchiveUtilTest extends DefaultTestCase {
 
 	@Test
 	public void testUnzipUnixCompressFile() throws Exception {
-		UncompressInputStream uis = new UncompressInputStream(ClassPathUtil.getResourceStreamFromClasspath(
+		UncompressInputStreamWrapper uis = new UncompressInputStreamWrapper(ClassPathUtil.getResourceStreamFromClasspath(
 				this.getClass(), SAMPLE_UNIX_COMPRESS_FILE_NAME));
 		File outputDirectory = folder.newFolder("unzippedUnixCompressFile");
 		File unzippedFile = FileUtil.appendPathElementsToDirectory(outputDirectory, "sampleUnixCompressFile.txt");

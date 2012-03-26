@@ -62,7 +62,10 @@ import org.apache.tools.tar.TarEntry;
 import org.apache.tools.tar.TarInputStream;
 import org.apache.tools.tar.TarOutputStream;
 
+import HTTPClient.UncompressInputStreamWrapper;
+
 import edu.ucdenver.ccp.common.string.StringUtil;
+
 
 /**
  * Utility class for handling archive files of various types
@@ -180,8 +183,8 @@ public class FileArchiveUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	private static UncompressInputStream getUncompressInputStream(File file) throws IOException {
-		return new UncompressInputStream(new BufferedInputStream(new FileInputStream(file)));
+	private static UncompressInputStreamWrapper getUncompressInputStream(File file) throws IOException {
+		return new UncompressInputStreamWrapper(new BufferedInputStream(new FileInputStream(file)));
 	}
 
 	/**
@@ -501,7 +504,7 @@ public class FileArchiveUtil {
 				return unzip((GZIPInputStream) is, getUnzippedFileName(zippedFile.getName()), outputDirectory);
 			} else if (isUnixCompressFile(zippedFile)) {
 				is = getUncompressInputStream(zippedFile);
-				return unzip((UncompressInputStream) is, getUnzippedFileName(zippedFile.getName()), outputDirectory);
+				return unzip((UncompressInputStreamWrapper) is, getUnzippedFileName(zippedFile.getName()), outputDirectory);
 			} else {
 				throw new IllegalArgumentException(String.format("Unable to unzip file: %s",
 						zippedFile.getAbsolutePath()));
@@ -602,7 +605,7 @@ public class FileArchiveUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public static File unzip(UncompressInputStream uncompressInputStream, String outputFileName, File outputDirectory)
+	public static File unzip(UncompressInputStreamWrapper uncompressInputStream, String outputFileName, File outputDirectory)
 			throws IOException {
 		File outputFile = new File(outputDirectory.getAbsolutePath() + File.separator + outputFileName);
 		FileUtil.copy(uncompressInputStream, outputFile);
