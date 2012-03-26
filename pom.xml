@@ -59,6 +59,11 @@
 			<artifactId>commons-codec</artifactId>
 			<version>1.6</version>
 		</dependency>
+		<dependency>
+			<groupId>HTTPClient</groupId>
+			<artifactId>HTTPClient</artifactId>
+			<version>0.3-3</version>
+		</dependency>
 	</dependencies>
 
 
