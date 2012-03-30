@@ -634,15 +634,17 @@ public class CollectionsUtil {
 	 * 
 	 * @param key
 	 * @param keyToCountMap
+	 * @return the incremented count for the specified key
 	 */
-	public static <K> void addToCountMap(K key, Map<K, Integer> keyToCountMap) {
+	public static <K> int addToCountMap(K key, Map<K, Integer> keyToCountMap) {
 		if (keyToCountMap.containsKey(key)) {
 			int count = keyToCountMap.get(key) + 1;
 			keyToCountMap.remove(key);
 			keyToCountMap.put(key, count);
-		} else {
-			keyToCountMap.put(key, 1);
+			return count;
 		}
+		keyToCountMap.put(key, 1);
+		return 1;
 	}
 
 	/**
