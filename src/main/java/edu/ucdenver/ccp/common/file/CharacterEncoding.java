@@ -138,4 +138,12 @@ public enum CharacterEncoding {
 		return hasEncodingSpecificFileName(file.getName(), encoding);
 	}
 
+	/**
+	 * @param encodingStr
+	 * @return
+	 */
+	public static CharacterEncoding getEncoding(String encodingStr) {
+		return CharacterEncoding.valueOf(encodingStr.replaceAll("-", "_").toUpperCase());
+	}
+
 }
