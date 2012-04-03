@@ -105,6 +105,20 @@ public class XmlUtil {
 	 * </pre>
 	 * 
 	 * @param encoding
+	 * @return
+	 */
+	public static String getXmlHeader1_0(CharacterEncoding encoding) {
+		return getXmlHeader1_0(encoding.getCharacterSetName());
+	}
+
+	/**
+	 * Returns an XML header, e.g.
+	 * 
+	 * <pre>
+	 * <?xml version="1.0" encoding="UTF-8"?>
+	 * </pre>
+	 * 
+	 * @param encoding
 	 *            the encoding to specify in the XML header
 	 * @return an XML heading line
 	 */
