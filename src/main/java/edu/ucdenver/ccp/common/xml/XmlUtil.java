@@ -64,10 +64,11 @@ public class XmlUtil {
 	 *         codes.
 	 */
 	public static String convertXmlEscapeCharacters(String inputStr) {
-		return inputStr.replaceAll(StringConstants.AMPERSAND, AMPERSAND_CODE).replaceAll(
-				StringConstants.QUOTATION_MARK, QUOTATION_MARK_CODE).replaceAll(StringConstants.APOSTROPHE,
-				APOSTROPHE_CODE).replaceAll(StringConstants.LESS_THAN_SIGN, LESS_THAN_SIGN_CODE).replaceAll(
-				StringConstants.GREATER_THAN_SIGN, GREATER_THAN_SIGN_CODE);
+		return inputStr.replaceAll(StringConstants.AMPERSAND, AMPERSAND_CODE)
+				.replaceAll(StringConstants.QUOTATION_MARK, QUOTATION_MARK_CODE)
+				.replaceAll(StringConstants.APOSTROPHE, APOSTROPHE_CODE)
+				.replaceAll(StringConstants.LESS_THAN_SIGN, LESS_THAN_SIGN_CODE)
+				.replaceAll(StringConstants.GREATER_THAN_SIGN, GREATER_THAN_SIGN_CODE);
 	}
 
 	/**
@@ -107,8 +108,8 @@ public class XmlUtil {
 	 *            the encoding to specify in the XML header
 	 * @return an XML heading line
 	 */
-	public static String getXmlHeader1_0(CharacterEncoding encoding) {
-		return String.format("<?xml version=\"1.0\" encoding=\"%s\"?>", encoding.name().replace(
-				StringConstants.UNDERSCORE, StringConstants.HYPHEN_MINUS));
+	public static String getXmlHeader1_0(String encoding) {
+		return String.format("<?xml version=\"1.0\" encoding=\"%s\"?>",
+				encoding.replaceAll(StringConstants.UNDERSCORE, StringConstants.HYPHEN_MINUS));
 	}
 }
