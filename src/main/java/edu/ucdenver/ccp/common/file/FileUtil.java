@@ -61,16 +61,28 @@ import edu.ucdenver.ccp.common.string.StringUtil;
 public class FileUtil {
 
 	/**
+	 * This enum replaces the need for the boolean cleanDirectory parameter that has been used in
+	 * the past
+	 * 
+	 * @author Colorado Computational Pharmacology, UC Denver; ccpsupport@ucdenver.edu
+	 * 
+	 */
+	public enum CleanDirectory {
+		YES,
+		NO
+	}
+
+	/**
 	 * Private constructor; do not instantiate this utility class
 	 */
 	/* @formatter:off */
 	private FileUtil() {/* do not instantiate */
 	}
-
 	/* @formatter:on */
 
 	/**
-	 * Returns a temporary directory based on the File.createTempFile() method. The directory returned will be unique as it will have a UUID appended to it.
+	 * Returns a temporary directory based on the File.createTempFile() method. The directory
+	 * returned will be unique as it will have a UUID appended to it.
 	 * 
 	 * @param directoryName
 	 * @return
@@ -253,12 +265,11 @@ public class FileUtil {
 	 * @throws IOException
 	 */
 	public static void copy(InputStream is, File file) throws IOException {
-		BufferedOutputStream outStream=null;
+		BufferedOutputStream outStream = null;
 		try {
 			outStream = new BufferedOutputStream(new FileOutputStream(file));
 			copy(is, outStream);
-		}
-		finally {
+		} finally {
 			IOUtils.closeQuietly(outStream);
 		}
 	}
@@ -275,8 +286,7 @@ public class FileUtil {
 		try {
 			fis = new FileInputStream(file);
 			copy(fis, os);
-		}
-		finally {
+		} finally {
 			IOUtils.closeQuietly(fis);
 		}
 	}
@@ -286,18 +296,19 @@ public class FileUtil {
 	 * 
 	 * @param fromFile
 	 * @param toFile
-	 * @throws IOException, The exception is always wrapped. Look at 
-	 * the embedded exception to see what it was that caused it.
+	 * @throws IOException
+	 *             , The exception is always wrapped. Look at the embedded exception to see what it
+	 *             was that caused it.
 	 */
 	public static void copy(File fromFile, File toFileOrDirectory) throws IOException {
 		validateFile(fromFile);
-		
+
 		if (!toFileOrDirectory.canWrite()) {
-			//throw ...
+			// throw ...
 		}
-		
-		FileInputStream fis=null;
-		FileOutputStream fos=null;
+
+		FileInputStream fis = null;
+		FileOutputStream fos = null;
 		File toFile = toFileOrDirectory;
 		try {
 			fis = new FileInputStream(fromFile);
@@ -307,11 +318,9 @@ public class FileUtil {
 			}
 			fos = new FileOutputStream(toFile);
 			copy(fis, fos);
-		}
-		catch (IOException x) {
+		} catch (IOException x) {
 			throw new IOException(x);
-		}
-		finally {
+		} finally {
 			IOUtils.closeQuietly(fis);
 			IOUtils.closeQuietly(fos);
 		}
@@ -353,21 +362,21 @@ public class FileUtil {
 	 * @throws IOException
 	 */
 	public static String copyToString(File fromFile, CharacterEncoding fromFileEncoding) throws IOException {
-		InputStreamReader isr=null;
+		InputStreamReader isr = null;
 		try {
 			validateFile(fromFile);
 			isr = new InputStreamReader(new FileInputStream(fromFile), fromFileEncoding.getDecoder());
 			return StreamUtil.toString(isr);
-		}
-		finally {
+		} finally {
 			IOUtils.closeQuietly(isr);
 		}
 	}
 
-	public static boolean fileContainsAstralCharacters(File fromFile, CharacterEncoding fromFileEncoding) throws IOException {
+	public static boolean fileContainsAstralCharacters(File fromFile, CharacterEncoding fromFileEncoding)
+			throws IOException {
 		return StringUtil.containsAstralChars(copyToString(fromFile, fromFileEncoding));
 	}
-	
+
 	/**
 	 * Copies the specified InputStream to the specified OutputStream
 	 * 
@@ -417,8 +426,7 @@ public class FileUtil {
 			fis = new FileInputStream(file);
 			byte[] bytes = IOUtils.toByteArray(fis);
 			return bytes;
-		}
-		finally {
+		} finally {
 			IOUtils.closeQuietly(fis);
 		}
 
