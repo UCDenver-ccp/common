@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 
 import edu.ucdenver.ccp.common.file.CharacterEncoding;
 import edu.ucdenver.ccp.common.file.FileUtil;
+import edu.ucdenver.ccp.common.string.StringConstants;
 import edu.ucdenver.ccp.common.string.StringUtil;
 
 /**
@@ -72,6 +73,11 @@ public class ClassPathUtil {
 		return file;
 	}
 
+	public static File copyClasspathResourceToFile(String resourcePath, File file) throws IOException {
+		FileUtil.copy(ClassLoader.getSystemResourceAsStream(resourcePath), file);
+		return file;
+	}
+
 	/**
 	 * Copies a resource (file on the classpath) to the specified directory
 	 * 
@@ -83,6 +89,11 @@ public class ClassPathUtil {
 	public static File copyClasspathResourceToDirectory(Class<?> clazz, String resourceName, File directory)
 			throws IOException {
 		return copyClasspathResourceToFile(clazz, resourceName, new File(directory, resourceName));
+	}
+
+	public static File copyClasspathResourceToDirectory(String resourcePath, File directory) throws IOException {
+		String resourceName = resourcePath.substring(resourcePath.lastIndexOf(StringConstants.FORWARD_SLASH) + 1);
+		return copyClasspathResourceToFile(resourcePath, new File(directory, resourceName));
 	}
 
 	/**
