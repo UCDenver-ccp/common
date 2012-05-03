@@ -73,8 +73,35 @@ public class ClassPathUtil {
 		return file;
 	}
 
+	/**
+	 * If the input resource path cannot be found on the classpath then this method tries the input
+	 * path with either a forward slash removed or added to the front, depending on if one exists or
+	 * not
+	 * 
+	 * @param resourcePath
+	 * @param file
+	 * @return
+	 * @throws IOException
+	 * @throws IllegalArgumentException
+	 *             if the input resource path cannot be found on the classpath
+	 */
 	public static File copyClasspathResourceToFile(String resourcePath, File file) throws IOException {
-		FileUtil.copy(ClassLoader.getSystemResourceAsStream(resourcePath), file);
+		InputStream stream = ClassLoader.getSystemResourceAsStream(resourcePath);
+		if (stream == null) {
+			String modifiedPath;
+			logger.warn("Invalid resource path on classpath: " + resourcePath);
+			if (resourcePath.startsWith("/")) {
+				modifiedPath = resourcePath.substring(1);
+			} else {
+				modifiedPath = "/" + resourcePath;
+			}
+			logger.warn("Trying path variant: " + modifiedPath);
+			stream = ClassLoader.getSystemResourceAsStream(modifiedPath);
+			if (stream == null) {
+				throw new IllegalArgumentException("Unable to resolve resource on classpath: " + resourcePath);
+			}
+		}
+		FileUtil.copy(stream, file);
 		return file;
 	}
 
