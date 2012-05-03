@@ -535,8 +535,8 @@ public class FileArchiveUtil {
 		} else if (filename.endsWith(zip_suffix)) {
 			return StringUtil.removeSuffix(filename, zip_suffix);
 		} else {
-			throw new IllegalArgumentException(String.format(
-					"Only works for .gz and .tgz filenames. Input filename was: %s", filename));
+			// assumes the file is not compressed and simply returns the input file name
+			return filename;
 		}
 	}
 
