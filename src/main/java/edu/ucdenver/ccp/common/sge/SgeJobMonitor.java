@@ -95,6 +95,9 @@ public class SgeJobMonitor {
 			}
 			lineIter.close();
 		}
+		if (failureLogs.size() == 0) {
+			logger.info("Logs are clean.");
+		}
 		return failureLogs;
 	}
 
