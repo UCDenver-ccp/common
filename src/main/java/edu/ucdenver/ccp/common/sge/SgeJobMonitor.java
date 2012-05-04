@@ -85,6 +85,7 @@ public class SgeJobMonitor {
 		Collection<File> failureLogs;
 		failureLogs = new ArrayList<File>();
 		for (File logFile : logDirectory.listFiles()) {
+			logger.info("Checking log file: " + logFile.getAbsolutePath());
 			FileLineIterator lineIter = null;
 			for (lineIter = new FileLineIterator(logFile, CharacterEncoding.UTF_8); lineIter.hasNext();) {
 				FileLine line = lineIter.next();
@@ -139,7 +140,7 @@ public class SgeJobMonitor {
 			throw new RuntimeException(e);
 		}
 		lineIter.close();
-
+		logger.info("Active qstat process count: " + remainingProcessesCount);
 		return remainingProcessesCount;
 	}
 
