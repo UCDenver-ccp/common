@@ -56,6 +56,7 @@ public class SgeJobMonitor {
 	 * @throws InterruptedException
 	 */
 	public void monitor() throws IOException, InterruptedException {
+		logger.info("Monitoring log directory: " + logDirectory.getAbsolutePath());
 		Collection<File> failureLogs;
 		int activeProcessCount = -1;
 		/*
