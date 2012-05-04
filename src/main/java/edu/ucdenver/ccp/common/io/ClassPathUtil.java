@@ -86,7 +86,7 @@ public class ClassPathUtil {
 	 *             if the input resource path cannot be found on the classpath
 	 */
 	public static File copyClasspathResourceToFile(String resourcePath, File file) throws IOException {
-		InputStream stream = ClassLoader.getSystemResourceAsStream(resourcePath);
+		InputStream stream = ClassPathUtil.class.getResourceAsStream(resourcePath);
 		if (stream == null) {
 			String modifiedPath;
 			logger.warn("Invalid resource path on classpath: " + resourcePath);
@@ -96,7 +96,7 @@ public class ClassPathUtil {
 				modifiedPath = "/" + resourcePath;
 			}
 			logger.warn("Trying path variant: " + modifiedPath);
-			stream = ClassLoader.getSystemResourceAsStream(modifiedPath);
+			stream = ClassPathUtil.class.getResourceAsStream(modifiedPath);
 			if (stream == null) {
 				throw new IllegalArgumentException("Unable to resolve resource on classpath: " + resourcePath);
 			}
