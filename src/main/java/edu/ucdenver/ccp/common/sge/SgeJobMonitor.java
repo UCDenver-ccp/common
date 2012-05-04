@@ -29,7 +29,7 @@ import edu.ucdenver.ccp.common.file.reader.StreamLineIterator;
 public class SgeJobMonitor {
 	private static final Logger logger = Logger.getLogger(SgeJobMonitor.class);
 
-	private final File logDirectory;
+	private final Collection<File> logDirectories;
 
 	private final long MONITOR_FREQUENCY_IN_MINUTES = 2;
 
@@ -38,10 +38,12 @@ public class SgeJobMonitor {
 	 * @param loadScriptDirectory
 	 *            if not null, then this class will send load commands to AG
 	 */
-	public SgeJobMonitor(File logDirectory) {
-		this.logDirectory = logDirectory;
+	public SgeJobMonitor(Collection<File> logDirectories) {
+		this.logDirectories = logDirectories;
 		try {
-			FileUtil.validateDirectory(logDirectory);
+			for (File logDirectory : logDirectories) {
+				FileUtil.validateDirectory(logDirectory);
+			}
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e);
 		}
@@ -56,7 +58,7 @@ public class SgeJobMonitor {
 	 * @throws InterruptedException
 	 */
 	public void monitor() throws IOException, InterruptedException {
-		logger.info("Monitoring log directory: " + logDirectory.getAbsolutePath());
+		logger.info("Monitoring log directories: " + logDirectories.toString());
 		Collection<File> failureLogs;
 		int activeProcessCount = -1;
 		/*
@@ -84,17 +86,19 @@ public class SgeJobMonitor {
 	private Collection<File> checkSgeLogs() throws IOException {
 		Collection<File> failureLogs;
 		failureLogs = new ArrayList<File>();
-		for (File logFile : logDirectory.listFiles()) {
-//			logger.info("Checking log file: " + logFile.getAbsolutePath());
-			FileLineIterator lineIter = null;
-			for (lineIter = new FileLineIterator(logFile, CharacterEncoding.UTF_8); lineIter.hasNext();) {
-				FileLine line = lineIter.next();
-				if (line.getText().contains("BUILD FAILURE")) {
-					logger.error("SGE process failed. See log file: " + logFile.getAbsolutePath());
-					failureLogs.add(logFile);
+		for (File logDirectory : logDirectories) {
+			for (File logFile : logDirectory.listFiles()) {
+				// logger.info("Checking log file: " + logFile.getAbsolutePath());
+				FileLineIterator lineIter = null;
+				for (lineIter = new FileLineIterator(logFile, CharacterEncoding.UTF_8); lineIter.hasNext();) {
+					FileLine line = lineIter.next();
+					if (line.getText().contains("BUILD FAILURE")) {
+						logger.error("SGE process failed. See log file: " + logFile.getAbsolutePath());
+						failureLogs.add(logFile);
+					}
 				}
+				lineIter.close();
 			}
-			lineIter.close();
 		}
 		if (failureLogs.size() == 0) {
 			logger.info("Logs are clean.");
@@ -140,7 +144,7 @@ public class SgeJobMonitor {
 			throw new RuntimeException(e);
 		}
 		lineIter.close();
-//		logger.info("Active qstat process count: " + remainingProcessesCount);
+		// logger.info("Active qstat process count: " + remainingProcessesCount);
 		return remainingProcessesCount;
 	}
 
@@ -158,12 +162,16 @@ public class SgeJobMonitor {
 
 	/**
 	 * @param args
-	 *            args[0] = the directory that contains the log files<br>
+	 *            args[0+] = the directories that contains the log files<br>
 	 */
 	public static void main(String[] args) {
 		BasicConfigurator.configure();
-		File logDirectory = new File(args[0]);
-		SgeJobMonitor monitor = new SgeJobMonitor(logDirectory);
+		Collection<File> logDirectories = new ArrayList<File>();
+		for (int i = 0; i < args.length; i++) {
+			logDirectories.add(new File(args[i]));
+		}
+
+		SgeJobMonitor monitor = new SgeJobMonitor(logDirectories);
 		try {
 			monitor.monitor();
 		} catch (IOException e) {
