@@ -49,7 +49,7 @@ public class PrivateAccessor {
 	 */
 	public static Object getPrivateFieldValue(Object o, String fieldName) throws NoSuchFieldException,
 			IllegalArgumentException, IllegalAccessException {
-		return getPrivateField(o, fieldName).get(o);
+		return getPrivateMemberField(o, fieldName).get(o);
 	}
 
 	/**
@@ -84,7 +84,7 @@ public class PrivateAccessor {
 	 */
 	public static void setPrivateFinalFieldValue(Object o, String fieldName, Object value)
 			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException {
-		Field field = getPrivateField(o, fieldName);
+		Field field = getPrivateMemberField(o, fieldName);
 		field.setAccessible(true);
 		/* The following removes the final modifier from the field */
 		Field modifiersField = Field.class.getDeclaredField("modifiers");
@@ -101,7 +101,7 @@ public class PrivateAccessor {
 	 * @return
 	 * @throws NoSuchFieldException
 	 */
-	public static Field getPrivateField(Object o, String fieldName) throws NoSuchFieldException {
+	public static Field getPrivateMemberField(Object o, String fieldName) throws NoSuchFieldException {
 		Field field = getPrivateField(o.getClass(), fieldName);
 		if (field == null)
 			throw new NoSuchFieldException(String.format("No '%s' field can be found in class %s", fieldName, o
@@ -116,7 +116,7 @@ public class PrivateAccessor {
 	 * @param fieldName
 	 * @return
 	 */
-	private static Field getPrivateField(Class<?> clazz, String fieldName) {
+	public static Field getPrivateField(Class<?> clazz, String fieldName) {
 		for (Field field : clazz.getDeclaredFields()) {
 			if (field.getName().equals(fieldName)) {
 				field.setAccessible(true);
