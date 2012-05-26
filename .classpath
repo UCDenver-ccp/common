@@ -15,5 +15,6 @@
 	<classpathentry kind="lib" path="src/test/resources/hamcrest-all-1.2.jar"/>
 	<classpathentry kind="lib" path="src/test/resources/MockFtpServer-2.1.jar"/>
 	<classpathentry kind="lib" path="src/main/resources/commons-codec-1.6.jar"/>
+	<classpathentry kind="lib" path="src/main/resources/HTTPClient-0.3-3.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
