@@ -1,8 +1,0 @@
-The jar files in this directory are required for the <svn> task to work. They can be found as part of the svnant 
-download from subclipse.tigris.org at 
-http://subclipse.tigris.org/servlets/ProjectDocumentList?collapseFolder=1731&folderID=1731
-
-The reason these jar file are necessary is because the build.xml file in this directory will automatically pull 
-code analysis tools from SVN when needed. This allows a single project to control this different kinds of code 
-analysis that we want to implement. It also simplifies the build.xml file somewhat, removing tasks that would be 
-repeated in each of our projects.

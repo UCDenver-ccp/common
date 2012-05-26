@@ -6,15 +6,5 @@
 	<classpathentry excluding="**" kind="src" output="target/test-classes" path="src/test/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry exported="true" kind="con" path="org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER"/>
-	<classpathentry kind="lib" path="src/main/resources/ant-1.8.0.jar"/>
-	<classpathentry kind="lib" path="src/main/resources/commons-io-2.0.jar"/>
-	<classpathentry kind="lib" path="src/main/resources/commons-net-2.0.jar"/>
-	<classpathentry kind="lib" path="src/main/resources/junit-4.8.2.jar"/>
-	<classpathentry kind="lib" path="src/main/resources/log4j-1.2.16.jar"/>
-	<classpathentry kind="lib" path="src/main/resources/osgi.core-4.2.jar"/>
-	<classpathentry kind="lib" path="src/test/resources/hamcrest-all-1.2.jar"/>
-	<classpathentry kind="lib" path="src/test/resources/MockFtpServer-2.1.jar"/>
-	<classpathentry kind="lib" path="src/main/resources/commons-codec-1.6.jar"/>
-	<classpathentry kind="lib" path="src/main/resources/HTTPClient-0.3-3.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
