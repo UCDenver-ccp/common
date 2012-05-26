@@ -16,6 +16,12 @@
 	<name>${project.artifactId}</name>
 	<description>The ccp-common project contains utility code for a variety of "common" tasks</description>
 
+	<scm>
+		<connection>scm:svn:https://amc-bakeoff.ucdenver.pvt/svn/ccp/common/trunk</connection>
+		<developerConnection>scm:svn:https://amc-bakeoff.ucdenver.pvt/svn/ccp/common/trunk</developerConnection>
+		<!-- <url>http://somerepository.com/view.cvs</url> -->
+	</scm>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.mockftpserver</groupId>
