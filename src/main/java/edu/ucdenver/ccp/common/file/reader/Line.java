@@ -83,6 +83,12 @@ public class Line {
 	private final long lineNumber;
 
 	/**
+	 * Stores the number of bytes from the beginning of the file to the start of the text
+	 * represented by this line
+	 */
+	private final long byteOffset;
+
+	/**
 	 * The terminator that indicated the end of this line
 	 */
 	private final LineTerminator lineTerminator;
@@ -107,13 +113,14 @@ public class Line {
 	 *            Stores the line number (relative to the specific collection from where the line
 	 *            was read)
 	 */
-	public Line(String text, LineTerminator lineTerminator, long characterOffset, long codePointOffset, long lineNumber) {
+	public Line(String text, LineTerminator lineTerminator, long characterOffset, long codePointOffset, long lineNumber, long byteOffset) {
 		super();
 		this.text = text;
 		this.lineTerminator = lineTerminator;
 		this.characterOffset = characterOffset;
 		this.codePointOffset = codePointOffset;
 		this.lineNumber = lineNumber;
+		this.byteOffset = byteOffset;
 	}
 
 	/**
@@ -151,6 +158,14 @@ public class Line {
 	 */
 	public long getCodePointOffset() {
 		return codePointOffset;
+	}
+
+	/**
+	 * @return the byte offset - the number of bytes from the beginning of the file to the start of
+	 *         the text represented by this line
+	 */
+	public long getByteOffset() {
+		return byteOffset;
 	}
 
 	/**
