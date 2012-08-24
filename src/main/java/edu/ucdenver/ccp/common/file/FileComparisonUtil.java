@@ -151,15 +151,15 @@ public class FileComparisonUtil {
 			if (isAnExpectedLine(line, trimmedExpectedLines, lineIndex, lineOrder, columnOrder, columnDelimiterRegex)) {
 				remainingExpectedLines.remove(line);
 			} else {
-				logger.info(String.format("Line (%d) in file not in expected list: '%s'", lineIndex, line));
+				logger.info(String.format("Line (%d) in file of actual output, not in expected list: '%s'", lineIndex, line));
 				allLinesAsExpected = false;
 			}
 			lineIndex++;
 		}
 		boolean hasExpectedLines = (lines.size() == expectedLines.size() && allLinesAsExpected);
 		if (!hasExpectedLines) {
-			logger.info("File does not contain expected lines. # lines in file: " + lines.size()
-					+ " # expected lines: " + expectedLines.size() + " Expected lines matched those in file: "
+			logger.info("File of actual output does not contain expected lines. # lines in file: " + lines.size()
+					+ " # expected lines: " + expectedLines.size() + " Expected lines matched those in actual output file: "
 					+ allLinesAsExpected);
 			for (String line : remainingExpectedLines) {
 				logger.info(String.format("EXPECTED LINE not in file: '%s'", line));
