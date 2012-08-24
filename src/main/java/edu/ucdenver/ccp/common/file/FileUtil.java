@@ -378,7 +378,11 @@ public class FileUtil {
 			validateFile(fromFile);
 			isr = new InputStreamReader(new FileInputStream(fromFile), fromFileEncoding.getDecoder());
 			return StreamUtil.toString(isr);
-		} finally {
+		}
+		catch (ArrayIndexOutOfBoundsException x) {
+			throw new RuntimeException("failed getting contents of file: " + fromFile.getAbsolutePath(), x);	
+		}
+		finally {
 			IOUtils.closeQuietly(isr);
 		}
 	}
