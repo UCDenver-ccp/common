@@ -137,7 +137,7 @@ public class ClassPathUtil {
 	/**
 	 * Copies a resource (file on the classpath) to the specified directory
 	 * 
-	 * @param clazz
+	 * @param clazz the class to use to get a ClassLoader to find the resource
 	 * @param resourceName
 	 * @param directory
 	 * @throws IOException
