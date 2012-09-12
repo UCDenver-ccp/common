@@ -219,9 +219,14 @@ public class FileWriterUtil {
 	 * @throws IOException
 	 */
 	public static void printLines(List<?> lines, File file, CharacterEncoding encoding) throws IOException {
-		BufferedWriter writer = initBufferedWriter(file, encoding);
-		printLines(lines, writer);
-		writer.close();
+		BufferedWriter writer = null;
+		try {
+			writer = initBufferedWriter(file, encoding);
+			printLines(lines, writer);
+		}
+		finally {
+			writer.close();
+		}
 	}
 
 	/**
@@ -236,9 +241,14 @@ public class FileWriterUtil {
 	 */
 	public static void printLines(List<?> lines, File file, CharacterEncoding encoding, WriteMode writeMode,
 			FileSuffixEnforcement suffixEnforementPolicy) throws IOException {
-		BufferedWriter writer = initBufferedWriter(file, encoding, writeMode, suffixEnforementPolicy);
-		printLines(lines, writer);
-		writer.close();
+		BufferedWriter writer = null;
+		try {
+			writer = initBufferedWriter(file, encoding, writeMode, suffixEnforementPolicy);
+			printLines(lines, writer);
+		}
+		finally {
+			writer.close();
+		}
 	}
 
 	/**
@@ -250,12 +260,17 @@ public class FileWriterUtil {
 	 * @throws IOException
 	 */
 	public static void printLines(Iterator<?> lineIterator, File file, CharacterEncoding encoding) throws IOException {
-		BufferedWriter writer = initBufferedWriter(file, encoding);
-		while (lineIterator.hasNext()) {
-			writer.write(lineIterator.next().toString());
-			writer.newLine();
+		BufferedWriter writer = null;
+		try {
+			writer = initBufferedWriter(file, encoding);
+			while (lineIterator.hasNext()) {
+				writer.write(lineIterator.next().toString());
+				writer.newLine();
+			}
 		}
-		writer.close();
+		finally {
+			writer.close();
+		}
 	}
 
 }
