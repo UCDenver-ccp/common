@@ -243,10 +243,17 @@ public class FTPUtil {
 	 */
 	public static File downloadFile(String ftpServer, int port, String remotePath, String fileName, FileType fileType,
 			File workDirectory, String username, String password) throws IOException {
-		FTPClient ftpClient = FTPUtil.initializeFtpClient(ftpServer, port, username, password);
-		FTPUtil.navigateToFtpDirectory(ftpClient, remotePath);
-		File downloadedFile = FTPUtil.downloadFile(ftpClient, fileName, fileType, workDirectory);
-		FTPUtil.closeFtpClient(ftpClient);
+		FTPClient ftpClient = null;
+		File downloadedFile = null;
+		try {
+			FTPUtil.initializeFtpClient(ftpServer, port, username, password);
+			ftpClient = FTPUtil.initializeFtpClient(ftpServer, port, username, password);
+			FTPUtil.navigateToFtpDirectory(ftpClient, remotePath);
+			downloadedFile = FTPUtil.downloadFile(ftpClient, fileName, fileType, workDirectory);
+		}
+		finally {
+			FTPUtil.closeFtpClient(ftpClient);
+		}
 		return downloadedFile;
 	}
 

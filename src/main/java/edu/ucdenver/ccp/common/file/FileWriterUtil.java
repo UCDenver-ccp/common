@@ -37,10 +37,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+
+import org.apache.commons.io.IOUtils;
 
 /**
  * Utility class for writing files
@@ -225,7 +228,7 @@ public class FileWriterUtil {
 			printLines(lines, writer);
 		}
 		finally {
-			writer.close();
+			IOUtils.closeQuietly(writer);
 		}
 	}
 
@@ -247,7 +250,7 @@ public class FileWriterUtil {
 			printLines(lines, writer);
 		}
 		finally {
-			writer.close();
+			IOUtils.closeQuietly(writer);
 		}
 	}
 
@@ -269,7 +272,7 @@ public class FileWriterUtil {
 			}
 		}
 		finally {
-			writer.close();
+			IOUtils.closeQuietly(writer);
 		}
 	}
 

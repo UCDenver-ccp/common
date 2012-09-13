@@ -111,16 +111,22 @@ public class SgeJobMonitor {
 		failureLogs = new ArrayList<File>();
 		for (File logDirectory : logDirectories) {
 			for (File logFile : logDirectory.listFiles()) {
-				// logger.info("Checking log file: " + logFile.getAbsolutePath());
 				StreamLineIterator lineIter = null;
-				for (lineIter = new StreamLineIterator(logFile, CharacterEncoding.UTF_8); lineIter.hasNext();) {
-					Line line = lineIter.next();
-					if (line.getText().contains("BUILD FAILURE")) {
-						logger.error("SGE process failed. See log file: " + logFile.getAbsolutePath());
-						failureLogs.add(logFile);
+				try {
+					lineIter = new StreamLineIterator(logFile, CharacterEncoding.UTF_8); 
+					while (lineIter.hasNext()) {
+						Line line = lineIter.next();
+						if (line.getText().contains("BUILD FAILURE")) {
+							logger.error("SGE process failed. See log file: " + logFile.getAbsolutePath());
+							failureLogs.add(logFile);
+						}
 					}
 				}
-				lineIter.close();
+				finally {
+					if (lineIter != null) {
+						lineIter.close();
+					}
+				}
 			}
 		}
 		if (failureLogs.size() == 0) {

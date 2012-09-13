@@ -35,12 +35,15 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
+
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
+
 import java.util.zip.Adler32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.GZIPInputStream;
@@ -49,7 +52,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.apache.commons.io.IOUtils;
+
 import org.apache.log4j.Logger;
+
 import org.apache.tools.tar.TarEntry;
 import org.apache.tools.tar.TarInputStream;
 import org.apache.tools.tar.TarOutputStream;
@@ -350,9 +355,10 @@ public class FileArchiveUtil {
 	public static void packTarFile(File directoryToPack, File tarFile,
 			IncludeBaseDirectoryInPackage includeBaseDirectory) throws IOException {
 		FileUtil.validateDirectory(directoryToPack);
-		TarOutputStream tos = new TarOutputStream(new FileOutputStream(tarFile));
-		tos.setLongFileMode(TarOutputStream.LONGFILE_GNU);
+		TarOutputStream tos = null;
 		try {
+			tos = new TarOutputStream(new FileOutputStream(tarFile));
+			tos.setLongFileMode(TarOutputStream.LONGFILE_GNU);
 			for (Iterator<File> fileIter = FileUtil.getFileIterator(directoryToPack, true); fileIter.hasNext();) {
 				File file = fileIter.next();
 				File relativeDirectoryTarget = (includeBaseDirectory.equals(IncludeBaseDirectoryInPackage.YES)) ? directoryToPack
@@ -360,13 +366,18 @@ public class FileArchiveUtil {
 				TarEntry tarEntry = new TarEntry(FileUtil.getFileRelativeToDirectory(file, relativeDirectoryTarget));
 				tarEntry.setSize(file.length());
 				tos.putNextEntry(tarEntry);
-				FileInputStream fis = new FileInputStream(file);
-				IOUtils.copyLarge(fis, tos);
-				fis.close();
+				FileInputStream fis =  null;
+				try {
+					fis = new FileInputStream(file);
+					IOUtils.copyLarge(fis, tos);
+				}
+				finally {
+					IOUtils.closeQuietly(fis);
+				}
 				tos.closeEntry();
 			}
 		} finally {
-			tos.close();
+			IOUtils.closeQuietly(tos);
 		}
 	}
 
@@ -382,8 +393,9 @@ public class FileArchiveUtil {
 	public static void packJarFile(File directoryToPack, File jarFile,
 			IncludeBaseDirectoryInPackage includeBaseDirectory) throws IOException {
 		FileUtil.validateDirectory(directoryToPack);
-		JarOutputStream jos = new JarOutputStream(new FileOutputStream(jarFile));
+		JarOutputStream jos = null;
 		try {
+			jos = new JarOutputStream(new FileOutputStream(jarFile));
 			for (Iterator<File> fileIter = FileUtil.getFileIterator(directoryToPack, true); fileIter.hasNext();) {
 				File file = fileIter.next();
 				File relativeDirectoryTarget = (includeBaseDirectory.equals(IncludeBaseDirectoryInPackage.YES)) ? directoryToPack
@@ -392,13 +404,18 @@ public class FileArchiveUtil {
 						.getAbsolutePath());
 				tarEntry.setSize(file.length());
 				jos.putNextEntry(tarEntry);
-				FileInputStream fis = new FileInputStream(file);
-				IOUtils.copyLarge(fis, jos);
-				fis.close();
-				jos.closeEntry();
+				FileInputStream fis = null;
+				try {
+					fis = new FileInputStream(file);
+					IOUtils.copyLarge(fis, jos);
+				}
+				finally {
+					IOUtils.closeQuietly(fis);
+					jos.closeEntry();
+				}
 			}
 		} finally {
-			jos.close();
+			IOUtils.closeQuietly(jos);
 		}
 	}
 
