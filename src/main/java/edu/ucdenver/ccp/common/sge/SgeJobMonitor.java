@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import edu.ucdenver.ccp.common.calendar.CalendarUtil;
@@ -195,6 +196,7 @@ public class SgeJobMonitor {
 	 */
 	public static void main(String[] args) {
 		BasicConfigurator.configure();
+		Logger.getRootLogger().setLevel(Level.INFO);
 		Collection<File> logDirectories = new ArrayList<File>();
 		for (int i = 0; i < args.length; i++) {
 			logDirectories.add(new File(args[i]));
