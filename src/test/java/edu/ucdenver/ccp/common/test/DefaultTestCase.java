@@ -85,4 +85,8 @@ public class DefaultTestCase {
 	protected void assertEmpty(String errorMessage, Collection<?> collection) {
 		Assert.assertTrue(errorMessage, collection.isEmpty());
 	}
+	
+	protected void assertEmpty(Collection<?> collection) {
+		Assert.assertTrue(collection.isEmpty());
+	}
 }
