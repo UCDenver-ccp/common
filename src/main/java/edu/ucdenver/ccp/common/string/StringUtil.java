@@ -359,7 +359,6 @@ public class StringUtil {
 
 		if (removeOptionalFieldEnclosure.equals(RemoveFieldEnclosures.TRUE)) {
 			for (int i = 0; i < tokens.length; i++) {
-				System.out.println("token[i]: " + tokens[i]);
 				if (StringUtil.startsAndEndsWithRegex(tokens[i], optionalFieldEnclosureRegex)) {
 					tokens[i] = StringUtil.removePrefixRegex(tokens[i], optionalFieldEnclosureRegex);
 					tokens[i] = StringUtil.removeSuffixRegex(tokens[i], optionalFieldEnclosureRegex);
