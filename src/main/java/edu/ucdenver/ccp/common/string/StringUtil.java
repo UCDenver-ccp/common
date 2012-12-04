@@ -319,8 +319,9 @@ public class StringUtil {
 	 */
 	public static String[] splitWithFieldEnclosure(String inputStr, String delimiterRegex,
 			String optionalFieldEnclosureRegex) {
-		if (optionalFieldEnclosureRegex == null || !containsRegex(inputStr, optionalFieldEnclosureRegex))
+		if (optionalFieldEnclosureRegex == null || !containsRegex(inputStr, optionalFieldEnclosureRegex)) {
 			return inputStr.split(delimiterRegex, -1);
+		}
 		String copyOfInputStr = normalizeInputFields(inputStr, delimiterRegex, optionalFieldEnclosureRegex);
 		List<String> tokens = new ArrayList<String>();
 		int previousDelimiterEndIndex = 0;
@@ -328,13 +329,14 @@ public class StringUtil {
 		while (matcher.find()) {
 			int delimiterStartIndex = matcher.start();
 			int delimiterEndIndex = matcher.end();
-			tokens.add(inputStr.substring(previousDelimiterEndIndex, delimiterStartIndex));
+			tokens.add(inputStr.substring(previousDelimiterEndIndex, delimiterStartIndex).trim());
 			previousDelimiterEndIndex = delimiterEndIndex;
 		}
-		if (previousDelimiterEndIndex == 0)
-			tokens.add(inputStr);
-		else
-			tokens.add(inputStr.substring(previousDelimiterEndIndex));
+		if (previousDelimiterEndIndex == 0) {
+			tokens.add(inputStr.trim());
+		} else {
+			tokens.add(inputStr.substring(previousDelimiterEndIndex).trim());
+		}
 		return tokens.toArray(new String[tokens.size()]);
 	}
 
@@ -355,12 +357,15 @@ public class StringUtil {
 			String optionalFieldEnclosureRegex, RemoveFieldEnclosures removeOptionalFieldEnclosure) {
 		String[] tokens = splitWithFieldEnclosure(inputStr, delimiterRegex, optionalFieldEnclosureRegex);
 
-		if (removeOptionalFieldEnclosure.equals(RemoveFieldEnclosures.TRUE))
-			for (int i = 0; i < tokens.length; i++)
+		if (removeOptionalFieldEnclosure.equals(RemoveFieldEnclosures.TRUE)) {
+			for (int i = 0; i < tokens.length; i++) {
+				System.out.println("token[i]: " + tokens[i]);
 				if (StringUtil.startsAndEndsWithRegex(tokens[i], optionalFieldEnclosureRegex)) {
 					tokens[i] = StringUtil.removePrefixRegex(tokens[i], optionalFieldEnclosureRegex);
 					tokens[i] = StringUtil.removeSuffixRegex(tokens[i], optionalFieldEnclosureRegex);
 				}
+			}
+		}
 		return tokens;
 	}
 
@@ -385,9 +390,11 @@ public class StringUtil {
 
 		// " foo ", " bar", "baz " ---> "foo", "bar", "baz"
 		List<String> nonEmptyTokens = new ArrayList<String>();
-		for (String token : tokens)
-			if (!token.trim().isEmpty())
+		for (String token : tokens) {
+			if (!token.trim().isEmpty()) {
 				nonEmptyTokens.add(token.trim());
+			}
+		}
 		return nonEmptyTokens;
 	}
 
