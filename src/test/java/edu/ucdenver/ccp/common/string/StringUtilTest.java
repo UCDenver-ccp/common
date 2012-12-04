@@ -118,8 +118,8 @@ public class StringUtilTest extends DefaultTestCase {
 
 	@Test
 	public void testRemoveRegexSuffix_ValidInput() {
-		assertEquals("Suffix should be stripped.", "myFile", StringUtil.removeSuffixRegex("myFile.txt.txt.txt.txt.txt",
-				"(\\.txt)+"));
+		assertEquals("Suffix should be stripped.", "myFile",
+				StringUtil.removeSuffixRegex("myFile.txt.txt.txt.txt.txt", "(\\.txt)+"));
 		assertEquals("Suffix should be stripped.", "myFile", StringUtil.removeSuffixRegex("myFile.tgz", "\\..gz"));
 	}
 
@@ -130,8 +130,8 @@ public class StringUtilTest extends DefaultTestCase {
 
 	@Test
 	public void testRemoveRegexSuffix_ValidInput2() {
-		assertEquals("Suffix should be stripped.", "myFile", StringUtil.removeSuffixRegex("myFile.txt.txt.txt.txt.txt",
-				"(\\.txt)+$"));
+		assertEquals("Suffix should be stripped.", "myFile",
+				StringUtil.removeSuffixRegex("myFile.txt.txt.txt.txt.txt", "(\\.txt)+$"));
 		assertEquals("Suffix should be stripped.", "myFile", StringUtil.removeSuffixRegex("myFile.tgz", "\\..gz$"));
 	}
 
@@ -147,8 +147,8 @@ public class StringUtilTest extends DefaultTestCase {
 
 	@Test
 	public void testRemoveRegexSuffix_EmptyInput() {
-		assertEquals("Suffix should be stripped.", "myFile.txt.txt.txt.txt.txt", StringUtil.removeSuffixRegex(
-				"myFile.txt.txt.txt.txt.txt", ""));
+		assertEquals("Suffix should be stripped.", "myFile.txt.txt.txt.txt.txt",
+				StringUtil.removeSuffixRegex("myFile.txt.txt.txt.txt.txt", ""));
 		assertEquals("Suffix should be stripped.", "myFile.tgz", StringUtil.removeSuffixRegex("myFile.tgz", ""));
 	}
 
@@ -158,8 +158,8 @@ public class StringUtilTest extends DefaultTestCase {
 	@Test
 	public void testRemoveSuffix_ValidInput() {
 		assertEquals("Suffix should be stripped.", "myFile.txt", StringUtil.removeSuffix("myFile.txt.gz", ".gz"));
-		assertEquals("Suffix should be stripped.", "myFile", StringUtil.removeSuffix("myFile.txt.gz.abc.123.xyz-654",
-				".txt.gz.abc.123.xyz-654"));
+		assertEquals("Suffix should be stripped.", "myFile",
+				StringUtil.removeSuffix("myFile.txt.gz.abc.123.xyz-654", ".txt.gz.abc.123.xyz-654"));
 	}
 
 	/**
@@ -213,8 +213,8 @@ public class StringUtilTest extends DefaultTestCase {
 
 	@Test
 	public void testRemoveRegexPrefix_ValidInput() {
-		assertEquals("Suffix should be stripped.", "e.txt.txt.txt.txt.txt", StringUtil.removePrefixRegex(
-				"myFile.txt.txt.txt.txt.txt", "(m?y?Fil)"));
+		assertEquals("Suffix should be stripped.", "e.txt.txt.txt.txt.txt",
+				StringUtil.removePrefixRegex("myFile.txt.txt.txt.txt.txt", "(m?y?Fil)"));
 		assertEquals("Suffix should be stripped.", "gz", StringUtil.removePrefixRegex("myFile.tgz", "my.*?t"));
 	}
 
@@ -223,8 +223,8 @@ public class StringUtilTest extends DefaultTestCase {
 	 */
 	@Test
 	public void testRemoveRegexPrefix_EmptyInput() {
-		assertEquals("Prefix should be stripped.", "myFile.txt.txt.txt.txt.txt", StringUtil.removePrefixRegex(
-				"myFile.txt.txt.txt.txt.txt", ""));
+		assertEquals("Prefix should be stripped.", "myFile.txt.txt.txt.txt.txt",
+				StringUtil.removePrefixRegex("myFile.txt.txt.txt.txt.txt", ""));
 		assertEquals("Prefix should be stripped.", "myFile.tgz", StringUtil.removePrefixRegex("myFile.tgz", ""));
 	}
 
@@ -266,8 +266,8 @@ public class StringUtilTest extends DefaultTestCase {
 
 	@Test
 	public void testReplaceSuffix_ValidInput() {
-		assertEquals("Suffix should be replaced with .tar", "myTarball.tar", StringUtil.replaceSuffix("myTarball.tgz",
-				".tgz", ".tar"));
+		assertEquals("Suffix should be replaced with .tar", "myTarball.tar",
+				StringUtil.replaceSuffix("myTarball.tgz", ".tgz", ".tar"));
 	}
 
 	/**
@@ -315,11 +315,12 @@ public class StringUtilTest extends DefaultTestCase {
 		assertTrue(StringUtil.endsWithRegex("2010-04-06", RegExPatterns.getNDigitsPattern(1)));
 
 		assertFalse(StringUtil.endsWithRegex("2010-04-06", RegExPatterns.getNDigitsPattern(5)));
-		
+
 	}
-	
+
 	/**
-	 * Returns true if start and the end of the inputStr matches the regular expression, false otherwise
+	 * Returns true if start and the end of the inputStr matches the regular expression, false
+	 * otherwise
 	 */
 
 	@Test
@@ -336,19 +337,20 @@ public class StringUtilTest extends DefaultTestCase {
 	}
 
 	/**
-	 * Tests that StringUtil.startsAndEndsWithRegex throws a null pointer exception if the input string is null
+	 * Tests that StringUtil.startsAndEndsWithRegex throws a null pointer exception if the input
+	 * string is null
 	 */
-	
+
 	@Test(expected = NullPointerException.class)
 	public void teststartsAndEndsWithRegex_NullInputString() {
 		StringUtil.startsAndEndsWithRegex(null, RegExPatterns.getNDigitsPattern(1));
 	}
-	
+
 	/**
-	 * Tests that StringUtil.startsAndEndsWithRegex properly returns false if the input string is empty,
-	 * regardless of the pattern used (unless the pattern is also empty).
+	 * Tests that StringUtil.startsAndEndsWithRegex properly returns false if the input string is
+	 * empty, regardless of the pattern used (unless the pattern is also empty).
 	 */
-	
+
 	@Test
 	public void teststartsAndEndsWithRegex_EmptySpaceInputString() {
 		assertFalse(StringUtil.startsAndEndsWithRegex("", RegExPatterns.getNDigitsPattern(1)));
@@ -356,88 +358,102 @@ public class StringUtilTest extends DefaultTestCase {
 	}
 
 	/**
-	 * Returns [1, 2, 3] as expected result if RemoveFieldEnclosures property is set to TRUE) 
+	 * Returns [1, 2, 3] as expected result if RemoveFieldEnclosures property is set to TRUE)
 	 * 
 	 */
 
-	
 	@Test
-    public void testDelmitAndTrim_ValidInput() {
-            
-		StringUtil.delimitAndTrim(":1:,:2:,:3:", ",", ":",RemoveFieldEnclosures.TRUE);
+	public void testDelmitAndTrim_ValidInput() {
+
+		StringUtil.delimitAndTrim(":1:,:2:,:3:", ",", ":", RemoveFieldEnclosures.TRUE);
+
+	}
+
+	@Test
+	public void testDelimitAndTrim_RealWorldInput() {
+		String input = "\"non-protein coding RNA 181\", \"A1BG antisense RNA (non-protein coding)\", \"A1BG antisense RNA 1 (non-protein coding)\"";
+		List<String> output = StringUtil.delimitAndTrim(input, StringConstants.COMMA, StringConstants.QUOTATION_MARK,
+				RemoveFieldEnclosures.TRUE);
+
+		List<String> expectedOutput = CollectionsUtil.createList("non-protein coding RNA 181",
+				"A1BG antisense RNA (non-protein coding)", "A1BG antisense RNA 1 (non-protein coding)");
 		
-    }
-	
+		assertEquals(expectedOutput, output);
+
+	}
+
 	/**
-	 * Returns [:1:,:2:,:3:] as expected result if RemoveFieldEnclosures property is set to FALSE) 
+	 * Returns [:1:,:2:,:3:] as expected result if RemoveFieldEnclosures property is set to FALSE)
 	 * 
 	 */
-	
+
 	@Test
-    public void testDelmitAndTrim_WithoutOptionalFieldEnclosure() {
-            
-		StringUtil.delimitAndTrim(":1:,:2:,:3:", ",", ":",RemoveFieldEnclosures.FALSE);
-		
-    }
-	
+	public void testDelmitAndTrim_WithoutOptionalFieldEnclosure() {
+
+		StringUtil.delimitAndTrim(":1:,:2:,:3:", ",", ":", RemoveFieldEnclosures.FALSE);
+
+	}
+
 	/**
-	 * Returns [] as expected result if the input parameter is given as Empty space) 
+	 * Returns [] as expected result if the input parameter is given as Empty space)
 	 * 
 	 */
-	
+
 	@Test
-    public void testDelmitAndTrim_WithoutInputData() {
-            
-		StringUtil.delimitAndTrim("", ",", ":",RemoveFieldEnclosures.TRUE);
-		
-    }
-	
+	public void testDelmitAndTrim_WithoutInputData() {
+
+		StringUtil.delimitAndTrim("", ",", ":", RemoveFieldEnclosures.TRUE);
+
+	}
+
 	@Test(expected = NullPointerException.class)
-    public void testDelmitAndTrim_WithnullData() {
-            
-		StringUtil.delimitAndTrim(null, ",", ":",RemoveFieldEnclosures.TRUE);
-		
-    }
-	
-	/**
-	 * Returns [:1:,:2:,:3:] as expected result if invalid delimiterRegex and optionalFieldEnclosureRegex are given
-		It will try to match the delimiterRegex and optionalFieldEnclosureRegex in the input string given, when the delimiterRegex and optionalFieldEnclosureRegex differs from the
-		input string, it will just ignore the delimiterRegex and optionalFieldEnclosureRegex and will just print the actual input string
-	 */
-	
+	public void testDelmitAndTrim_WithnullData() {
 
-	
-	@Test
-    public void testDelmitAndTrim_WithInvaliddelimiterRegex() {
-            
-		StringUtil.delimitAndTrim(":1:,:2:,:3:", ";", "-",RemoveFieldEnclosures.TRUE);
-		
-    }
-	
+		StringUtil.delimitAndTrim(null, ",", ":", RemoveFieldEnclosures.TRUE);
+
+	}
+
 	/**
-	 * Returns [:1:, :2:, :3:] as expected result if optionalFieldEnclosureRegex property has a invalid data from actual input string) 
+	 * Returns [:1:,:2:,:3:] as expected result if invalid delimiterRegex and
+	 * optionalFieldEnclosureRegex are given It will try to match the delimiterRegex and
+	 * optionalFieldEnclosureRegex in the input string given, when the delimiterRegex and
+	 * optionalFieldEnclosureRegex differs from the input string, it will just ignore the
+	 * delimiterRegex and optionalFieldEnclosureRegex and will just print the actual input string
+	 */
+
+	@Test
+	public void testDelmitAndTrim_WithInvaliddelimiterRegex() {
+
+		StringUtil.delimitAndTrim(":1:,:2:,:3:", ";", "-", RemoveFieldEnclosures.TRUE);
+
+	}
+
+	/**
+	 * Returns [:1:, :2:, :3:] as expected result if optionalFieldEnclosureRegex property has a
+	 * invalid data from actual input string)
 	 * 
 	 */
-	
+
 	@Test
-    public void testDelmitAndTrim_WithEmptyoptionalFieldEnclosure() {
-            
-		StringUtil.delimitAndTrim(":1:,:2:,:3:", ",", "",RemoveFieldEnclosures.TRUE);
-		
-    }
-	
+	public void testDelmitAndTrim_WithEmptyoptionalFieldEnclosure() {
+
+		StringUtil.delimitAndTrim(":1:,:2:,:3:", ",", "", RemoveFieldEnclosures.TRUE);
+
+	}
+
 	/**
-	 * Returns [0] as expected result if String delimiterRegex and optionalFieldEnclosureRegex property has a invalid data from actual input string) 
+	 * Returns [0] as expected result if String delimiterRegex and optionalFieldEnclosureRegex
+	 * property has a invalid data from actual input string)
 	 * 
 	 */
-	
+
 	@Test
-    public void testDelmitAndTrim_WithDigit() {
-            
-		System.out.println(StringUtil.delimitAndTrim(StringConstants.DIGIT_ZERO, ",", "",RemoveFieldEnclosures.TRUE));
-		
-    }
-	
+	public void testDelmitAndTrim_WithDigit() {
+
+		System.out.println(StringUtil.delimitAndTrim(StringConstants.DIGIT_ZERO, ",", "", RemoveFieldEnclosures.TRUE));
+
+	}
+
 	@Test
 	public void testContainsRegex() {
 		assertTrue(StringUtil.containsRegex("2010-04-06", RegExPatterns.getNDigitsPattern(4)));
@@ -449,16 +465,14 @@ public class StringUtilTest extends DefaultTestCase {
 		assertFalse(StringUtil.containsRegex("", RegExPatterns.getNDigitsPattern(4)));
 	}
 
-	
-	
 	@Test
 	public void testCreateRepeatingString() {
 		String expectedStr = StringConstants.AMPERSAND + StringConstants.AMPERSAND + StringConstants.AMPERSAND;
-		assertEquals(String.format("String should contain 3 ampersands"), expectedStr, StringUtil
-				.createRepeatingString(StringConstants.AMPERSAND, 3));
+		assertEquals(String.format("String should contain 3 ampersands"), expectedStr,
+				StringUtil.createRepeatingString(StringConstants.AMPERSAND, 3));
 
-		assertEquals(String.format("String should contain 6 ampersands"), expectedStr + expectedStr, StringUtil
-				.createRepeatingString(StringConstants.AMPERSAND + StringConstants.AMPERSAND, 3));
+		assertEquals(String.format("String should contain 6 ampersands"), expectedStr + expectedStr,
+				StringUtil.createRepeatingString(StringConstants.AMPERSAND + StringConstants.AMPERSAND, 3));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -472,8 +486,8 @@ public class StringUtilTest extends DefaultTestCase {
 		String inputStr = "J Clin Invest,0021-9738,1558-8238,1940,19,\"Index, vol.1-17\",1,10.1172/JCI101100,PMC548872,0,,live";
 		String[] expectedTokens = new String[] { "J Clin Invest", "0021-9738", "1558-8238", "1940", "19",
 				"\"Index, vol.1-17\"", "1", "10.1172/JCI101100", "PMC548872", "0", "", "live" };
-		assertArrayEquals(String.format("One token should include a comma"), expectedTokens, StringUtil
-				.splitWithFieldEnclosure(inputStr, StringConstants.COMMA, StringConstants.QUOTATION_MARK));
+		assertArrayEquals(String.format("One token should include a comma"), expectedTokens,
+				StringUtil.splitWithFieldEnclosure(inputStr, StringConstants.COMMA, StringConstants.QUOTATION_MARK));
 	}
 
 	@Test
@@ -481,15 +495,15 @@ public class StringUtilTest extends DefaultTestCase {
 		String inputStr = "J Clin Invest,0021-9738,1558-8238,1940,19,\"Index, vol.1-17\",1,10.1172/JCI101100,PMC548872,0,,";
 		String[] expectedTokens = new String[] { "J Clin Invest", "0021-9738", "1558-8238", "1940", "19",
 				"\"Index, vol.1-17\"", "1", "10.1172/JCI101100", "PMC548872", "0", "", "" };
-		assertArrayEquals(String.format("One token should include a comma"), expectedTokens, StringUtil
-				.splitWithFieldEnclosure(inputStr, StringConstants.COMMA, StringConstants.QUOTATION_MARK));
+		assertArrayEquals(String.format("One token should include a comma"), expectedTokens,
+				StringUtil.splitWithFieldEnclosure(inputStr, StringConstants.COMMA, StringConstants.QUOTATION_MARK));
 	}
 
 	@Test
 	public void testSplitWithFieldDelimiter_NoColumns() {
 		String inputStr = "J Clin Invest,0021-9738,1558-8238,1940,19,\"Index, vol.1-17\",1,10.1172/JCI101100,PMC548872,0,,live";
-		assertArrayEquals(String.format("One token should include a comma"), new String[] { inputStr }, StringUtil
-				.splitWithFieldEnclosure(inputStr, StringConstants.SEMICOLON, StringConstants.QUOTATION_MARK));
+		assertArrayEquals(String.format("One token should include a comma"), new String[] { inputStr },
+				StringUtil.splitWithFieldEnclosure(inputStr, StringConstants.SEMICOLON, StringConstants.QUOTATION_MARK));
 	}
 
 	@Test
@@ -497,8 +511,8 @@ public class StringUtilTest extends DefaultTestCase {
 		String inputStr = "J Clin Invest,0021-9738,1558-8238,1940,19,\"Index, vol.1-17\",1,10.1172/JCI101100,PMC548872,0,,live";
 		String[] expectedTokens = new String[] { "J Clin Invest", "0021-9738", "1558-8238", "1940", "19", "\"Index",
 				" vol.1-17\"", "1", "10.1172/JCI101100", "PMC548872", "0", "", "live" };
-		assertArrayEquals(String.format("One token should include a comma"), expectedTokens, StringUtil
-				.splitWithFieldEnclosure(inputStr, StringConstants.COMMA, StringConstants.SEMICOLON));
+		assertArrayEquals(String.format("One token should include a comma"), expectedTokens,
+				StringUtil.splitWithFieldEnclosure(inputStr, StringConstants.COMMA, StringConstants.SEMICOLON));
 	}
 
 	@Test
@@ -506,8 +520,8 @@ public class StringUtilTest extends DefaultTestCase {
 		String inputStr = "J Clin Invest,0021-9738,1558-8238,1940,19,\"Index, vol.1-17\",1,10.1172/JCI101100,PMC548872,0,,live";
 		String[] expectedTokens = new String[] { "J Clin Invest", "0021-9738", "1558-8238", "1940", "19", "\"Index",
 				" vol.1-17\"", "1", "10.1172/JCI101100", "PMC548872", "0", "", "live" };
-		assertArrayEquals(String.format("One token should include a comma"), expectedTokens, StringUtil
-				.splitWithFieldEnclosure(inputStr, StringConstants.COMMA, null));
+		assertArrayEquals(String.format("One token should include a comma"), expectedTokens,
+				StringUtil.splitWithFieldEnclosure(inputStr, StringConstants.COMMA, null));
 	}
 
 	@Test
@@ -515,8 +529,8 @@ public class StringUtilTest extends DefaultTestCase {
 		String inputStr = "J Clin Invest,0021-9738,1558-8238,1940,19,*Index, vol.1-17*,1,10.1172/JCI101100,PMC548872,0,,live";
 		String[] expectedTokens = new String[] { "J Clin Invest", "0021-9738", "1558-8238", "1940", "19",
 				"*Index, vol.1-17*", "1", "10.1172/JCI101100", "PMC548872", "0", "", "live" };
-		assertArrayEquals(String.format("One token should include a comma"), expectedTokens, StringUtil
-				.splitWithFieldEnclosure(inputStr, StringConstants.COMMA, "\\*"));
+		assertArrayEquals(String.format("One token should include a comma"), expectedTokens,
+				StringUtil.splitWithFieldEnclosure(inputStr, StringConstants.COMMA, "\\*"));
 	}
 
 	@Test
@@ -594,12 +608,12 @@ public class StringUtilTest extends DefaultTestCase {
 		String utf8String = "nai\u0308ve";
 
 		byte[] asciiByteArray = asciiString.getBytes();
-		assertEquals("ASCII bytes should be able to be read using ASCII encoding", asciiString, decode(asciiByteArray,
-				CharacterEncoding.US_ASCII));
-		assertEquals("ASCII bytes should be able to be read using UTF-8 encoding", asciiString, decode(asciiByteArray,
-				CharacterEncoding.UTF_8));
-		assertEquals("UTF-8 bytes should be able to be read using UTF-8 encoding", utf8String, decode(utf8String
-				.getBytes(CharacterEncoding.UTF_8.getCharacterSetName()), CharacterEncoding.UTF_8));
+		assertEquals("ASCII bytes should be able to be read using ASCII encoding", asciiString,
+				decode(asciiByteArray, CharacterEncoding.US_ASCII));
+		assertEquals("ASCII bytes should be able to be read using UTF-8 encoding", asciiString,
+				decode(asciiByteArray, CharacterEncoding.UTF_8));
+		assertEquals("UTF-8 bytes should be able to be read using UTF-8 encoding", utf8String,
+				decode(utf8String.getBytes(CharacterEncoding.UTF_8.getCharacterSetName()), CharacterEncoding.UTF_8));
 	}
 
 	@Test(expected = MalformedInputException.class)
@@ -667,7 +681,7 @@ public class StringUtilTest extends DefaultTestCase {
 	public void containsAstralCharsFalse() {
 		assertFalse(StringUtil.containsAstralChars("a"));
 	}
-	
+
 	@Test
 	public void containsAstralCharsTrue() {
 		assertTrue(StringUtil.containsAstralChars(String.valueOf(Character.toChars(0x10000))));
