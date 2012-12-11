@@ -104,6 +104,7 @@ public class FileUtil {
 		File tempFile = File.createTempFile("tmp", "tmp");
 		File directory = new File(tempFile.getParentFile(), directoryName + UUID.randomUUID().toString());
 		FileUtil.mkdir(directory);
+		tempFile.delete();
 		return directory;
 	}
 
