@@ -197,17 +197,24 @@ public class FileUtil {
 	 */
 	public static boolean deleteDirectory(File directory) {
 		boolean success = true;
+
 		if (directory.exists()) {
+		
+			// delete contents
 			File[] files = directory.listFiles();
 			for (File f : files) {
 				if (f.isDirectory()) {
-					deleteDirectory(f);
+					success = success && deleteDirectory(f);
 				} else {
 					success = success && f.delete();
 				}
 			}
+		
+			// delete directory itself
+			success = success && directory.delete();
 		}
-		return success && directory.delete();
+
+		return success;
 	}
 
 	/**
