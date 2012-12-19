@@ -144,6 +144,25 @@ public class FileArchiveUtil {
 		GZIPOutputStream gzipStream = new GZIPOutputStream(new FileOutputStream(zippedFile));
 		FileUtil.copy(inputFile, gzipStream);
 	}
+	
+	
+	/**
+	 * Gunzips the input file into the output file
+	 * @param zippedFile
+	 * @param unzippedFile
+	 * @throws IOException
+	 */
+	public static void gunzipFile(File zippedFile, File unzippedFile) throws IOException {
+		GZIPInputStream in = new GZIPInputStream(new FileInputStream(zippedFile));
+		FileUtil.copy(in, unzippedFile);
+	}
+	
+	
+	public static File gunzipFile(File zippedFile) throws IOException {
+		File unzippedFile = new File(StringUtil.removeSuffix(zippedFile.getAbsolutePath(), ".gz"));
+		gunzipFile(zippedFile, unzippedFile);
+		return unzippedFile;
+	}
 
 	/**
 	 * Gzips the input file. All that remains in the directory is the gzipped file (the original
