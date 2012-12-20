@@ -157,7 +157,7 @@ public class FTPUtil {
 
 	/**
 	 * Makes the FTP connection using the specified port. If port < 0, then the default port is
-	 * used.
+	 * used. Sets a default timeout of 1 hour. use ftpClient.setSoTimeout to change.
 	 * 
 	 * @param ftpServer
 	 * @param port
@@ -171,6 +171,7 @@ public class FTPUtil {
 			ftpClient.connect(ftpServer, port);
 		else
 			ftpClient.connect(ftpServer);
+		ftpClient.setSoTimeout(60 * 60 * 1000);
 		return ftpClient;
 	}
 
