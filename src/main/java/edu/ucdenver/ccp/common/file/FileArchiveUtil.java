@@ -171,10 +171,11 @@ public class FileArchiveUtil {
 	 * @param inputFile
 	 * @throws IOException
 	 */
-	public static void gzipFile(File inputFile) throws IOException {
+	public static File gzipFile(File inputFile) throws IOException {
 		File gzippedFile = getGzippedFileReference(inputFile);
 		gzipFile(inputFile, gzippedFile);
 		FileUtil.deleteFile(inputFile);
+		return gzippedFile;
 	}
 
 	/**
