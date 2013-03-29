@@ -94,6 +94,7 @@ public class DownloadUtil {
 			} else if (field.isAnnotationPresent(HttpDownload.class)) {
 				file = handleHttpDownload(workDirectory, field.getAnnotation(HttpDownload.class), clean);
 			}
+			// System.out.println("Downloaded file: " + file.getName());
 			if (file != null) {
 				assignField(object, field, file);
 				if (clean || !readySemaphoreFileExists(file)) {
@@ -148,15 +149,17 @@ public class DownloadUtil {
 			throws SocketException, IOException, IllegalArgumentException {
 		File f = null;
 
-		if (klass.isAnnotationPresent(HttpDownload.class))
+		if (klass.isAnnotationPresent(HttpDownload.class)) {
 			f = handleHttpDownload(workDirectory, klass.getAnnotation(HttpDownload.class), clean);
-		else if (klass.isAnnotationPresent(FtpDownload.class))
+		} else if (klass.isAnnotationPresent(FtpDownload.class)) {
 			f = handleFtpDownload(workDirectory, klass.getAnnotation(FtpDownload.class), userName, password, clean);
-
-		if (f != null)
-			if (clean || !readySemaphoreFileExists(f)) // if clean = false then it might already
-														// exist
+		}
+		if (f != null) {
+			if (clean || !readySemaphoreFileExists(f)) {
+				// if clean = false then it might already exist
 				writeReadySemaphoreFile(f);
+			}
+		}
 		return f;
 	}
 
@@ -178,15 +181,17 @@ public class DownloadUtil {
 			throws SocketException, IOException, IllegalArgumentException {
 		File f = null;
 
-		if (field.isAnnotationPresent(HttpDownload.class))
+		if (field.isAnnotationPresent(HttpDownload.class)) {
 			f = handleHttpDownload(workDirectory, field.getAnnotation(HttpDownload.class), clean);
-		else if (field.isAnnotationPresent(FtpDownload.class))
+		} else if (field.isAnnotationPresent(FtpDownload.class)) {
 			f = handleFtpDownload(workDirectory, field.getAnnotation(FtpDownload.class), userName, password, clean);
-
-		if (f != null)
-			if (clean || !readySemaphoreFileExists(f)) // if clean = false then it might already
-														// exist
+		}
+		if (f != null) {
+			if (clean || !readySemaphoreFileExists(f)) {
+				// if clean = false then it might already exist
 				writeReadySemaphoreFile(f);
+			}
+		}
 		return f;
 	}
 
@@ -209,7 +214,7 @@ public class DownloadUtil {
 		if (fileName.isEmpty())
 			fileName = HttpUtil.getFinalPathElement(url);
 		File downloadedFile = FileUtil.appendPathElementsToDirectory(workDirectory, fileName);
-		if (!fileExists(downloadedFile, targetFile, clean)) {
+		if (!fileExists(downloadedFile, targetFile, clean, httpd.decompress())) {
 			long startTime = System.currentTimeMillis();
 			downloadedFile = HttpUtil.downloadFile(url, downloadedFile);
 			long duration = System.currentTimeMillis() - startTime;
@@ -295,7 +300,7 @@ public class DownloadUtil {
 		String targetFileName = (ftpd.targetFileName().length() > 0) ? ftpd.targetFileName() : null;
 		File targetFile = (targetFileName == null) ? null : new File(workDirectory, targetFileName);
 		File downloadedFile = FileUtil.appendPathElementsToDirectory(workDirectory, ftpd.filename());
-		if (!fileExists(downloadedFile, targetFile, clean)) {
+		if (!fileExists(downloadedFile, targetFile, clean, ftpd.decompress())) {
 			long startTime = System.currentTimeMillis();
 			downloadedFile = FTPUtil.downloadFile(ftpd.server(), ftpd.port(), ftpd.path(), ftpd.filename(),
 					ftpd.filetype(), workDirectory, uName, pWord);
@@ -323,10 +328,11 @@ public class DownloadUtil {
 	 * @param clean
 	 * @return
 	 */
-	public static boolean fileExists(File downloadedFile, File targetFile, boolean clean) {
+	public static boolean fileExists(File downloadedFile, File targetFile, boolean clean, boolean decompress) {
 		File unzippedFile = null;
-		if (FileArchiveUtil.isZippedFile(downloadedFile))
+		if (decompress && FileArchiveUtil.isZippedFile(downloadedFile)) {
 			unzippedFile = FileArchiveUtil.getUnzippedFileReference(downloadedFile, targetFile);
+		}
 		if (clean) {
 			FileUtil.deleteFile(downloadedFile);
 			if (unzippedFile != null) {
