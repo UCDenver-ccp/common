@@ -70,4 +70,10 @@ public @interface HttpDownload {
 	 * @return
 	 */
 	String targetFileName() default "";
+	
+	/**
+	 * If true, then the downloaded file will be unzipped after downloading. Default is false.
+	 * @return
+	 */
+	boolean decompress() default false;
 }

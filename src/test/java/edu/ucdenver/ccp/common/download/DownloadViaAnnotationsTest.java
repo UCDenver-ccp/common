@@ -78,6 +78,7 @@ public class DownloadViaAnnotationsTest extends DefaultTestCase {
 		ftu.addFile("/file5.ascii");
 		ftu.addFile("/file6.xml");
 		ftu.addFile("/file7.ascii");
+		ftu.addFile("/refseq-catalog-55.txt");
 		ftu.addFile("/sampleFile.ascii.gz",
 				ClassPathUtil.getResourceStreamFromClasspath(this.getClass(), SAMPLE_GZ_FILE_NAME));
 	}
@@ -89,7 +90,7 @@ public class DownloadViaAnnotationsTest extends DefaultTestCase {
 		MyFileProcessor fileProcessor = new MyFileProcessor(workDirectory, clean);
 		assertEquals("should be file5.ascii", "file5.ascii", fileProcessor.getFileToProcess().getName());
 		assertTrue("file should exist locally", fileProcessor.getFileToProcess().exists());
-		assertTrue("Ready semaphore file should also exist", new File(workDirectory,"file5.ascii.ready").exists());
+		assertTrue("Ready semaphore file should also exist", new File(workDirectory, "file5.ascii.ready").exists());
 	}
 
 	private static class MyFileProcessor {
@@ -114,9 +115,21 @@ public class DownloadViaAnnotationsTest extends DefaultTestCase {
 		MyGzFileProcessor fileProcessor = new MyGzFileProcessor(workDirectory, clean);
 		assertEquals("should be sampleFile.ascii", "sampleFile.ascii", fileProcessor.getFileToProcess().getName());
 		assertTrue("file should exist locally", fileProcessor.getFileToProcess().exists());
-		assertTrue("Ready semaphore file should also exist", new File(workDirectory,"sampleFile.ascii.ready").exists());
+		assertTrue("Ready semaphore file should also exist", new File(workDirectory, "sampleFile.ascii.ready").exists());
 		assertEquals(String.format("Unzipped file should have expected lines"), expectedLinesInSampleGzFile,
 				FileReaderUtil.loadLinesFromFile(fileProcessor.getFileToProcess(), CharacterEncoding.US_ASCII));
+	}
+	
+	
+	@Test
+	public void testDownloadAndNoUnzipControlledByAnnotation() throws Exception {
+		File workDirectory = folder.newFolder("workDir");
+		boolean clean = true;
+		MyGzFileProcessor_NoDecompress fileProcessor = new MyGzFileProcessor_NoDecompress(workDirectory, clean);
+		assertEquals("should be sampleFile.ascii", SAMPLE_GZ_FILE_NAME, fileProcessor.getFileToProcess().getName());
+		assertTrue("file should exist locally", fileProcessor.getFileToProcess().exists());
+		assertTrue("Ready semaphore file should also exist", new File(workDirectory, SAMPLE_GZ_FILE_NAME + ".ready").exists());
+		
 	}
 
 	@Test
@@ -155,7 +168,7 @@ public class DownloadViaAnnotationsTest extends DefaultTestCase {
 
 	private static class MyGzFileProcessor {
 
-		@FtpDownload(server = FTP_HOST, port = FTP_PORT, path = "", filename = SAMPLE_GZ_FILE_NAME, filetype = FileType.BINARY)
+		@FtpDownload(server = FTP_HOST, port = FTP_PORT, path = "", filename = SAMPLE_GZ_FILE_NAME, filetype = FileType.BINARY, decompress=true)
 		private File fileToProcess;
 
 		public MyGzFileProcessor(File workDirectory, boolean clean) throws SocketException, IOException,
@@ -167,6 +180,51 @@ public class DownloadViaAnnotationsTest extends DefaultTestCase {
 			return fileToProcess;
 		}
 	}
+	private static class MyGzFileProcessor_NoDecompress {
+		
+		@FtpDownload(server = FTP_HOST, port = FTP_PORT, path = "", filename = SAMPLE_GZ_FILE_NAME, filetype = FileType.BINARY)
+		private File fileToProcess;
+		
+		public MyGzFileProcessor_NoDecompress(File workDirectory, boolean clean) throws SocketException, IOException,
+		IllegalArgumentException, IllegalAccessException {
+			DownloadUtil.download(this, workDirectory, MockFtpServer.USER_NAME, MockFtpServer.PASSWORD, clean);
+		}
+		
+		public File getFileToProcess() {
+			return fileToProcess;
+		}
+	}
+
+	// archive test for later implementation of regex-capable ftp file download
+	// @Test
+	// public void testDownloadUsingRegexMatch() throws Exception {
+	// File workDirectory = folder.newFolder("workDir");
+	// boolean clean = true;
+	// MyFileProcessor_UsesRegexFileName fileProcessor = new
+	// MyFileProcessor_UsesRegexFileName(workDirectory, clean);
+	// assertEquals("should be refseq-catalog-55.txt", "refseq-catalog-55.txt",
+	// fileProcessor.getFileToProcess().getName());
+	// assertTrue("file should exist locally", fileProcessor.getFileToProcess().exists());
+	// assertTrue("Ready semaphore file should also exist", new
+	// File(workDirectory,"refseq-catalog-55.txt.ready").exists());
+	// }
+	// private static class MyFileProcessor_UsesRegexFileName {
+	//
+	// @FtpDownload(server = FTP_HOST, port = FTP_PORT, path = "", filenameRegex =
+	// "refseq-catalog-\\d+\\.txt", filetype = FileType.BINARY)
+	// private File fileToProcess;
+	//
+	// public MyFileProcessor_UsesRegexFileName(File workDirectory, boolean clean) throws
+	// SocketException, IOException,
+	// IllegalArgumentException, IllegalAccessException {
+	// DownloadUtil.download(this, workDirectory, MockFtpServer.USER_NAME, MockFtpServer.PASSWORD,
+	// clean);
+	// }
+	//
+	// public File getFileToProcess() {
+	// return fileToProcess;
+	// }
+	// }
 
 	/**
 	 * Attempting a download using this class will cause a failure due to the incorrect port. This
@@ -177,7 +235,7 @@ public class DownloadViaAnnotationsTest extends DefaultTestCase {
 	 */
 	private static class MyGzFileProcessor_BAD_PORT {
 
-		@FtpDownload(server = FTP_HOST, port = 0000, path = "", filename = SAMPLE_GZ_FILE_NAME, filetype = FileType.BINARY)
+		@FtpDownload(server = FTP_HOST, port = 0000, path = "", filename = SAMPLE_GZ_FILE_NAME, filetype = FileType.BINARY, decompress=true)
 		private File fileToProcess;
 
 		public MyGzFileProcessor_BAD_PORT(File workDirectory, boolean clean) throws SocketException, IOException,

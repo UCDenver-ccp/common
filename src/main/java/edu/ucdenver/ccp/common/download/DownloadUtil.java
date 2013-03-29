@@ -88,17 +88,18 @@ public class DownloadUtil {
 			throws SocketException, IOException, IllegalArgumentException, IllegalAccessException {
 		for (Field field : object.getClass().getDeclaredFields()) {
 			File file = null;
-			if (field.isAnnotationPresent(FtpDownload.class))
+			if (field.isAnnotationPresent(FtpDownload.class)) {
 				file = handleFtpDownload(workDirectory, field.getAnnotation(FtpDownload.class), userName, password,
 						clean);
-			else if (field.isAnnotationPresent(HttpDownload.class))
+			} else if (field.isAnnotationPresent(HttpDownload.class)) {
 				file = handleHttpDownload(workDirectory, field.getAnnotation(HttpDownload.class), clean);
-
+			}
 			if (file != null) {
 				assignField(object, field, file);
-				if (clean || !readySemaphoreFileExists(file)) // if clean = false then it might
-																// already exist
+				if (clean || !readySemaphoreFileExists(file)) {
+					// if clean = false then it might already exist
 					writeReadySemaphoreFile(file);
+				}
 			}
 		}
 	}
@@ -108,9 +109,10 @@ public class DownloadUtil {
 	 */
 	private static void writeReadySemaphoreFile(File file) {
 		try {
-			if (!getReadySemaphoreFile(file).createNewFile())
+			if (!getReadySemaphoreFile(file).createNewFile()) {
 				throw new RuntimeException("Semaphore file could not be created b/c it already exists: "
 						+ getReadySemaphoreFile(file).getAbsolutePath());
+			}
 			FileWriterUtil.printLines(CollectionsUtil.createList("Downloaded on " + CalendarUtil.getDateStamp("/")),
 					getReadySemaphoreFile(file), CharacterEncoding.UTF_8, WriteMode.OVERWRITE,
 					FileSuffixEnforcement.OFF);
@@ -213,7 +215,10 @@ public class DownloadUtil {
 			long duration = System.currentTimeMillis() - startTime;
 			logger.info("Duration of " + downloadedFile.getName() + " download: " + (duration / (1000 * 60)) + "min");
 		}
-		return unpackFile(workDirectory, clean, downloadedFile, targetFileName);
+		if (httpd.decompress()) {
+			return unpackFile(workDirectory, clean, downloadedFile, targetFileName);
+		}
+		return downloadedFile;
 	}
 
 	/**
@@ -262,12 +267,13 @@ public class DownloadUtil {
 	public static File unpackDownloadedFile(File workDirectory, boolean clean, File downloadedFile,
 			String targetFileName) throws IOException {
 		File unpackedFile = downloadedFile;
-		File targetFile = (targetFileName == null) ? null : new File(workDirectory, targetFileName); 
-		if (fileNeedsUnzipping(downloadedFile, targetFile, clean))
+		File targetFile = (targetFileName == null) ? null : new File(workDirectory, targetFileName);
+		if (fileNeedsUnzipping(downloadedFile, targetFile, clean)) {
 			unpackedFile = FileArchiveUtil.unzip(downloadedFile, workDirectory, targetFileName);
-		else if (FileArchiveUtil.isZippedFile(downloadedFile))
+		} else if (FileArchiveUtil.isZippedFile(downloadedFile)) {
 			// File has already been downloaded and unzipped
 			unpackedFile = FileArchiveUtil.getUnzippedFileReference(downloadedFile, targetFile);
+		}
 		return unpackedFile;
 	}
 
@@ -296,7 +302,10 @@ public class DownloadUtil {
 			long duration = System.currentTimeMillis() - startTime;
 			logger.info("Duration of " + downloadedFile.getName() + " download: " + (duration / (1000 * 60)) + "min");
 		}
-		return unpackFile(workDirectory, clean, downloadedFile, targetFileName);
+		if (ftpd.decompress()) {
+			return unpackFile(workDirectory, clean, downloadedFile, targetFileName);
+		}
+		return downloadedFile;
 	}
 
 	/**
@@ -323,13 +332,15 @@ public class DownloadUtil {
 			if (unzippedFile != null) {
 				FileUtil.deleteFile(unzippedFile);
 				FileUtil.deleteFile(getReadySemaphoreFile(unzippedFile));
-			} else
+			} else {
 				FileUtil.deleteFile(getReadySemaphoreFile(downloadedFile));
+			}
 			return false;
 		}
 		boolean fileIsPresent = downloadedFile.exists() || (unzippedFile != null && unzippedFile.exists());
-		if (fileIsPresent)
+		if (fileIsPresent) {
 			waitForReadySemaphoreFile((unzippedFile == null) ? downloadedFile : unzippedFile);
+		}
 		return fileIsPresent;
 	}
 
@@ -362,8 +373,9 @@ public class DownloadUtil {
 	 * @return
 	 */
 	private static boolean fileNeedsUnzipping(File zippedFile, File targetFile, boolean clean) {
-		if (!FileArchiveUtil.isZippedFile(zippedFile))
+		if (!FileArchiveUtil.isZippedFile(zippedFile)) {
 			return false;
+		}
 		File unzippedFile = FileArchiveUtil.getUnzippedFileReference(zippedFile, targetFile);
 		if (clean) {
 			FileUtil.deleteFile(unzippedFile);
