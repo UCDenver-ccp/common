@@ -45,6 +45,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import edu.ucdenver.ccp.common.reflection.ConstructorUtil;
 import edu.ucdenver.ccp.common.string.StringUtil;
 
 /**
@@ -563,8 +564,32 @@ public class CollectionsUtil {
 
 		});
 		Map<K, V> sortedMap = new LinkedHashMap<K, V>();
-		for (Entry<K, V> entry : entryList)
+		for (Entry<K, V> entry : entryList) {
 			sortedMap.put(entry.getKey(), entry.getValue());
+		}
+		return sortedMap;
+	}
+
+	/**
+	 * 
+	 * @param inputMap
+	 * @param sortOrder
+	 * @return a sorted map based on the sort order of the input map keys
+	 */
+	public static <K extends Comparable<K>, V> Map<K, V> sortMapByKeys(Map<K, V> inputMap, final SortOrder sortOrder) {
+		ArrayList<Entry<K, V>> entryList = new ArrayList<Entry<K, V>>(inputMap.entrySet());
+		Collections.sort(entryList, new Comparator<Entry<K, V>>() {
+
+			@Override
+			public int compare(Entry<K, V> entry1, Entry<K, V> entry2) {
+				return entry1.getKey().compareTo(entry2.getKey()) * sortOrder.modifier();
+			}
+
+		});
+		Map<K, V> sortedMap = new LinkedHashMap<K, V>();
+		for (Entry<K, V> entry : entryList) {
+			sortedMap.put(entry.getKey(), entry.getValue());
+		}
 		return sortedMap;
 	}
 
@@ -770,6 +795,41 @@ public class CollectionsUtil {
 		for (T item : collection)
 			strings.add(item.toString());
 		return strings;
+	}
+
+	/**
+	 * Takes a delimited String as input and constructs object of the input class type for each
+	 * token of the delimited String. For example, if the input String is "1,2,3" and the delimiter
+	 * is a comma and the input class is Integer.class, then the output of this method would be a
+	 * Set<Integer> containing 1, 2, and 3.
+	 * 
+	 * The input class must therefore contain a single argument constructor that takes a String as
+	 * input.
+	 * 
+	 * @param input
+	 * @param delimiterRegex
+	 * @param cls
+	 * @return
+	 */
+	public static <T> Collection<T> fromDelimitedString(String input, String delimiterRegex, Class<T> cls) {
+		Collection<T> collection = new ArrayList<T>();
+		for (String token : input.split(delimiterRegex)) {
+			collection.add((T) ConstructorUtil.invokeConstructor(cls.getName(), token));
+		}
+		return collection;
+	}
+
+	/**
+	 * Returns a Set<T> using the same methodology as explained in
+	 * {@link #fromDelimitedString(String, String, Class)}
+	 * 
+	 * @param input
+	 * @param delimiterRegex
+	 * @param cls
+	 * @return
+	 */
+	public static <T> Set<T> setFromDelimitedString(String input, String delimiterRegex, Class<T> cls) {
+		return new HashSet<T>(fromDelimitedString(input, delimiterRegex, cls));
 	}
 
 	/**
