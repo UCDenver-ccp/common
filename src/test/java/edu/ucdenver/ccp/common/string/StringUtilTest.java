@@ -491,6 +491,26 @@ public class StringUtilTest extends DefaultTestCase {
 	}
 
 	@Test
+	public void testSplitWithFieldDelimiter_IncludeADelimiterInColumn() {
+		String inputStr = "J Clin Invest,0021-9738,1558-8238,1940,19,\"Index, vol.1-17\"\",1,10.1172/JCI101100,PMC548872,0,,live";
+		String[] expectedTokens = new String[] { "J Clin Invest", "0021-9738", "1558-8238", "1940", "19",
+				"\"Index, vol.1-17\"\"", "1", "10.1172/JCI101100", "PMC548872", "0", "", "live" };
+		assertArrayEquals(String.format("One token should include a comma"), expectedTokens,
+				StringUtil.splitWithFieldEnclosure(inputStr, StringConstants.COMMA, StringConstants.QUOTATION_MARK));
+	}
+
+	
+	@Test
+	public void testSplitWithFieldDelimiter_IncludeAPairOfDelimitersInColumn() {
+		String inputStr = "J Clin Invest,0021-9738,1558-8238,1940,19,\"Index, \"vol.1-17\"\",1,10.1172/JCI101100,PMC548872,0,,live";
+		String[] expectedTokens = new String[] { "J Clin Invest", "0021-9738", "1558-8238", "1940", "19",
+				"\"Index, \"vol.1-17\"\"", "1", "10.1172/JCI101100", "PMC548872", "0", "", "live" };
+		assertArrayEquals(String.format("One token should include a comma"), expectedTokens,
+				StringUtil.splitWithFieldEnclosure(inputStr, StringConstants.COMMA, StringConstants.QUOTATION_MARK));
+	}
+	
+	
+	@Test
 	public void testSplitWithFieldDelimiter_EmptyColumnsAtEnd() {
 		String inputStr = "J Clin Invest,0021-9738,1558-8238,1940,19,\"Index, vol.1-17\",1,10.1172/JCI101100,PMC548872,0,,";
 		String[] expectedTokens = new String[] { "J Clin Invest", "0021-9738", "1558-8238", "1940", "19",
