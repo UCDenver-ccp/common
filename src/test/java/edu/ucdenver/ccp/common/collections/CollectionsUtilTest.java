@@ -729,4 +729,125 @@ public class CollectionsUtilTest extends DefaultTestCase {
 
 	}
 
+	@Test
+	public void testSortMapByKeys_Ascending() {
+		Map<String, Integer> inputMap = new HashMap<String, Integer>();
+		inputMap.put("B", 10);
+		inputMap.put("C", 10);
+		inputMap.put("A", 0);
+		inputMap.put("D", 15);
+		inputMap.put("E", 20);
+		inputMap.put("Z", -5);
+
+		Map<String, Integer> sortedMap = CollectionsUtil.sortMapByKeys(inputMap, SortOrder.ASCENDING);
+
+		System.out.println(sortedMap.toString());
+
+		int index = 0;
+		for (Entry<String, Integer> entry : sortedMap.entrySet()) {
+			switch (index++) {
+			case 0:
+				assertEquals("A", entry.getKey());
+				assertEquals(Integer.valueOf(0), entry.getValue());
+				break;
+			case 1:
+				assertTrue(entry.getKey().equals("B"));
+				assertEquals(Integer.valueOf(10), entry.getValue());
+				break;
+
+			case 2:
+				assertTrue(entry.getKey().equals("C"));
+				assertEquals(Integer.valueOf(10), entry.getValue());
+				break;
+
+			case 3:
+				assertEquals("D", entry.getKey());
+				assertEquals(Integer.valueOf(15), entry.getValue());
+				break;
+
+			case 4:
+				assertEquals("E", entry.getKey());
+				assertEquals(Integer.valueOf(20), entry.getValue());
+				break;
+
+			case 5:
+				assertEquals("Z", entry.getKey());
+				assertEquals(Integer.valueOf(-5), entry.getValue());
+				break;
+
+			default:
+				fail("Should not be any more values in the map");
+			}
+		}
+	}
+
+	private static class MyClass {
+		private final String param1;
+
+		public MyClass(String param1) {
+			this.param1 = param1;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.lang.Object#hashCode()
+		 */
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((param1 == null) ? 0 : param1.hashCode());
+			return result;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.lang.Object#equals(java.lang.Object)
+		 */
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			MyClass other = (MyClass) obj;
+			if (param1 == null) {
+				if (other.param1 != null)
+					return false;
+			} else if (!param1.equals(other.param1))
+				return false;
+			return true;
+		}
+
+	}
+
+	@Test
+	public void testFromDelimitedString() {
+		String delimitedString = "A;B;C";
+		Set<MyClass> expected = CollectionsUtil.createSet(new MyClass("A"), new MyClass("B"), new MyClass("C"));
+		Set<MyClass> observed = new HashSet<MyClass>(CollectionsUtil.fromDelimitedString(delimitedString, ";",
+				MyClass.class));
+		assertEquals(expected, observed);
+	}
+
+	@Test
+	public void testFromDelimitedStringToInteger() {
+		String delimitedString = "1;2;3";
+		Set<Integer> expected = CollectionsUtil.createSet(1, 2, 3);
+		Set<Integer> observed = new HashSet<Integer>(CollectionsUtil.fromDelimitedString(delimitedString, ";",
+				Integer.class));
+		assertEquals(expected, observed);
+	}
+
+	@Test
+	public void testSetFromDelimitedString() {
+		String delimitedString = "A;B;C";
+		Set<MyClass> expected = CollectionsUtil.createSet(new MyClass("A"), new MyClass("B"), new MyClass("C"));
+		Set<MyClass> observed = CollectionsUtil.setFromDelimitedString(delimitedString, ";", MyClass.class);
+		assertEquals(expected, observed);
+	}
 }
