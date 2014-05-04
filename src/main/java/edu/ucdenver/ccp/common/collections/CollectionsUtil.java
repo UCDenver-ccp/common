@@ -814,7 +814,9 @@ public class CollectionsUtil {
 	public static <T> Collection<T> fromDelimitedString(String input, String delimiterRegex, Class<T> cls) {
 		Collection<T> collection = new ArrayList<T>();
 		for (String token : input.split(delimiterRegex)) {
-			collection.add((T) ConstructorUtil.invokeConstructor(cls.getName(), token));
+			if (!token.trim().isEmpty()) {
+				collection.add((T) ConstructorUtil.invokeConstructor(cls.getName(), token));
+			}
 		}
 		return collection;
 	}
