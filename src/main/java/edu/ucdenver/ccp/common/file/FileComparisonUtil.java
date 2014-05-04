@@ -106,11 +106,16 @@ public class FileComparisonUtil {
 		ON,
 		OFF
 	}
+	
+	public enum ShowWhiteSpace {
+		ON,
+		OFF
+	}
 
 	public static boolean hasExpectedLines(File outputFile, CharacterEncoding encoding, List<String> expectedLines,
 			String columnDelimiterRegex, LineOrder lineOrder, ColumnOrder columnOrder) throws IOException {
 		return hasExpectedLines(outputFile, encoding, expectedLines, columnDelimiterRegex, lineOrder, columnOrder,
-				LineTrim.OFF);
+				LineTrim.OFF, ShowWhiteSpace.OFF);
 	}
 
 	/**
@@ -126,7 +131,7 @@ public class FileComparisonUtil {
 	 * @throws IOException
 	 */
 	public static boolean hasExpectedLines(File outputFile, CharacterEncoding encoding, List<String> expectedLines,
-			String columnDelimiterRegex, LineOrder lineOrder, ColumnOrder columnOrder, LineTrim lineTrim)
+			String columnDelimiterRegex, LineOrder lineOrder, ColumnOrder columnOrder, LineTrim lineTrim, ShowWhiteSpace showWhiteSpace)
 			throws IOException {
 		List<String> lines = FileReaderUtil.loadLinesFromFile(outputFile, encoding);
 		List<String> remainingExpectedLines = new ArrayList<String>(expectedLines);
@@ -151,6 +156,9 @@ public class FileComparisonUtil {
 			if (isAnExpectedLine(line, trimmedExpectedLines, lineIndex, lineOrder, columnOrder, columnDelimiterRegex)) {
 				remainingExpectedLines.remove(line);
 			} else {
+				if (showWhiteSpace.equals(ShowWhiteSpace.ON)) {
+					line = line.replaceAll("\\t", "[TAB]").replaceAll(" ", "[SPC]");
+				}
 				logger.info(String.format("Line (%d) in file of actual output, not in expected list: '%s'", lineIndex, line));
 				allLinesAsExpected = false;
 			}
@@ -162,6 +170,9 @@ public class FileComparisonUtil {
 					+ " # expected lines: " + expectedLines.size() + " Expected lines matched those in actual output file: "
 					+ allLinesAsExpected);
 			for (String line : remainingExpectedLines) {
+				if (showWhiteSpace.equals(ShowWhiteSpace.ON)) {
+					line = line.replaceAll("\\t", "[TAB]").replaceAll(" ", "[SPC]");
+				}
 				logger.info(String.format("EXPECTED LINE not in file: '%s'", line));
 			}
 		}
