@@ -167,12 +167,10 @@ public class FileWriterUtil {
 
 	/**
 	 * Creates a BufferedWriter that uses proper character encoding validation. By default this
-	 * BufferedWriter will overwrite the specified output file and character encoding-specific file
-	 * suffix enforcement is active.
+	 * BufferedWriter will overwrite the specified output file using UTF-8 encoding; file
+	 * suffix enforcement is inactive.
 	 * 
 	 * @param outputFile
-	 * @param encoding
-	 *            the CharacterEncoding to use when writing to the output file
 	 * @return an initialized {@link BufferedWriter}
 	 * @throws FileNotFoundException
 	 * @throws IllegalArgumentException
@@ -181,7 +179,12 @@ public class FileWriterUtil {
 	 */
 	public static BufferedWriter initBufferedWriter(File outputFile, CharacterEncoding encoding)
 			throws FileNotFoundException {
-		return initBufferedWriter(outputFile, encoding, WriteMode.OVERWRITE, FileSuffixEnforcement.ON);
+		return initBufferedWriter(outputFile, encoding, WriteMode.OVERWRITE, FileSuffixEnforcement.OFF);
+	}
+	
+	public static BufferedWriter initBufferedWriter(File outputFile)
+			throws FileNotFoundException {
+		return initBufferedWriter(outputFile, CharacterEncoding.UTF_8, WriteMode.OVERWRITE, FileSuffixEnforcement.OFF);
 	}
 
 	/**
