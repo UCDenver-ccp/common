@@ -1,2 +1,4 @@
 v1.3
  * Added GenericHttpClient class and relevant dependencies
+v1.4
+ * Added DigestUtil class and made some minor modifications and bug fixes
