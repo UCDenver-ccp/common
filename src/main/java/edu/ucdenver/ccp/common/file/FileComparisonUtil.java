@@ -60,60 +60,63 @@ public class FileComparisonUtil {
 	private static final Logger logger = Logger.getLogger(FileComparisonUtil.class);
 
 	/**
-	 * File comparisons can specify whether or not line ordering should be considered when comparing
-	 * files.
+	 * File comparisons can specify whether or not line ordering should be
+	 * considered when comparing files.
 	 * 
 	 * @author bill
 	 * 
 	 */
 	public enum LineOrder {
 		/**
-		 * Signifies that when comparing two files the lines can appear in any order
+		 * Signifies that when comparing two files the lines can appear in any
+		 * order
 		 */
 		ANY_ORDER,
 		/**
-		 * Signifies that when comparing two files the appearance of lines in one file must match
-		 * the order of appearance in the other file exactly.
+		 * Signifies that when comparing two files the appearance of lines in
+		 * one file must match the order of appearance in the other file
+		 * exactly.
 		 */
 		AS_IN_FILE
 	}
 
 	/**
-	 * File comparisons can specify whether or not column ordering should be considered when
-	 * comparing files.
+	 * File comparisons can specify whether or not column ordering should be
+	 * considered when comparing files.
 	 * 
 	 * @author bill
 	 * 
 	 */
 	public enum ColumnOrder {
 		/**
-		 * Signifies that columns can appear in any order when comparing two files
+		 * Signifies that columns can appear in any order when comparing two
+		 * files
 		 */
 		ANY_ORDER,
 		/**
-		 * Signifies that columns must appear in the same order for files to match
+		 * Signifies that columns must appear in the same order for files to
+		 * match
 		 */
 		AS_IN_FILE
 	}
 
 	/**
-	 * File comparisons can specify whether a line should be trimmed (leading and trailing
-	 * whitespace removed) before comparison
+	 * File comparisons can specify whether a line should be trimmed (leading
+	 * and trailing whitespace removed) before comparison
 	 * 
-	 * @author Center for Computational Pharmacology, UC Denver; ccpsupport@ucdenver.edu
+	 * @author Center for Computational Pharmacology, UC Denver;
+	 *         ccpsupport@ucdenver.edu
 	 * 
 	 */
 	public enum LineTrim {
 		/**
 		 * 
 		 */
-		ON,
-		OFF
+		ON, OFF
 	}
-	
+
 	public enum ShowWhiteSpace {
-		ON,
-		OFF
+		ON, OFF
 	}
 
 	public static boolean hasExpectedLines(File outputFile, CharacterEncoding encoding, List<String> expectedLines,
@@ -123,8 +126,8 @@ public class FileComparisonUtil {
 	}
 
 	/**
-	 * Returns true if the input list of lines matches those found in the input file, based on the
-	 * LineOrder and ColumnOrder properties.
+	 * Returns true if the input list of lines matches those found in the input
+	 * file, based on the LineOrder and ColumnOrder properties.
 	 * 
 	 * @param outputFile
 	 * @param expectedLines
@@ -135,9 +138,15 @@ public class FileComparisonUtil {
 	 * @throws IOException
 	 */
 	public static boolean hasExpectedLines(File outputFile, CharacterEncoding encoding, List<String> expectedLines,
-			String columnDelimiterRegex, LineOrder lineOrder, ColumnOrder columnOrder, LineTrim lineTrim, ShowWhiteSpace showWhiteSpace)
-			throws IOException {
+			String columnDelimiterRegex, LineOrder lineOrder, ColumnOrder columnOrder, LineTrim lineTrim,
+			ShowWhiteSpace showWhiteSpace) throws IOException {
 		List<String> lines = FileReaderUtil.loadLinesFromFile(outputFile, encoding);
+		return hasExpectedLines(lines, expectedLines, columnDelimiterRegex, lineOrder, columnOrder, lineTrim,
+				showWhiteSpace);
+	}
+
+	public static boolean hasExpectedLines(List<String> lines, List<String> expectedLines, String columnDelimiterRegex,
+			LineOrder lineOrder, ColumnOrder columnOrder, LineTrim lineTrim, ShowWhiteSpace showWhiteSpace) {
 		List<String> remainingExpectedLines = new ArrayList<String>(expectedLines);
 		if (lines.size() == 0 && expectedLines.size() > 0)
 			logger.info("File contains no output.");
@@ -163,7 +172,8 @@ public class FileComparisonUtil {
 				if (showWhiteSpace.equals(ShowWhiteSpace.ON)) {
 					line = line.replaceAll("\\t", "[TAB]").replaceAll(" ", "[SPC]");
 				}
-				logger.info(String.format("Line (%d) in file of actual output, not in expected list: '%s'", lineIndex, line));
+				logger.info(String.format("Line (%d) in file of actual output, not in expected list: '%s'", lineIndex,
+						line));
 				allLinesAsExpected = false;
 			}
 			lineIndex++;
@@ -171,8 +181,8 @@ public class FileComparisonUtil {
 		boolean hasExpectedLines = (lines.size() == expectedLines.size() && allLinesAsExpected);
 		if (!hasExpectedLines) {
 			logger.info("File of actual output does not contain expected lines. # lines in file: " + lines.size()
-					+ " # expected lines: " + expectedLines.size() + " Expected lines matched those in actual output file: "
-					+ allLinesAsExpected);
+					+ " # expected lines: " + expectedLines.size()
+					+ " Expected lines matched those in actual output file: " + allLinesAsExpected);
 			for (String line : remainingExpectedLines) {
 				if (showWhiteSpace.equals(ShowWhiteSpace.ON)) {
 					line = line.replaceAll("\\t", "[TAB]").replaceAll(" ", "[SPC]");
@@ -184,8 +194,8 @@ public class FileComparisonUtil {
 	}
 
 	/**
-	 * Returns true if the input line matches one of the expected lines based on the LineOrder and
-	 * ColumnOrder properties.
+	 * Returns true if the input line matches one of the expected lines based on
+	 * the LineOrder and ColumnOrder properties.
 	 * 
 	 * @param line
 	 * @param expectedLines
@@ -208,8 +218,8 @@ public class FileComparisonUtil {
 	}
 
 	/**
-	 * Returns true if the input line is a member of the expected lines list based on the LineOrder
-	 * and ColumnOrder properties.
+	 * Returns true if the input line is a member of the expected lines list
+	 * based on the LineOrder and ColumnOrder properties.
 	 * 
 	 * @param line
 	 * @param expectedLines
@@ -242,8 +252,8 @@ public class FileComparisonUtil {
 	}
 
 	/**
-	 * Returns true if the input line is as expected, false otherwise. If columnOrder is ANY_ORDER
-	 * then columns can be rearranged.
+	 * Returns true if the input line is as expected, false otherwise. If
+	 * columnOrder is ANY_ORDER then columns can be rearranged.
 	 * 
 	 * @param line
 	 * @param expectedLine
@@ -268,8 +278,8 @@ public class FileComparisonUtil {
 	}
 
 	/**
-	 * Computes the MD5 CheckSum for the input file and writes it to a file in the same directory
-	 * called [INPUT_FILE_NAME].md5
+	 * Computes the MD5 CheckSum for the input file and writes it to a file in
+	 * the same directory called [INPUT_FILE_NAME].md5
 	 * 
 	 * @param inputFile
 	 * @return
@@ -300,10 +310,12 @@ public class FileComparisonUtil {
 	}
 
 	/**
-	 * The format of MD5 check sum files are not always the same. This interface allows the user to
-	 * specify the check sum extraction from a line (presumably from a file)
+	 * The format of MD5 check sum files are not always the same. This interface
+	 * allows the user to specify the check sum extraction from a line
+	 * (presumably from a file)
 	 * 
-	 * @author Center for Computational Pharmacology, UC Denver; ccpsupport@ucdenver.edu
+	 * @author Center for Computational Pharmacology, UC Denver;
+	 *         ccpsupport@ucdenver.edu
 	 * 
 	 */
 	public static interface CheckSumExtractor {
@@ -318,12 +330,14 @@ public class FileComparisonUtil {
 	 * Can be used for the case where the MD5 sum file format is:<br>
 	 * [CHECKSUM] [FILENAME]
 	 * 
-	 * @author Center for Computational Pharmacology, UC Denver; ccpsupport@ucdenver.edu
+	 * @author Center for Computational Pharmacology, UC Denver;
+	 *         ccpsupport@ucdenver.edu
 	 * 
 	 */
 	public static class DefaultCheckSumExtractor implements CheckSumExtractor {
 		/**
-		 * assumes the file format consists of the checksum then a space then the file name
+		 * assumes the file format consists of the checksum then a space then
+		 * the file name
 		 */
 		@Override
 		public String extractCheckSumFromLine(String line) {
@@ -335,8 +349,8 @@ public class FileComparisonUtil {
 	 * @param inputFile
 	 * @param checkSumFile
 	 * @param checkSumExtractor
-	 * @return true if the MD5 checksum in the checkSumFile equals the MD5 checksum computed on the
-	 *         inputFile, false otherwise
+	 * @return true if the MD5 checksum in the checkSumFile equals the MD5
+	 *         checksum computed on the inputFile, false otherwise
 	 */
 	public static boolean fileHasExpectedMd5Checksum(File inputFile, File checkSumFile,
 			CheckSumExtractor checkSumExtractor) {
@@ -345,7 +359,8 @@ public class FileComparisonUtil {
 			String expectedChecksum = checkSumExtractor.extractCheckSumFromLine(checkSumLine);
 			String actualCheckSum = computeMd5Checksum(inputFile);
 			if (!expectedChecksum.equals(actualCheckSum))
-				logger.warn("MD5 check sum failure. Expected: '" + expectedChecksum + "' but was: '" + actualCheckSum + "'");
+				logger.warn("MD5 check sum failure. Expected: '" + expectedChecksum + "' but was: '" + actualCheckSum
+						+ "'");
 			return expectedChecksum.equals(actualCheckSum);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -357,20 +372,21 @@ public class FileComparisonUtil {
 	 * 
 	 * @param inputFile
 	 * @param checkSumFile
-	 * @return true if the MD5 checksum in the checkSumFile equals the MD5 checksum computed on the
-	 *         inputFile, false otherwise
+	 * @return true if the MD5 checksum in the checkSumFile equals the MD5
+	 *         checksum computed on the inputFile, false otherwise
 	 */
 	public static boolean fileHasExpectedMd5Checksum(File inputFile, File checkSumFile) {
 		return fileHasExpectedMd5Checksum(inputFile, checkSumFile, new DefaultCheckSumExtractor());
 	}
 
 	/**
-	 * Assumes there is a file in the same directory as the input file called [INPUT_FILE_NAME].md5
-	 * that contains the expected MD5 checksum for the input file.
+	 * Assumes there is a file in the same directory as the input file called
+	 * [INPUT_FILE_NAME].md5 that contains the expected MD5 checksum for the
+	 * input file.
 	 * 
 	 * @param inputFile
-	 * @return true if the MD5 checksum in the checkSumFile equals the MD5 checksum computed on the
-	 *         inputFile, false otherwise
+	 * @return true if the MD5 checksum in the checkSumFile equals the MD5
+	 *         checksum computed on the inputFile, false otherwise
 	 */
 	public static boolean fileHasExpectedMd5Checksum(File inputFile) {
 		File checkSumFile = getChecksumFile(inputFile);
@@ -378,14 +394,16 @@ public class FileComparisonUtil {
 	}
 
 	/**
-	 * Assumes there is a file in the same directory as the input file called [INPUT_FILE_NAME].md5
-	 * that contains the expected MD5 checksum for the input file.
+	 * Assumes there is a file in the same directory as the input file called
+	 * [INPUT_FILE_NAME].md5 that contains the expected MD5 checksum for the
+	 * input file.
 	 * 
 	 * @param inputFile
 	 * @param checkSumExtractor
-	 *            used to extract the check sum from the first line in the check sum file
-	 * @return true if the MD5 checksum in the checkSumFile equals the MD5 checksum computed on the
-	 *         inputFile, false otherwise
+	 *            used to extract the check sum from the first line in the check
+	 *            sum file
+	 * @return true if the MD5 checksum in the checkSumFile equals the MD5
+	 *         checksum computed on the inputFile, false otherwise
 	 */
 	public static boolean fileHasExpectedMd5Checksum(File inputFile, CheckSumExtractor checkSumExtractor) {
 		File checkSumFile = getChecksumFile(inputFile);
