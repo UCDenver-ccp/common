@@ -339,8 +339,8 @@ public class CollectionsUtil {
 	}
 
 	/**
-	 * Helper method for initializing a HashMap. This saves the developer from having to repeat K
-	 * and V on the right hand side.
+	 * Helper method for initializing a HashMap. This saves the developer from
+	 * having to repeat K and V on the right hand side.
 	 * 
 	 * @param <K>
 	 * @param <V>
@@ -390,8 +390,10 @@ public class CollectionsUtil {
 	}
 
 	// /**
-	// * Returns a mapping based on the input key/value pairings. Keys and Values must be the same
-	// * type, and there must be an even number of input parameters, i.e. there must be a value for
+	// * Returns a mapping based on the input key/value pairings. Keys and
+	// Values must be the same
+	// * type, and there must be an even number of input parameters, i.e. there
+	// must be a value for
 	// * every key.
 	// *
 	// * @param <T>
@@ -421,8 +423,17 @@ public class CollectionsUtil {
 		return map;
 	}
 
+	public static <K, V> Map<K, V> createLinkedMap(Object... keyValuePairs) {
+		Map<K, V> map = new LinkedHashMap<K, V>();
+		for (int i = 0; i < keyValuePairs.length; i += 2) {
+			map.put((K) keyValuePairs[i], (V) keyValuePairs[i + 1]);
+		}
+		return map;
+	}
+
 	/**
-	 * Initialize a map using a variable number of {@link Entry} objects as input
+	 * Initialize a map using a variable number of {@link Entry} objects as
+	 * input
 	 * 
 	 * @param entries
 	 * @return
@@ -477,8 +488,9 @@ public class CollectionsUtil {
 	}
 
 	/**
-	 * Combines all input maps and returns the aggregate map. Note, if a key appears in more than
-	 * one map it will be overwritten by the last value that is merged into the combined map.
+	 * Combines all input maps and returns the aggregate map. Note, if a key
+	 * appears in more than one map it will be overwritten by the last value
+	 * that is merged into the combined map.
 	 * 
 	 * @param <K>
 	 * @param <V>
@@ -513,8 +525,8 @@ public class CollectionsUtil {
 	}
 
 	/**
-	 * Returns a filtered version of the input map by returning a map containing only the specified
-	 * keys
+	 * Returns a filtered version of the input map by returning a map containing
+	 * only the specified keys
 	 * 
 	 * @param inputMap
 	 * @param keysToReturn
@@ -532,14 +544,15 @@ public class CollectionsUtil {
 	}
 
 	/**
-	 * Simple enum for expressing the sort order to be used by a sorting operation
+	 * Simple enum for expressing the sort order to be used by a sorting
+	 * operation
 	 * 
-	 * @author Center for Computational Pharmacology, UC Denver; ccpsupport@ucdenver.edu
+	 * @author Center for Computational Pharmacology, UC Denver;
+	 *         ccpsupport@ucdenver.edu
 	 * 
 	 */
 	public enum SortOrder {
-		ASCENDING(1),
-		DESCENDING(-1);
+		ASCENDING(1), DESCENDING(-1);
 		private final int modifier;
 
 		private SortOrder(int modifier) {
@@ -598,7 +611,8 @@ public class CollectionsUtil {
 	}
 
 	/**
-	 * Converts a list of Strings to a list of Integers. Assumes the Strings are all integers.
+	 * Converts a list of Strings to a list of Integers. Assumes the Strings are
+	 * all integers.
 	 * 
 	 * @param intsAsStrings
 	 * @return
@@ -626,7 +640,8 @@ public class CollectionsUtil {
 	}
 
 	/**
-	 * Adds a key/value pair to a one2many map, where the many are stored in a set.
+	 * Adds a key/value pair to a one2many map, where the many are stored in a
+	 * set.
 	 * 
 	 * @param <K>
 	 * @param <V>
@@ -657,7 +672,8 @@ public class CollectionsUtil {
 	 * @param key
 	 * @param value
 	 * @param one2ManyMap
-	 *            this Map<K, Collection<V>> is updated by adding the specified key-value pair
+	 *            this Map<K, Collection<V>> is updated by adding the specified
+	 *            key-value pair
 	 */
 	public static <K, V> void addToOne2ManyMap(K key, V value, Map<K, Collection<V>> one2ManyMap) {
 		if (one2ManyMap.containsKey(key)) {
@@ -670,7 +686,8 @@ public class CollectionsUtil {
 	}
 
 	/**
-	 * Updates the input key-to-count map by incrementing the count for the specified key
+	 * Updates the input key-to-count map by incrementing the count for the
+	 * specified key
 	 * 
 	 * @param key
 	 * @param keyToCountMap
@@ -688,8 +705,8 @@ public class CollectionsUtil {
 	}
 
 	/**
-	 * Updates the input key-to-count map by incrementing the count for the specified key by the
-	 * specified count amount
+	 * Updates the input key-to-count map by incrementing the count for the
+	 * specified key by the specified count amount
 	 * 
 	 * @param key
 	 * @param count
@@ -734,8 +751,8 @@ public class CollectionsUtil {
 	}
 
 	/**
-	 * Given an input collection, this method returns a delimited String containing the items in the
-	 * collection
+	 * Given an input collection, this method returns a delimited String
+	 * containing the items in the collection
 	 * 
 	 * @param <T>
 	 * @param collection
@@ -787,8 +804,8 @@ public class CollectionsUtil {
 	}
 
 	/**
-	 * Returns a String representation of the input collection by calling each element's toString()
-	 * method.
+	 * Returns a String representation of the input collection by calling each
+	 * element's toString() method.
 	 * 
 	 * @param <T>
 	 * @param collection
@@ -802,13 +819,14 @@ public class CollectionsUtil {
 	}
 
 	/**
-	 * Takes a delimited String as input and constructs object of the input class type for each
-	 * token of the delimited String. For example, if the input String is "1,2,3" and the delimiter
-	 * is a comma and the input class is Integer.class, then the output of this method would be a
-	 * Set<Integer> containing 1, 2, and 3.
+	 * Takes a delimited String as input and constructs object of the input
+	 * class type for each token of the delimited String. For example, if the
+	 * input String is "1,2,3" and the delimiter is a comma and the input class
+	 * is Integer.class, then the output of this method would be a Set<Integer>
+	 * containing 1, 2, and 3.
 	 * 
-	 * The input class must therefore contain a single argument constructor that takes a String as
-	 * input.
+	 * The input class must therefore contain a single argument constructor that
+	 * takes a String as input.
 	 * 
 	 * @param input
 	 * @param delimiterRegex
