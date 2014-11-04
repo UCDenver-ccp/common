@@ -33,6 +33,7 @@ package edu.ucdenver.ccp.common.download;
  * #L%
  */
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -53,12 +54,14 @@ import edu.ucdenver.ccp.common.ftp.FTPUtil;
 import edu.ucdenver.ccp.common.http.HttpUtil;
 
 /**
- * This class works in conjunction with the <code>FtpDownload</code> and <code>HttpDownload</code>
- * annotations to facilitate download of files and referencing (via the annotations) of those files
- * to member variables of a class.
+ * This class works in conjunction with the <code>FtpDownload</code> and
+ * <code>HttpDownload</code> annotations to facilitate download of files and
+ * referencing (via the annotations) of those files to member variables of a
+ * class.
  * 
- * Download completion is indicated by writing a "semaphore" file that is the file name with .ready
- * appended to it in the same directory as the downloaded file.
+ * Download completion is indicated by writing a "semaphore" file that is the
+ * file name with .ready appended to it in the same directory as the downloaded
+ * file.
  * 
  * @author bill
  * 
@@ -68,15 +71,15 @@ public class DownloadUtil {
 	private static final Logger logger = Logger.getLogger(DownloadUtil.class);
 
 	/**
-	 * File suffix used on the "ready semaphore" file that indicates that a downloaded file has been
-	 * downloaded completely and is now ready for use.
+	 * File suffix used on the "ready semaphore" file that indicates that a
+	 * downloaded file has been downloaded completely and is now ready for use.
 	 */
 	private static final String READY_SEMAPHORE_SUFFIX = ".ready";
 
 	/**
-	 * This method works in conjunction with the {@link FtpDownload} and {@link HttpDownload}
-	 * annotation to automatically download a specified file and assign it to the annotated object
-	 * field.
+	 * This method works in conjunction with the {@link FtpDownload} and
+	 * {@link HttpDownload} annotation to automatically download a specified
+	 * file and assign it to the annotated object field.
 	 * 
 	 * @param object
 	 * @param workDirectory
@@ -135,8 +138,9 @@ public class DownloadUtil {
 	}
 
 	/**
-	 * This method works in conjunction with the {@link FtpDownload} and {@link HttpDownload} class
-	 * annotation to automatically download a specified file.
+	 * This method works in conjunction with the {@link FtpDownload} and
+	 * {@link HttpDownload} class annotation to automatically download a
+	 * specified file.
 	 * 
 	 * @param klass
 	 *            on which annotation is present
@@ -168,8 +172,9 @@ public class DownloadUtil {
 	}
 
 	/**
-	 * This method works in conjunction with the {@link FtpDownload} and {@link HttpDownload} class
-	 * annotation to automatically download a specified file annotated to a particular field
+	 * This method works in conjunction with the {@link FtpDownload} and
+	 * {@link HttpDownload} class annotation to automatically download a
+	 * specified file annotated to a particular field
 	 * 
 	 * @param field
 	 * @param workDirectory
@@ -200,8 +205,39 @@ public class DownloadUtil {
 	}
 
 	/**
-	 * This method works in conjunction with the HttpDownload annotation to automatically download
-	 * via HTTP the specified file
+	 * Iterates through FtpDownload and HttpDownload annotations and prints to
+	 * the designated OutputStream the locations of the files that will be
+	 * downloaded.
+	 * 
+	 * @throws IOException
+	 */
+	public static void printFilesToDownload(Class<?> cls, BufferedWriter writer) throws IOException {
+		for (Field field : cls.getDeclaredFields()) {
+			if (field.isAnnotationPresent(FtpDownload.class)) {
+				writer.write(getFtpFileToDownload(field, field.getAnnotation(FtpDownload.class)) + "\n");
+			} else if (field.isAnnotationPresent(HttpDownload.class)) {
+				writer.write(getHttpFileToDownload(field, field.getAnnotation(HttpDownload.class)) + "\n");
+			}
+		}
+	}
+
+	private static String getHttpFileToDownload(Field field, HttpDownload httpd) {
+		return "#" + field.getName() + "\nwget http://" + httpd.url();
+	}
+
+	private static String getFtpFileToDownload(Field field, FtpDownload ftpd) {
+		if (ftpd.port() > 0) {
+			return "# " + field.getName() + "\nwget ftp://" + ftpd.server() + ":" + ftpd.port() + "/" + ftpd.path() + "/"
+					+ ftpd.filename();
+		} else {
+			return "# " + field.getName() + "\nwget ftp://" + ftpd.server() + "/" + ftpd.path()
+					+ ((ftpd.path().endsWith("/")) ? "" : "/") + ftpd.filename();
+		}
+	}
+
+	/**
+	 * This method works in conjunction with the HttpDownload annotation to
+	 * automatically download via HTTP the specified file
 	 * 
 	 * @param workDirectory
 	 * @param field
@@ -268,8 +304,9 @@ public class DownloadUtil {
 	 * @param clean
 	 * @param downloadedFile
 	 * @param targetFileName
-	 *            this input parameter indicates the name of a particular file inside a zip archive
-	 *            to retrieve. It should be set to null if the compressed file is not a zip archive
+	 *            this input parameter indicates the name of a particular file
+	 *            inside a zip archive to retrieve. It should be set to null if
+	 *            the compressed file is not a zip archive
 	 * @return a reference to the unpacked File
 	 * @throws IOException
 	 */
@@ -287,7 +324,8 @@ public class DownloadUtil {
 	}
 
 	/**
-	 * Downloads the specified file via FTP, places the file in the work directory
+	 * Downloads the specified file via FTP, places the file in the work
+	 * directory
 	 * 
 	 * @param workDirectory
 	 * @param field
@@ -318,17 +356,19 @@ public class DownloadUtil {
 	}
 
 	/**
-	 * If clean is true, then this method always returns false (and the file is deleted). If clean
-	 * is false, then this method returns downloadedFile.exists()
+	 * If clean is true, then this method always returns false (and the file is
+	 * deleted). If clean is false, then this method returns
+	 * downloadedFile.exists()
 	 * 
-	 * If the downloaded file is present but the ready-semaphore file is not present then this
-	 * processes waits for the semaphore file to appear. It is assumed that the downloaded file is
-	 * still in the process of being downloaded by another thread.
+	 * If the downloaded file is present but the ready-semaphore file is not
+	 * present then this processes waits for the semaphore file to appear. It is
+	 * assumed that the downloaded file is still in the process of being
+	 * downloaded by another thread.
 	 * 
 	 * @param downloadedFile
 	 * @param targetFile
-	 *            the target file is a particular file to retrieve from inside a downloaded zip
-	 *            archive.
+	 *            the target file is a particular file to retrieve from inside a
+	 *            downloaded zip archive.
 	 * @param clean
 	 * @return
 	 */
@@ -355,7 +395,8 @@ public class DownloadUtil {
 	}
 
 	/**
-	 * Returns when the semaphore file is present. Checks once a minute for its existence.
+	 * Returns when the semaphore file is present. Checks once a minute for its
+	 * existence.
 	 * 
 	 * @param file
 	 */
@@ -373,10 +414,11 @@ public class DownloadUtil {
 	}
 
 	/**
-	 * If the input file is not a zip file, then this method return false immediately. Otherwise if
-	 * clean is true, it deletes any previous unzipped version of the file and return true. If clean
-	 * is false, it simply returns based on existence of the unzipped file (false if it exists, true
-	 * if it doesn't).
+	 * If the input file is not a zip file, then this method return false
+	 * immediately. Otherwise if clean is true, it deletes any previous unzipped
+	 * version of the file and return true. If clean is false, it simply returns
+	 * based on existence of the unzipped file (false if it exists, true if it
+	 * doesn't).
 	 * 
 	 * @param zippedFile
 	 * @param clean
