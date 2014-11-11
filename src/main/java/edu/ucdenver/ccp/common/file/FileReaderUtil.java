@@ -42,6 +42,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
 
 import edu.ucdenver.ccp.common.collections.CollectionsUtil;
 import edu.ucdenver.ccp.common.file.reader.Line;
@@ -70,10 +71,13 @@ public class FileReaderUtil {
 	 * @param file
 	 * @param encoding
 	 * @return
-	 * @throws FileNotFoundException
+	 * @throws IOException 
 	 */
-	public static BufferedReader initBufferedReader(File file, CharacterEncoding encoding) throws FileNotFoundException {
-		return new BufferedReader(new InputStreamReader(new FileInputStream(file), encoding.getDecoder()));
+	public static BufferedReader initBufferedReader(File file, CharacterEncoding encoding) throws IOException {
+		if (file.getName().endsWith(".gz")) {
+			return initBufferedReader(new GZIPInputStream(new FileInputStream(file)), encoding);
+		}
+		return initBufferedReader(new FileInputStream(file), encoding);
 	}
 
 	/**
