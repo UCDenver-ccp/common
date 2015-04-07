@@ -41,17 +41,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import org.junit.Test;
 
+import edu.ucdenver.ccp.common.collections.CombinationsUtil.Pair;
 import edu.ucdenver.ccp.common.collections.CombinationsUtil.SelfPairing;
-
 
 public class CombinationsUtilTest {
 
-	
 	@Test
 	public void testComputeCombinations() {
 		Collection<String> list0 = CollectionsUtil.createList("A", "B");
@@ -83,7 +83,8 @@ public class CombinationsUtilTest {
 	@Test
 	public void testComputePairwiseCombinations_SinglePair() {
 		Set<String> pairMembers = CollectionsUtil.createSet("A", "B");
-		List<CombinationsUtil.Pair<String>> pairs = CollectionsUtil.createList(CombinationsUtil.computePairwiseCombinations(pairMembers));
+		List<CombinationsUtil.Pair<String>> pairs = CollectionsUtil.createList(CombinationsUtil
+				.computePairwiseCombinations(pairMembers));
 		List<CombinationsUtil.Pair<String>> expectedPairs = new ArrayList<CombinationsUtil.Pair<String>>();
 		expectedPairs.add(new CombinationsUtil.Pair<String>("A", "B"));
 
@@ -106,8 +107,8 @@ public class CombinationsUtilTest {
 	@Test
 	public void testComputePairwiseCombinations_MultiplePairs() {
 		Set<String> pairMembers = CollectionsUtil.createSet("A", "B", "C", "D");
-		Set<CombinationsUtil.Pair<String>> pairs = new HashSet<CombinationsUtil.Pair<String>>(CollectionsUtil.createList(CombinationsUtil
-				.computePairwiseCombinations(pairMembers)));
+		Set<CombinationsUtil.Pair<String>> pairs = new HashSet<CombinationsUtil.Pair<String>>(
+				CollectionsUtil.createList(CombinationsUtil.computePairwiseCombinations(pairMembers)));
 		Set<CombinationsUtil.Pair<String>> expectedPairs = new HashSet<CombinationsUtil.Pair<String>>();
 		expectedPairs.add(new CombinationsUtil.Pair<String>("A", "B"));
 		expectedPairs.add(new CombinationsUtil.Pair<String>("A", "C"));
@@ -119,28 +120,33 @@ public class CombinationsUtilTest {
 		assertEquals(String.format("Expected 6 pairs."), expectedPairs, pairs);
 
 	}
-	
+
 	@Test
 	public void testComputePairwiseCombinations_OneEntry() {
 		Set<String> pairMembers = CollectionsUtil.createSet("A");
-		List<CombinationsUtil.Pair<String>> pairs = CollectionsUtil.createList(CombinationsUtil.computePairwiseCombinations(pairMembers));
+		List<CombinationsUtil.Pair<String>> pairs = CollectionsUtil.createList(CombinationsUtil
+				.computePairwiseCombinations(pairMembers));
 
-		assertTrue(String.format("Cannot make a pair with a single entry, so no pairs should be returned"), pairs.isEmpty());
+		assertTrue(String.format("Cannot make a pair with a single entry, so no pairs should be returned"),
+				pairs.isEmpty());
 
 	}
+
 	@Test
 	public void testComputePairwiseCombinations_ZeroEntries() {
 		Set<String> pairMembers = new HashSet<String>();
-		List<CombinationsUtil.Pair<String>> pairs = CollectionsUtil.createList(CombinationsUtil.computePairwiseCombinations(pairMembers));
-		
-		assertTrue(String.format("Cannot make a pair with empty input, so no pairs should be returned"), pairs.isEmpty());
-		
+		List<CombinationsUtil.Pair<String>> pairs = CollectionsUtil.createList(CombinationsUtil
+				.computePairwiseCombinations(pairMembers));
+
+		assertTrue(String.format("Cannot make a pair with empty input, so no pairs should be returned"),
+				pairs.isEmpty());
+
 	}
-	
+
 	@Test
 	public void testComputePairwiseCombinations_2CollectionInput() {
-		Collection<String> input1 = CollectionsUtil.createList("A","B","C");
-		Collection<String> input2 = CollectionsUtil.createList("A","X","Y");
+		Collection<String> input1 = CollectionsUtil.createList("A", "B", "C");
+		Collection<String> input2 = CollectionsUtil.createList("A", "X", "Y");
 		Set<CombinationsUtil.Pair<String>> expectedPairs = new HashSet<CombinationsUtil.Pair<String>>();
 		expectedPairs.add(new CombinationsUtil.Pair<String>("A", "A"));
 		expectedPairs.add(new CombinationsUtil.Pair<String>("A", "X"));
@@ -151,14 +157,16 @@ public class CombinationsUtilTest {
 		expectedPairs.add(new CombinationsUtil.Pair<String>("C", "A"));
 		expectedPairs.add(new CombinationsUtil.Pair<String>("C", "X"));
 		expectedPairs.add(new CombinationsUtil.Pair<String>("C", "Y"));
-		HashSet<CombinationsUtil.Pair<String>> pairs = new HashSet<CombinationsUtil.Pair<String>>(CollectionsUtil.createList(CombinationsUtil.computePairwiseCombinations(input1, input2, SelfPairing.ALLOW)));
+		HashSet<CombinationsUtil.Pair<String>> pairs = new HashSet<CombinationsUtil.Pair<String>>(
+				CollectionsUtil.createList(CombinationsUtil.computePairwiseCombinations(input1, input2,
+						SelfPairing.ALLOW)));
 		assertEquals(String.format("Pairs not as expected"), expectedPairs, pairs);
 	}
-	
+
 	@Test
 	public void testComputePairwiseCombinations_2CollectionInput_ProhibitSelfPairs() {
-		Collection<String> input1 = CollectionsUtil.createList("A","B","C");
-		Collection<String> input2 = CollectionsUtil.createList("A","X","Y");
+		Collection<String> input1 = CollectionsUtil.createList("A", "B", "C");
+		Collection<String> input2 = CollectionsUtil.createList("A", "X", "Y");
 		Set<CombinationsUtil.Pair<String>> expectedPairs = new HashSet<CombinationsUtil.Pair<String>>();
 		expectedPairs.add(new CombinationsUtil.Pair<String>("A", "X"));
 		expectedPairs.add(new CombinationsUtil.Pair<String>("A", "Y"));
@@ -168,17 +176,46 @@ public class CombinationsUtilTest {
 		expectedPairs.add(new CombinationsUtil.Pair<String>("C", "A"));
 		expectedPairs.add(new CombinationsUtil.Pair<String>("C", "X"));
 		expectedPairs.add(new CombinationsUtil.Pair<String>("C", "Y"));
-		HashSet<CombinationsUtil.Pair<String>> pairs = new HashSet<CombinationsUtil.Pair<String>>(CollectionsUtil.createList(CombinationsUtil.computePairwiseCombinations(input1, input2, SelfPairing.PROHIBIT)));
+		HashSet<CombinationsUtil.Pair<String>> pairs = new HashSet<CombinationsUtil.Pair<String>>(
+				CollectionsUtil.createList(CombinationsUtil.computePairwiseCombinations(input1, input2,
+						SelfPairing.PROHIBIT)));
 		assertEquals(String.format("Pairs not as expected"), expectedPairs, pairs);
 	}
-	
+
 	@Test
 	public void testComputePairwiseCombinations_2CollectionInput_emptyInput() {
 		Collection<String> input1 = Collections.emptyList();
-		Collection<String> input2 = CollectionsUtil.createList("A","X","Y");
+		Collection<String> input2 = CollectionsUtil.createList("A", "X", "Y");
 		Set<CombinationsUtil.Pair<String>> expectedPairs = Collections.emptySet();
-		HashSet<CombinationsUtil.Pair<String>> pairs = new HashSet<CombinationsUtil.Pair<String>>(CollectionsUtil.createList(CombinationsUtil.computePairwiseCombinations(input1, input2, SelfPairing.ALLOW)));
+		HashSet<CombinationsUtil.Pair<String>> pairs = new HashSet<CombinationsUtil.Pair<String>>(
+				CollectionsUtil.createList(CombinationsUtil.computePairwiseCombinations(input1, input2,
+						SelfPairing.ALLOW)));
 		assertEquals(String.format("Pairs not as expected"), expectedPairs, pairs);
 	}
-	
+
+	/**
+	 * make sure that the order of returned pairs is the same no matter the
+	 * order of the input
+	 */
+	@Test
+	public void testComputePairwiseCombinations_reproducibleOrder() {
+		List<String> input = CollectionsUtil.createList("a", "b", "c", "d");
+
+		Set<CombinationsUtil.Pair<String>> expectedPairs = new HashSet<CombinationsUtil.Pair<String>>();
+		expectedPairs.add(new CombinationsUtil.Pair<String>("a", "b"));
+		expectedPairs.add(new CombinationsUtil.Pair<String>("a", "c"));
+		expectedPairs.add(new CombinationsUtil.Pair<String>("a", "d"));
+		expectedPairs.add(new CombinationsUtil.Pair<String>("b", "c"));
+		expectedPairs.add(new CombinationsUtil.Pair<String>("b", "d"));
+		expectedPairs.add(new CombinationsUtil.Pair<String>("c", "d"));
+		HashSet<CombinationsUtil.Pair<String>> pairs = new HashSet<CombinationsUtil.Pair<String>>(
+				CollectionsUtil.createList(CombinationsUtil.computePairwiseCombinations(new HashSet<String>(input))));
+		assertEquals(String.format("Pairs not as expected"), expectedPairs, pairs);
+
+		input = CollectionsUtil.createList("d", "b", "a", "c");
+		pairs = new HashSet<CombinationsUtil.Pair<String>>(CollectionsUtil.createList(CombinationsUtil
+				.computePairwiseCombinations(new HashSet<String>(input))));
+		assertEquals(String.format("Pairs not as expected"), expectedPairs, pairs);
+	}
+
 }
