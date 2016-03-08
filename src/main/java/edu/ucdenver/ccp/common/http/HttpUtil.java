@@ -37,9 +37,16 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.net.URLConnection;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.log4j.Logger;
 
 import edu.ucdenver.ccp.common.file.FileUtil;
@@ -59,8 +66,11 @@ public class HttpUtil {
 	private static final Logger logger = Logger.getLogger(HttpUtil.class);
 
 	/**
-	 * This method retrieves a file from the input URL and stores it locally in the specified
-	 * storage directory
+	 * This method retrieves a file from the input URL and stores it locally in
+	 * the specified storage directory
+	 * 
+	 * This method has been made more robust by modeling code here:
+	 * https://gist.github.com/rponte/09ddc1aa7b9918b52029
 	 * 
 	 * @param fileUrl
 	 * @param storageDirectory
@@ -70,20 +80,54 @@ public class HttpUtil {
 	public static File downloadFile(URL fileUrl, File localFile) throws IOException {
 		logger.info(String.format("Downloading file via HTTP: %s", fileUrl.toString()));
 		FileUtil.validateDirectory(localFile.getParentFile());
-		InputStream httpStream = null;
+		download(fileUrl, localFile);
+		return localFile;
+	}
+
+	/**
+	 * From: https://gist.github.com/rponte/09ddc1aa7b9918b52029
+	 * 
+	 * @param url
+	 * @param dstFile
+	 * @return
+	 */
+	private static File download(URL url, File dstFile) {
+		CloseableHttpClient httpclient = HttpClients.custom().setRedirectStrategy(new LaxRedirectStrategy()).build();
 		try {
-			URLConnection conn = fileUrl.openConnection();
-			httpStream = conn.getInputStream();
-			FileUtil.copy(httpStream, localFile);
-			return localFile;
+			HttpGet get = new HttpGet(url.toURI());
+			File downloaded = httpclient.execute(get, new FileDownloadResponseHandler(dstFile));
+			return downloaded;
+		} catch (Exception e) {
+			throw new IllegalStateException(e);
 		} finally {
-			IOUtils.closeQuietly(httpStream);
+			IOUtils.closeQuietly(httpclient);
 		}
 	}
 
 	/**
-	 * Returns the final path element from the input URL, i.e. the thing to the right of the last
-	 * forward slash
+	 * From: https://gist.github.com/rponte/09ddc1aa7b9918b52029
+	 *
+	 */
+	static class FileDownloadResponseHandler implements ResponseHandler<File> {
+
+		private final File target;
+
+		public FileDownloadResponseHandler(File target) {
+			this.target = target;
+		}
+
+		@Override
+		public File handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
+			InputStream source = response.getEntity().getContent();
+			FileUtils.copyInputStreamToFile(source, this.target);
+			return this.target;
+		}
+
+	}
+
+	/**
+	 * Returns the final path element from the input URL, i.e. the thing to the
+	 * right of the last forward slash
 	 * 
 	 * @param fileUrl
 	 * @return
