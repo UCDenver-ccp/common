@@ -12,7 +12,7 @@ Code in the [master branch](https://github.com/UCDenver-ccp/common/tree/master) 
 <dependency>
 	<groupId>edu.ucdenver.ccp</groupId>
 	<artifactId>common</artifactId>
-	<version>1.5.1</version>
+	<version>1.5.2</version>
 </dependency>
 
 
