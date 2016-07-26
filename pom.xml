@@ -9,13 +9,18 @@
 	<groupId>edu.ucdenver.ccp</groupId>
 	<artifactId>common</artifactId>
 	<packaging>jar</packaging>
-	<version>1.5.1</version>
+	<version>1.5.2</version>
 
 	<name>common</name>
 	<description>The ccp-common project contains utility code for a variety of "common" tasks
 	</description>
 
 	<dependencies>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5.2</version>
+		</dependency>
 		<dependency>
 			<groupId>org.mockftpserver</groupId>
 			<artifactId>MockFtpServer</artifactId>
@@ -62,11 +67,6 @@
 			<groupId>HTTPClient</groupId>
 			<artifactId>HTTPClient</artifactId>
 			<version>0.3-3</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-			<version>4.0</version>
 		</dependency>
 	</dependencies>
 

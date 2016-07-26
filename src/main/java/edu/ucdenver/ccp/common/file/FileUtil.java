@@ -76,15 +76,15 @@ import edu.ucdenver.ccp.common.string.StringUtil;
 public class FileUtil {
 
 	/**
-	 * This enum replaces the need for the boolean cleanDirectory parameter that has been used in
-	 * the past
+	 * This enum replaces the need for the boolean cleanDirectory parameter that
+	 * has been used in the past
 	 * 
-	 * @author Colorado Computational Pharmacology, UC Denver; ccpsupport@ucdenver.edu
+	 * @author Colorado Computational Pharmacology, UC Denver;
+	 *         ccpsupport@ucdenver.edu
 	 * 
 	 */
 	public enum CleanDirectory {
-		YES,
-		NO
+		YES, NO
 	}
 
 	/**
@@ -96,8 +96,9 @@ public class FileUtil {
 	/* @formatter:on */
 
 	/**
-	 * Returns a temporary directory based on the File.createTempFile() method. The directory
-	 * returned will be unique as it will have a UUID appended to it.
+	 * Returns a temporary directory based on the File.createTempFile() method.
+	 * The directory returned will be unique as it will have a UUID appended to
+	 * it.
 	 * 
 	 * @param directoryName
 	 * @return
@@ -113,9 +114,9 @@ public class FileUtil {
 	}
 
 	/**
-	 * Simple utility method that checks whether the input directory exists (and is a directory).
-	 * Returns an error message if the directory does not exist or is not a directory. Returns null
-	 * if the directory exists as expected.
+	 * Simple utility method that checks whether the input directory exists (and
+	 * is a directory). Returns an error message if the directory does not exist
+	 * or is not a directory. Returns null if the directory exists as expected.
 	 * 
 	 * @param directory
 	 * @return
@@ -131,8 +132,9 @@ public class FileUtil {
 	}
 
 	/**
-	 * Checks to see if the directory exists, and if it is truly a directory. Throws a
-	 * FileNotFoundException if the input is not a true/existing directory.
+	 * Checks to see if the directory exists, and if it is truly a directory.
+	 * Throws a FileNotFoundException if the input is not a true/existing
+	 * directory.
 	 * 
 	 * @param directory
 	 * @throws FileNotFoundException
@@ -145,9 +147,10 @@ public class FileUtil {
 	}
 
 	/**
-	 * Simple utility method that checks whether the input file exists (and is a file). Returns an
-	 * error message if the file does not exist or is not a file (i.e. it's a directory instead).
-	 * Returns null if the directory exists as expected.
+	 * Simple utility method that checks whether the input file exists (and is a
+	 * file). Returns an error message if the file does not exist or is not a
+	 * file (i.e. it's a directory instead). Returns null if the directory
+	 * exists as expected.
 	 * 
 	 * @param directory
 	 * @return
@@ -163,8 +166,8 @@ public class FileUtil {
 	}
 
 	/**
-	 * Checks to see if the file exists, and if it is truly a file. Throws a FileNotFoundException
-	 * if the input is not a true/existing file.
+	 * Checks to see if the file exists, and if it is truly a file. Throws a
+	 * FileNotFoundException if the input is not a true/existing file.
 	 * 
 	 * @param file
 	 * @throws FileNotFoundException
@@ -177,8 +180,8 @@ public class FileUtil {
 	}
 
 	/**
-	 * Creates the specified directory. Throws an IllegalStateException if the directory cannot be
-	 * created.
+	 * Creates the specified directory. Throws an IllegalStateException if the
+	 * directory cannot be created.
 	 * 
 	 * @param directory
 	 * @throws IllegalStateException
@@ -203,7 +206,7 @@ public class FileUtil {
 		boolean success = true;
 
 		if (directory.exists()) {
-		
+
 			// delete contents
 			File[] files = directory.listFiles();
 			for (File f : files) {
@@ -213,7 +216,7 @@ public class FileUtil {
 					success = success && f.delete();
 				}
 			}
-		
+
 			// delete directory itself
 			success = success && directory.delete();
 		}
@@ -255,7 +258,8 @@ public class FileUtil {
 	}
 
 	/**
-	 * Deletes a directory (including any contents) and recreates it so that it is empty
+	 * Deletes a directory (including any contents) and recreates it so that it
+	 * is empty
 	 * 
 	 * @param directory
 	 * @return
@@ -267,7 +271,8 @@ public class FileUtil {
 	}
 
 	/**
-	 * Deletes the input file and replaces it with a new empty file of the same name
+	 * Deletes the input file and replaces it with a new empty file of the same
+	 * name
 	 * 
 	 * @param file
 	 *            the file to clean
@@ -288,9 +293,13 @@ public class FileUtil {
 	 * @throws IOException
 	 */
 	public static void copy(InputStream is, File file) throws IOException {
+		copy(is, file, false);
+	}
+
+	public static void copy(InputStream is, File file, boolean append) throws IOException {
 		BufferedOutputStream outStream = null;
 		try {
-			outStream = new BufferedOutputStream(new FileOutputStream(file));
+			outStream = new BufferedOutputStream(new FileOutputStream(file, append));
 			copy(is, outStream);
 		} finally {
 			IOUtils.closeQuietly(outStream);
@@ -320,8 +329,8 @@ public class FileUtil {
 	 * @param fromFile
 	 * @param toFile
 	 * @throws IOException
-	 *             , The exception is always wrapped. Look at the embedded exception to see what it
-	 *             was that caused it.
+	 *             , The exception is always wrapped. Look at the embedded
+	 *             exception to see what it was that caused it.
 	 */
 	public static void copy(File fromFile, File toFileOrDirectory) throws IOException {
 		validateFile(fromFile);
@@ -351,8 +360,8 @@ public class FileUtil {
 	}
 
 	/**
-	 * Copies the contents of one directory to another. The target directory must not exist prior to
-	 * this method being invoked.
+	 * Copies the contents of one directory to another. The target directory
+	 * must not exist prior to this method being invoked.
 	 * 
 	 * @param fromDirectory
 	 * @param toDirectory
@@ -376,8 +385,8 @@ public class FileUtil {
 	}
 
 	/**
-	 * Copies the contents of the specified file to a <code>String</code> using the specified
-	 * character encoding
+	 * Copies the contents of the specified file to a <code>String</code> using
+	 * the specified character encoding
 	 * 
 	 * @param fromFile
 	 * @param fromFileEncoding
@@ -390,11 +399,9 @@ public class FileUtil {
 			validateFile(fromFile);
 			isr = new InputStreamReader(new FileInputStream(fromFile), fromFileEncoding.getDecoder());
 			return StreamUtil.toString(isr);
-		}
-		catch (ArrayIndexOutOfBoundsException x) {
-			throw new RuntimeException("failed getting contents of file: " + fromFile.getAbsolutePath(), x);	
-		}
-		finally {
+		} catch (ArrayIndexOutOfBoundsException x) {
+			throw new RuntimeException("failed getting contents of file: " + fromFile.getAbsolutePath(), x);
+		} finally {
 			IOUtils.closeQuietly(isr);
 		}
 	}
@@ -420,7 +427,8 @@ public class FileUtil {
 	}
 
 	/**
-	 * Creates a file name filter that accepts files based on the fileSuffix input parameter
+	 * Creates a file name filter that accepts files based on the fileSuffix
+	 * input parameter
 	 * 
 	 * @return
 	 */
@@ -441,7 +449,8 @@ public class FileUtil {
 
 	/**
 	 * This method modified from:
-	 * http://www.java-tips.org/java-se-tips/java.io/reading-a-file-into-a-byte-array.html
+	 * http://www.java-tips.org/java-se-tips/java.io/reading
+	 * -a-file-into-a-byte-array.html
 	 * 
 	 * @param file
 	 * @return
@@ -460,8 +469,9 @@ public class FileUtil {
 	}
 
 	/**
-	 * Returns a reference to a File that is specified by the input file name, and located in the
-	 * input directory. The file is not created, only the reference.
+	 * Returns a reference to a File that is specified by the input file name,
+	 * and located in the input directory. The file is not created, only the
+	 * reference.
 	 * 
 	 * @param directory
 	 * @param fileName
@@ -476,8 +486,8 @@ public class FileUtil {
 	}
 
 	/**
-	 * Returns an Iterator<File> over the files in the input directory. Only visible (i.e. not
-	 * hidden) files and directories will be processed.
+	 * Returns an Iterator<File> over the files in the input directory. Only
+	 * visible (i.e. not hidden) files and directories will be processed.
 	 * 
 	 * @param fileOrDirectory
 	 * @param recurse
@@ -498,11 +508,12 @@ public class FileUtil {
 	}
 
 	/**
-	 * Returns an Iterator<File> over the files in the input directory that returns only files
-	 * listed in the files listed. Only visible (i.e. not hidden unix-style with leading periods)
-	 * files and directories will be processed. The list of filenames is the file.getName() of the
-	 * file...without any path. So the assumption is that the filenames are unique or equivalent
-	 * when not considering the path.
+	 * Returns an Iterator<File> over the files in the input directory that
+	 * returns only files listed in the files listed. Only visible (i.e. not
+	 * hidden unix-style with leading periods) files and directories will be
+	 * processed. The list of filenames is the file.getName() of the
+	 * file...without any path. So the assumption is that the filenames are
+	 * unique or equivalent when not considering the path.
 	 * 
 	 * @param fileOrDirectory
 	 * @param recurse
@@ -527,8 +538,8 @@ public class FileUtil {
 	}
 
 	/**
-	 * Returns an Iterator<File> over the files in the input directory. Only visible (i.e. not
-	 * hidden) files and directories will be processed.
+	 * Returns an Iterator<File> over the files in the input directory. Only
+	 * visible (i.e. not hidden) files and directories will be processed.
 	 * 
 	 * @param fileOrDirectory
 	 * @param recurse
@@ -554,9 +565,9 @@ public class FileUtil {
 	}
 
 	/**
-	 * Returns a List<File> over the files in the input directory. Only visible (i.e. not hidden)
-	 * files and directories will be processed. The list is sorted using the
-	 * java.util.Collections.sort() method.
+	 * Returns a List<File> over the files in the input directory. Only visible
+	 * (i.e. not hidden) files and directories will be processed. The list is
+	 * sorted using the java.util.Collections.sort() method.
 	 * 
 	 * @param fileOrDirectory
 	 * @param recurse
@@ -572,8 +583,8 @@ public class FileUtil {
 	}
 
 	/**
-	 * Returns an IOFileFilter that accepts only file with the input suffixes. Files must also be
-	 * visible.
+	 * Returns an IOFileFilter that accepts only file with the input suffixes.
+	 * Files must also be visible.
 	 * 
 	 * @param suffixes
 	 * @return
@@ -600,8 +611,9 @@ public class FileUtil {
 	}
 
 	/**
-	 * Returns an IOFileFilter set up to either accept directories (if recurse == true) or to only
-	 * accept files (if recurse == false). Directories must be visible.
+	 * Returns an IOFileFilter set up to either accept directories (if recurse
+	 * == true) or to only accept files (if recurse == false). Directories must
+	 * be visible.
 	 * 
 	 * @param recurse
 	 * @return
@@ -659,8 +671,8 @@ public class FileUtil {
 
 	/**
 	 * 
-	 * leading periods need to be removed or else the FileUtils.iteratorFiles method does not work
-	 * as expected
+	 * leading periods need to be removed or else the FileUtils.iteratorFiles
+	 * method does not work as expected
 	 * 
 	 * @param fileSuffixes
 	 * @return
@@ -677,8 +689,8 @@ public class FileUtil {
 	}
 
 	/**
-	 * Creates an iterator over a single File object. File must be visible and must match one of the
-	 * input file suffixes if specified.
+	 * Creates an iterator over a single File object. File must be visible and
+	 * must match one of the input file suffixes if specified.
 	 * 
 	 * @param file
 	 * @param fileSuffixes
@@ -791,14 +803,15 @@ public class FileUtil {
 	}
 
 	/**
-	 * Appends the specified file suffix to the end of the file name referenced by the input File
-	 * object
+	 * Appends the specified file suffix to the end of the file name referenced
+	 * by the input File object
 	 * 
 	 * @param file
 	 *            the file to add the suffix to
 	 * @param suffix
 	 *            the suffix to add
-	 * @return a reference to a file that is the input file appended with the input suffix
+	 * @return a reference to a file that is the input file appended with the
+	 *         input suffix
 	 */
 	public static File appendFileSuffix(File file, String suffix) {
 		File path = file.getParentFile();
@@ -824,8 +837,9 @@ public class FileUtil {
 		try {
 			reader = FileReaderUtil.initBufferedReader(file, encoding);
 			/*
-			 * The 'line' variable is unnecessary here, however if (reader.readLine() == null) is
-			 * used, a FindBugs warning is generated.
+			 * The 'line' variable is unnecessary here, however if
+			 * (reader.readLine() == null) is used, a FindBugs warning is
+			 * generated.
 			 */
 			@SuppressWarnings("unused")
 			String line;

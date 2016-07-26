@@ -115,7 +115,7 @@ public class DownloadUtil {
 	/**
 	 * @param file
 	 */
-	private static void writeReadySemaphoreFile(File file) {
+	public static void writeReadySemaphoreFile(File file) {
 		try {
 			if (!getReadySemaphoreFile(file).createNewFile()) {
 				throw new RuntimeException("Semaphore file could not be created b/c it already exists: "
@@ -129,7 +129,7 @@ public class DownloadUtil {
 		}
 	}
 
-	private static boolean readySemaphoreFileExists(File file) {
+	public static boolean readySemaphoreFileExists(File file) {
 		return getReadySemaphoreFile(file).exists();
 	}
 
