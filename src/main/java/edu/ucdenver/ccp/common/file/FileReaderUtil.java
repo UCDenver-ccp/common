@@ -220,8 +220,13 @@ public class FileReaderUtil {
 	 */
 	public static List<String> loadColumnFromDelimitedFile(File inputFile, CharacterEncoding encoding,
 			String delimiter, String commentIndicator, int columnIndex) throws IOException {
-		return loadColumnFromDelimitedFile(new FileInputStream(inputFile), encoding, delimiter, commentIndicator,
+		FileInputStream inputStream = new FileInputStream(inputFile);
+		try {
+		return loadColumnFromDelimitedFile(inputStream, encoding, delimiter, commentIndicator,
 				columnIndex);
+		} finally {
+			inputStream.close();
+		}
 	}
 
 	/**
