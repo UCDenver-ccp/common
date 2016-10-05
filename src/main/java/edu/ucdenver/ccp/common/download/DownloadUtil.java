@@ -40,6 +40,8 @@ import java.lang.reflect.Field;
 import java.net.SocketException;
 import java.net.URL;
 
+import lombok.Data;
+
 import org.apache.log4j.Logger;
 
 import edu.ucdenver.ccp.common.calendar.CalendarUtil;
@@ -51,6 +53,7 @@ import edu.ucdenver.ccp.common.file.FileWriterUtil;
 import edu.ucdenver.ccp.common.file.FileWriterUtil.FileSuffixEnforcement;
 import edu.ucdenver.ccp.common.file.FileWriterUtil.WriteMode;
 import edu.ucdenver.ccp.common.ftp.FTPUtil;
+import edu.ucdenver.ccp.common.ftp.FTPUtil.FileType;
 import edu.ucdenver.ccp.common.http.HttpUtil;
 
 /**
@@ -340,21 +343,57 @@ public class DownloadUtil {
 		String uName = (userName == null) ? ftpd.username() : userName;
 		String pWord = (password == null) ? ftpd.password() : password;
 		String targetFileName = (ftpd.targetFileName().length() > 0) ? ftpd.targetFileName() : null;
+		FtpInfo ftpInfo = new FtpInfo(uName, pWord, ftpd.server(), ftpd.port(), ftpd.path(), ftpd.filename(), 
+				ftpd.filetype(), ftpd.decompress(), targetFileName);
+		return handleFtpDownload(workDirectory, ftpInfo, clean);
+	}		
+	
+	
+	/**
+	 * Downloads the file as specified by the user-supplied {@link FtpInfo}.
+	 * 
+	 * @param workDirectory
+	 * @param ftpInfo
+	 * @param clean
+	 * @return
+	 * @throws IOException
+	 * @throws IllegalArgumentException
+	 */
+	public static File handleFtpDownload(File workDirectory, FtpInfo ftpInfo,
+			boolean clean) throws IOException, IllegalArgumentException {
+		String targetFileName = ftpInfo.getTargetFileName();
 		File targetFile = (targetFileName == null) ? null : new File(workDirectory, targetFileName);
-		File downloadedFile = FileUtil.appendPathElementsToDirectory(workDirectory, ftpd.filename());
-		if (!fileExists(downloadedFile, targetFile, clean, ftpd.decompress())) {
+		File downloadedFile = FileUtil.appendPathElementsToDirectory(workDirectory, ftpInfo.getFilename());
+		if (!fileExists(downloadedFile, targetFile, clean, ftpInfo.isDecompress())) {
 			long startTime = System.currentTimeMillis();
-			downloadedFile = FTPUtil.downloadFile(ftpd.server(), ftpd.port(), ftpd.path(), ftpd.filename(),
-					ftpd.filetype(), workDirectory, uName, pWord);
+			downloadedFile = FTPUtil.downloadFile(ftpInfo.getServer(), ftpInfo.getPort(), ftpInfo.getPath(), ftpInfo.getFilename(),
+					ftpInfo.getFileType(), workDirectory, ftpInfo.getUsername(), ftpInfo.getPassword());
 			long duration = System.currentTimeMillis() - startTime;
 			logger.info("Duration of " + downloadedFile.getName() + " download: " + (duration / (1000 * 60)) + "min");
 		}
-		if (ftpd.decompress()) {
+		if (ftpInfo.isDecompress()) {
 			return unpackFile(workDirectory, clean, downloadedFile, targetFileName);
 		}
 		return downloadedFile;
 	}
 
+	/**
+	 * Utility class to hold the requisite information to download a file via FTP.
+	 *
+	 */
+	@Data
+	public static class FtpInfo {
+		private final String username;
+		private final String password;
+		private final String server;
+		private final int port;
+		private final String path;
+		private final String filename;
+		private final FileType fileType;
+		private final boolean decompress;
+		private final String targetFileName;
+	}
+	
 	/**
 	 * If clean is true, then this method always returns false (and the file is
 	 * deleted). If clean is false, then this method returns
