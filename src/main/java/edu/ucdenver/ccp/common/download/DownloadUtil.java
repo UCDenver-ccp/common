@@ -372,7 +372,10 @@ public class DownloadUtil {
 			logger.info("Duration of " + downloadedFile.getName() + " download: " + (duration / (1000 * 60)) + "min");
 		}
 		if (ftpInfo.isDecompress()) {
-			return unpackFile(workDirectory, clean, downloadedFile, targetFileName);
+			downloadedFile = unpackFile(workDirectory, clean, downloadedFile, targetFileName);
+		}
+		if (!readySemaphoreFileExists(downloadedFile)) {
+			writeReadySemaphoreFile(downloadedFile);
 		}
 		return downloadedFile;
 	}
