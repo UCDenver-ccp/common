@@ -120,13 +120,16 @@ public class DownloadUtil {
 	 */
 	public static void writeReadySemaphoreFile(File file) {
 		try {
-			if (!getReadySemaphoreFile(file).createNewFile()) {
-				throw new RuntimeException("Semaphore file could not be created b/c it already exists: "
-						+ getReadySemaphoreFile(file).getAbsolutePath());
+			if (!getReadySemaphoreFile(file).exists()) {
+				if (!getReadySemaphoreFile(file).createNewFile()) {
+					throw new RuntimeException("Semaphore file could not be created b/c it already exists: "
+							+ getReadySemaphoreFile(file).getAbsolutePath());
+				}
+				FileWriterUtil.printLines(
+						CollectionsUtil.createList("Downloaded on " + CalendarUtil.getDateStamp("/")),
+						getReadySemaphoreFile(file), CharacterEncoding.UTF_8, WriteMode.OVERWRITE,
+						FileSuffixEnforcement.OFF);
 			}
-			FileWriterUtil.printLines(CollectionsUtil.createList("Downloaded on " + CalendarUtil.getDateStamp("/")),
-					getReadySemaphoreFile(file), CharacterEncoding.UTF_8, WriteMode.OVERWRITE,
-					FileSuffixEnforcement.OFF);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -230,8 +233,8 @@ public class DownloadUtil {
 
 	private static String getFtpFileToDownload(Field field, FtpDownload ftpd) {
 		if (ftpd.port() > 0) {
-			return "# " + field.getName() + "\nwget ftp://" + ftpd.server() + ":" + ftpd.port() + "/" + ftpd.path() + "/"
-					+ ftpd.filename();
+			return "# " + field.getName() + "\nwget ftp://" + ftpd.server() + ":" + ftpd.port() + "/" + ftpd.path()
+					+ "/" + ftpd.filename();
 		} else {
 			return "# " + field.getName() + "\nwget ftp://" + ftpd.server() + "/" + ftpd.path()
 					+ ((ftpd.path().endsWith("/")) ? "" : "/") + ftpd.filename();
@@ -343,12 +346,11 @@ public class DownloadUtil {
 		String uName = (userName == null) ? ftpd.username() : userName;
 		String pWord = (password == null) ? ftpd.password() : password;
 		String targetFileName = (ftpd.targetFileName().length() > 0) ? ftpd.targetFileName() : null;
-		FtpInfo ftpInfo = new FtpInfo(uName, pWord, ftpd.server(), ftpd.port(), ftpd.path(), ftpd.filename(), 
+		FtpInfo ftpInfo = new FtpInfo(uName, pWord, ftpd.server(), ftpd.port(), ftpd.path(), ftpd.filename(),
 				ftpd.filetype(), ftpd.decompress(), targetFileName);
 		return handleFtpDownload(workDirectory, ftpInfo, clean);
-	}		
-	
-	
+	}
+
 	/**
 	 * Downloads the file as specified by the user-supplied {@link FtpInfo}.
 	 * 
@@ -359,26 +361,31 @@ public class DownloadUtil {
 	 * @throws IOException
 	 * @throws IllegalArgumentException
 	 */
-	public static File handleFtpDownload(File workDirectory, FtpInfo ftpInfo,
-			boolean clean) throws IOException, IllegalArgumentException {
+	public static File handleFtpDownload(File workDirectory, FtpInfo ftpInfo, boolean clean) throws IOException,
+			IllegalArgumentException {
 		String targetFileName = ftpInfo.getTargetFileName();
 		File targetFile = (targetFileName == null) ? null : new File(workDirectory, targetFileName);
 		File downloadedFile = FileUtil.appendPathElementsToDirectory(workDirectory, ftpInfo.getFilename());
 		if (!fileExists(downloadedFile, targetFile, clean, ftpInfo.isDecompress())) {
 			long startTime = System.currentTimeMillis();
-			downloadedFile = FTPUtil.downloadFile(ftpInfo.getServer(), ftpInfo.getPort(), ftpInfo.getPath(), ftpInfo.getFilename(),
-					ftpInfo.getFileType(), workDirectory, ftpInfo.getUsername(), ftpInfo.getPassword());
+			downloadedFile = FTPUtil.downloadFile(ftpInfo.getServer(), ftpInfo.getPort(), ftpInfo.getPath(),
+					ftpInfo.getFilename(), ftpInfo.getFileType(), workDirectory, ftpInfo.getUsername(),
+					ftpInfo.getPassword());
 			long duration = System.currentTimeMillis() - startTime;
 			logger.info("Duration of " + downloadedFile.getName() + " download: " + (duration / (1000 * 60)) + "min");
 		}
 		if (ftpInfo.isDecompress()) {
-			return unpackFile(workDirectory, clean, downloadedFile, targetFileName);
+			downloadedFile = unpackFile(workDirectory, clean, downloadedFile, targetFileName);
+		}
+		if (clean || !readySemaphoreFileExists(downloadedFile)) {
+			writeReadySemaphoreFile(downloadedFile);
 		}
 		return downloadedFile;
 	}
 
 	/**
-	 * Utility class to hold the requisite information to download a file via FTP.
+	 * Utility class to hold the requisite information to download a file via
+	 * FTP.
 	 *
 	 */
 	@Data
@@ -393,7 +400,7 @@ public class DownloadUtil {
 		private final boolean decompress;
 		private final String targetFileName;
 	}
-	
+
 	/**
 	 * If clean is true, then this method always returns false (and the file is
 	 * deleted). If clean is false, then this method returns
