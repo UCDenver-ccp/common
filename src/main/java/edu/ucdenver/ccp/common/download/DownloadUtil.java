@@ -374,7 +374,7 @@ public class DownloadUtil {
 		if (ftpInfo.isDecompress()) {
 			downloadedFile = unpackFile(workDirectory, clean, downloadedFile, targetFileName);
 		}
-		if (!readySemaphoreFileExists(downloadedFile)) {
+		if (clean || !readySemaphoreFileExists(downloadedFile)) {
 			writeReadySemaphoreFile(downloadedFile);
 		}
 		return downloadedFile;
