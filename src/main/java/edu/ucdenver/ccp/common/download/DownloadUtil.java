@@ -37,8 +37,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.net.MalformedURLException;
 import java.net.SocketException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 
 import lombok.Data;
 
@@ -107,28 +109,35 @@ public class DownloadUtil {
 			// System.out.println("Downloaded file: " + file.getName());
 			if (file != null) {
 				assignField(object, field, file);
-				if (clean || !readySemaphoreFileExists(file)) {
-					// if clean = false then it might already exist
-					writeReadySemaphoreFile(file);
-				}
+				// if (clean || !readySemaphoreFileExists(file)) {
+				// // if clean = false then it might already exist
+				// writeReadySemaphoreFile(file);
+				// }
 			}
 		}
 	}
 
 	/**
+	 * The creation of a semaphore file indicates the success of a download. It
+	 * also includes metadata regarding the file that was downloaded, including:
+	 * the date of the download, the date of the file on the server if
+	 * available, the size of the file, the name of the file, the file URI
+	 * 
 	 * @param file
 	 */
-	public static void writeReadySemaphoreFile(File file) {
+	public static void writeReadySemaphoreFile(File file, URL fileUrl) {
 		try {
 			if (!getReadySemaphoreFile(file).exists()) {
 				if (!getReadySemaphoreFile(file).createNewFile()) {
 					throw new RuntimeException("Semaphore file could not be created b/c it already exists: "
 							+ getReadySemaphoreFile(file).getAbsolutePath());
 				}
-				FileWriterUtil.printLines(
-						CollectionsUtil.createList("Downloaded on " + CalendarUtil.getDateStamp("/")),
-						getReadySemaphoreFile(file), CharacterEncoding.UTF_8, WriteMode.OVERWRITE,
-						FileSuffixEnforcement.OFF);
+				SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+				FileWriterUtil.printLines(CollectionsUtil.createList("download_date=" + CalendarUtil.getDateStamp("/"),
+						"file_name=" + file.getName(), "file_path=" + file.getParentFile().getAbsolutePath(),
+						"file_size_in_bytes=" + file.length(), "file_date=" + formatter.format(file.lastModified()),
+						"file_url=" + fileUrl.toString()), getReadySemaphoreFile(file), CharacterEncoding.UTF_8,
+						WriteMode.OVERWRITE, FileSuffixEnforcement.OFF);
 			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -139,7 +148,7 @@ public class DownloadUtil {
 		return getReadySemaphoreFile(file).exists();
 	}
 
-	private static File getReadySemaphoreFile(File file) {
+	public static File getReadySemaphoreFile(File file) {
 		return new File(file.getAbsolutePath() + READY_SEMAPHORE_SUFFIX);
 	}
 
@@ -168,12 +177,12 @@ public class DownloadUtil {
 		} else if (klass.isAnnotationPresent(FtpDownload.class)) {
 			f = handleFtpDownload(workDirectory, klass.getAnnotation(FtpDownload.class), userName, password, clean);
 		}
-		if (f != null) {
-			if (clean || !readySemaphoreFileExists(f)) {
-				// if clean = false then it might already exist
-				writeReadySemaphoreFile(f);
-			}
-		}
+		// if (f != null) {
+		// if (clean || !readySemaphoreFileExists(f)) {
+		// // if clean = false then it might already exist
+		// writeReadySemaphoreFile(f);
+		// }
+		// }
 		return f;
 	}
 
@@ -201,12 +210,12 @@ public class DownloadUtil {
 		} else if (field.isAnnotationPresent(FtpDownload.class)) {
 			f = handleFtpDownload(workDirectory, field.getAnnotation(FtpDownload.class), userName, password, clean);
 		}
-		if (f != null) {
-			if (clean || !readySemaphoreFileExists(f)) {
-				// if clean = false then it might already exist
-				writeReadySemaphoreFile(f);
-			}
-		}
+		// if (f != null) {
+		// if (clean || !readySemaphoreFileExists(f)) {
+		// // if clean = false then it might already exist
+		// writeReadySemaphoreFile(f);
+		// }
+		// }
 		return f;
 	}
 
@@ -268,6 +277,11 @@ public class DownloadUtil {
 		}
 		if (httpd.decompress()) {
 			return unpackFile(workDirectory, clean, downloadedFile, targetFileName);
+		}
+		if (clean || !readySemaphoreFileExists(downloadedFile)) {
+			if (downloadedFile != null) {
+				writeReadySemaphoreFile(downloadedFile, url);
+			}
 		}
 		return downloadedFile;
 	}
@@ -378,7 +392,7 @@ public class DownloadUtil {
 			downloadedFile = unpackFile(workDirectory, clean, downloadedFile, targetFileName);
 		}
 		if (clean || !readySemaphoreFileExists(downloadedFile)) {
-			writeReadySemaphoreFile(downloadedFile);
+			writeReadySemaphoreFile(downloadedFile, ftpInfo.getUrl());
 		}
 		return downloadedFile;
 	}
@@ -399,6 +413,10 @@ public class DownloadUtil {
 		private final FileType fileType;
 		private final boolean decompress;
 		private final String targetFileName;
+
+		public URL getUrl() throws MalformedURLException {
+			return new URL("ftp://" + server + (port > 0 ? ":" + Integer.toString(port) : "") + "/" + path + "/" + filename);
+		}
 	}
 
 	/**
