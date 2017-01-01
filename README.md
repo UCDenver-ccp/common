@@ -12,9 +12,8 @@ Code in the [master branch](https://github.com/UCDenver-ccp/common/tree/master) 
 <dependency>
 	<groupId>edu.ucdenver.ccp</groupId>
 	<artifactId>common</artifactId>
-	<version>1.5.4</version>
+	<version>1.5.5</version>
 </dependency>
-
 
 <repository>
 	<id>bionlp-sourceforge</id>
