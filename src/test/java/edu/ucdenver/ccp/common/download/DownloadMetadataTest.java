@@ -4,7 +4,7 @@ package edu.ucdenver.ccp.common.download;
  * #%L
  * Colorado Computational Pharmacology's common module
  * %%
- * Copyright (C) 2012 - 2016 Regents of the University of Colorado
+ * Copyright (C) 2012 - 2017 Regents of the University of Colorado
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
