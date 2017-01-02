@@ -33,11 +33,11 @@ package edu.ucdenver.ccp.common.download;
  * #L%
  */
 
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -66,14 +66,14 @@ public class DownloadMetadata {
 
 	public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yyyy");
 
-	public void writePropertiesFile(File outputFile) throws IOException {
+	public void writePropertiesFile(File outputFile) throws IOException, URISyntaxException {
 		Properties p = new Properties();
 		p.setProperty(DownloadMetadataProperty.DOWNLOAD_DATE.name(), DATE_FORMATTER.format(downloadDate.getTime()));
 		p.setProperty(DownloadMetadataProperty.DOWNLOADED_FILE.name(), downloadedFile.getAbsolutePath());
 		p.setProperty(DownloadMetadataProperty.FILE_SIZE_IN_BYTES.name(), Long.toString(fileSizeInBytes));
 		p.setProperty(DownloadMetadataProperty.FILE_LAST_MOD_DATE.name(),
 				DATE_FORMATTER.format(fileLastModifiedDate.getTime()));
-		p.setProperty(DownloadMetadataProperty.DOWNLOAD_URL.name(), downloadUrl.toString());
+		p.setProperty(DownloadMetadataProperty.DOWNLOAD_URL.name(), downloadUrl.toURI().toString());
 
 		long fileAgeInDays = getFileAgeInDays();
 		p.setProperty(DownloadMetadataProperty.FILE_AGE_IN_DAYS.name(), Long.toString(fileAgeInDays));

@@ -37,6 +37,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -120,6 +122,21 @@ public class HttpUtil {
 		public File handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
 			InputStream source = response.getEntity().getContent();
 			FileUtils.copyInputStreamToFile(source, this.target);
+
+			String lastModified = response.getFirstHeader("last-modified").getValue();
+			if (lastModified != null) { // in case the header isn't set
+				// Mon, 28 Apr 2014 17:40:00 GMT
+				SimpleDateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
+				try {
+					this.target.setLastModified(formatter.parse(lastModified).getTime());
+				} catch (ParseException e) {
+					logger.error("Unable to set downloaded file modification date due to ParseException. File = "
+							+ this.target.getAbsolutePath() + " Modification time string: " + lastModified);
+				}
+			} else {
+				logger.warn("Last-modified date unavailable for file: " + this.target.getAbsolutePath());
+			}
+
 			return this.target;
 		}
 
