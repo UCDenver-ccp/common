@@ -39,21 +39,16 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.SocketException;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import lombok.Data;
 
 import org.apache.log4j.Logger;
 
-import edu.ucdenver.ccp.common.calendar.CalendarUtil;
-import edu.ucdenver.ccp.common.collections.CollectionsUtil;
-import edu.ucdenver.ccp.common.file.CharacterEncoding;
 import edu.ucdenver.ccp.common.file.FileArchiveUtil;
 import edu.ucdenver.ccp.common.file.FileUtil;
-import edu.ucdenver.ccp.common.file.FileWriterUtil;
-import edu.ucdenver.ccp.common.file.FileWriterUtil.FileSuffixEnforcement;
-import edu.ucdenver.ccp.common.file.FileWriterUtil.WriteMode;
 import edu.ucdenver.ccp.common.ftp.FTPUtil;
 import edu.ucdenver.ccp.common.ftp.FTPUtil.FileType;
 import edu.ucdenver.ccp.common.http.HttpUtil;
@@ -132,14 +127,14 @@ public class DownloadUtil {
 					throw new RuntimeException("Semaphore file could not be created b/c it already exists: "
 							+ getReadySemaphoreFile(file).getAbsolutePath());
 				}
-				SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-				FileWriterUtil.printLines(CollectionsUtil.createList("download_date=" + CalendarUtil.getDateStamp("/"),
-						"file_name=" + file.getName(), "file_path=" + file.getParentFile().getAbsolutePath(),
-						"file_size_in_bytes=" + file.length(), "file_date=" + formatter.format(file.lastModified()),
-						"file_url=" + fileUrl.toString()), getReadySemaphoreFile(file), CharacterEncoding.UTF_8,
-						WriteMode.OVERWRITE, FileSuffixEnforcement.OFF);
+
+				Calendar lastModifiedCal = Calendar.getInstance();
+				lastModifiedCal.setTimeInMillis(file.lastModified());
+				DownloadMetadata dmd = new DownloadMetadata(Calendar.getInstance(), file, file.length(),
+						lastModifiedCal, fileUrl);
+				dmd.writePropertiesFile(getReadySemaphoreFile(file));
 			}
-		} catch (IOException e) {
+		} catch (IOException | URISyntaxException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -415,7 +410,8 @@ public class DownloadUtil {
 		private final String targetFileName;
 
 		public URL getUrl() throws MalformedURLException {
-			return new URL("ftp://" + server + (port > 0 ? ":" + Integer.toString(port) : "") + "/" + path + "/" + filename);
+			return new URL("ftp://" + server + (port > 0 ? ":" + Integer.toString(port) : "") + "/" + path + "/"
+					+ filename);
 		}
 	}
 

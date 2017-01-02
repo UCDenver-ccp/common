@@ -38,6 +38,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.Calendar;
@@ -52,7 +53,7 @@ import edu.ucdenver.ccp.common.test.DefaultTestCase;
 public class DownloadMetadataTest extends DefaultTestCase {
 
 	@Test
-	public void testPropertiesFileRoundTrip() throws ParseException, IOException {
+	public void testPropertiesFileRoundTrip() throws ParseException, IOException, URISyntaxException {
 
 		Calendar downloadDate = Calendar.getInstance();
 		downloadDate.setTime(DownloadMetadata.DATE_FORMATTER.parse("12/29/2015"));

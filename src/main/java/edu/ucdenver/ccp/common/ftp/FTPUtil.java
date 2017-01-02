@@ -39,6 +39,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.SocketException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -74,8 +76,8 @@ public class FTPUtil {
 	private static final String ANONYMOUS = "anonymous";
 
 	/**
-	 * This enum allows the user to specify the FTP download mode. TODO: Consider renaming
-	 * FtpDownloadMode
+	 * This enum allows the user to specify the FTP download mode. TODO:
+	 * Consider renaming FtpDownloadMode
 	 * 
 	 * @author bill
 	 * 
@@ -90,8 +92,8 @@ public class FTPUtil {
 		 */
 		BINARY(FTPClient.BINARY_FILE_TYPE);
 		/**
-		 * Integer constant indicating the download mode (either FTPClient.ASCII_FILE_TYPE or
-		 * FTPClient.BINARY_FILE_TYPE)
+		 * Integer constant indicating the download mode (either
+		 * FTPClient.ASCII_FILE_TYPE or FTPClient.BINARY_FILE_TYPE)
 		 */
 		private final int type;
 
@@ -147,7 +149,8 @@ public class FTPUtil {
 	}
 
 	/**
-	 * Initializes an <code>FTPClient</code> to access the server at the input location
+	 * Initializes an <code>FTPClient</code> to access the server at the input
+	 * location
 	 * 
 	 * @param ftpServer
 	 * @return
@@ -160,8 +163,9 @@ public class FTPUtil {
 	}
 
 	/**
-	 * Makes the FTP connection using the specified port. If port < 0, then the default port is
-	 * used. Sets a default timeout of 1 hour. use ftpClient.setSoTimeout to change.
+	 * Makes the FTP connection using the specified port. If port < 0, then the
+	 * default port is used. Sets a default timeout of 1 hour. use
+	 * ftpClient.setSoTimeout to change.
 	 * 
 	 * @param ftpServer
 	 * @param port
@@ -180,7 +184,8 @@ public class FTPUtil {
 	}
 
 	/**
-	 * Logs into the specified ftp server using the given username and password pairing.
+	 * Logs into the specified ftp server using the given username and password
+	 * pairing.
 	 * 
 	 * @param ftpServer
 	 * @param ftpUsername
@@ -198,8 +203,8 @@ public class FTPUtil {
 	}
 
 	/**
-	 * Checks the FTPClient response code. If the connection was refused, then an IOException is
-	 * thrown.
+	 * Checks the FTPClient response code. If the connection was refused, then
+	 * an IOException is thrown.
 	 * 
 	 * @param ftpServer
 	 * @param ftpUsername
@@ -254,9 +259,49 @@ public class FTPUtil {
 			FTPUtil.initializeFtpClient(ftpServer, port, username, password);
 			ftpClient = FTPUtil.initializeFtpClient(ftpServer, port, username, password);
 			FTPUtil.navigateToFtpDirectory(ftpClient, remotePath);
+			
+			String modificationTime = null;
+//			FTPFile ftpFile = ftpClient.mlistFile(fileName);
+			FTPFile ftpFile = null;
+//			FTPFile[] list = ftpClient.listFiles();
+//			if (list != null) {
+//			System.out.println("# files in ftp dir: " + ftpClient.listFiles().length);
+//			for (FTPFile f : ftpClient.listFiles()) {
+//				System.out.println("FILE: " + f.getName());
+//			}
+//			}
+//            if (ftpFile != null) {
+//            	System.out.println("FTP FILE: " + ftpFile.getName() + " size: " + ftpFile.getSize());
+//                modificationTime = ftpFile.getTimestamp().getTimeInMillis();
+//            } else {
+//            	System.out.println("FTP file is null!!!!");
+//            }
+			
+			try {
+				modificationTime = ftpClient.getModificationTime(fileName);
+			} catch (Exception e) {
+				// not every FTP server supports the getModificationTime operation so we catch an exception here and set the modification time to null.
+				modificationTime = null;
+				logger.warn("FTP server does not support getModificationTime: " + ftpServer);
+			}
+			System.out.println("Modification time = " + modificationTime);
+			System.out.println("Current time = " + System.currentTimeMillis());
 			downloadedFile = FTPUtil.downloadFile(ftpClient, fileName, fileType, workDirectory);
-		}
-		finally {
+
+			// modification time should be in the following format according to
+			// ftpClient documentation:
+			// "YYYYMMDDhhmmss(.xxx)?"
+			if (modificationTime != null) {//                      20161101134449
+				SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+				try {
+					downloadedFile.setLastModified(formatter.parse(modificationTime).getTime());
+//					downloadedFile.setLastModified(modificationTime);
+				} catch (ParseException e) {
+					logger.error("Unable to set downloaded file modification date due to ParseException. File = "
+							+ downloadedFile.getAbsolutePath() + " Modification time string: " + modificationTime);
+				}
+			}
+		} finally {
 			FTPUtil.closeFtpClient(ftpClient);
 		}
 		return downloadedFile;
@@ -283,7 +328,8 @@ public class FTPUtil {
 	}
 
 	/**
-	 * Downloads a file by name from the connected FTP server to the local storage directory.
+	 * Downloads a file by name from the connected FTP server to the local
+	 * storage directory.
 	 * 
 	 * @param ftpClient
 	 * @param ftpFileName
@@ -308,7 +354,8 @@ public class FTPUtil {
 	}
 
 	/**
-	 * Downloads a file by name from the connection FTP server to the OutputStream
+	 * Downloads a file by name from the connection FTP server to the
+	 * OutputStream
 	 * 
 	 * @param ftpClient
 	 * @param ftpFileName
@@ -325,16 +372,18 @@ public class FTPUtil {
 		ftpClient.setBufferSize(BUFFER_SIZE);
 
 		Collection<String> remoteFiles = Arrays.asList(ftpClient.listNames());
-		if (!remoteFiles.contains(ftpFileName)) 
-			throw new IOException(String.format("File %s is not available on ftp server %s. Ftp download failed...", ftpFileName, ftpClient.getRemoteAddress()));
-		
+		if (!remoteFiles.contains(ftpFileName))
+			throw new IOException(String.format("File %s is not available on ftp server %s. Ftp download failed...",
+					ftpFileName, ftpClient.getRemoteAddress()));
+
 		if (!ftpClient.retrieveFile(ftpFileName, localOutputStream)) {
 			throw new IOException(String.format("Download failed for file: %s", ftpFileName));
 		}
 	}
 
 	/**
-	 * Checks that the FTPClient is connected. If it isn't, an IOException is thrown.
+	 * Checks that the FTPClient is connected. If it isn't, an IOException is
+	 * thrown.
 	 * 
 	 * @param ftpClient
 	 * @param ftpFileName
@@ -372,9 +421,10 @@ public class FTPUtil {
 	}
 
 	/**
-	 * Downloads all available files from the current FTP directory. If a file suffix is specified,
-	 * only files with that suffix are considered for download. Files with names in the
-	 * fileNamesToLeaveOnServer set are not downloaded.
+	 * Downloads all available files from the current FTP directory. If a file
+	 * suffix is specified, only files with that suffix are considered for
+	 * download. Files with names in the fileNamesToLeaveOnServer set are not
+	 * downloaded.
 	 * 
 	 * @param ftpClient
 	 * @param fileNamesToLeaveOnServer
@@ -398,8 +448,8 @@ public class FTPUtil {
 	}
 
 	/**
-	 * Downloads all files that are on the FTP server that are not already stored locally in the
-	 * specified localStorageDirectory.
+	 * Downloads all files that are on the FTP server that are not already
+	 * stored locally in the specified localStorageDirectory.
 	 * 
 	 * @param ftpClient
 	 * @param fileNamesToLeaveOnServer
@@ -415,8 +465,8 @@ public class FTPUtil {
 	}
 
 	/**
-	 * Downloads any file that is not already present in the specified local directory from the
-	 * specified FTP server
+	 * Downloads any file that is not already present in the specified local
+	 * directory from the specified FTP server
 	 * 
 	 * @param localStorageDirectory
 	 * @param fileSuffix
@@ -434,8 +484,9 @@ public class FTPUtil {
 	}
 
 	/**
-	 * Returns the list of files available for download in the current FTP directory. If fileSuffix
-	 * is null, all files are returned. Otherwise files that have the specified suffix are returned.
+	 * Returns the list of files available for download in the current FTP
+	 * directory. If fileSuffix is null, all files are returned. Otherwise files
+	 * that have the specified suffix are returned.
 	 * 
 	 * @param ftpClient
 	 * @param fileSuffix
@@ -451,8 +502,8 @@ public class FTPUtil {
 	}
 
 	/**
-	 * Pauses the current thread for n seconds depending on the input. This can be useful if a web
-	 * resource limits how often you can retrieve files.
+	 * Pauses the current thread for n seconds depending on the input. This can
+	 * be useful if a web resource limits how often you can retrieve files.
 	 * 
 	 * @param seconds
 	 */
