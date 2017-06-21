@@ -255,14 +255,15 @@ public class DownloadUtil {
 	 * @throws IOException
 	 * @throws IllegalArgumentException
 	 */
-	private static File handleHttpDownload(File workDirectory, HttpDownload httpd, boolean clean) throws IOException,
-			IllegalArgumentException {
+	private static File handleHttpDownload(File workDirectory, HttpDownload httpd, boolean clean)
+			throws IOException, IllegalArgumentException {
 		URL url = new URL(httpd.url());
 		String fileName = httpd.fileName();
 		String targetFileName = (httpd.targetFileName().length() > 0) ? httpd.targetFileName() : null;
 		File targetFile = (targetFileName == null) ? null : new File(workDirectory, targetFileName);
-		if (fileName.isEmpty())
+		if (fileName.isEmpty()) {
 			fileName = HttpUtil.getFinalPathElement(url);
+		}
 		File downloadedFile = FileUtil.appendPathElementsToDirectory(workDirectory, fileName);
 		if (!fileExists(downloadedFile, targetFile, clean, httpd.decompress())) {
 			long startTime = System.currentTimeMillis();
@@ -271,7 +272,11 @@ public class DownloadUtil {
 			logger.info("Duration of " + downloadedFile.getName() + " download: " + (duration / (1000 * 60)) + "min");
 		}
 		if (httpd.decompress()) {
-			return unpackFile(workDirectory, clean, downloadedFile, targetFileName);
+			File unpackedFile = unpackFile(workDirectory, clean, downloadedFile, targetFileName);
+			if (unpackedFile != null) {
+				writeReadySemaphoreFile(unpackedFile, url);
+			}
+			return unpackedFile;
 		}
 		if (clean || !readySemaphoreFileExists(downloadedFile)) {
 			if (downloadedFile != null) {
@@ -370,8 +375,8 @@ public class DownloadUtil {
 	 * @throws IOException
 	 * @throws IllegalArgumentException
 	 */
-	public static File handleFtpDownload(File workDirectory, FtpInfo ftpInfo, boolean clean) throws IOException,
-			IllegalArgumentException {
+	public static File handleFtpDownload(File workDirectory, FtpInfo ftpInfo, boolean clean)
+			throws IOException, IllegalArgumentException {
 		String targetFileName = ftpInfo.getTargetFileName();
 		File targetFile = (targetFileName == null) ? null : new File(workDirectory, targetFileName);
 		File downloadedFile = FileUtil.appendPathElementsToDirectory(workDirectory, ftpInfo.getFilename());
@@ -410,8 +415,8 @@ public class DownloadUtil {
 		private final String targetFileName;
 
 		public URL getUrl() throws MalformedURLException {
-			return new URL("ftp://" + server + (port > 0 ? ":" + Integer.toString(port) : "") + "/" + path + "/"
-					+ filename);
+			return new URL(
+					"ftp://" + server + (port > 0 ? ":" + Integer.toString(port) : "") + "/" + path + "/" + filename);
 		}
 	}
 
@@ -467,8 +472,8 @@ public class DownloadUtil {
 			try {
 				Thread.sleep(60000);
 			} catch (InterruptedException e) {
-				throw new RuntimeException("Error while waiting for another process to download a file: "
-						+ file.getAbsolutePath(), e);
+				throw new RuntimeException(
+						"Error while waiting for another process to download a file: " + file.getAbsolutePath(), e);
 			}
 		}
 	}
