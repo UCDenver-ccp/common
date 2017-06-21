@@ -44,6 +44,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+
 import lombok.Data;
 import edu.ucdenver.ccp.common.file.CharacterEncoding;
 import edu.ucdenver.ccp.common.file.FileReaderUtil;
@@ -54,6 +56,8 @@ import edu.ucdenver.ccp.common.file.FileWriterUtil;
  */
 @Data
 public class DownloadMetadata {
+	private static final Logger logger = Logger.getLogger(DownloadMetadata.class);
+
 	private final Calendar downloadDate;
 	private final File downloadedFile;
 	private final long fileSizeInBytes;
@@ -90,6 +94,7 @@ public class DownloadMetadata {
 	}
 
 	public static DownloadMetadata loadFromPropertiesFile(File propertiesFile) throws IOException, ParseException {
+		logger.info("Reading from properties file: " + propertiesFile.getAbsolutePath());
 		Properties p = new Properties();
 		BufferedReader reader = FileReaderUtil.initBufferedReader(propertiesFile, CharacterEncoding.UTF_8);
 		p.load(reader);
@@ -105,7 +110,16 @@ public class DownloadMetadata {
 
 		long fileSizeInBytes = Long.parseLong(p.getProperty(DownloadMetadataProperty.FILE_SIZE_IN_BYTES.name()));
 
-		URL downloadUrl = new URL(p.getProperty(DownloadMetadataProperty.DOWNLOAD_URL.name()));
+		/*
+		 * in some cases the download URL may not be provided, or may be n/a to
+		 * indicate that the file was not downloaded
+		 */
+		URL downloadUrl = null;
+		try {
+			downloadUrl = new URL(p.getProperty(DownloadMetadataProperty.DOWNLOAD_URL.name()));
+		} catch (java.net.MalformedURLException e) {
+			downloadUrl = null;
+		}
 
 		return new DownloadMetadata(downloadDate, downloadedFile, fileSizeInBytes, lastModDate, downloadUrl);
 	}
