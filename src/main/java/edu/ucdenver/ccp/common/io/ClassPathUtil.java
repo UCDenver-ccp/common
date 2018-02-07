@@ -123,10 +123,10 @@ public class ClassPathUtil {
 		if (stream == null) {
 			String modifiedPath;
 			logger.warn("Invalid resource path on classpath: " + resourcePath);
-			if (resourcePath.startsWith("/")) {
+			if (resourcePath.startsWith(File.separator)) {
 				modifiedPath = resourcePath.substring(1);
 			} else {
-				modifiedPath = "/" + resourcePath;
+				modifiedPath = File.separator + resourcePath;
 			}
 			logger.warn("Trying path variant: " + modifiedPath);
 			stream = ClassPathUtil.class.getResourceAsStream(modifiedPath);
@@ -152,7 +152,7 @@ public class ClassPathUtil {
 	}
 
 	public static File copyClasspathResourceToDirectory(String resourcePath, File directory) throws IOException {
-		String resourceName = resourcePath.substring(resourcePath.lastIndexOf(StringConstants.FORWARD_SLASH) + 1);
+		String resourceName = resourcePath.substring(resourcePath.lastIndexOf(File.separator) + 1);
 		return copyClasspathResourceToFile(resourcePath, new File(directory, resourceName));
 	}
 
@@ -204,7 +204,7 @@ public class ClassPathUtil {
 			Enumeration<JarEntry> entries = jar.entries();
 			while (entries.hasMoreElements()) {
 				String name = entries.nextElement().getName();
-				if (name.startsWith(resourceName) && !name.endsWith("/")) {
+				if (name.startsWith(resourceName) && !name.endsWith(File.separator)) {
 					logger.debug("ClassPathUtil adding from jar:" + name);
 					resourceNames.add(name);
 				}
