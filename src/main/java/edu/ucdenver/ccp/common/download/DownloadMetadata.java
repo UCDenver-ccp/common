@@ -111,14 +111,17 @@ public class DownloadMetadata {
 		long fileSizeInBytes = Long.parseLong(p.getProperty(DownloadMetadataProperty.FILE_SIZE_IN_BYTES.name()));
 
 		/*
-		 * in some cases the download URL may not be provided, or may be n/a to
-		 * indicate that the file was not downloaded
+		 * in some cases the download URL may not be provided, or may be n/a to indicate that the
+		 * file was not downloaded
 		 */
 		URL downloadUrl = null;
-		try {
-			downloadUrl = new URL(p.getProperty(DownloadMetadataProperty.DOWNLOAD_URL.name()));
-		} catch (java.net.MalformedURLException e) {
-			downloadUrl = null;
+		String url = p.getProperty(DownloadMetadataProperty.DOWNLOAD_URL.name());
+		if (url != null && !url.equalsIgnoreCase("n/a")) {
+			try {
+				downloadUrl = new URL(p.getProperty(DownloadMetadataProperty.DOWNLOAD_URL.name()));
+			} catch (java.net.MalformedURLException e) {
+				downloadUrl = null;
+			}
 		}
 
 		return new DownloadMetadata(downloadDate, downloadedFile, fileSizeInBytes, lastModDate, downloadUrl);
