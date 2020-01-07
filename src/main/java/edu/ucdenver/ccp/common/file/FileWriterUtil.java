@@ -44,7 +44,8 @@ import java.io.OutputStreamWriter;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import org.apache.commons.io.IOUtils;
 
@@ -60,7 +61,7 @@ public class FileWriterUtil {
 	 * Logs statements, such as when a directory is automatically created during
 	 * {@link BufferedWriter} initialization
 	 */
-	private static final Logger logger = Logger.getLogger(FileWriterUtil.class);
+	private static final Logger logger = LogManager.getLogger(FileWriterUtil.class);
 
 	/**
 	 * The WriteMode enum is closely tied to the boolean "append" argument that is found in the

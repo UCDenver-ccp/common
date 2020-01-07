@@ -51,7 +51,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import edu.ucdenver.ccp.common.file.CharacterEncoding;
 import edu.ucdenver.ccp.common.io.StreamUtil;
@@ -61,7 +62,7 @@ import edu.ucdenver.ccp.common.io.StreamUtil;
  */
 public class StringUtil {
 
-	private static final Logger logger = Logger.getLogger(StringUtil.class);
+	private static final Logger logger = LogManager.getLogger(StringUtil.class);
 	
 	/**
 	 * Private constructor to prevent instantiation.

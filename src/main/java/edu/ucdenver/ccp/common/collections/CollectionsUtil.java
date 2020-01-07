@@ -47,7 +47,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import edu.ucdenver.ccp.common.reflection.ConstructorUtil;
 import edu.ucdenver.ccp.common.string.StringUtil;
@@ -62,7 +63,7 @@ public class CollectionsUtil {
 	/**
 	 * logger used primarily for debug output in this class
 	 */
-	private static final Logger logger = Logger.getLogger(CollectionsUtil.class);
+	private static final Logger logger = LogManager.getLogger(CollectionsUtil.class);
 
 	/**
 	 * Returns a List implementation for any input collection

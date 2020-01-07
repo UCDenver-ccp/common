@@ -51,7 +51,9 @@ import java.util.Set;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
-import org.apache.log4j.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import edu.ucdenver.ccp.common.file.FileUtil;
 
@@ -65,7 +67,7 @@ public class FTPUtil {
 	/**
 	 * Used to log FTP progress/status
 	 */
-	private static final Logger logger = Logger.getLogger(FTPUtil.class);
+	private static final Logger logger = LogManager.getLogger(FTPUtil.class);
 	/**
 	 * This value is used to set the FTP buffer size
 	 */

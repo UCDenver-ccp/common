@@ -39,9 +39,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 
 import edu.ucdenver.ccp.common.calendar.CalendarUtil;
 import edu.ucdenver.ccp.common.file.CharacterEncoding;
@@ -56,7 +58,7 @@ import edu.ucdenver.ccp.common.file.reader.StreamLineIterator;
  * 
  */
 public class SgeJobMonitor {
-	private static final Logger logger = Logger.getLogger(SgeJobMonitor.class);
+	private static final Logger logger = LogManager.getLogger(SgeJobMonitor.class);
 
 	private final Collection<File> logDirectories;
 
@@ -200,8 +202,8 @@ public class SgeJobMonitor {
 	 *            args[0+] = the directories that contains the log files<br>
 	 */
 	public static void main(String[] args) {
-		BasicConfigurator.configure();
-		Logger.getRootLogger().setLevel(Level.INFO);
+		Configurator.initialize(new DefaultConfiguration());
+	    Configurator.setRootLevel(Level.INFO);
 		Collection<File> logDirectories = new ArrayList<File>();
 		for (int i = 0; i < args.length; i++) {
 			logDirectories.add(new File(args[i]));

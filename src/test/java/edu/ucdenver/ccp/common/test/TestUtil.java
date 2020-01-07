@@ -49,7 +49,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import org.junit.internal.ArrayComparisonFailure;
 import org.junit.rules.TemporaryFolder;
 
@@ -68,7 +70,7 @@ import edu.ucdenver.ccp.common.string.RegExPatterns;
 public class TestUtil {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(TestUtil.class);
+	private static final Logger logger = LogManager.getLogger(TestUtil.class);
 
 	/**
 	 * Creates a file in the provided TemporaryFolder and populates it with the specified lines.

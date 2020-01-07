@@ -46,8 +46,8 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import org.apache.log4j.Logger;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import edu.ucdenver.ccp.common.file.CharacterEncoding;
 import edu.ucdenver.ccp.common.file.FileUtil;
 import edu.ucdenver.ccp.common.string.StringConstants;
@@ -60,7 +60,7 @@ import edu.ucdenver.ccp.common.string.StringUtil;
  * 
  */
 public class ClassPathUtil {
-	static Logger logger = Logger.getLogger(ClassPathUtil.class);
+	static Logger logger = LogManager.getLogger(ClassPathUtil.class);
 
 	/**
 	 * Helper method for grabbing a file from the classpath and returning an InputStream

@@ -49,8 +49,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
-import org.apache.log4j.Logger;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import edu.ucdenver.ccp.common.file.FileUtil;
 import edu.ucdenver.ccp.common.string.StringConstants;
 
@@ -65,7 +65,7 @@ public class HttpUtil {
 	/**
 	 * Used to log the download of a file via HTTP
 	 */
-	private static final Logger logger = Logger.getLogger(HttpUtil.class);
+	private static final Logger logger = LogManager.getLogger(HttpUtil.class);
 
 	/**
 	 * This method retrieves a file from the input URL and stores it locally in

@@ -41,7 +41,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.log4j.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import edu.ucdenver.ccp.common.collections.CollectionsUtil;
 import edu.ucdenver.ccp.common.file.FileWriterUtil.FileSuffixEnforcement;
@@ -57,7 +59,7 @@ public class FileComparisonUtil {
 	/**
 	 * This logger is used to log differences among the files being compared
 	 */
-	private static final Logger logger = Logger.getLogger(FileComparisonUtil.class);
+	private static final Logger logger = LogManager.getLogger(FileComparisonUtil.class);
 
 	/**
 	 * File comparisons can specify whether or not line ordering should be

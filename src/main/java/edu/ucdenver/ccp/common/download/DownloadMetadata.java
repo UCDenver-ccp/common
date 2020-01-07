@@ -44,7 +44,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import lombok.Data;
 import edu.ucdenver.ccp.common.file.CharacterEncoding;
@@ -56,7 +57,7 @@ import edu.ucdenver.ccp.common.file.FileWriterUtil;
  */
 @Data
 public class DownloadMetadata {
-	private static final Logger logger = Logger.getLogger(DownloadMetadata.class);
+	private static final Logger logger = LogManager.getLogger(DownloadMetadata.class);
 
 	private final Calendar downloadDate;
 	private final File downloadedFile;

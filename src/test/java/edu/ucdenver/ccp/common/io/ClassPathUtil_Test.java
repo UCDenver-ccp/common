@@ -40,8 +40,11 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.List;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -53,11 +56,12 @@ public class ClassPathUtil_Test {
 	static boolean testOSGI = false; // TODO make this work in OSGI
 
 	// org.osgi didn't work
-	Logger logger = Logger.getLogger(ClassPathUtil_Test.class);
+	Logger logger = LogManager.getLogger(ClassPathUtil_Test.class);
 
 	@Before
 	public void before() {
-		BasicConfigurator.configure();
+		Configurator.initialize(new DefaultConfiguration());
+	    Configurator.setRootLevel(Level.INFO);
 	}
 
 	@Test

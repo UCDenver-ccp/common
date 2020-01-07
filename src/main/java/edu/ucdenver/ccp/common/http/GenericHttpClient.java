@@ -47,8 +47,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIUtils;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.log4j.Logger;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 /**
  * This is a generic implementation of HTTP requests using Apache HttpClient 4.0.
  * Derive a class from this one that has members, getters and setters for each parameter
@@ -65,7 +65,7 @@ public abstract class GenericHttpClient {
 	String path;  	
 	boolean isGetRequest; // true for Get, false for POST
 	
-	private static Logger logger = Logger.getLogger(GenericHttpClient.class);
+	private static Logger logger = LogManager.getLogger(GenericHttpClient.class);
 	HttpClient client=null;
 	
 	private static final int NUM_TRIES=3;

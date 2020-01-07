@@ -58,7 +58,8 @@ import java.util.zip.ZipInputStream;
 
 import org.apache.commons.io.IOUtils;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import org.apache.tools.tar.TarEntry;
 import org.apache.tools.tar.TarInputStream;
@@ -81,7 +82,7 @@ import edu.ucdenver.ccp.common.string.StringUtil;
  */
 public class FileArchiveUtil {
 
-	private static final Logger logger = Logger.getLogger(FileArchiveUtil.class);
+	private static final Logger logger = LogManager.getLogger(FileArchiveUtil.class);
 
 	/**
 	 * Suffix signifying a gzipped file

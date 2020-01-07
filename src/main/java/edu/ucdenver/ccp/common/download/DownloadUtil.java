@@ -45,7 +45,8 @@ import java.util.Calendar;
 
 import lombok.Data;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import edu.ucdenver.ccp.common.file.FileArchiveUtil;
 import edu.ucdenver.ccp.common.file.FileUtil;
@@ -68,7 +69,7 @@ import edu.ucdenver.ccp.common.http.HttpUtil;
  */
 public class DownloadUtil {
 
-	private static final Logger logger = Logger.getLogger(DownloadUtil.class);
+	private static final Logger logger = LogManager.getLogger(DownloadUtil.class);
 
 	/**
 	 * File suffix used on the "ready semaphore" file that indicates that a

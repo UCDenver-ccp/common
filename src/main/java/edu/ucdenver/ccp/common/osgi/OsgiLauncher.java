@@ -48,8 +48,11 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.ServiceLoader;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Version;
@@ -68,7 +71,7 @@ import org.osgi.framework.launch.FrameworkFactory;
  */
 public class OsgiLauncher {
 
-	private static final Logger logger = Logger.getLogger(OsgiLauncher.class);
+	private static final Logger logger = LogManager.getLogger(OsgiLauncher.class);
 	private final Map<String, String> frameworkProperties;
 	private Framework framework;
 
@@ -255,7 +258,8 @@ public class OsgiLauncher {
 	 *             if errors occur while reading framework config file
 	 */
 	public static void main(String[] args) throws IllegalArgumentException, FileNotFoundException, IOException {
-		BasicConfigurator.configure();
+		Configurator.initialize(new DefaultConfiguration());
+	    Configurator.setRootLevel(Level.INFO);
 		if (args.length == 0)
 			throw new IllegalArgumentException(
 					"Arguments must at least include <path to framework config properties file> <bundle name> <class with main in named bundle>");
